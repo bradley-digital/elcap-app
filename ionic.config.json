@@ -1,0 +1,7 @@
+{
+  "name": "elcap-app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
