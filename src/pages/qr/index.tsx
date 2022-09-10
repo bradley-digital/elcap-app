@@ -20,7 +20,7 @@ export default function QR() {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <IonGrid>
+        <IonGrid className="v-center">
           <IonRow className="ion-justify-content-center ion-align-items-center">
             <IonCol size-md="6" size-lg="4">
               <IonText>
