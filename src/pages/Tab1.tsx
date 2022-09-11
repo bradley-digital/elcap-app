@@ -11,28 +11,53 @@ import {
   IonCardContent,
   IonCol,
   IonContent,
+  IonDatetime,
+  IonFab,
+  IonFabButton,
   IonGrid,
   IonHeader,
   IonIcon,
+  IonInput,
   IonItem,
   IonLabel,
   IonList,
   IonMenu,
   IonMenuButton,
+  IonModal,
   IonPage,
+  IonPopover,
+  IonProgressBar,
   IonRow,
+  IonSearchbar,
+  IonSelect,
+  IonSelectOption,
+  IonSlide,
+  IonSlides,
   IonSplitPane,
   IonText,
   IonTitle,
   IonToolbar,
   useIonActionSheet,
+  useIonToast,
 } from '@ionic/react';
-import { star } from 'ionicons/icons';
+import { add, star } from 'ionicons/icons';
 import './Tab1.css';
 
 const Tab1: React.FC = () => {
   const [present, dismiss] = useIonActionSheet();
+  const [presentToast] = useIonToast();
   const [showAlert, setShowAlert] = useState(false);
+  const [text, setText] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchText, setSearchText] = useState('');
+
+  const presentToasty = (position: 'top' | 'middle' | 'bottom') => {
+    presentToast({
+      message: 'Hello World!',
+      duration: 1500,
+      position: position
+    });
+  };
 
   return (
     <IonContent>
@@ -154,10 +179,89 @@ const Tab1: React.FC = () => {
                   </IonCard>
                 </IonCol>
               </IonRow>
+              <IonRow>
+                <IonCol>
+                  <IonDatetime />
+                </IonCol>
+                <IonCol>
+                  <IonItem>
+                    <IonLabel position="stacked">Text input</IonLabel>
+                    <IonInput value={text} placeholder="Enter Input" onIonChange={e => setText(e.detail.value!)} />
+                  </IonItem>
+                </IonCol>
+                <IonCol>
+                  <IonButton onClick={() => setIsOpen(true)}>Open Modal</IonButton>
+                </IonCol>
+              </IonRow>
+              <IonRow>
+                <IonCol>
+                  <IonButton id="click-trigger">Left-Click Me</IonButton>
+                  <IonPopover trigger="click-trigger" triggerAction="click">
+                    <IonContent class="ion-padding">Hello World!</IonContent>
+                  </IonPopover>
+                </IonCol>
+                <IonCol>
+                  <IonProgressBar type="indeterminate" />
+                </IonCol>
+                <IonCol>
+                  <IonSearchbar value={searchText} onIonChange={e => setSearchText(e.detail.value!)} showCancelButton="focus" />
+                </IonCol>
+              </IonRow>
+              <IonRow>
+                <IonCol size-md="4">
+                  <IonSlides pager={true} options={{ initialSlide: 0, speed: 400 }}>
+                    <IonSlide>
+                      <h1>Slide 1</h1>
+                    </IonSlide>
+                    <IonSlide>
+                      <h1>Slide 2</h1>
+                    </IonSlide>
+                    <IonSlide>
+                      <h1>Slide 3</h1>
+                    </IonSlide>
+                  </IonSlides>
+                </IonCol>
+                <IonCol>
+                  <IonList>
+                    <IonItem>
+                      <IonSelect placeholder="Select fruit">
+                        <IonSelectOption value="apples">Apples</IonSelectOption>
+                        <IonSelectOption value="oranges">Oranges</IonSelectOption>
+                        <IonSelectOption value="bananas">Bananas</IonSelectOption>
+                      </IonSelect>
+                    </IonItem>
+                  </IonList>
+                </IonCol>
+                <IonCol>
+                  <IonButton expand="block" onClick={() => presentToasty('bottom')}>Present Toast</IonButton>
+                </IonCol>
+              </IonRow>
             </IonGrid>
           </IonContent>
         </IonPage>
       </IonSplitPane>
+      <IonFab vertical="bottom" horizontal="end" slot="fixed">
+        <IonFabButton>
+          <IonIcon icon={add} />
+        </IonFabButton>
+      </IonFab>
+      <IonModal isOpen={isOpen}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Modal</IonTitle>
+            <IonButtons slot="end">
+              <IonButton onClick={() => setIsOpen(false)}>Close</IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="ion-padding">
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni illum quidem recusandae ducimus quos
+            reprehenderit. Veniam, molestias quos, dolorum consequuntur nisi deserunt omnis id illo sit cum qui.
+            Eaque, dicta.
+          </p>
+        </IonContent>
+      </IonModal>
     </IonContent>
   );
 };
