@@ -34,25 +34,24 @@ import {
   IonSlide,
   IonSlides,
   IonSplitPane,
-  IonText,
   IonTitle,
   IonToolbar,
   useIonActionSheet,
   useIonToast,
 } from '@ionic/react';
 import { add, star } from 'ionicons/icons';
-import './Tab1.css';
+import './style.scss';
 
-const Tab1: React.FC = () => {
-  const [present, dismiss] = useIonActionSheet();
-  const [presentToast] = useIonToast();
+export default function Example() {
+  const [present] = useIonActionSheet();
+  const [presentIonToast] = useIonToast();
   const [showAlert, setShowAlert] = useState(false);
   const [text, setText] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [searchText, setSearchText] = useState('');
 
-  const presentToasty = (position: 'top' | 'middle' | 'bottom') => {
-    presentToast({
+  const presentToast = (position: 'top' | 'middle' | 'bottom') => {
+    presentIonToast({
       message: 'Hello World!',
       duration: 1500,
       position: position
@@ -151,7 +150,7 @@ const Tab1: React.FC = () => {
               <IonRow>
                 <IonCol size-md="6">
                   <IonCard>
-                    <img src="https://wtwp.com/wp-content/uploads/2015/06/placeholder-image.png" />
+                    <img alt="placeholder" src="https://wtwp.com/wp-content/uploads/2015/06/placeholder-image.png" />
                     <IonItem>
                       <IonIcon icon={star} slot="start" />
                       <IonLabel>ion-item in a card, icon left, button right</IonLabel>
@@ -166,7 +165,7 @@ const Tab1: React.FC = () => {
                 </IonCol>
                 <IonCol size-md="6">
                   <IonCard>
-                    <img src="https://wtwp.com/wp-content/uploads/2015/06/placeholder-image.png" />
+                    <img alt="placeholder" src="https://wtwp.com/wp-content/uploads/2015/06/placeholder-image.png" />
                     <IonCardHeader>
                       <IonCardSubtitle>Card Subtitle</IonCardSubtitle>
                       <IonCardTitle>Card Title</IonCardTitle>
@@ -233,7 +232,7 @@ const Tab1: React.FC = () => {
                   </IonList>
                 </IonCol>
                 <IonCol>
-                  <IonButton expand="block" onClick={() => presentToasty('bottom')}>Present Toast</IonButton>
+                  <IonButton expand="block" onClick={() => presentToast('bottom')}>Present Toast</IonButton>
                 </IonCol>
               </IonRow>
             </IonGrid>
@@ -264,6 +263,4 @@ const Tab1: React.FC = () => {
       </IonModal>
     </IonContent>
   );
-};
-
-export default Tab1;
+}

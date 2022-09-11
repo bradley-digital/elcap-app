@@ -1,0 +1,91 @@
+.Register-page {
+  h1 {
+    margin-bottom: 15px;
+  }
+
+  p {
+    color: gray;
+  }
+
+  ion-item {
+    --padding-start: 0;
+    --ripple-color: transparent;
+    --border-color: transparent;
+  }
+
+  ion-button {
+    width: 100%;
+    font-size: 18px;
+    box-shadow: -1px 1px 20px 1px rgba(0,0,0,0.4);
+    border-radius: 28px;
+  }
+
+  .ion-content--bottom {
+    padding: 0 22px;
+    max-width: 414px;
+    margin: 0 auto;
+  }
+
+  .elcap-logo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 18px;
+    z-index: 101;
+    svg {
+      height: 8rem;
+      width: 10rem;
+    }
+
+    p {
+      color: var(--ion-color-primary);
+      font-weight: 700;
+      margin: 0;
+    }
+  }
+  .ion-inputForm {
+    padding: 18px 0;
+  }
+
+  .login-label {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--ion-color-primary);
+  }
+
+  .login-formInput {
+    border-bottom: 1px solid black;
+  }
+
+  .social-login {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 25px;
+
+    ion-button {
+      width: 44%;
+      box-shadow: none;
+    }
+  }
+
+  .account-help {
+    display: flex;
+    justify-content: space-between;
+    a {
+      text-decoration: none;
+    }
+
+    .forgot-password {
+      color: grey;
+
+      &:hover {
+        color: var(--ion-color-primary);
+      }
+    }
+
+    .register {
+      font-weight: 500;
+    }
+  }
+}
