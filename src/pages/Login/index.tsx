@@ -1,3 +1,4 @@
+import type { SyntheticEvent } from 'react';
 import { ReactComponent as Logo } from '../../assets/elcapitanadvisors_logo.svg';
 import { useCookies } from 'react-cookie';
 import {
@@ -8,16 +9,20 @@ import {
   IonLabel,
   IonInput,
   IonButton,
+  useIonRouter,
 } from '@ionic/react';
 import './style.scss';
 
 export default function Login() {
+  const router = useIonRouter();
   const [cookies, setCookie] = useCookies(['user']);
 
-  function handleCookie() {
+  function handleSubmit(e: SyntheticEvent) {
+    e.preventDefault();
     setCookie('user', 'admin', {
       path: '/'
     });
+    router.push('/');
   }
   return (
     <IonPage className="Login-page">
@@ -33,7 +38,7 @@ export default function Login() {
               <p>Hi there! Welcome to El Cap.</p>
             </IonText>
 
-            <form>
+            <form onSubmit={handleSubmit}>
               <IonItem className="ion-inputForm">
                 <IonLabel position="stacked" className="login-label">Email</IonLabel>
                 <IonInput type="email" className="login-formInput" placeholder="name@email.com" />
@@ -48,8 +53,7 @@ export default function Login() {
                 className="ion-text-center"
                 style={{ paddingTop: 25, paddingBottom: 25, paddingRight: 16 }}>
                 <IonButton
-                  type="submit"
-                  onClick={handleCookie}>
+                  type="submit">
                   Login
                 </IonButton>
               </div>

@@ -48,9 +48,9 @@ export default function App() {
               <Route exact path="/example">
                 <Example />
               </Route>
-              <Route exact path="/">
-                <Redirect to="/pay" />
-              </Route>
+
+              {/* Fallback route */}
+              <Redirect to="/pay/scan" />
             </IonRouterOutlet>
             <IonTabBar slot="bottom">
               <IonTabButton tab="shop" href="/shop">
@@ -77,9 +77,9 @@ export default function App() {
             <Route exact path="/register">
               <Register />
             </Route>
-            <Route exact path="/">
-              <Redirect to="/login" />
-            </Route>
+
+            {/* Fallback route */}
+            <Redirect to="/login" />
           </IonRouterOutlet>
         </IonReactRouter>
       )}

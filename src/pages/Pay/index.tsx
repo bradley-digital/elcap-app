@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import {
   IonButtons,
@@ -71,6 +72,15 @@ const subroutes: SubRoutes = {
 export default function Pay() {
   const location = useLocation();
   const { id }: { id: PaySubRoutes } = useParams();
+  const [paramId, setParamId] = useState<PaySubRoutes>('scan');
+
+  useEffect(() => {
+    if (typeof id === 'string') {
+      setParamId(id);
+    }
+  }, [id]);
+
+  console.log(paramId);
 
   return (
     <IonContent>
@@ -85,6 +95,7 @@ export default function Pay() {
             <IonList>
               {menuLinks.map(menuLink => (
                 <IonItem
+                  key={menuLink.href}
                   href={menuLink.href}
                   className={location.pathname === menuLink.href ? 'active' : ''}>
                   <IonIcon icon={menuLink.icon} slot="start" />
@@ -100,11 +111,11 @@ export default function Pay() {
               <IonButtons slot="start">
                 <IonMenuButton menu="main" />
               </IonButtons>
-              <IonTitle>{subroutes[id]?.title}</IonTitle>
+              <IonTitle>{subroutes[paramId]?.title}</IonTitle>
             </IonToolbar>
           </IonHeader>
           <IonContent fullscreen>
-            {subroutes[id]?.element}
+            {subroutes[paramId]?.element}
           </IonContent>
         </IonPage>
       </IonSplitPane>

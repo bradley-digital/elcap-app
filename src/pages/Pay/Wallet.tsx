@@ -35,7 +35,7 @@ export default function Wallet() {
           <IonCol size-md="8" size-lg="6">
             <IonList>
               {paymentMethods.map(paymentMethod => (
-                <IonItem>
+                <IonItem key={paymentMethod.name}>
                   <IonAvatar slot="start">
                     <img src={paymentMethod.img} alt={paymentMethod.name} />
                   </IonAvatar>
