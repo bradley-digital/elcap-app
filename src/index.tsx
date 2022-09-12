@@ -1,7 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { CookiesProvider } from 'react-cookie';
-import { Lines } from 'react-preloaders';
 import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
@@ -12,7 +11,6 @@ root.render(
   <React.StrictMode>
     <CookiesProvider>
       <App />
-      <Lines />
     </CookiesProvider>
   </React.StrictMode>
 );
