@@ -1,0 +1,10 @@
+ion-menu {
+  ion-item {
+    &.active {
+      &,
+      ion-icon {
+        color: var(--ion-color-primary);
+      }
+    }
+  }
+}

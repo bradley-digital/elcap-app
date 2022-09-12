@@ -15,7 +15,7 @@ export default function QRCode({ link }: Props) {
 
   return (
     <IonCard className="mx-0">
-      <div dangerouslySetInnerHTML={{ __html: svg }} />
+      <div className="qr-wrapper" dangerouslySetInnerHTML={{ __html: svg }} />
     </IonCard>
   );
 }
