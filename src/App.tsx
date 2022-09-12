@@ -11,6 +11,8 @@ import {
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { qrCode } from 'ionicons/icons';
+import { useCookies } from 'react-cookie';
+
 
 /* Pages */
 import Pay from './pages/Pay';
@@ -26,8 +28,11 @@ import './theme/utilities.scss';
 setupIonicReact();
 
 export default function App() {
+  const [cookies, setCookie] = useCookies(['user']);
   let loggedIn = false;
-
+  if (cookies.user === 'admin') {
+    loggedIn = true;
+  }
   return (
     <IonApp>
       {loggedIn ? (
