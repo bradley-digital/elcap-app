@@ -7,6 +7,7 @@ import {
   IonLabel,
   IonInput,
   IonButton,
+  IonCheckbox,
 } from '@ionic/react';
 import './style.scss';
 
@@ -21,8 +22,7 @@ export default function Register() {
         <div className="ion-content--bottom">
           <div>
             <IonText>
-              <h1>Login</h1>
-              <p>Hi there! Welcome to El Cap.</p>
+              <h1>Sign Up</h1>
             </IonText>
 
             <form>
@@ -36,30 +36,24 @@ export default function Register() {
                 <IonInput type="password" className="login-formInput" />
               </IonItem>
 
+              <IonItem>
+                <IonCheckbox slot='start'></IonCheckbox>
+                <IonLabel>I agree to the <a href="/">Terms of Service</a> and <br/><a href="/">Privacy Policy</a></IonLabel>
+              </IonItem>
+
               <div
                 className="ion-text-center"
                 style={{ paddingTop: 25, paddingBottom: 25, paddingRight: 16 }}>
                 <IonButton
                   type="submit">
-                  Login
+                  Continue
                 </IonButton>
               </div>
             </form>
 
-            <div className="social-login"
-                 style={{ paddingRight: 16 }}>
-              <IonButton color="light" type="submit">
-                Google
-              </IonButton>
-              <IonButton color="tertiary" type="submit">
-                Facebook
-              </IonButton>
-            </div>
-
             <div className="account-help"
                  style={{ paddingRight: 16 }}>
-              <a href="/" className="forgot-password">Forgot Password?</a>
-              <a href="/register" className="register">Create Account</a>
+             <p>Have an Account? <a href="/login" className="register">Sign In</a></p>
             </div>
           </div>
           <div>
