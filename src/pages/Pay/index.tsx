@@ -1,33 +1,113 @@
+import type { ReactNode } from 'react';
+import { useLocation, useParams } from 'react-router-dom';
 import {
-  IonGrid,
-  IonRow,
-  IonCol,
+  IonButtons,
   IonContent,
   IonHeader,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonMenu,
+  IonMenuButton,
   IonPage,
+  IonSplitPane,
   IonTitle,
   IonToolbar,
 } from '@ionic/react';
-import QRCode from '../../components/QRCode';
+import { wallet, qrCode, receipt } from 'ionicons/icons';
+import Scan from './Scan';
+import Wallet from './Wallet';
 import './style.scss';
 
-export default function QR() {
+const tabs = {
+  scan: 'Scan to pay',
+  wallet: 'Payment methods',
+  transactions: 'Transactions',
+};
+
+const menuLinks = [
+  {
+    href: '/pay/scan',
+    icon: qrCode,
+    label: tabs.scan,
+  },
+  {
+    href: '/pay/wallet',
+    icon: wallet,
+    label: tabs.wallet,
+  },
+  {
+    href: '/pay/transactions',
+    icon: receipt,
+    label: tabs.transactions,
+  },
+];
+
+type PaySubRoutes = 'scan' | 'wallet' | 'transactions';
+
+type SubRoutes = {
+  [key in PaySubRoutes]: {
+    title: string;
+    element: ReactNode;
+  }
+}
+
+const subroutes: SubRoutes = {
+  'scan': {
+    title: tabs.scan,
+    element: <Scan />,
+  },
+  'wallet': {
+    title: tabs.wallet,
+    element: <Wallet />,
+  },
+  'transactions': {
+    title: tabs.transactions,
+    element: <Scan />,
+  },
+};
+
+export default function Pay() {
+  const location = useLocation();
+  const { id }: { id: PaySubRoutes } = useParams();
+
   return (
-    <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Scan to Pay</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent fullscreen>
-        <IonGrid className="v-center">
-          <IonRow className="ion-justify-content-center ion-align-items-center">
-            <IonCol size-md="6" size-lg="4">
-              <QRCode link="https://google.com" />
-            </IonCol>
-          </IonRow>
-        </IonGrid>
-      </IonContent>
-    </IonPage>
+    <IonContent>
+      <IonSplitPane contentId="main">
+        <IonMenu side="start" menuId="main" contentId="main">
+          <IonHeader>
+            <IonToolbar>
+              <IonTitle>Pay</IonTitle>
+            </IonToolbar>
+          </IonHeader>
+          <IonContent>
+            <IonList>
+              {menuLinks.map(menuLink => (
+                <IonItem
+                  href={menuLink.href}
+                  className={location.pathname === menuLink.href ? 'active' : ''}>
+                  <IonIcon icon={menuLink.icon} slot="start" />
+                  <IonLabel>{menuLink.label}</IonLabel>
+                </IonItem>
+              ))}
+            </IonList>
+          </IonContent>
+        </IonMenu>
+        <IonPage id="main">
+          <IonHeader>
+            <IonToolbar>
+              <IonButtons slot="start">
+                <IonMenuButton menu="main" />
+              </IonButtons>
+              <IonTitle>{subroutes[id]?.title}</IonTitle>
+            </IonToolbar>
+          </IonHeader>
+          <IonContent fullscreen>
+            {subroutes[id]?.element}
+          </IonContent>
+        </IonPage>
+      </IonSplitPane>
+    </IonContent>
   );
 }

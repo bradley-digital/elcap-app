@@ -10,9 +10,8 @@ import {
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { qrCode } from 'ionicons/icons';
+import { bag, card, personCircle } from 'ionicons/icons';
 import { useCookies } from 'react-cookie';
-
 
 /* Pages */
 import Pay from './pages/Pay';
@@ -33,6 +32,7 @@ export default function App() {
   if (cookies.user === 'admin') {
     loggedIn = true;
   }
+
   return (
     <IonApp>
       {loggedIn ? (
@@ -40,6 +40,9 @@ export default function App() {
           <IonTabs>
             <IonRouterOutlet>
               <Route exact path="/pay">
+                <Redirect to="/pay/scan" />
+              </Route>
+              <Route path="/pay/:id">
                 <Pay />
               </Route>
               <Route exact path="/example">
@@ -50,9 +53,17 @@ export default function App() {
               </Route>
             </IonRouterOutlet>
             <IonTabBar slot="bottom">
+              <IonTabButton tab="shop" href="/shop">
+                <IonIcon icon={bag} />
+                <IonLabel>Shop</IonLabel>
+              </IonTabButton>
               <IonTabButton tab="pay" href="/pay">
-                <IonIcon icon={qrCode} />
+                <IonIcon icon={card} />
                 <IonLabel>Pay</IonLabel>
+              </IonTabButton>
+              <IonTabButton tab="account" href="/account">
+                <IonIcon icon={personCircle} />
+                <IonLabel>Account</IonLabel>
               </IonTabButton>
             </IonTabBar>
           </IonTabs>

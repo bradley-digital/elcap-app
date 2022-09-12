@@ -1,0 +1,59 @@
+import {
+  IonAvatar,
+  IonCol,
+  IonFab,
+  IonFabButton,
+  IonGrid,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonRow,
+} from '@ionic/react';
+import { add } from 'ionicons/icons';
+import chaseLogo from '../../assets/chase.png';
+import coinbaseLogo from '../../assets/coinbase.png';
+
+const paymentMethods = [
+  {
+    img: chaseLogo,
+    name: 'Chase Bank',
+    domain: 'chase.com',
+  },
+  {
+    img: coinbaseLogo,
+    name: 'Coinbase',
+    domain: 'coinbase.com',
+  },
+];
+
+export default function Wallet() {
+  return (
+    <>
+      <IonGrid>
+        <IonRow className="ion-justify-content-center">
+          <IonCol size-md="8" size-lg="6">
+            <IonList>
+              {paymentMethods.map(paymentMethod => (
+                <IonItem>
+                  <IonAvatar slot="start">
+                    <img src={paymentMethod.img} alt={paymentMethod.name} />
+                  </IonAvatar>
+                  <IonLabel>
+                    <h2>{paymentMethod.name}</h2>
+                    <p>{paymentMethod.domain}</p>
+                  </IonLabel>
+                </IonItem>
+              ))}
+            </IonList>
+          </IonCol>
+        </IonRow>
+      </IonGrid>
+      <IonFab vertical="bottom" horizontal="end" slot="fixed">
+        <IonFabButton>
+          <IonIcon icon={add} />
+        </IonFabButton>
+      </IonFab>
+    </>
+  );
+}
