@@ -80,8 +80,6 @@ export default function Pay() {
     }
   }, [id]);
 
-  console.log(paramId);
-
   return (
     <IonContent>
       <IonSplitPane contentId="main">
