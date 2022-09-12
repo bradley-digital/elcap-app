@@ -7,10 +7,20 @@
     color: gray;
   }
 
+  a {
+    text-decoration: none;
+    font-weight: 600;
+  }
+
   ion-item {
     --padding-start: 0;
     --ripple-color: transparent;
     --border-color: transparent;
+  }
+
+  ion-checkbox {
+    margin-top: 0;
+    margin-inline-end: 22px;
   }
 
   ion-button {
@@ -71,17 +81,9 @@
 
   .account-help {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     a {
       text-decoration: none;
-    }
-
-    .forgot-password {
-      color: grey;
-
-      &:hover {
-        color: var(--ion-color-primary);
-      }
     }
 
     .register {

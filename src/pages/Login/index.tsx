@@ -1,4 +1,5 @@
 import { ReactComponent as Logo } from '../../assets/elcapitanadvisors_logo.svg';
+import { useCookies } from 'react-cookie';
 import {
   IonContent,
   IonPage,
@@ -11,6 +12,13 @@ import {
 import './style.scss';
 
 export default function Login() {
+  const [cookies, setCookie] = useCookies(['user']);
+
+  function handleCookie() {
+    setCookie('user', 'admin', {
+      path: '/'
+    });
+  }
   return (
     <IonPage className="Login-page">
       <div className="elcap-logo">
@@ -40,7 +48,8 @@ export default function Login() {
                 className="ion-text-center"
                 style={{ paddingTop: 25, paddingBottom: 25, paddingRight: 16 }}>
                 <IonButton
-                  type="submit">
+                  type="submit"
+                  onClick={handleCookie}>
                   Login
                 </IonButton>
               </div>
