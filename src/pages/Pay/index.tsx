@@ -17,28 +17,35 @@ import {
 import { wallet, qrCode, receipt } from 'ionicons/icons';
 import Scan from './Scan';
 import Wallet from './Wallet';
+import Transactions from './Transactions';
 import './style.scss';
 
-const menuLinks = [
+type MenuLink = {
+  icon: string;
+  href: string;
+  label: string;
+};
+
+const menuLinks: MenuLink[] = [
   {
-    href: '/pay/scan',
     icon: qrCode,
+    href: '/pay/scan',
     label: 'Scan to pay',
   },
   {
-    href: '/pay/wallet',
     icon: wallet,
+    href: '/pay/wallet',
     label: 'Payment methods',
   },
   {
-    href: '/pay/transactions',
     icon: receipt,
+    href: '/pay/transactions',
     label: 'Transactions',
   },
 ];
 
 export default function Pay({ match }: RouteComponentProps) {
-  const location = useLocation();
+  const { pathname } = useLocation();
 
   return (
     <IonPage>
@@ -51,13 +58,13 @@ export default function Pay({ match }: RouteComponentProps) {
           </IonHeader>
           <IonContent>
             <IonList>
-              {menuLinks.map(menuLink => (
+              {menuLinks.map(({ href, icon, label }) => (
                 <IonItem
-                  key={menuLink.href}
-                  routerLink={menuLink.href}
-                  className={location.pathname === menuLink.href ? 'active' : ''}>
-                  <IonIcon icon={menuLink.icon} slot="start" />
-                  <IonLabel>{menuLink.label}</IonLabel>
+                  key={href}
+                  routerLink={href}
+                  className={pathname === href ? 'active' : ''}>
+                  <IonIcon icon={icon} slot="start" />
+                  <IonLabel>{label}</IonLabel>
                 </IonItem>
               ))}
             </IonList>
@@ -68,7 +75,7 @@ export default function Pay({ match }: RouteComponentProps) {
             <Switch>
               <Route exact path={`${match.url}/scan`} component={Scan} />
               <Route exact path={`${match.url}/wallet`} component={Wallet} />
-              <Route exact path={`${match.url}/transactions`} component={Scan} />
+              <Route exact path={`${match.url}/transactions`} component={Transactions} />
 
               {/* Fallback route */}
               <Route render={() => <Redirect to={`${match.url}/scan`} />} />
