@@ -14,10 +14,12 @@ import { bag, card, personCircle } from 'ionicons/icons';
 import { useCookies } from 'react-cookie';
 
 /* Pages */
-import Pay from './pages/Pay';
+import Account from './pages/Account';
 import Example from './pages/Example';
 import Login from './pages/Login';
+import Pay from './pages/Pay';
 import Register from './pages/Register';
+import Shop from './pages/Shop';
 
 /* Theme variables */
 import './theme/global.scss';
@@ -41,6 +43,8 @@ export default function App() {
             <IonRouterOutlet>
               <Switch>
                 <Route path="/pay" component={Pay} />
+                <Route exact path="/account" component={Account} />
+                <Route exact path="/shop" component={Shop} />
                 <Route exact path="/example" component={Example} />
 
                 {/* Fallback route */}
