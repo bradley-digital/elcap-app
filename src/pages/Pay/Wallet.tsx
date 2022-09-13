@@ -13,6 +13,7 @@ import {
 import { add } from 'ionicons/icons';
 import chaseLogo from '../../assets/chase.png';
 import coinbaseLogo from '../../assets/coinbase.png';
+import PageTemplate from '../../components/PageTemplate'
 
 const paymentMethods = [
   {
@@ -29,7 +30,7 @@ const paymentMethods = [
 
 export default function Wallet() {
   return (
-    <>
+    <PageTemplate title="Payment methods">
       <IonGrid>
         <IonRow className="ion-justify-content-center">
           <IonCol size-md="8" size-lg="6">
@@ -54,6 +55,6 @@ export default function Wallet() {
           <IonIcon icon={add} />
         </IonFabButton>
       </IonFab>
-    </>
+    </PageTemplate>
   );
 }
