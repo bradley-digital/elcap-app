@@ -1,4 +1,4 @@
-import { Redirect, Route } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import {
   IonApp,
   IonIcon,
@@ -27,7 +27,7 @@ import './theme/utilities.scss';
 setupIonicReact();
 
 export default function App() {
-  const [cookies, setCookie] = useCookies(['user']);
+  const [cookies] = useCookies(['user']);
   let loggedIn = false;
   if (cookies.user === 'admin') {
     loggedIn = true;
@@ -39,18 +39,13 @@ export default function App() {
         <IonReactRouter>
           <IonTabs>
             <IonRouterOutlet>
-              <Route exact path="/pay">
-                <Redirect to="/pay/scan" />
-              </Route>
-              <Route path="/pay/:id">
-                <Pay />
-              </Route>
-              <Route exact path="/example">
-                <Example />
-              </Route>
+              <Switch>
+                <Route path="/pay" component={Pay} />
+                <Route exact path="/example" component={Example} />
 
-              {/* Fallback route */}
-              <Redirect to="/pay/scan" />
+                {/* Fallback route */}
+                <Route render={() => <Redirect to="/pay" />} />
+              </Switch>
             </IonRouterOutlet>
             <IonTabBar slot="bottom">
               <IonTabButton tab="shop" href="/shop">
@@ -71,15 +66,13 @@ export default function App() {
       ) : (
         <IonReactRouter>
           <IonRouterOutlet>
-            <Route exact path="/login">
-              <Login />
-            </Route>
-            <Route exact path="/register">
-              <Register />
-            </Route>
+            <Switch>
+              <Route exact path="/login" component={Login} />
+              <Route exact path="/register" component={Register} />
 
-            {/* Fallback route */}
-            <Redirect to="/login" />
+              {/* Fallback route */}
+              <Route render={() => <Redirect to="/login" />} />
+            </Switch>
           </IonRouterOutlet>
         </IonReactRouter>
       )}

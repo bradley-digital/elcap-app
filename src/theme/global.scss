@@ -16,20 +16,10 @@
 
 html {
   -webkit-text-size-adjust: 100%;
-  box-sizing: border-box;
-  line-height: 1.375;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  font-size: 62.5%;
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: inherit
 }
 
 body {
-  font-size: 1.6rem;
   margin: 0;
 }
 

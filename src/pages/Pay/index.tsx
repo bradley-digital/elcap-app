@@ -1,8 +1,6 @@
-import type { ReactNode } from 'react';
-import { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import type { RouteComponentProps } from 'react-router-dom';
+import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
 import {
-  IonButtons,
   IonContent,
   IonHeader,
   IonIcon,
@@ -10,8 +8,8 @@ import {
   IonLabel,
   IonList,
   IonMenu,
-  IonMenuButton,
   IonPage,
+  IonRouterOutlet,
   IonSplitPane,
   IonTitle,
   IonToolbar,
@@ -21,67 +19,29 @@ import Scan from './Scan';
 import Wallet from './Wallet';
 import './style.scss';
 
-const tabs = {
-  scan: 'Scan to pay',
-  wallet: 'Payment methods',
-  transactions: 'Transactions',
-};
-
 const menuLinks = [
   {
     href: '/pay/scan',
     icon: qrCode,
-    label: tabs.scan,
+    label: 'Scan to pay',
   },
   {
     href: '/pay/wallet',
     icon: wallet,
-    label: tabs.wallet,
+    label: 'Payment methods',
   },
   {
     href: '/pay/transactions',
     icon: receipt,
-    label: tabs.transactions,
+    label: 'Transactions',
   },
 ];
 
-type PaySubRoutes = 'scan' | 'wallet' | 'transactions';
-
-type SubRoutes = {
-  [key in PaySubRoutes]: {
-    title: string;
-    element: ReactNode;
-  }
-}
-
-const subroutes: SubRoutes = {
-  'scan': {
-    title: tabs.scan,
-    element: <Scan />,
-  },
-  'wallet': {
-    title: tabs.wallet,
-    element: <Wallet />,
-  },
-  'transactions': {
-    title: tabs.transactions,
-    element: <Scan />,
-  },
-};
-
-export default function Pay() {
+export default function Pay({ match }: RouteComponentProps) {
   const location = useLocation();
-  const { id }: { id: PaySubRoutes } = useParams();
-  const [paramId, setParamId] = useState<PaySubRoutes>('scan');
-
-  useEffect(() => {
-    if (typeof id === 'string') {
-      setParamId(id);
-    }
-  }, [id]);
 
   return (
-    <IonContent>
+    <IonPage>
       <IonSplitPane contentId="main">
         <IonMenu side="start" menuId="main" contentId="main">
           <IonHeader>
@@ -94,7 +54,7 @@ export default function Pay() {
               {menuLinks.map(menuLink => (
                 <IonItem
                   key={menuLink.href}
-                  href={menuLink.href}
+                  routerLink={menuLink.href}
                   className={location.pathname === menuLink.href ? 'active' : ''}>
                   <IonIcon icon={menuLink.icon} slot="start" />
                   <IonLabel>{menuLink.label}</IonLabel>
@@ -103,20 +63,19 @@ export default function Pay() {
             </IonList>
           </IonContent>
         </IonMenu>
-        <IonPage id="main">
-          <IonHeader>
-            <IonToolbar>
-              <IonButtons slot="start">
-                <IonMenuButton menu="main" />
-              </IonButtons>
-              <IonTitle>{subroutes[paramId]?.title}</IonTitle>
-            </IonToolbar>
-          </IonHeader>
-          <IonContent fullscreen>
-            {subroutes[paramId]?.element}
-          </IonContent>
-        </IonPage>
+        <IonContent id="main">
+          <IonRouterOutlet>
+            <Switch>
+              <Route exact path={`${match.url}/scan`} component={Scan} />
+              <Route exact path={`${match.url}/wallet`} component={Wallet} />
+              <Route exact path={`${match.url}/transactions`} component={Scan} />
+
+              {/* Fallback route */}
+              <Route render={() => <Redirect to={`${match.url}/scan`} />} />
+            </Switch>
+          </IonRouterOutlet>
+        </IonContent>
       </IonSplitPane>
-    </IonContent>
+    </IonPage>
   );
 }
