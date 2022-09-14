@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import {
   IonAvatar,
   IonCard,
@@ -19,7 +18,6 @@ import {
 } from '@ionic/react';
 import './style.scss';
 import headshot from '../../assets/headshot.jpg';
-import Loader from '../../components/Loader';
 
 type Profile = {
   img: string;
@@ -51,70 +49,56 @@ export default function Account() {
     email,
     address,
   } = profile;
-
-  const [loading, setLoading] = useState(true)
-
-   useEffect(() => {
-     setTimeout(() => setLoading(false), 350)
-   }, [])
-
-
   return (
-    <>
-    {loading === false? (
-      <IonPage className="account-page">
-        <IonHeader>
-          <IonToolbar>
-            <IonTitle>Account</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent>
-          <IonGrid>
-            <IonRow className="ion-justify-content-center">
-              <IonCol size-md="8" size-lg="6">
-                <IonCard className="profile-card">
-                  <div className="d-flex ion-justify-content-center">
-                    <IonAvatar>
-                      <img src={img} alt={name} />
-                    </IonAvatar>
-                  </div>
-                  <IonText className="ion-text-center">
-                    <h1>{name}</h1>
-                    <h3>{username}</h3>
-                    <p>Joined: {joined}</p>
-                  </IonText>
-                </IonCard>
-                <IonList>
-                  <IonListHeader>Personal information</IonListHeader>
-                  <IonItem>
-                    <IonLabel position="stacked">Name</IonLabel>
-                    <IonInput value={name} readonly />
-                  </IonItem>
-                  <IonItem>
-                    <IonLabel position="stacked">Username</IonLabel>
-                    <IonInput value={username} readonly />
-                  </IonItem>
-                  <IonItem>
-                    <IonLabel position="stacked">Email</IonLabel>
-                    <IonInput value={email} readonly />
-                  </IonItem>
-                  <IonItem>
-                    <IonLabel position="stacked">Phone</IonLabel>
-                    <IonInput value={phone} readonly />
-                  </IonItem>
-                  <IonItem>
-                    <IonLabel position="stacked">Address</IonLabel>
-                    <IonInput value={address} readonly />
-                  </IonItem>
-                </IonList>
-              </IonCol>
-            </IonRow>
-          </IonGrid>
-        </IonContent>
-      </IonPage>
-    ) : (
-          <Loader/>
-        )}
-        </>
+    <IonPage className="account-page">
+      <IonHeader>
+        <IonToolbar>
+          <IonTitle>Account</IonTitle>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent>
+        <IonGrid>
+          <IonRow className="ion-justify-content-center">
+            <IonCol size-md="8" size-lg="6">
+              <IonCard className="profile-card">
+                <div className="d-flex ion-justify-content-center">
+                  <IonAvatar>
+                    <img src={img} alt={name} />
+                  </IonAvatar>
+                </div>
+                <IonText className="ion-text-center">
+                  <h1>{name}</h1>
+                  <h3>{username}</h3>
+                  <p>Joined: {joined}</p>
+                </IonText>
+              </IonCard>
+              <IonList>
+                <IonListHeader>Personal information</IonListHeader>
+                <IonItem>
+                  <IonLabel position="stacked">Name</IonLabel>
+                  <IonInput value={name} readonly />
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="stacked">Username</IonLabel>
+                  <IonInput value={username} readonly />
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="stacked">Email</IonLabel>
+                  <IonInput value={email} readonly />
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="stacked">Phone</IonLabel>
+                  <IonInput value={phone} readonly />
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="stacked">Address</IonLabel>
+                  <IonInput value={address} readonly />
+                </IonItem>
+              </IonList>
+            </IonCol>
+          </IonRow>
+        </IonGrid>
+      </IonContent>
+    </IonPage>
   );
 }

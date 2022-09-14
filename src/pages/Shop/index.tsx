@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import {
   IonCard,
   IonCardContent,
@@ -18,7 +17,6 @@ import './style.scss';
 import cannabis1 from '../../assets/cannabis1.webp';
 import cannabis2 from '../../assets/cannabis2.jpg';
 import cannabis3 from '../../assets/cannabis3.jpg';
-import Loader from '../../components/Loader';
 
 type Product = {
   img: string;
@@ -121,50 +119,36 @@ const products: Product[] = [
 ];
 
 export default function Shop() {
-
-  const [loading, setLoading] = useState(true)
-
-   useEffect(() => {
-     setTimeout(() => setLoading(false), 650)
-   }, [])
-
-
   return (
-    <>
-    {loading === false? (
-      <IonPage className="shop-page">
-        <IonHeader>
-          <IonToolbar>
-            <IonTitle>Shop</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent>
-          <IonGrid fixed>
-            <IonRow>
-              {products.map(({
-                img,
-                dispensary,
-                name,
-                price,
-              }) => (
-                <IonCol size="12" size-sm="6" size-md="4" size-lg="3">
-                  <IonCard>
-                    <img src={img} alt={name} />
-                    <IonCardHeader>
-                      <IonCardSubtitle>{dispensary}</IonCardSubtitle>
-                      <IonCardTitle>{name}</IonCardTitle>
-                    </IonCardHeader>
-                    <IonCardContent>{`$ ${price}`}</IonCardContent>
-                  </IonCard>
-                </IonCol>
-              ))}
-            </IonRow>
-          </IonGrid>
-        </IonContent>
-      </IonPage>
-    ) : (
-      <Loader/>
-    )}
-    </>
+    <IonPage className="shop-page">
+      <IonHeader>
+        <IonToolbar>
+          <IonTitle>Shop</IonTitle>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent>
+        <IonGrid fixed>
+          <IonRow>
+            {products.map(({
+              img,
+              dispensary,
+              name,
+              price,
+            }) => (
+              <IonCol size="12" size-sm="6" size-md="4" size-lg="3">
+                <IonCard>
+                  <img src={img} alt={name} />
+                  <IonCardHeader>
+                    <IonCardSubtitle>{dispensary}</IonCardSubtitle>
+                    <IonCardTitle>{name}</IonCardTitle>
+                  </IonCardHeader>
+                  <IonCardContent>{`$ ${price}`}</IonCardContent>
+                </IonCard>
+              </IonCol>
+            ))}
+          </IonRow>
+        </IonGrid>
+      </IonContent>
+    </IonPage>
   );
 }
