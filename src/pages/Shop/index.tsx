@@ -19,7 +19,7 @@ type Product = {
   img: string;
   dispensary: string;
   name: string;
-  price: number;
+  price: string;
 };
 
 const cannabis1 = '/assets/cannabis1.webp';
@@ -31,91 +31,91 @@ const products: Product[] = [
     img: cannabis1,
     dispensary: 'The Gold Leaf',
     name: 'Colorado Cream Soda',
-    price: 35.00,
+    price: '$35.00',
   },
   {
     img: cannabis2,
     dispensary: 'Brillo',
     name: 'Northern Lights Delta 8 THC Vape',
-    price: 20.00,
+    price: '$20.00',
   },
   {
     img: cannabis3,
     dispensary: 'Green Cross',
     name: 'Koko Nuggz - Glazed Donut',
-    price: 45.00,
+    price: '$45.00',
   },
   {
     img: cannabis1,
     dispensary: 'The Gold Leaf',
     name: 'Colorado Cream Soda',
-    price: 35.00,
+    price: '$35.00',
   },
   {
     img: cannabis2,
     dispensary: 'Brillo',
     name: 'Northern Lights Delta 8 THC Vape',
-    price: 20.00,
+    price: '$20.00',
   },
   {
     img: cannabis3,
     dispensary: 'Green Cross',
     name: 'Koko Nuggz - Glazed Donut',
-    price: 45.00,
+    price: '$45.00',
   },
   {
     img: cannabis1,
     dispensary: 'The Gold Leaf',
     name: 'Colorado Cream Soda',
-    price: 35.00,
+    price: '$35.00',
   },
   {
     img: cannabis2,
     dispensary: 'Brillo',
     name: 'Northern Lights Delta 8 THC Vape',
-    price: 20.00,
+    price: '$20.00',
   },
   {
     img: cannabis3,
     dispensary: 'Green Cross',
     name: 'Koko Nuggz - Glazed Donut',
-    price: 45.00,
+    price: '$45.00',
   },
   {
     img: cannabis1,
     dispensary: 'The Gold Leaf',
     name: 'Colorado Cream Soda',
-    price: 35.00,
+    price: '$35.00',
   },
   {
     img: cannabis2,
     dispensary: 'Brillo',
     name: 'Northern Lights Delta 8 THC Vape',
-    price: 20.00,
+    price: '$20.00',
   },
   {
     img: cannabis3,
     dispensary: 'Green Cross',
     name: 'Koko Nuggz - Glazed Donut',
-    price: 45.00,
+    price: '$45.00',
   },
   {
     img: cannabis1,
     dispensary: 'The Gold Leaf',
     name: 'Colorado Cream Soda',
-    price: 35.00,
+    price: '$35.00',
   },
   {
     img: cannabis2,
     dispensary: 'Brillo',
     name: 'Northern Lights Delta 8 THC Vape',
-    price: 20.00,
+    price: '$20.00',
   },
   {
     img: cannabis3,
     dispensary: 'Green Cross',
     name: 'Koko Nuggz - Glazed Donut',
-    price: 45.00,
+    price: '$45.00',
   },
 ];
 
@@ -138,12 +138,13 @@ export default function Shop() {
             }) => (
               <IonCol size="12" size-sm="6" size-md="4" size-lg="3">
                 <IonCard>
+                  <>{console.log(price)}</>
                   <img src={img} alt={name} />
                   <IonCardHeader>
                     <IonCardSubtitle>{dispensary}</IonCardSubtitle>
                     <IonCardTitle>{name}</IonCardTitle>
                   </IonCardHeader>
-                  <IonCardContent>{`$ ${price}`}</IonCardContent>
+                  <IonCardContent>{price}</IonCardContent>
                 </IonCard>
               </IonCol>
             ))}

@@ -1,5 +1,6 @@
 import type { SyntheticEvent } from 'react';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import {
   IonContent,
@@ -78,8 +79,8 @@ export default function Login() {
                 </div>
 
                 <div className="account-help" style={{ paddingRight: 16 }}>
-                  <a href="/" className="forgot-password">Forgot Password?</a>
-                  <a href="/register" className="register">Create Account</a>
+                  <Link to="/" className="forgot-password">Forgot Password?</Link>
+                  <Link to="/register" className="register">Create Account</Link>
                 </div>
               </div>
             </div>

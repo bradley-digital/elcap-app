@@ -8,12 +8,14 @@ import {
   IonLabel,
   IonList,
   IonMenu,
+  IonMenuToggle,
   IonPage,
   IonRouterOutlet,
   IonSplitPane,
   IonTitle,
   IonToolbar,
 } from '@ionic/react';
+import { menuController } from '@ionic/core';
 import { wallet, qrCode, receipt } from 'ionicons/icons';
 import Scan from './Scan';
 import Wallet from './Wallet';
@@ -47,6 +49,11 @@ const menuLinks: MenuLink[] = [
 export default function Pay({ match }: RouteComponentProps) {
   const { pathname } = useLocation();
 
+  async function closeMenu() {
+    const result = await menuController.toggle();
+    console.log(result);
+  }
+
   return (
     <IonPage>
       <IonSplitPane contentId="main">
@@ -59,13 +66,15 @@ export default function Pay({ match }: RouteComponentProps) {
           <IonContent>
             <IonList>
               {menuLinks.map(({ href, icon, label }) => (
-                <IonItem
-                  key={href}
-                  routerLink={href}
-                  className={pathname === href ? 'active' : ''}>
-                  <IonIcon icon={icon} slot="start" />
-                  <IonLabel>{label}</IonLabel>
-                </IonItem>
+                <IonMenuToggle menu="main" autoHide={false}>
+                  <IonItem
+                    key={href}
+                    routerLink={href}
+                    className={pathname === href ? 'active' : ''}>
+                    <IonIcon icon={icon} slot="start" />
+                    <IonLabel>{label}</IonLabel>
+                  </IonItem>
+                </IonMenuToggle>
               ))}
             </IonList>
           </IonContent>

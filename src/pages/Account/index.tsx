@@ -57,10 +57,10 @@ export default function Account() {
     address,
   } = profile;
 
-  const handleLogout = () => {
+  function handleLogout() {
     removeCookie('user');
     router.push('/');
-  };
+  }
 
   return (
     <IonPage className="account-page">

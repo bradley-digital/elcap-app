@@ -14,29 +14,29 @@ import PageTemplate from '../../components/PageTemplate'
 type Transaction = {
   date: string;
   note: string;
-  amount: number;
+  amount: string;
 };
 
 const transactions: Transaction[] = [
   {
     date: '09/01/2022',
     note: 'The Golden Leaf - Mimosa',
-    amount: 41.37,
+    amount: '$41.37',
   },
   {
     date: '09/01/2022',
     note: 'The Golden Leaf - Lemon Splash',
-    amount: 48.14,
+    amount: '$48.14',
   },
   {
     date: '08/27/2022',
     note: 'Billo - Durban Diesel',
-    amount: 35.72,
+    amount: '$35.72',
   },
   {
     date: '08/26/2022',
     note: 'Billo - Sour Peach Lemonade Gummies',
-    amount: 33.59,
+    amount: '$33.59',
   },
 ];
 
@@ -82,7 +82,7 @@ export default function Transactions() {
                       <IonItem lines={lines ? 'inset' : 'none'}>
                         <IonLabel>
                           <h3>{note}</h3>
-                          <p>{`$ ${amount}`}</p>
+                          <p>{amount}</p>
                         </IonLabel>
                       </IonItem>
                     </Fragment>
