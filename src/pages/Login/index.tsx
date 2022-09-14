@@ -36,11 +36,11 @@ export default function Login() {
     <>
       {loading === false ? (
         <IonPage className="Login-page">
-          <div className="elcap-logo">
-            <Logo />
-            <p>EL CAPITAN PAYMENTS</p>
-          </div>
           <IonContent fullscreen className="ion-padding">
+            <div className="elcap-logo">
+              <Logo />
+              <p>EL CAPITAN PAYMENTS</p>
+            </div>
             <div className="ion-content--bottom">
               <div>
                 <IonText>
