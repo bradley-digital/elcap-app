@@ -20,7 +20,6 @@ import {
   useIonRouter,
 } from '@ionic/react';
 import './style.scss';
-import headshot from '../../assets/headshot.jpg';
 
 type Profile = {
   img: string;
@@ -31,6 +30,8 @@ type Profile = {
   email: string;
   address: string;
 };
+
+const headshot = '/assets/headshot.jpg';
 
 const profile: Profile = {
   img: headshot,
