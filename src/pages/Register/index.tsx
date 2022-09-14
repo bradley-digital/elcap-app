@@ -26,11 +26,9 @@ export default function Register() {
     e.preventDefault();
     setTimeout(() => setLoading(true), 0);
     setTimeout(() => {
-      setCookie('user', 'admin', {
-        path: '/'
-      });
+      setCookie('user', 'admin', { path: '/' });
       router.push('/');
-    }, 800);
+    }, 850);
   }
 
   return (

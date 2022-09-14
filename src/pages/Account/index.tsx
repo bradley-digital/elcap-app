@@ -58,7 +58,7 @@ export default function Account() {
   } = profile;
 
   function handleLogout() {
-    removeCookie('user');
+    removeCookie('user', { path: '/' });
     router.push('/');
   }
 

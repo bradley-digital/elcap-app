@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import {
   IonApp,
@@ -32,19 +31,10 @@ setupIonicReact();
 
 export default function App() {
   const [cookies] = useCookies(['user']);
-  const [loggedIn, setLoggedIn] = useState(false);
-
-  useEffect(() => {
-    if (cookies.user === 'admin') {
-      setLoggedIn(true);
-    } else {
-      setLoggedIn(false);
-    }
-  }, [cookies]);
 
   return (
     <IonApp>
-      {loggedIn ? (
+      {cookies.user === 'admin' ? (
         <IonReactRouter>
           <IonTabs>
             <IonRouterOutlet>

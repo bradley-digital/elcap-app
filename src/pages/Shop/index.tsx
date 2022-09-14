@@ -135,10 +135,9 @@ export default function Shop() {
               dispensary,
               name,
               price,
-            }) => (
-              <IonCol size="12" size-sm="6" size-md="4" size-lg="3">
+            }, i) => (
+              <IonCol key={`${name}-${i}`} size="12" size-sm="6" size-md="4" size-lg="3">
                 <IonCard>
-                  <>{console.log(price)}</>
                   <img src={img} alt={name} />
                   <IonCardHeader>
                     <IonCardSubtitle>{dispensary}</IonCardSubtitle>
