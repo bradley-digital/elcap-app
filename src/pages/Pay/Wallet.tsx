@@ -11,9 +11,10 @@ import {
   IonRow,
 } from '@ionic/react';
 import { add } from 'ionicons/icons';
-import chaseLogo from '../../assets/chase.png';
-import coinbaseLogo from '../../assets/coinbase.png';
 import PageTemplate from '../../components/PageTemplate'
+
+const chaseLogo = '/assets/chase.png';
+const coinbaseLogo = '/assets/coinbase.png';
 
 const paymentMethods = [
   {

@@ -1,5 +1,7 @@
+import { useCookies } from 'react-cookie';
 import {
   IonAvatar,
+  IonButton,
   IonCard,
   IonCol,
   IonContent,
@@ -15,9 +17,9 @@ import {
   IonText,
   IonTitle,
   IonToolbar,
+  useIonRouter,
 } from '@ionic/react';
 import './style.scss';
-import headshot from '../../assets/headshot.jpg';
 
 type Profile = {
   img: string;
@@ -28,6 +30,8 @@ type Profile = {
   email: string;
   address: string;
 };
+
+const headshot = '/assets/headshot.jpg';
 
 const profile: Profile = {
   img: headshot,
@@ -40,6 +44,9 @@ const profile: Profile = {
 };
 
 export default function Account() {
+  const router = useIonRouter();
+  const [,,removeCookie] = useCookies(['user']);
+
   const {
     img,
     name,
@@ -49,6 +56,12 @@ export default function Account() {
     email,
     address,
   } = profile;
+
+  const handleLogout = () => {
+    removeCookie('user');
+    router.push('/');
+  };
+
   return (
     <IonPage className="account-page">
       <IonHeader>
@@ -71,6 +84,9 @@ export default function Account() {
                   <h3>{username}</h3>
                   <p>Joined: {joined}</p>
                 </IonText>
+                <div className="d-flex ion-justify-content-end">
+                  <IonButton onClick={handleLogout} color="danger">Logout</IonButton>
+                </div>
               </IonCard>
               <IonList>
                 <IonListHeader>Personal information</IonListHeader>
