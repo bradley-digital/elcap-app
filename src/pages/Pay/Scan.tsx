@@ -1,10 +1,10 @@
-import QRCode from '../../components/QRCode';
 import {
   IonCol,
   IonGrid,
   IonRow,
 } from '@ionic/react';
 import PageTemplate from 'components/PageTemplate'
+import QRCode from 'components/QRCode';
 
 export default function Scan() {
   return (
