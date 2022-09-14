@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import './style.scss';
 
-function SunIcon() {
+export default function Loader() {
   return (
     <div className="container">
       <div className="loader">
@@ -32,5 +32,3 @@ function SunIcon() {
     </div>
   );
 }
-
-export default SunIcon;
