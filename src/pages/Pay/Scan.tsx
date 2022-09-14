@@ -4,7 +4,7 @@ import {
   IonGrid,
   IonRow,
 } from '@ionic/react';
-import PageTemplate from '../../components/PageTemplate'
+import PageTemplate from 'components/PageTemplate'
 
 export default function Scan() {
   return (

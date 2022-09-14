@@ -13,8 +13,8 @@ import {
   IonCheckbox,
   useIonRouter,
 } from '@ionic/react';
-import Loader from '../../components/Loader';
-import { ReactComponent as Logo } from '../../assets/elcapitanadvisors_logo.svg';
+import Loader from 'components/Loader';
+import { ReactComponent as Logo } from 'assets/elcapitanadvisors_logo.svg';
 import './style.scss';
 
 export default function Register() {

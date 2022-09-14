@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import {
   IonApp,
@@ -14,27 +15,32 @@ import { bag, card, personCircle } from 'ionicons/icons';
 import { useCookies } from 'react-cookie';
 
 /* Pages */
-import Account from './pages/Account';
-import Example from './pages/Example';
-import Login from './pages/Login';
-import Pay from './pages/Pay';
-import Register from './pages/Register';
-import Shop from './pages/Shop';
-import Loader from './components/Loader';
+import Account from 'pages/Account';
+import Example from 'pages/Example';
+import Login from 'pages/Login';
+import Pay from 'pages/Pay';
+import Register from 'pages/Register';
+import Shop from 'pages/Shop';
+import Loader from 'components/Loader';
 
 /* Theme variables */
-import './theme/global.scss';
-import './theme/variables.scss';
-import './theme/utilities.scss';
+import 'theme/global.scss';
+import 'theme/variables.scss';
+import 'theme/utilities.scss';
 
 setupIonicReact();
 
 export default function App() {
   const [cookies] = useCookies(['user']);
-  let loggedIn = false;
-  if (cookies.user === 'admin') {
-    loggedIn = true;
-  }
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    if (cookies.user === 'admin') {
+      setLoggedIn(true);
+    } else {
+      setLoggedIn(false);
+    }
+  }, [cookies]);
 
   return (
     <IonApp>

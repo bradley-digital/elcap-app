@@ -11,7 +11,7 @@ import {
   IonRow,
 } from '@ionic/react';
 import { add } from 'ionicons/icons';
-import PageTemplate from '../../components/PageTemplate'
+import PageTemplate from 'components/PageTemplate'
 
 const chaseLogo = '/assets/chase.png';
 const coinbaseLogo = '/assets/coinbase.png';

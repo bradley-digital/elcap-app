@@ -60,9 +60,8 @@ export default function Pay({ match }: RouteComponentProps) {
           <IonContent>
             <IonList>
               {menuLinks.map(({ href, icon, label }) => (
-                <IonMenuToggle menu="main" autoHide={false}>
+                <IonMenuToggle key={href} menu="main" autoHide={false}>
                   <IonItem
-                    key={href}
                     routerLink={href}
                     className={pathname === href ? 'active' : ''}>
                     <IonIcon icon={icon} slot="start" />
