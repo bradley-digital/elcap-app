@@ -20,6 +20,7 @@ import Login from './pages/Login';
 import Pay from './pages/Pay';
 import Register from './pages/Register';
 import Shop from './pages/Shop';
+import Loader from './components/Loader';
 
 /* Theme variables */
 import './theme/global.scss';
@@ -46,6 +47,7 @@ export default function App() {
                 <Route exact path="/account" component={Account} />
                 <Route exact path="/shop" component={Shop} />
                 <Route exact path="/example" component={Example} />
+                <Route exact path="/loader" component={Loader} />
 
                 {/* Fallback route */}
                 <Route render={() => <Redirect to="/pay" />} />
