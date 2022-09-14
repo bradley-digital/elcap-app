@@ -15,7 +15,6 @@ import {
   IonTitle,
   IonToolbar,
 } from '@ionic/react';
-import { menuController } from '@ionic/core';
 import { wallet, qrCode, receipt } from 'ionicons/icons';
 import Scan from './Scan';
 import Wallet from './Wallet';
@@ -48,11 +47,6 @@ const menuLinks: MenuLink[] = [
 
 export default function Pay({ match }: RouteComponentProps) {
   const { pathname } = useLocation();
-
-  async function closeMenu() {
-    const result = await menuController.toggle();
-    console.log(result);
-  }
 
   return (
     <IonPage>
