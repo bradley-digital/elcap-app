@@ -14,9 +14,6 @@ import {
   IonToolbar,
 } from '@ionic/react';
 import './style.scss';
-import cannabis1 from '../../assets/cannabis1.webp';
-import cannabis2 from '../../assets/cannabis2.jpg';
-import cannabis3 from '../../assets/cannabis3.jpg';
 
 type Product = {
   img: string;
@@ -24,6 +21,10 @@ type Product = {
   name: string;
   price: number;
 };
+
+const cannabis1 = '/assets/cannabis1.webp';
+const cannabis2 = '/assets/cannabis2.jpg';
+const cannabis3 = '/assets/cannabis3.jpg';
 
 const products: Product[] = [
   {
