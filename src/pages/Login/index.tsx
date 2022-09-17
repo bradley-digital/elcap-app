@@ -14,7 +14,7 @@ import {
 } from '@ionic/react';
 import Loader from 'components/Loader';
 import { ReactComponent as Logo } from 'assets/elcapitanadvisors_logo.svg';
-import './style.scss';
+import styles from './styles.module.scss';
 
 export default function Login() {
   const router = useIonRouter();
@@ -33,13 +33,13 @@ export default function Login() {
   return (
     <>
       {loading === false ? (
-        <IonPage className="Login-page">
+        <IonPage className={styles.loginPage}>
           <IonContent fullscreen className="ion-padding">
-            <div className="elcap-logo">
+            <div className={styles.elcapLogo}>
               <Logo />
               <p>EL CAPITAN PAYMENTS</p>
             </div>
-            <div className="ion-content--bottom">
+            <div className={styles.contentBottom}>
               <div>
                 <IonText>
                   <h1>Login</h1>
@@ -47,14 +47,14 @@ export default function Login() {
                 </IonText>
 
                 <form onSubmit={handleSubmit}>
-                  <IonItem className="ion-inputForm">
-                    <IonLabel position="stacked" className="login-label">Email</IonLabel>
-                    <IonInput type="email" className="login-formInput" placeholder="name@email.com" />
+                  <IonItem className={styles.inputRow}>
+                    <IonLabel position="stacked" className={styles.inputLabel}>Email</IonLabel>
+                    <IonInput type="email" className={styles.formInput} placeholder="name@email.com" />
                   </IonItem>
 
-                  <IonItem className="ion-inputForm">
-                    <IonLabel position="stacked" className="login-label">Password</IonLabel>
-                    <IonInput type="password" className="login-formInput" />
+                  <IonItem className={styles.inputRow}>
+                    <IonLabel position="stacked" className={styles.inputLabel}>Password</IonLabel>
+                    <IonInput type="password" className={styles.formInput} />
                   </IonItem>
 
                   <div
@@ -67,7 +67,7 @@ export default function Login() {
                   </div>
                 </form>
 
-                <div className="social-login" style={{ paddingRight: 16 }}>
+                <div className={styles.socialLogin} style={{ paddingRight: 16 }}>
                   <IonButton color="light" type="submit">
                     Google
                   </IonButton>
@@ -76,9 +76,9 @@ export default function Login() {
                   </IonButton>
                 </div>
 
-                <div className="account-help" style={{ paddingRight: 16 }}>
-                  <Link to="/" className="forgot-password">Forgot Password?</Link>
-                  <Link to="/register" className="register">Create Account</Link>
+                <div className={styles.accountHelp} style={{ paddingRight: 16 }}>
+                  <Link to="/" className={styles.forgotPassword}>Forgot Password?</Link>
+                  <Link to="/register" className={styles.register}>Create Account</Link>
                 </div>
               </div>
             </div>

@@ -1,6 +1,6 @@
 import { IonCard } from '@ionic/react';
 import QRCodeGenerator from 'qrcode';
-import './style.scss';
+import styles from './styles.module.scss';
 
 interface Props {
   link: string;
@@ -15,7 +15,7 @@ export default function QRCode({ link }: Props) {
 
   return (
     <IonCard className="mx-0">
-      <div className="qr-wrapper" dangerouslySetInnerHTML={{ __html: svg }} />
+      <div className={styles.qrWrapper} dangerouslySetInnerHTML={{ __html: svg }} />
     </IonCard>
   );
 }

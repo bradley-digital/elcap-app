@@ -13,7 +13,7 @@ import {
   IonTitle,
   IonToolbar,
 } from '@ionic/react';
-import './style.scss';
+import styles from './styles.module.scss';
 
 type Product = {
   img: string;
@@ -121,7 +121,7 @@ const products: Product[] = [
 
 export default function Shop() {
   return (
-    <IonPage className="shop-page">
+    <IonPage className={styles.shopPage}>
       <IonHeader>
         <IonToolbar>
           <IonTitle>Shop</IonTitle>
