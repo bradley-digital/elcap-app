@@ -1,4 +1,4 @@
-import { Redirect, Route } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import {
   IonApp,
   IonIcon,
@@ -10,44 +10,57 @@ import {
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { qrCode } from 'ionicons/icons';
+import { bag, card, personCircle } from 'ionicons/icons';
+import { useCookies } from 'react-cookie';
 
 /* Pages */
-import Pay from './pages/Pay';
-import Example from './pages/Example';
-import Login from './pages/Login';
-import Register from './pages/Register';
+import Account from 'pages/Account';
+import Example from 'pages/Example';
+import Login from 'pages/Login';
+import Pay from 'pages/Pay';
+import Register from 'pages/Register';
+import Shop from 'pages/Shop';
+import Loader from 'components/Loader';
 
 /* Theme variables */
-import './theme/global.scss';
-import './theme/variables.scss';
-import './theme/utilities.scss';
+import 'theme/global.scss';
+import 'theme/variables.scss';
+import 'theme/utilities.scss';
 
 setupIonicReact();
 
 export default function App() {
-  let loggedIn = false;
+  const [cookies] = useCookies(['user']);
 
   return (
     <IonApp>
-      {loggedIn ? (
+      {cookies.user === 'admin' ? (
         <IonReactRouter>
           <IonTabs>
             <IonRouterOutlet>
-              <Route exact path="/pay">
-                <Pay />
-              </Route>
-              <Route exact path="/example">
-                <Example />
-              </Route>
-              <Route exact path="/">
-                <Redirect to="/pay" />
-              </Route>
+              <Switch>
+                <Route path="/pay" component={Pay} />
+                <Route exact path="/account" component={Account} />
+                <Route exact path="/shop" component={Shop} />
+                <Route exact path="/example" component={Example} />
+                <Route exact path="/loader" component={Loader} />
+
+                {/* Fallback route */}
+                <Route render={() => <Redirect to="/pay" />} />
+              </Switch>
             </IonRouterOutlet>
             <IonTabBar slot="bottom">
+              <IonTabButton tab="shop" href="/shop">
+                <IonIcon icon={bag} />
+                <IonLabel>Shop</IonLabel>
+              </IonTabButton>
               <IonTabButton tab="pay" href="/pay">
-                <IonIcon icon={qrCode} />
+                <IonIcon icon={card} />
                 <IonLabel>Pay</IonLabel>
+              </IonTabButton>
+              <IonTabButton tab="account" href="/account">
+                <IonIcon icon={personCircle} />
+                <IonLabel>Account</IonLabel>
               </IonTabButton>
             </IonTabBar>
           </IonTabs>
@@ -55,15 +68,13 @@ export default function App() {
       ) : (
         <IonReactRouter>
           <IonRouterOutlet>
-            <Route exact path="/login">
-              <Login />
-            </Route>
-            <Route exact path="/register">
-              <Register />
-            </Route>
-            <Route exact path="/">
-              <Redirect to="/login" />
-            </Route>
+            <Switch>
+              <Route exact path="/login" component={Login} />
+              <Route exact path="/register" component={Register} />
+
+              {/* Fallback route */}
+              <Route render={() => <Redirect to="/login" />} />
+            </Switch>
           </IonRouterOutlet>
         </IonReactRouter>
       )}

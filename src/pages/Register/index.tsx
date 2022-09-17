@@ -1,4 +1,7 @@
-import { ReactComponent as Logo } from '../../assets/elcapitanadvisors_logo.svg';
+import type { SyntheticEvent } from 'react';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 import {
   IonContent,
   IonPage,
@@ -7,65 +10,80 @@ import {
   IonLabel,
   IonInput,
   IonButton,
+  IonCheckbox,
+  useIonRouter,
 } from '@ionic/react';
-import './style.scss';
+import Loader from 'components/Loader';
+import { ReactComponent as Logo } from 'assets/elcapitanadvisors_logo.svg';
+import styles from './styles.module.scss';
 
 export default function Register() {
+  const router = useIonRouter();
+  const [,setCookie] = useCookies(['user']);
+  const [loading, setLoading] = useState(false)
+
+  function handleSubmit(e: SyntheticEvent) {
+    e.preventDefault();
+    setTimeout(() => setLoading(true), 0);
+    setTimeout(() => {
+      setCookie('user', 'admin', { path: '/' });
+      router.push('/');
+    }, 850);
+  }
+
   return (
-    <IonPage className="Register-page">
-      <div className="elcap-logo">
-        <Logo />
-        <p>EL CAPITAN PAYMENTS</p>
-      </div>
-      <IonContent fullscreen className="ion-padding">
-        <div className="ion-content--bottom">
-          <div>
-            <IonText>
-              <h1>Login</h1>
-              <p>Hi there! Welcome to El Cap.</p>
-            </IonText>
+    <>
+      {loading === false ? (
+        <IonPage className={styles.registerPage}>
+          <IonContent fullscreen className="ion-padding">
+            <div className={styles.elcapLogo}>
+              <Logo />
+              <p>EL CAPITAN PAYMENTS</p>
+            </div>
+            <div className={styles.contentBottom}>
+              <div>
+                <IonText>
+                  <h1>Sign Up</h1>
+                </IonText>
 
-            <form>
-              <IonItem className="ion-inputForm">
-                <IonLabel position="stacked" className="login-label">Email</IonLabel>
-                <IonInput type="email" className="login-formInput" placeholder="name@email.com" />
-              </IonItem>
+                <form onSubmit={handleSubmit}>
+                  <IonItem className={styles.inputRow}>
+                    <IonLabel position="stacked" className={styles.inputLabel}>Email</IonLabel>
+                    <IonInput type="email" className={styles.formInput} placeholder="name@email.com" />
+                  </IonItem>
 
-              <IonItem className="ion-inputForm">
-                <IonLabel position="stacked" className="login-label">Password</IonLabel>
-                <IonInput type="password" className="login-formInput" />
-              </IonItem>
+                  <IonItem className={styles.inputRow}>
+                    <IonLabel position="stacked" className={styles.inputLabel}>Password</IonLabel>
+                    <IonInput type="password" className={styles.formInput} />
+                  </IonItem>
 
-              <div
-                className="ion-text-center"
-                style={{ paddingTop: 25, paddingBottom: 25, paddingRight: 16 }}>
-                <IonButton
-                  type="submit">
-                  Login
-                </IonButton>
+                  <IonItem>
+                    <IonCheckbox slot='start'></IonCheckbox>
+                    <IonLabel>
+                      I agree to the <Link to="/">Terms of Service</Link> and <br/><Link to="/">Privacy Policy</Link>
+                    </IonLabel>
+                  </IonItem>
+
+                  <div
+                    className="ion-text-center"
+                    style={{ paddingTop: 25, paddingBottom: 25, paddingRight: 16 }}>
+                    <IonButton
+                      type="submit">
+                      Continue
+                    </IonButton>
+                  </div>
+                </form>
+
+                <div className={styles.accountHelp} style={{ paddingRight: 16 }}>
+                 <p>Have an Account? <Link to="/login" className={styles.register}>Sign In</Link></p>
+                </div>
               </div>
-            </form>
-
-            <div className="social-login"
-                 style={{ paddingRight: 16 }}>
-              <IonButton color="light" type="submit">
-                Google
-              </IonButton>
-              <IonButton color="tertiary" type="submit">
-                Facebook
-              </IonButton>
             </div>
-
-            <div className="account-help"
-                 style={{ paddingRight: 16 }}>
-              <a href="/" className="forgot-password">Forgot Password?</a>
-              <a href="/register" className="register">Create Account</a>
-            </div>
-          </div>
-          <div>
-          </div>
-        </div>
-      </IonContent>
-    </IonPage>
+          </IonContent>
+        </IonPage>
+      ) : (
+        <Loader/>
+      )}
+    </>
   );
 }
