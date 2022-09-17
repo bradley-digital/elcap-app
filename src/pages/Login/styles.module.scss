@@ -1,4 +1,4 @@
-.Login-page {
+.loginPage {
   h1 {
     margin-bottom: 15px;
   }
@@ -20,19 +20,20 @@
     border-radius: 28px;
   }
 
-  .ion-content--bottom {
+  .contentBottom {
     padding: 0 22px;
     max-width: 414px;
     margin: 0 auto;
   }
 
-  .elcap-logo {
+  .elcapLogo {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     padding-top: 18px;
     z-index: 101;
+
     svg {
       height: 8rem;
       width: 10rem;
@@ -44,21 +45,22 @@
       margin: 0;
     }
   }
-  .ion-inputForm {
+
+  .inputRow {
     padding: 18px 0;
   }
 
-  .login-label {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--ion-color-primary);
+  .inputLabel {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ion-color-primary);
   }
 
-  .login-formInput {
+  .formInput {
     border-bottom: 1px solid black;
   }
 
-  .social-login {
+  .socialLogin {
     display: flex;
     justify-content: space-between;
     padding-bottom: 25px;
@@ -69,14 +71,15 @@
     }
   }
 
-  .account-help {
+  .accountHelp {
     display: flex;
     justify-content: space-between;
+
     a {
       text-decoration: none;
     }
 
-    .forgot-password {
+    .forgotPassword {
       color: grey;
 
       &:hover {

@@ -19,7 +19,7 @@ import {
   IonToolbar,
   useIonRouter,
 } from '@ionic/react';
-import './style.scss';
+import styles from './styles.module.scss';
 
 type Profile = {
   img: string;
@@ -31,10 +31,8 @@ type Profile = {
   address: string;
 };
 
-const headshot = '/assets/headshot.jpg';
-
 const profile: Profile = {
-  img: headshot,
+  img: '/assets/headshot.jpg',
   name: 'Joshua Bradley',
   username: 'joshbradley012',
   joined: '8/20/2022',
@@ -63,7 +61,7 @@ export default function Account() {
   }
 
   return (
-    <IonPage className="account-page">
+    <IonPage className={styles.accountPage}>
       <IonHeader>
         <IonToolbar>
           <IonTitle>Account</IonTitle>
@@ -73,7 +71,7 @@ export default function Account() {
         <IonGrid>
           <IonRow className="ion-justify-content-center">
             <IonCol size-md="8" size-lg="6">
-              <IonCard className="profile-card">
+              <IonCard className={styles.profileCard}>
                 <div className="d-flex ion-justify-content-center">
                   <IonAvatar>
                     <img src={img} alt={name} />

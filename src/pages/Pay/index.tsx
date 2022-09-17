@@ -19,7 +19,7 @@ import { wallet, qrCode, receipt } from 'ionicons/icons';
 import Scan from './Scan';
 import Wallet from './Wallet';
 import Transactions from './Transactions';
-import './style.scss';
+import styles from './styles.module.scss';
 
 type MenuLink = {
   icon: string;
@@ -63,7 +63,7 @@ export default function Pay({ match }: RouteComponentProps) {
                 <IonMenuToggle key={href} menu="main" autoHide={false}>
                   <IonItem
                     routerLink={href}
-                    className={pathname === href ? 'active' : ''}>
+                    className={pathname === href ? styles.active : ''}>
                     <IonIcon icon={icon} slot="start" />
                     <IonLabel>{label}</IonLabel>
                   </IonItem>

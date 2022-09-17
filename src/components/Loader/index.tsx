@@ -1,10 +1,10 @@
 import { motion } from 'framer-motion';
-import './style.scss';
+import styles from './styles.module.scss';
 
 export default function Loader() {
   return (
-    <div className="container">
-      <div className="loader">
+    <div className={styles.container}>
+      <div className={styles.loader}>
         <motion.svg
           xmlns="http://www.w3.org/2000/svg"
           fill="#007854"
@@ -27,7 +27,7 @@ export default function Loader() {
             }}
           />
         </motion.svg>
-        <h1 className="title">El Capitan Payments</h1>
+        <h1 className={styles.title}>El Capitan Payments</h1>
       </div>
     </div>
   );

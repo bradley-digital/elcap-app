@@ -15,7 +15,7 @@ import {
 } from '@ionic/react';
 import Loader from 'components/Loader';
 import { ReactComponent as Logo } from 'assets/elcapitanadvisors_logo.svg';
-import './style.scss';
+import styles from './styles.module.scss';
 
 export default function Register() {
   const router = useIonRouter();
@@ -34,34 +34,33 @@ export default function Register() {
   return (
     <>
       {loading === false ? (
-        <IonPage className="Register-page">
+        <IonPage className={styles.registerPage}>
           <IonContent fullscreen className="ion-padding">
-            <div className="elcap-logo">
+            <div className={styles.elcapLogo}>
               <Logo />
               <p>EL CAPITAN PAYMENTS</p>
             </div>
-            <div className="ion-content--bottom">
+            <div className={styles.contentBottom}>
               <div>
                 <IonText>
                   <h1>Sign Up</h1>
                 </IonText>
 
                 <form onSubmit={handleSubmit}>
-                  <IonItem className="ion-inputForm">
-                    <IonLabel position="stacked" className="login-label">Email</IonLabel>
-                    <IonInput type="email" className="login-formInput" placeholder="name@email.com" />
+                  <IonItem className={styles.inputRow}>
+                    <IonLabel position="stacked" className={styles.inputLabel}>Email</IonLabel>
+                    <IonInput type="email" className={styles.formInput} placeholder="name@email.com" />
                   </IonItem>
 
-                  <IonItem className="ion-inputForm">
-                    <IonLabel position="stacked" className="login-label">Password</IonLabel>
-                    <IonInput type="password" className="login-formInput" />
+                  <IonItem className={styles.inputRow}>
+                    <IonLabel position="stacked" className={styles.inputLabel}>Password</IonLabel>
+                    <IonInput type="password" className={styles.formInput} />
                   </IonItem>
 
                   <IonItem>
                     <IonCheckbox slot='start'></IonCheckbox>
                     <IonLabel>
-                      I agree to the <Link to="/">Terms of Service</Link>
-                      and <br/><Link to="/">Privacy Policy</Link>
+                      I agree to the <Link to="/">Terms of Service</Link> and <br/><Link to="/">Privacy Policy</Link>
                     </IonLabel>
                   </IonItem>
 
@@ -75,11 +74,9 @@ export default function Register() {
                   </div>
                 </form>
 
-                <div className="account-help" style={{ paddingRight: 16 }}>
-                 <p>Have an Account? <Link to="/login" className="register">Sign In</Link></p>
+                <div className={styles.accountHelp} style={{ paddingRight: 16 }}>
+                 <p>Have an Account? <Link to="/login" className={styles.register}>Sign In</Link></p>
                 </div>
-              </div>
-              <div>
               </div>
             </div>
           </IonContent>
