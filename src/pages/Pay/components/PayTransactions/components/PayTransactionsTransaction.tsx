@@ -1,5 +1,10 @@
 import { Fragment } from "react";
+import hash from "object-hash";
+
+// components
 import { IonItem, IonItemDivider, IonLabel } from "@ionic/react";
+
+// consts
 import { transactions } from "./consts";
 
 export default function PayTransactionsTransaction() {
@@ -13,7 +18,7 @@ export default function PayTransactionsTransaction() {
 
   return (
     <>
-      {transactions.map(({ date, note, amount }, i) => {
+      {transactions.map(({ date, note, amount, ...rest }, i) => {
         let divider = null;
         let lines = true;
         const nextTransaction = transactions[i + 1];
@@ -37,7 +42,7 @@ export default function PayTransactionsTransaction() {
         }
 
         return (
-          <Fragment key={`${date}-${note}-${amount}`}>
+          <Fragment key={hash(rest)}>
             {divider}
             <IonItem lines={lines ? "inset" : "none"}>
               <IonLabel>

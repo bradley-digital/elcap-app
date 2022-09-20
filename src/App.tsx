@@ -19,7 +19,7 @@ import Example from 'pages/Example';
 import Login from 'pages/Login';
 import Pay from 'pages/Pay/Pay';
 import Register from 'pages/Register';
-import Shop from 'pages/Shop';
+import Shop from 'pages/Shop/Shop';
 import Loader from 'components/Loader';
 
 /* Theme variables */
