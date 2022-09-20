@@ -1,4 +1,17 @@
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Redirect, Route, Switch } from "react-router-dom";
+import { IonReactRouter } from "@ionic/react-router";
+import { useCookies } from "react-cookie";
+
+// pages
+import Account from "pages/Account/Account";
+import Example from "pages/Example/Example";
+import Login from "pages/Login/Login";
+import Pay from "pages/Pay/Pay";
+import Register from "pages/Register/Register";
+import Shop from "pages/Shop/Shop";
+import Loader from "components/Loader/Loader";
+
+// components
 import {
   IonApp,
   IonIcon,
@@ -7,34 +20,25 @@ import {
   IonTabBar,
   IonTabButton,
   IonTabs,
-  setupIonicReact
-} from '@ionic/react';
-import { IonReactRouter } from '@ionic/react-router';
-import { bag, card, personCircle } from 'ionicons/icons';
-import { useCookies } from 'react-cookie';
+  setupIonicReact,
+} from "@ionic/react";
 
-/* Pages */
-import Account from 'pages/Account/Account';
-import Example from 'pages/Example/Example';
-import Login from 'pages/Login/Login';
-import Pay from 'pages/Pay/Pay';
-import Register from 'pages/Register/Register';
-import Shop from 'pages/Shop/Shop';
-import Loader from 'components/Loader/Loader';
+// icons
+import { bag, card, personCircle } from "ionicons/icons";
 
-/* Theme variables */
-import 'theme/global.scss';
-import 'theme/variables.scss';
-import 'theme/utilities.scss';
+// theme variables
+import "theme/global.scss";
+import "theme/variables.scss";
+import "theme/utilities.scss";
 
 setupIonicReact();
 
 export default function App() {
-  const [cookies] = useCookies(['user']);
+  const [cookies] = useCookies(["user"]);
 
   return (
     <IonApp>
-      {cookies.user === 'admin' ? (
+      {cookies.user === "admin" ? (
         <IonReactRouter>
           <IonTabs>
             <IonRouterOutlet>
