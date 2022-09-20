@@ -19,7 +19,7 @@ import {
   IonToolbar,
   useIonRouter,
 } from '@ionic/react';
-import styles from './styles.module.scss';
+import styles from './Account.module.scss';
 
 type Profile = {
   img: string;

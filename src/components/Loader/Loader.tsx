@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import styles from './styles.module.scss';
+import styles from './Loader.module.scss';
 
 export default function Loader() {
   return (
