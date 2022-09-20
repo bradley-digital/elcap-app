@@ -17,7 +17,7 @@ import { useCookies } from 'react-cookie';
 import Account from 'pages/Account';
 import Example from 'pages/Example';
 import Login from 'pages/Login';
-import Pay from 'pages/Pay';
+import Pay from 'pages/Pay/Pay';
 import Register from 'pages/Register';
 import Shop from 'pages/Shop';
 import Loader from 'components/Loader';
