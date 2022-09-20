@@ -20,7 +20,7 @@ import Login from 'pages/Login/Login';
 import Pay from 'pages/Pay/Pay';
 import Register from 'pages/Register/Register';
 import Shop from 'pages/Shop/Shop';
-import Loader from 'components/Loader';
+import Loader from 'components/Loader/Loader';
 
 /* Theme variables */
 import 'theme/global.scss';

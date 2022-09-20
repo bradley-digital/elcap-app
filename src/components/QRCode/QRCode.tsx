@@ -1,6 +1,6 @@
 import { IonCard } from '@ionic/react';
 import QRCodeGenerator from 'qrcode';
-import styles from './styles.module.scss';
+import styles from './QRCode.module.scss';
 
 interface Props {
   link: string;

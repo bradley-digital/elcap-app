@@ -8,7 +8,7 @@ import {
   IonList,
   IonRow,
 } from "@ionic/react";
-import PageTemplate from "components/PageTemplate";
+import PageTemplate from "components/PageTemplate/PageTemplate";
 import PayWalletPaymentMethods from "./components/PayWalletPaymentMethods";
 
 // icons
