@@ -17,6 +17,7 @@
     "@testing-library/user-event": "^12.6.3",
     "@types/jest": "^26.0.20",
     "@types/node": "^12.19.15",
+    "@types/object-hash": "^2.2.1",
     "@types/qrcode": "^1.5.0",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
@@ -73,8 +74,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@types/object-hash": "^2.2.1"
   }
 }
