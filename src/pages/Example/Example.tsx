@@ -40,7 +40,6 @@ import {
   useIonToast,
 } from '@ionic/react';
 import { add, star } from 'ionicons/icons';
-//import styles from './styles.module.scss';
 
 export default function Example() {
   const [present] = useIonActionSheet();

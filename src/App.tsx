@@ -14,11 +14,11 @@ import { bag, card, personCircle } from 'ionicons/icons';
 import { useCookies } from 'react-cookie';
 
 /* Pages */
-import Account from 'pages/Account';
-import Example from 'pages/Example';
-import Login from 'pages/Login';
+import Account from 'pages/Account/Account';
+import Example from 'pages/Example/Example';
+import Login from 'pages/Login/Login';
 import Pay from 'pages/Pay/Pay';
-import Register from 'pages/Register';
+import Register from 'pages/Register/Register';
 import Shop from 'pages/Shop/Shop';
 import Loader from 'components/Loader';
 

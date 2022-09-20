@@ -15,7 +15,7 @@ import {
 } from '@ionic/react';
 import Loader from 'components/Loader';
 import { ReactComponent as Logo } from 'assets/elcapitanadvisors_logo.svg';
-import styles from './styles.module.scss';
+import styles from './Register.module.scss';
 
 export default function Register() {
   const router = useIonRouter();
