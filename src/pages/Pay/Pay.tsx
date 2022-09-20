@@ -14,7 +14,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import Scan from "./components/PayScan";
-import Wallet from "./components/PayWallet";
+import Wallet from "./components/PayWallet/PayWallet";
 import Transactions from "./components/PayTransactions/PayTransactions";
 import PayMenuLinks from "./components/PayMenuLinks/PayMenuLinks";
 
