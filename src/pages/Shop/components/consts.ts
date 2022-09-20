@@ -1,3 +1,4 @@
+// tempData
 const cannabis1 = "/assets/cannabis1.webp";
 const cannabis2 = "/assets/cannabis2.jpg";
 const cannabis3 = "/assets/cannabis3.jpg";
