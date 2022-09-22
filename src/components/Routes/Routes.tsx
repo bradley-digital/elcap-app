@@ -2,8 +2,8 @@ import { IonReactRouter } from "@ionic/react-router";
 import { useCookies } from "react-cookie";
 
 // components
-import AdminRoutes from "./components/RoutesAdmin";
-import UserRoutes from "./components/RoutesUser";
+import AdminRoutes from "./RoutesAdmin";
+import UserRoutes from "./RoutesUser";
 
 export default function Routes() {
   const [cookies] = useCookies(["user"]);
