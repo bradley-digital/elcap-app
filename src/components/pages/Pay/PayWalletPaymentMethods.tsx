@@ -1,6 +1,6 @@
 import hash from "object-hash";
 import { IonAvatar, IonItem, IonLabel } from "@ionic/react";
-import { paymentMethods } from "./consts";
+import { paymentMethods } from "pages/Pay/consts";
 
 export default function PayWalletPaymentMethods() {
   return (

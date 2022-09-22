@@ -11,7 +11,7 @@ import {
 } from "@ionic/react";
 
 // consts
-import { products } from "./consts";
+import { products } from "pages/Shop/consts";
 
 // styles
 import styles from "./ShopProduct.module.scss";

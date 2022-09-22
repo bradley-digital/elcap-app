@@ -3,8 +3,8 @@ import {
   IonGrid,
   IonRow,
 } from '@ionic/react';
-import PageTemplate from 'components/PageTemplate/PageTemplate'
-import QRCode from 'components/QRCode/QRCode';
+import PageTemplate from 'components/common/PageTemplate/PageTemplate'
+import QRCode from 'components/common/QRCode/QRCode';
 
 export default function Scan() {
   return (

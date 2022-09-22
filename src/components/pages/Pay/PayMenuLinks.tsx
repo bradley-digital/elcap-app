@@ -5,7 +5,7 @@ import hash from "object-hash";
 import { IonIcon, IonItem, IonLabel, IonMenuToggle } from "@ionic/react";
 
 // consts
-import { menuLinks } from "./consts";
+import { menuLinks } from "pages/Pay/consts";
 
 // styles
 import styles from "./PayMenuLinks.module.scss";

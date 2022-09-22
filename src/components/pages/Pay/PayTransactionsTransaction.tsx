@@ -5,7 +5,8 @@ import hash from "object-hash";
 import { IonItem, IonItemDivider, IonLabel } from "@ionic/react";
 
 // consts
-import { transactions } from "./consts";
+import { transactions } from "pages/Pay/consts";
+
 
 export default function PayTransactionsTransaction() {
   const dateOptions: Intl.DateTimeFormatOptions = {
