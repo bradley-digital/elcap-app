@@ -12,10 +12,10 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import Scan from "components/pages/Pay/PayScan";
-import Wallet from "components/pages/Pay/PayWallet";
-import Transactions from "components/pages/Pay/PayTransactions";
-import PayMenuLinks from "components/pages/Pay/PayMenuLinks";
+import Scan from "components/Pay/PayScan";
+import Wallet from "components/Pay/PayWallet";
+import Transactions from "components/Pay/PayTransactions";
+import PayMenuLinks from "components/Pay/PayMenuLinks";
 
 export default function Pay({ match }: RouteComponentProps) {
   return (

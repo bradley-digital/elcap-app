@@ -15,7 +15,7 @@ import {
   IonCheckbox,
   useIonRouter,
 } from "@ionic/react";
-import Loader from "components/common/Loader/Loader";
+import Loader from "components/Loader/Loader";
 import { ReactComponent as Logo } from "assets/elcapitanadvisors_logo.svg";
 
 // styles

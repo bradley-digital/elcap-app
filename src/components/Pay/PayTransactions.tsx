@@ -1,5 +1,5 @@
 import { IonCol, IonGrid, IonItemGroup, IonList, IonRow } from "@ionic/react";
-import PageTemplate from "components/common/PageTemplate/PageTemplate";
+import PageTemplate from "components/PageTemplate/PageTemplate";
 import PayTransactionsTransaction from "./PayTransactionsTransaction";
 
 export default function Transactions() {
