@@ -7,7 +7,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import ShopProduct from "./components/ShopProduct";
+import ShopProduct from "components/Shop/ShopProduct";
 import styles from "./Shop.module.scss";
 
 export default function Shop() {

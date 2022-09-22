@@ -1,5 +1,4 @@
-import type { RouteComponentProps } from "react-router-dom";
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
 
 // components
 import {
@@ -13,10 +12,10 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import Scan from "./components/PayScan";
-import Wallet from "./components/PayWallet/PayWallet";
-import Transactions from "./components/PayTransactions/PayTransactions";
-import PayMenuLinks from "./components/PayMenuLinks/PayMenuLinks";
+import Scan from "components/Pay/PayScan";
+import Wallet from "components/Pay/PayWallet";
+import Transactions from "components/Pay/PayTransactions";
+import PayMenuLinks from "components/Pay/PayMenuLinks";
 
 export default function Pay({ match }: RouteComponentProps) {
   return (
