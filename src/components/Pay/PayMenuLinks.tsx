@@ -7,9 +7,6 @@ import { IonIcon, IonItem, IonLabel, IonMenuToggle } from "@ionic/react";
 // consts
 import { menuLinks } from "pages/Pay/consts";
 
-// styles
-import styles from "./PayMenuLinks.module.scss";
-
 export default function PayMenuLinks() {
   const { pathname } = useLocation();
   return (
@@ -18,7 +15,7 @@ export default function PayMenuLinks() {
         <IonMenuToggle key={hash(rest)} menu="main" autoHide={false}>
           <IonItem
             routerLink={href}
-            className={pathname === href ? styles.active : ""}
+            className={pathname === href ? "active" : ""}
           >
             <IonIcon icon={icon} slot="start" />
             <IonLabel>{label}</IonLabel>
