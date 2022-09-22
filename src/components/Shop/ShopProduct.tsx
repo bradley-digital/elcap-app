@@ -11,7 +11,7 @@ import {
 } from "@ionic/react";
 
 // consts
-import { products } from "./consts";
+import { products } from "pages/Shop/consts";
 
 // styles
 import styles from "./ShopProduct.module.scss";
@@ -26,7 +26,7 @@ export default function ShopProduct() {
           size-sm="6"
           size-md="4"
           size-lg="3"
-          className={styles.ShopProduct}
+          className={styles.shopProduct}
         >
           <IonCard>
             <img src={img} alt={name} />

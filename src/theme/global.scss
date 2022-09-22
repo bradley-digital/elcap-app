@@ -31,4 +31,13 @@ img {
 
 ion-menu {
   --side-max-width: 300px;
+
+  ion-item {
+    &.active {
+      &,
+      ion-icon {
+        color: var(--ion-color-primary);
+      }
+    }
+  }
 }

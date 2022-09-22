@@ -9,7 +9,7 @@ import {
   IonRow,
 } from "@ionic/react";
 import PageTemplate from "components/PageTemplate/PageTemplate";
-import PayWalletPaymentMethods from "./components/PayWalletPaymentMethods";
+import PayWalletPaymentMethods from "./PayWalletPaymentMethods";
 
 // icons
 import { add } from "ionicons/icons";
