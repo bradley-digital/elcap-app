@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode } from "react";
 import {
   IonButtons,
   IonContent,
@@ -7,7 +7,7 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
-} from '@ionic/react';
+} from "@ionic/react";
 
 type Props = {
   title: string;
@@ -25,9 +25,7 @@ export default function PageTemplate({ title, children }: Props) {
           <IonTitle>{title}</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent>
-        {children}
-      </IonContent>
+      <IonContent>{children}</IonContent>
     </IonPage>
   );
 }

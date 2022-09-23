@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 import {
   IonAlert,
   IonBadge,
@@ -38,22 +38,22 @@ import {
   IonToolbar,
   useIonActionSheet,
   useIonToast,
-} from '@ionic/react';
-import { add, star } from 'ionicons/icons';
+} from "@ionic/react";
+import { add, star } from "ionicons/icons";
 
 export default function Example() {
   const [present] = useIonActionSheet();
   const [presentIonToast] = useIonToast();
   const [showAlert, setShowAlert] = useState(false);
-  const [text, setText] = useState('');
+  const [text, setText] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState("");
 
-  const presentToast = (position: 'top' | 'middle' | 'bottom') => {
+  const presentToast = (position: "top" | "middle" | "bottom") => {
     presentIonToast({
-      message: 'Hello World!',
+      message: "Hello World!",
       duration: 1500,
-      position: position
+      position: position,
     });
   };
 
@@ -97,8 +97,8 @@ export default function Example() {
                   <IonButton
                     onClick={() =>
                       present({
-                        buttons: [{ text: 'Ok' }, { text: 'Cancel' }],
-                        header: 'Action Sheet',
+                        buttons: [{ text: "Ok" }, { text: "Cancel" }],
+                        header: "Action Sheet",
                       })
                     }
                   >
@@ -106,14 +106,16 @@ export default function Example() {
                   </IonButton>
                 </IonCol>
                 <IonCol>
-                  <IonButton onClick={() => setShowAlert(true)}>Show alert</IonButton>
+                  <IonButton onClick={() => setShowAlert(true)}>
+                    Show alert
+                  </IonButton>
                   <IonAlert
                     isOpen={showAlert}
                     onDidDismiss={() => setShowAlert(false)}
                     header="Alert"
                     subHeader="Important message"
                     message="This is an alert!"
-                    buttons={['OK']}
+                    buttons={["OK"]}
                   />
                 </IonCol>
                 <IonCol>
@@ -134,9 +136,15 @@ export default function Example() {
                   <IonButton expand="full">Full Button</IonButton>
                   <IonButton expand="block">Block Button</IonButton>
                   <IonButton shape="round">Round Button</IonButton>
-                  <IonButton expand="full" fill="outline">Outline + Full</IonButton>
-                  <IonButton expand="block" fill="outline">Outline + Block</IonButton>
-                  <IonButton shape="round" fill="outline">Outline + Round</IonButton>
+                  <IonButton expand="full" fill="outline">
+                    Outline + Full
+                  </IonButton>
+                  <IonButton expand="block" fill="outline">
+                    Outline + Block
+                  </IonButton>
+                  <IonButton shape="round" fill="outline">
+                    Outline + Round
+                  </IonButton>
                   <IonButton>
                     <IonIcon slot="start" icon={star} />
                     Left Icon
@@ -149,11 +157,18 @@ export default function Example() {
               <IonRow>
                 <IonCol size-md="6">
                   <IonCard>
-                    <img alt="placeholder" src="https://wtwp.com/wp-content/uploads/2015/06/placeholder-image.png" />
+                    <img
+                      alt="placeholder"
+                      src="https://wtwp.com/wp-content/uploads/2015/06/placeholder-image.png"
+                    />
                     <IonItem>
                       <IonIcon icon={star} slot="start" />
-                      <IonLabel>ion-item in a card, icon left, button right</IonLabel>
-                      <IonButton fill="outline" slot="end">View</IonButton>
+                      <IonLabel>
+                        ion-item in a card, icon left, button right
+                      </IonLabel>
+                      <IonButton fill="outline" slot="end">
+                        View
+                      </IonButton>
                     </IonItem>
 
                     <IonCardContent>
@@ -164,15 +179,19 @@ export default function Example() {
                 </IonCol>
                 <IonCol size-md="6">
                   <IonCard>
-                    <img alt="placeholder" src="https://wtwp.com/wp-content/uploads/2015/06/placeholder-image.png" />
+                    <img
+                      alt="placeholder"
+                      src="https://wtwp.com/wp-content/uploads/2015/06/placeholder-image.png"
+                    />
                     <IonCardHeader>
                       <IonCardSubtitle>Card Subtitle</IonCardSubtitle>
                       <IonCardTitle>Card Title</IonCardTitle>
                     </IonCardHeader>
 
                     <IonCardContent>
-                      Keep close to Nature's heart... and break clear away, once in awhile,
-                      and climb a mountain or spend a week in the woods. Wash your spirit clean.
+                      Keep close to Nature's heart... and break clear away, once
+                      in awhile, and climb a mountain or spend a week in the
+                      woods. Wash your spirit clean.
                     </IonCardContent>
                   </IonCard>
                 </IonCol>
@@ -184,11 +203,17 @@ export default function Example() {
                 <IonCol>
                   <IonItem>
                     <IonLabel position="stacked">Text input</IonLabel>
-                    <IonInput value={text} placeholder="Enter Input" onIonChange={e => setText(e.detail.value!)} />
+                    <IonInput
+                      value={text}
+                      placeholder="Enter Input"
+                      onIonChange={(e) => setText(e.detail.value!)}
+                    />
                   </IonItem>
                 </IonCol>
                 <IonCol>
-                  <IonButton onClick={() => setIsOpen(true)}>Open Modal</IonButton>
+                  <IonButton onClick={() => setIsOpen(true)}>
+                    Open Modal
+                  </IonButton>
                 </IonCol>
               </IonRow>
               <IonRow>
@@ -202,12 +227,19 @@ export default function Example() {
                   <IonProgressBar type="indeterminate" />
                 </IonCol>
                 <IonCol>
-                  <IonSearchbar value={searchText} onIonChange={e => setSearchText(e.detail.value!)} showCancelButton="focus" />
+                  <IonSearchbar
+                    value={searchText}
+                    onIonChange={(e) => setSearchText(e.detail.value!)}
+                    showCancelButton="focus"
+                  />
                 </IonCol>
               </IonRow>
               <IonRow>
                 <IonCol size-md="4">
-                  <IonSlides pager={true} options={{ initialSlide: 0, speed: 400 }}>
+                  <IonSlides
+                    pager={true}
+                    options={{ initialSlide: 0, speed: 400 }}
+                  >
                     <IonSlide>
                       <h1>Slide 1</h1>
                     </IonSlide>
@@ -224,14 +256,23 @@ export default function Example() {
                     <IonItem>
                       <IonSelect placeholder="Select fruit">
                         <IonSelectOption value="apples">Apples</IonSelectOption>
-                        <IonSelectOption value="oranges">Oranges</IonSelectOption>
-                        <IonSelectOption value="bananas">Bananas</IonSelectOption>
+                        <IonSelectOption value="oranges">
+                          Oranges
+                        </IonSelectOption>
+                        <IonSelectOption value="bananas">
+                          Bananas
+                        </IonSelectOption>
                       </IonSelect>
                     </IonItem>
                   </IonList>
                 </IonCol>
                 <IonCol>
-                  <IonButton expand="block" onClick={() => presentToast('bottom')}>Present Toast</IonButton>
+                  <IonButton
+                    expand="block"
+                    onClick={() => presentToast("bottom")}
+                  >
+                    Present Toast
+                  </IonButton>
                 </IonCol>
               </IonRow>
             </IonGrid>
@@ -254,8 +295,9 @@ export default function Example() {
         </IonHeader>
         <IonContent className="ion-padding">
           <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni illum quidem recusandae ducimus quos
-            reprehenderit. Veniam, molestias quos, dolorum consequuntur nisi deserunt omnis id illo sit cum qui.
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni illum
+            quidem recusandae ducimus quos reprehenderit. Veniam, molestias
+            quos, dolorum consequuntur nisi deserunt omnis id illo sit cum qui.
             Eaque, dicta.
           </p>
         </IonContent>
