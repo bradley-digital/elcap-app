@@ -1,5 +1,5 @@
-import { motion } from 'framer-motion';
-import styles from './Loader.module.scss';
+import { motion } from "framer-motion";
+import styles from "./Loader.module.scss";
 
 export default function Loader() {
   return (
@@ -21,9 +21,9 @@ export default function Loader() {
             animate={{ pathLength: 0.478 }}
             transition={{
               duration: 0.8,
-              ease: 'easeInOut',
+              ease: "easeInOut",
               repeat: Infinity,
-              repeatType: 'reverse',
+              repeatType: "reverse",
             }}
           />
         </motion.svg>

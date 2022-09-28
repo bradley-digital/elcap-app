@@ -1,4 +1,4 @@
-import { useCookies } from 'react-cookie';
+import { useCookies } from "react-cookie";
 import {
   IonAvatar,
   IonButton,
@@ -18,8 +18,8 @@ import {
   IonTitle,
   IonToolbar,
   useIonRouter,
-} from '@ionic/react';
-import styles from './Account.module.scss';
+} from "@ionic/react";
+import styles from "./Account.module.scss";
 
 type Profile = {
   img: string;
@@ -32,32 +32,24 @@ type Profile = {
 };
 
 const profile: Profile = {
-  img: '/assets/headshot.jpg',
-  name: 'Joshua Bradley',
-  username: 'joshbradley012',
-  joined: '8/20/2022',
-  phone: '661-706-9625',
-  email: 'joshbradleydigital@gmail.com',
-  address: '25 Leslie Dr., Santa Barbara, CA',
+  img: "/assets/headshot.jpg",
+  name: "Joshua Bradley",
+  username: "joshbradley012",
+  joined: "8/20/2022",
+  phone: "661-706-9625",
+  email: "joshbradleydigital@gmail.com",
+  address: "25 Leslie Dr., Santa Barbara, CA",
 };
 
 export default function Account() {
   const router = useIonRouter();
-  const [,,removeCookie] = useCookies(['user']);
+  const [, , removeCookie] = useCookies(["user"]);
 
-  const {
-    img,
-    name,
-    username,
-    joined,
-    phone,
-    email,
-    address,
-  } = profile;
+  const { img, name, username, joined, phone, email, address } = profile;
 
   function handleLogout() {
-    removeCookie('user', { path: '/' });
-    router.push('/');
+    removeCookie("user", { path: "/" });
+    router.push("/");
   }
 
   return (
@@ -83,7 +75,9 @@ export default function Account() {
                   <p>Joined: {joined}</p>
                 </IonText>
                 <div className="d-flex ion-justify-content-end">
-                  <IonButton onClick={handleLogout} color="danger">Logout</IonButton>
+                  <IonButton onClick={handleLogout} color="danger">
+                    Logout
+                  </IonButton>
                 </div>
               </IonCard>
               <IonList>
