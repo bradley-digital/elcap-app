@@ -1,7 +1,8 @@
 {
-  "name": "elcap-api",
+  "name": "elcap-app",
   "version": "1.0.0",
-  "main": "express/src/index.ts",
+  "main": "react/src/index.tsx",
+  "private": true,
   "author": "joshuabradley012 <joshuabradley012@gmail.com>",
   "license": "MIT",
   "dependencies": {
@@ -16,6 +17,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/joshuabradley012/elcap-api.git"
+    "url": "git+https://github.com/joshuabradley012/elcap-app.git"
   }
 }
