@@ -47,7 +47,20 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 ## Getting Started
 
+```
+yarn install
+yarn precommit
+```
+
+#### Formatter
+
+Auto linting is enabled on commit as a Git hook using `husky` and `pretty-quick`.
+
+To change what runs on commit update the `pre-commit` file in the `/.husky` directory. To change what files are ignored, update the `.eslintignore` file in the project root.
+
 #### Docker
+
+Ensure you have Docker installed first.
 
 ```
 docker compose up
