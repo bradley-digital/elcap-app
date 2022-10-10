@@ -4,11 +4,13 @@ services:
   react:
     container_name: ${APPLICATION_CONTAINER}
     env_file: ./.env
-    restart: "no"
+    restart: unless-stopped
+    stdin_open: true
     build:
       context: ./react
     volumes:
-      - react-data:/var/www/app
+      - ./react:/var/www/app
+      - /var/www/app/node_modules
     ports:
       - "${PORT}:${PORT}"
     expose:
