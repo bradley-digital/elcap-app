@@ -8,26 +8,26 @@
 ### macOS
 
 #### Homebrew v3.6.2
+
 ```
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
 #### Docker
-```
-brew install docker
-```
 
-Or install the desktop application: https://docs.docker.com/get-started/#download-and-install-docker
+Install the desktop application: https://docs.docker.com/get-started/#download-and-install-docker
 
 ### Ubuntu v20.04
 
 #### Update and upgrade apt-get
+
 ```
 sudo apt-get -y update
 sudo apt-get -y upgrade
 ```
 
 #### Docker
+
 ```
 sudo apt-get remove docker docker-engine docker.io containerd runc
 sudo apt-get update
@@ -47,23 +47,14 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 ## Getting Started
 
-#### Environment Variables
-```
-cp sample.env .env
-```
-
-Set unique, random values for:
-- `JWT_ACCESS_SECRET`
-- `JWT_REFRESH_SECRET`
-- `DATABASE_PASSWORD`
-- `SESSION_SECRET`
-
 #### Docker
+
 ```
 docker compose up
 ```
 
 If you're changing the docker config, you might need to trigger a fresh build for changes to take affect:
+
 ```
 docker compose rm -f
 docker volume prune
@@ -71,6 +62,7 @@ docker compose up --build
 ```
 
 You can also use yarn commands:
+
 ```
 yarn kill
 yarn start
