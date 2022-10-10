@@ -1,11 +1,9 @@
-version: '3.8'
+version: "3.8"
 services:
-
   react:
     container_name: ${APPLICATION_CONTAINER}
     env_file: ./.env
     restart: unless-stopped
-    stdin_open: true
     build:
       context: ./react
     volumes:

@@ -46,7 +46,7 @@ export default function Login() {
             <div className={styles.contentBottom}>
               <div>
                 <IonText>
-                  <h1>Login!</h1>
+                  <h1>Login</h1>
                   <p>Hi there! Welcome to El Cap.</p>
                 </IonText>
 
