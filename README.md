@@ -47,6 +47,14 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 ## Getting Started
 
+#### Environment Variables
+
+```
+cp sample.env .env
+```
+
+#### Node Modules
+
 ```
 yarn install
 yarn precommit
