@@ -62,9 +62,9 @@ yarn precommit
 
 #### Formatter
 
-Auto linting is enabled on commit as a Git hook using `husky` and `pretty-quick`.
+Auto linting is enabled on commit as a Git hook using `husky`, `pretty-quick`, and `eslint`.
 
-To change what runs on commit update the `pre-commit` file in the `/.husky` directory. To change what files are ignored, update the `.eslintignore` file in the project root.
+To change what runs on commit update the `pre-commit` file in the `/.husky` directory. To change what files are ignored, update the `react/.eslintignore` file.
 
 #### Docker
 
