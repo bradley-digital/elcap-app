@@ -60,9 +60,6 @@ Auto linting is enabled on commit as a Git hook using `husky`, `pretty-quick`, a
 To change what runs on commit update the `pre-commit` file in the `/.husky` directory. To change what files are ignored, update the `react/.eslintignore` file.
 
 #### Docker
-
-Ensure you have Docker installed first.
-
 ```
 docker compose up
 ```
@@ -78,6 +75,6 @@ docker compose up --build
 You can also use yarn commands:
 
 ```
-yarn kill
 yarn start
+yarn kill
 ```
