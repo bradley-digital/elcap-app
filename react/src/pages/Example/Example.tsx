@@ -206,7 +206,7 @@ export default function Example() {
                     <IonInput
                       value={text}
                       placeholder="Enter Input"
-                      onIonChange={(e) => setText(e.detail.value)}
+                      onIonChange={(e) => setText(e.detail.value!)}
                     />
                   </IonItem>
                 </IonCol>
@@ -229,7 +229,7 @@ export default function Example() {
                 <IonCol>
                   <IonSearchbar
                     value={searchText}
-                    onIonChange={(e) => setSearchText(e.detail.value)}
+                    onIonChange={(e) => setSearchText(e.detail.value!)}
                     showCancelButton="focus"
                   />
                 </IonCol>
