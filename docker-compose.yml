@@ -1,0 +1,33 @@
+version: "3.8"
+services:
+  react:
+    container_name: ${APPLICATION_CONTAINER}
+    env_file: ./.env
+    restart: unless-stopped
+    build:
+      context: ./react
+    volumes:
+      - ./react:/var/www/app
+      - /var/www/app/node_modules
+    ports:
+      - "${PORT}:${PORT}"
+    expose:
+      - "${PORT}"
+
+  nginx:
+    container_name: ${NGINX_CONTAINER}
+    restart: always
+    build:
+      context: ./nginx
+    environment:
+      - PROXY_HOST=${APPLICATION_CONTAINER}
+      - PROXY_PORT=${PORT}
+    ports:
+      - "${NGINX_PORT}:80"
+    expose:
+      - "${NGINX_PORT}"
+    depends_on:
+      - "react"
+
+volumes:
+  react-data:
