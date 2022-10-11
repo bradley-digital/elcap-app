@@ -1,4 +1,4 @@
-# elcap-api
+# elcap-app
 
 ## Dependencies
 
