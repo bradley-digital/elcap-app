@@ -2,16 +2,9 @@
 
 ## Dependencies
 
-- Homebrew v3.6.2 (macOS only)
 - Docker v20.10.17
 
 ### macOS
-
-#### Homebrew v3.6.2
-
-```
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-```
 
 #### Docker
 
