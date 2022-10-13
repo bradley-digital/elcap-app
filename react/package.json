@@ -55,7 +55,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!(@ionic/react|@ionic/react-router|@ionic/core|@stencil/core|ionicons)/)'",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "playwright": "playwright test"
   },
   "eslintConfig": {
     "extends": [
@@ -74,5 +75,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@ngneat/falso": "^6.1.0",
+    "@playwright/test": "^1.27.1"
   }
 }
