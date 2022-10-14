@@ -18,6 +18,8 @@ import { ReactComponent as Logo } from "assets/elcapitanadvisors_logo.svg";
 // styles
 import styles from "./Login.module.scss";
 
+const host = process.env.REACT_APP_BACKEND_HOST || "http://localhost:3030";
+
 export default function Login() {
   const router = useIonRouter();
   const [, setCookie] = useCookies(["user"]);
@@ -35,7 +37,7 @@ export default function Login() {
     onSubmit: (values, actions) => {
       const vals = { ...values };
       actions.resetForm();
-      fetch("http://localhost:3030/auth/login", {
+      fetch(`${host}/auth/login`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -49,7 +51,7 @@ export default function Login() {
         .then((res) => {
           if (!res || !res.ok || res.status >= 400) {
             return console.log(
-              "Connection to API failed with a " + res + " code"
+              "Connection to API failed with a " + JSON.stringify(res) + " code"
             );
           } else {
             return res.json();

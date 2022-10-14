@@ -18,6 +18,8 @@ import { ReactComponent as Logo } from "assets/elcapitanadvisors_logo.svg";
 // styles
 import styles from "./Register.module.scss";
 
+const host = process.env.REACT_APP_BACKEND_HOST || "http://localhost:3030";
+
 export default function Register() {
   const router = useIonRouter();
   const [, setCookie] = useCookies(["user"]);
@@ -44,7 +46,7 @@ export default function Register() {
     onSubmit: (values, actions) => {
       const vals = { ...values };
       actions.resetForm();
-      fetch("http://localhost:3030/auth/register", {
+      fetch(`${host}/auth/register`, {
         method: "POST",
         credentials: "include",
         headers: {
