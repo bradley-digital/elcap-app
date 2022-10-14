@@ -1,18 +1,15 @@
-import type { SyntheticEvent } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useCookies } from "react-cookie";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 // components
 import {
   IonContent,
   IonPage,
   IonText,
-  IonItem,
-  IonLabel,
-  IonInput,
   IonButton,
-  IonCheckbox,
   useIonRouter,
 } from "@ionic/react";
 import Loader from "components/Loader/Loader";
@@ -26,14 +23,57 @@ export default function Register() {
   const [, setCookie] = useCookies(["user"]);
   const [loading, setLoading] = useState(false);
 
-  function handleSubmit(e: SyntheticEvent) {
-    e.preventDefault();
-    setTimeout(() => setLoading(true), 0);
-    setTimeout(() => {
-      setCookie("user", "admin", { path: "/" });
-      router.push("/");
-    }, 850);
-  }
+  const phoneRegExp =
+    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+
+  const formik = useFormik({
+    initialValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      password: "",
+    },
+    validationSchema: Yup.object({
+      firstName: Yup.string().required("First Name required"),
+      lastName: Yup.string().required("Last Name required"),
+      email: Yup.string().email().required("Email required"),
+      phone: Yup.string().matches(phoneRegExp, "Phone number is not valid"),
+      password: Yup.string().required("Password required").min(8).max(28),
+    }),
+    onSubmit: (values, actions) => {
+      const vals = { ...values };
+      actions.resetForm();
+      fetch("http://localhost:3030/auth/register", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(vals),
+      })
+        .catch(() => {
+          return console.log("Connection to api failed");
+        })
+        .then((res) => {
+          if (!res || !res.ok || res.status >= 400) {
+            return console.log(
+              "Connection to API failed with a " + res + " code"
+            );
+          } else {
+            return res.json();
+          }
+        })
+        .then((data) => {
+          if (!data) return;
+          setTimeout(() => setLoading(true), 0);
+          setTimeout(() => {
+            setCookie("user", "admin", { path: "/" });
+            router.push("/");
+          }, 800);
+        });
+    },
+  });
 
   return (
     <>
@@ -50,50 +90,103 @@ export default function Register() {
                   <h1>Sign Up</h1>
                 </IonText>
 
-                <form onSubmit={handleSubmit}>
-                  <IonItem className={styles.inputRow}>
-                    <IonLabel position="stacked" className={styles.inputLabel}>
-                      Email
-                    </IonLabel>
-                    <IonInput
-                      type="email"
+                <form onSubmit={formik.handleSubmit}>
+                  <div className={styles.formGroup}>
+                    <input
+                      name="firstName"
+                      type="text"
+                      value={formik.values.firstName}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
                       className={styles.formInput}
-                      placeholder="name@email.com"
+                      placeholder="First Name"
                     />
-                  </IonItem>
-
-                  <IonItem className={styles.inputRow}>
-                    <IonLabel position="stacked" className={styles.inputLabel}>
-                      Password
-                    </IonLabel>
-                    <IonInput type="password" className={styles.formInput} />
-                  </IonItem>
-
-                  <IonItem>
-                    <IonCheckbox slot="start"></IonCheckbox>
-                    <IonLabel>
-                      I agree to the <Link to="/">Terms of Service</Link> and{" "}
-                      <br />
-                      <Link to="/">Privacy Policy</Link>
-                    </IonLabel>
-                  </IonItem>
-
-                  <div
-                    className="ion-text-center"
-                    style={{
-                      paddingTop: 25,
-                      paddingBottom: 25,
-                      paddingRight: 16,
-                    }}
-                  >
-                    <IonButton type="submit">Continue</IonButton>
+                    <label className={styles.inputLabel}>First Name</label>
+                    {formik.errors.firstName ? (
+                      <div className={styles.errorMsg}>
+                        {formik.errors.firstName}
+                      </div>
+                    ) : null}
                   </div>
+
+                  <div className={styles.formGroup}>
+                    <input
+                      name="lastName"
+                      type="text"
+                      value={formik.values.lastName}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      className={styles.formInput}
+                      placeholder="First Name"
+                    />
+                    <label className={styles.inputLabel}>Last Name</label>
+                    {formik.errors.lastName ? (
+                      <div className={styles.errorMsg}>
+                        {formik.errors.lastName}
+                      </div>
+                    ) : null}
+                  </div>
+
+                  <div className={styles.stacked}>
+                    <div className={styles.formGroup}>
+                      <input
+                        name="email"
+                        type="email"
+                        value={formik.values.email}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        className={styles.formInput}
+                        placeholder="Email"
+                      />
+                      <label className={styles.inputLabel}>Email</label>
+                      {formik.errors.email ? (
+                        <div className={styles.errorMsg}>
+                          {formik.errors.email}
+                        </div>
+                      ) : null}
+                    </div>
+
+                    <div className={styles.formGroup}>
+                      <input
+                        name="phone"
+                        type="text"
+                        value={formik.values.phone}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        className={styles.formInput}
+                        placeholder="Phone"
+                      />
+                      <label className={styles.inputLabel}>Phone</label>
+                      {formik.errors.phone ? (
+                        <div className={styles.errorMsg}>
+                          {formik.errors.phone}
+                        </div>
+                      ) : null}
+                    </div>
+
+                    <div className={styles.formGroup}>
+                      <input
+                        name="password"
+                        type="password"
+                        value={formik.values.password}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        className={styles.formInput}
+                        placeholder="Password"
+                      />
+                      <label className={styles.inputLabel}>Password</label>
+                      {formik.errors.password ? (
+                        <div className={styles.errorMsg}>
+                          {formik.errors.password}
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+
+                  <IonButton type="submit">Register</IonButton>
                 </form>
 
-                <div
-                  className={styles.accountHelp}
-                  style={{ paddingRight: 16 }}
-                >
+                <div className={styles.accountHelp}>
                   <p>
                     Have an Account?{" "}
                     <Link to="/login" className={styles.register}>
