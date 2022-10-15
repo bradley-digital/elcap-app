@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import { useCookies } from "react-cookie";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+
+// contexts
+import { AuthContext } from "contexts/AuthContext";
 
 // components
 import {
@@ -18,11 +20,9 @@ import { ReactComponent as Logo } from "assets/elcapitanadvisors_logo.svg";
 // styles
 import styles from "./Register.module.scss";
 
-const host = process.env.REACT_APP_BACKEND_HOST || "http://localhost:3030";
-
 export default function Register() {
   const router = useIonRouter();
-  const [, setCookie] = useCookies(["user"]);
+  const { isAuthenticated, register } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
 
   const phoneRegExp =
@@ -46,34 +46,22 @@ export default function Register() {
     onSubmit: (values, actions) => {
       const vals = { ...values };
       actions.resetForm();
-      fetch(`${host}/auth/register`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(vals),
-      })
-        .catch(() => {
-          return console.log("Connection to api failed");
-        })
-        .then((res) => {
-          if (!res || !res.ok || res.status >= 400) {
-            return console.log(
-              "Connection to API failed with a " + res + " code"
-            );
-          } else {
-            return res.json();
+
+      async function handleRegister() {
+        try {
+          await register(vals);
+          if (isAuthenticated) {
+            setTimeout(() => setLoading(true), 0);
+            setTimeout(() => {
+              router.push("/");
+            }, 800);
           }
-        })
-        .then((data) => {
-          if (!data) return;
-          setTimeout(() => setLoading(true), 0);
-          setTimeout(() => {
-            setCookie("user", "admin", { path: "/" });
-            router.push("/");
-          }, 800);
-        });
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      handleRegister();
     },
   });
 

@@ -1,16 +1,19 @@
+import { useContext } from "react";
 import { IonReactRouter } from "@ionic/react-router";
-import { useCookies } from "react-cookie";
+
+// contexts
+import { AuthContext } from "contexts/AuthContext";
 
 // components
 import AdminRoutes from "./RoutesAdmin";
 import UserRoutes from "./RoutesUser";
 
 export default function Routes() {
-  const [cookies] = useCookies(["user"]);
+  const { isAuthenticated } = useContext(AuthContext);
 
   return (
     <IonReactRouter>
-      {cookies.user === "admin" ? <AdminRoutes /> : <UserRoutes />}
+      {isAuthenticated ? <AdminRoutes /> : <UserRoutes />}
     </IonReactRouter>
   );
 }
