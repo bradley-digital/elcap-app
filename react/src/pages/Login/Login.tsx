@@ -2,6 +2,8 @@ import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useGoogleLogin } from "@react-oauth/google";
+import axios from "axios";
 
 // contexts
 import { AuthContext } from "contexts/AuthContext";
@@ -54,6 +56,20 @@ export default function Login() {
 
       handleLogin();
     },
+  });
+
+  const googleLoginBE = useGoogleLogin({
+    onSuccess: async ({ code }) => {
+      const tokens = await axios.post(
+        "http://localhost:3030/auth/google",
+        {
+          code,
+        },
+        { headers: { "Access-Control-Allow-Origin": "*" } }
+      );
+      console.log("tokens:", tokens);
+    },
+    flow: "auth-code",
   });
 
   return (
@@ -114,12 +130,16 @@ export default function Login() {
                 </form>
 
                 <div className={styles.socialLogin}>
-                  <IonButton color="light" type="submit">
+                  <IonButton color="light" onClick={googleLoginBE}>
+                    Google login BE
+                  </IonButton>
+
+                  {/* <IonButton color="light" type="submit">
                     Google
-                  </IonButton>
-                  <IonButton color="tertiary" type="submit">
+                  </IonButton> */}
+                  {/* <IonButton color="tertiary" type="submit">
                     Facebook
-                  </IonButton>
+                  </IonButton> */}
                 </div>
 
                 <div className={styles.accountHelp}>

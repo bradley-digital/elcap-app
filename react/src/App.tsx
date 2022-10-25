@@ -2,6 +2,7 @@
 import { IonApp, setupIonicReact } from "@ionic/react";
 import { AuthProvider } from "contexts/AuthContext";
 import Routes from "components/Routes/Routes";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 // theme variables
 import "theme/global.scss";
@@ -12,10 +13,12 @@ setupIonicReact();
 
 export default function App() {
   return (
-    <AuthProvider>
-      <IonApp>
-        <Routes />
-      </IonApp>
-    </AuthProvider>
+    <GoogleOAuthProvider clientId="848820691795-t036afc4bjh1n2s6e77nfbvroj2cviso.apps.googleusercontent.com">
+      <AuthProvider>
+        <IonApp>
+          <Routes />
+        </IonApp>
+      </AuthProvider>
+    </GoogleOAuthProvider>
   );
 }
