@@ -1,4 +1,4 @@
-import { useCookies } from "react-cookie";
+import { useContext, useEffect } from "react";
 import {
   IonAvatar,
   IonButton,
@@ -20,6 +20,9 @@ import {
   useIonRouter,
 } from "@ionic/react";
 import styles from "./Account.module.scss";
+
+// contexts
+import { AuthContext } from "contexts/AuthContext";
 
 type Profile = {
   img: string;
@@ -43,13 +46,24 @@ const profile: Profile = {
 
 export default function Account() {
   const router = useIonRouter();
-  const [, , removeCookie] = useCookies(["user"]);
+  const { authFetch, logout } = useContext(AuthContext);
 
   const { img, name, username, joined, phone, email, address } = profile;
 
+  useEffect(() => {
+    async function getUser() {
+      const json = await authFetch("/users/account");
+      console.log(json);
+    }
+    getUser();
+  }, []);
+
   function handleLogout() {
-    removeCookie("user", { path: "/" });
-    router.push("/");
+    async function postLogout() {
+      await logout();
+      router.push("/");
+    }
+    postLogout();
   }
 
   return (

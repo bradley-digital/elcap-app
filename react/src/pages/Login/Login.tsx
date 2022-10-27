@@ -1,16 +1,16 @@
-import type { SyntheticEvent } from "react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import { useCookies } from "react-cookie";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+
+// contexts
+import { AuthContext } from "contexts/AuthContext";
 
 // components
 import {
   IonContent,
   IonPage,
   IonText,
-  IonItem,
-  IonLabel,
-  IonInput,
   IonButton,
   useIonRouter,
 } from "@ionic/react";
@@ -22,17 +22,39 @@ import styles from "./Login.module.scss";
 
 export default function Login() {
   const router = useIonRouter();
-  const [, setCookie] = useCookies(["user"]);
+  const { isAuthenticated, login } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
 
-  function handleSubmit(e: SyntheticEvent) {
-    e.preventDefault();
-    setTimeout(() => setLoading(true), 0);
-    setTimeout(() => {
-      setCookie("user", "admin", { path: "/" });
-      router.push("/");
-    }, 800);
-  }
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: Yup.object({
+      email: Yup.string().email().required("Email required"),
+      password: Yup.string().required("Password required").min(8).max(28),
+    }),
+    onSubmit: (values, actions) => {
+      const vals = { ...values };
+      actions.resetForm();
+
+      async function handleLogin() {
+        try {
+          await login(vals);
+          if (isAuthenticated) {
+            setTimeout(() => setLoading(true), 0);
+            setTimeout(() => {
+              router.push("/");
+            }, 800);
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      handleLogin();
+    },
+  });
 
   return (
     <>
@@ -50,41 +72,48 @@ export default function Login() {
                   <p>Hi there! Welcome to El Cap.</p>
                 </IonText>
 
-                <form onSubmit={handleSubmit}>
-                  <IonItem className={styles.inputRow}>
-                    <IonLabel position="stacked" className={styles.inputLabel}>
-                      Email
-                    </IonLabel>
-                    <IonInput
-                      type="email"
-                      className={styles.formInput}
-                      placeholder="name@email.com"
-                    />
-                  </IonItem>
+                <form onSubmit={formik.handleSubmit}>
+                  <div className={styles.stacked}>
+                    <div className={styles.formGroup}>
+                      <input
+                        name="email"
+                        type="email"
+                        value={formik.values.email}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        className={styles.formInput}
+                        placeholder="Email"
+                      />
+                      <label className={styles.inputLabel}>Email</label>
+                      {formik.errors.email ? (
+                        <div className={styles.errorMsg}>
+                          {formik.errors.email}
+                        </div>
+                      ) : null}
+                    </div>
 
-                  <IonItem className={styles.inputRow}>
-                    <IonLabel position="stacked" className={styles.inputLabel}>
-                      Password
-                    </IonLabel>
-                    <IonInput type="password" className={styles.formInput} />
-                  </IonItem>
-
-                  <div
-                    className="ion-text-center"
-                    style={{
-                      paddingTop: 25,
-                      paddingBottom: 25,
-                      paddingRight: 16,
-                    }}
-                  >
-                    <IonButton type="submit">Login</IonButton>
+                    <div className={styles.formGroup}>
+                      <input
+                        name="password"
+                        type="password"
+                        value={formik.values.password}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        className={styles.formInput}
+                        placeholder="Password"
+                      />
+                      <label className={styles.inputLabel}>Password</label>
+                      {formik.errors.password ? (
+                        <div className={styles.errorMsg}>
+                          {formik.errors.password}
+                        </div>
+                      ) : null}
+                    </div>
                   </div>
+                  <IonButton type="submit">Login</IonButton>
                 </form>
 
-                <div
-                  className={styles.socialLogin}
-                  style={{ paddingRight: 16 }}
-                >
+                <div className={styles.socialLogin}>
                   <IonButton color="light" type="submit">
                     Google
                   </IonButton>
@@ -93,10 +122,7 @@ export default function Login() {
                   </IonButton>
                 </div>
 
-                <div
-                  className={styles.accountHelp}
-                  style={{ paddingRight: 16 }}
-                >
+                <div className={styles.accountHelp}>
                   <Link to="/" className={styles.forgotPassword}>
                     Forgot Password?
                   </Link>

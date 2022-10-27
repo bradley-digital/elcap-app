@@ -1,5 +1,6 @@
 // components
 import { IonApp, setupIonicReact } from "@ionic/react";
+import { AuthProvider } from "contexts/AuthContext";
 import Routes from "components/Routes/Routes";
 
 // theme variables
@@ -11,8 +12,10 @@ setupIonicReact();
 
 export default function App() {
   return (
-    <IonApp>
-      <Routes />
-    </IonApp>
+    <AuthProvider>
+      <IonApp>
+        <Routes />
+      </IonApp>
+    </AuthProvider>
   );
 }
