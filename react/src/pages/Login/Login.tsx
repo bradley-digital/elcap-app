@@ -101,7 +101,7 @@ export default function Login() {
                         placeholder="Email"
                       />
                       <label className={styles.inputLabel}>Email</label>
-                      {formik.errors.email ? (
+                      {formik.touched.email && formik.errors.email ? (
                         <div className={styles.errorMsg}>
                           {formik.errors.email}
                         </div>
@@ -119,7 +119,7 @@ export default function Login() {
                         placeholder="Password"
                       />
                       <label className={styles.inputLabel}>Password</label>
-                      {formik.errors.password ? (
+                      {formik.touched.password && formik.errors.password ? (
                         <div className={styles.errorMsg}>
                           {formik.errors.password}
                         </div>

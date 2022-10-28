@@ -92,7 +92,7 @@ export default function Register() {
                       placeholder="First Name"
                     />
                     <label className={styles.inputLabel}>First Name</label>
-                    {formik.errors.firstName ? (
+                    {formik.touched.firstName && formik.errors.firstName ? (
                       <div className={styles.errorMsg}>
                         {formik.errors.firstName}
                       </div>
@@ -110,7 +110,7 @@ export default function Register() {
                       placeholder="First Name"
                     />
                     <label className={styles.inputLabel}>Last Name</label>
-                    {formik.errors.lastName ? (
+                    {formik.touched.lastName && formik.errors.lastName ? (
                       <div className={styles.errorMsg}>
                         {formik.errors.lastName}
                       </div>
@@ -129,7 +129,7 @@ export default function Register() {
                         placeholder="Email"
                       />
                       <label className={styles.inputLabel}>Email</label>
-                      {formik.errors.email ? (
+                      {formik.touched.email && formik.errors.email ? (
                         <div className={styles.errorMsg}>
                           {formik.errors.email}
                         </div>
@@ -147,7 +147,7 @@ export default function Register() {
                         placeholder="Phone"
                       />
                       <label className={styles.inputLabel}>Phone</label>
-                      {formik.errors.phone ? (
+                      {formik.touched.phone && formik.errors.phone ? (
                         <div className={styles.errorMsg}>
                           {formik.errors.phone}
                         </div>
@@ -165,7 +165,7 @@ export default function Register() {
                         placeholder="Password"
                       />
                       <label className={styles.inputLabel}>Password</label>
-                      {formik.errors.password ? (
+                      {formik.touched.password && formik.errors.password ? (
                         <div className={styles.errorMsg}>
                           {formik.errors.password}
                         </div>

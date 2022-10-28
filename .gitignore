@@ -12,11 +12,13 @@ package-lock.json
 # production
 /build
 
-# misc
-.DS_Store
+# secrets
 .env
 .env.development
 .env.production
+
+# misc
+.DS_Store
 .vscode
 .idea
 *.iml
