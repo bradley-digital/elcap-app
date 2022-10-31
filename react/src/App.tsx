@@ -9,11 +9,13 @@ import "theme/global.scss";
 import "theme/variables.scss";
 import "theme/utilities.scss";
 
+const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || "";
+
 setupIonicReact();
 
 export default function App() {
   return (
-    <GoogleOAuthProvider clientId="848820691795-t036afc4bjh1n2s6e77nfbvroj2cviso.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId={googleClientId}>
       <AuthProvider>
         <IonApp>
           <Routes />

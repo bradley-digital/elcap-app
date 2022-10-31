@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { createContext, useState } from "react";
+import { useGoogleLogin } from "@react-oauth/google";
 
 const host = process.env.REACT_APP_BACKEND_HOST || "http://localhost:3030";
 
@@ -10,6 +11,10 @@ type Json = {
 
 type AuthProviderProps = {
   children: ReactNode;
+};
+
+type GoogleLoginArgs = {
+  code: string;
 };
 
 type LoginArgs = {
@@ -37,6 +42,9 @@ export const AuthContext = createContext({
   login: async function (arg: LoginArgs) {
     return;
   },
+  googleLogin: function () {
+    return;
+  },
   logout: async function () {
     return;
   },
@@ -53,7 +61,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function handleAuthPost(
     endpoint: string,
-    args: RegisterArgs | LoginArgs
+    args: RegisterArgs | LoginArgs | GoogleLoginArgs
   ) {
     try {
       const res = await fetch(`${host}${endpoint}`, {
@@ -114,6 +122,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
       console.error(err);
     }
   }
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: async ({ code }) => {
+      await handleAuthPost("/auth/google", {
+        code,
+      });
+    },
+    flow: "auth-code",
+  });
 
   async function logout(): Promise<void> {
     try {
@@ -221,6 +238,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         isAuthenticated,
         register,
         login,
+        googleLogin,
         logout,
         authFetch,
       }}

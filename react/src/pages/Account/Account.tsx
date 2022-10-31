@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import {
   IonAvatar,
   IonButton,
@@ -21,8 +21,8 @@ import {
 } from "@ionic/react";
 import styles from "./Account.module.scss";
 
-// contexts
-import { AuthContext } from "contexts/AuthContext";
+// hooks
+import useAuth from "hooks/useAuth";
 
 type Profile = {
   img: string;
@@ -46,7 +46,7 @@ const profile: Profile = {
 
 export default function Account() {
   const router = useIonRouter();
-  const { authFetch, logout } = useContext(AuthContext);
+  const { authFetch, logout } = useAuth();
 
   const { img, name, username, joined, phone, email, address } = profile;
 
