@@ -59,11 +59,11 @@ export default function Account() {
   }, []);
 
   function handleLogout() {
-    async function postLogout() {
+    async function asyncLogout() {
       await logout();
-      router.push("/");
+      router.push("/login");
     }
-    postLogout();
+    asyncLogout();
   }
 
   return (
