@@ -7,7 +7,11 @@ node_modules
 package-lock.json
 
 # testing
-/coverage
+react/coverage
+reactreact/test-results/
+reactreact/playwright-report/
+reactreact/playwright/.cache/
+react/e2e/screenshots
 
 # production
 /build
