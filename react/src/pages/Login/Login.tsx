@@ -1,10 +1,10 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-// contexts
-import { AuthContext } from "contexts/AuthContext";
+// hooks
+import useAuth from "hooks/useAuth";
 
 // components
 import {
@@ -22,7 +22,7 @@ import styles from "./Login.module.scss";
 
 export default function Login() {
   const router = useIonRouter();
-  const { isAuthenticated, login } = useContext(AuthContext);
+  const { isAuthenticated, googleLogin, login } = useAuth();
   const [loading, setLoading] = useState(false);
 
   const formik = useFormik({
@@ -114,12 +114,16 @@ export default function Login() {
                 </form>
 
                 <div className={styles.socialLogin}>
-                  <IonButton color="light" type="submit">
+                  <IonButton color="light" onClick={googleLogin}>
+                    Google login
+                  </IonButton>
+
+                  {/* <IonButton color="light" type="submit">
                     Google
-                  </IonButton>
-                  <IonButton color="tertiary" type="submit">
+                  </IonButton> */}
+                  {/* <IonButton color="tertiary" type="submit">
                     Facebook
-                  </IonButton>
+                  </IonButton> */}
                 </div>
 
                 <div className={styles.accountHelp}>

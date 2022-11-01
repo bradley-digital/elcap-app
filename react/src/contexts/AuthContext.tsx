@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { createContext, useState } from "react";
+import { useGoogleLogin } from "@react-oauth/google";
 
 const host = process.env.REACT_APP_BACKEND_HOST || "http://localhost:3030";
 
@@ -8,8 +9,17 @@ type Json = {
   [key: string]: any;
 };
 
+type TokenResponse = {
+  accessToken: string;
+  refreshToken: string;
+};
+
 type AuthProviderProps = {
   children: ReactNode;
+};
+
+type GoogleLoginArgs = {
+  code: string;
 };
 
 type LoginArgs = {
@@ -37,6 +47,9 @@ export const AuthContext = createContext({
   login: async function (arg: LoginArgs) {
     return;
   },
+  googleLogin: function () {
+    return;
+  },
   logout: async function () {
     return;
   },
@@ -51,34 +64,68 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [accessToken, setAccessToken] = useState<string>("");
   const [refreshToken, setRefreshToken] = useState<string>("");
 
-  async function handleAuthPost(
+  function handleFetch(
     endpoint: string,
-    args: RegisterArgs | LoginArgs
+    /* eslint-disable  @typescript-eslint/no-explicit-any */
+    options: any = { headers: {} }
+  ): Promise<Response> {
+    const finalHeaders = Object.assign(
+      {
+        "Content-Type": "application/json",
+      },
+      options.headers
+    );
+    delete options.headers;
+
+    if (accessToken && typeof finalHeaders["Authorization"] === "undefined") {
+      finalHeaders["Authorization"] = `Bearer ${accessToken}`;
+    }
+
+    if (options.body && typeof options.body !== "string") {
+      options.body = JSON.stringify(options.body);
+    }
+
+    const finalOptions = Object.assign(
+      {
+        method: "GET",
+        credentials: "include",
+        headers: finalHeaders,
+      },
+      options
+    );
+
+    return fetch(`${host}${endpoint}`, finalOptions);
+  }
+
+  function handleSetTokens(tokens: TokenResponse) {
+    const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
+      tokens;
+
+    if (newAccessToken && newRefreshToken) {
+      setAccessToken(newAccessToken);
+      setRefreshToken(newRefreshToken);
+      setIsAuthenticated(true);
+    } else {
+      throw new Error("Access tokens not provided");
+    }
+  }
+
+  async function handleAuthentication(
+    endpoint: string,
+    args: RegisterArgs | LoginArgs | GoogleLoginArgs
   ) {
     try {
-      const res = await fetch(`${host}${endpoint}`, {
+      const res = await handleFetch(`${endpoint}`, {
         method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(args),
+        body: args,
       });
 
       if (res.status !== 200) {
         throw new Error(`Failed POST to: ${endpoint}`);
       }
 
-      const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
-        await res.json();
-
-      if (newAccessToken && newRefreshToken) {
-        setAccessToken(newAccessToken);
-        setRefreshToken(newRefreshToken);
-        setIsAuthenticated(true);
-      } else {
-        throw new Error("Access tokens not provided");
-      }
+      const tokens = await res.json();
+      handleSetTokens(tokens);
     } catch (err) {
       console.error(err);
     }
@@ -92,7 +139,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     password,
   }: RegisterArgs): Promise<void> {
     try {
-      await handleAuthPost("/auth/register", {
+      await handleAuthentication("/auth/register", {
         firstName,
         lastName,
         email,
@@ -106,7 +153,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function login({ email, password }: LoginArgs): Promise<void> {
     try {
-      await handleAuthPost("/auth/login", {
+      await handleAuthentication("/auth/login", {
         email,
         password,
       });
@@ -115,15 +162,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
+  const googleLogin = useGoogleLogin({
+    onSuccess: async ({ code }) => {
+      await handleAuthentication("/auth/google", {
+        code,
+      });
+    },
+    flow: "auth-code",
+  });
+
   async function logout(): Promise<void> {
     try {
-      const res = await fetch(`${host}/auth/revoke-refresh-tokens`, {
+      const res = await handleFetch("/auth/revoke-refresh-tokens", {
         method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
       });
 
       if (res.status !== 200) {
@@ -140,33 +191,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function refreshAccessToken(): Promise<boolean> {
     try {
-      const res = await fetch(`${host}/auth/refresh-token`, {
+      const res = await handleFetch("/auth/refresh-token", {
         method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({
+        body: {
           refreshToken,
-        }),
+        },
       });
 
       if (res.status !== 200) {
         return false;
       }
 
-      const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
-        await res.json();
-
-      if (newAccessToken && newRefreshToken) {
-        setAccessToken(newAccessToken);
-        setRefreshToken(newRefreshToken);
-        setIsAuthenticated(true);
-        return true;
-      } else {
-        throw new Error("Access tokens not provided");
-      }
+      const tokens = await res.json();
+      handleSetTokens(tokens);
+      return true;
     } catch (err) {
       console.error(err);
     }
@@ -180,19 +218,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         throw new Error("Unauthorized");
       }
 
-      const finalOptions = Object.assign(
-        {
-          method: "GET",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
-        options
-      );
-
-      const res = await fetch(`${host}${endpoint}`, finalOptions);
+      const res = await handleFetch(endpoint, options);
 
       if (res.status === 200) {
         const json = res.json();
@@ -202,7 +228,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       if (res.status === 401) {
         const refreshed = await refreshAccessToken();
         if (refreshed) {
-          const json = await authFetch(endpoint, options);
+          const json = await handleFetch(endpoint, options);
           return json;
         }
       }
@@ -221,6 +247,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         isAuthenticated,
         register,
         login,
+        googleLogin,
         logout,
         authFetch,
       }}

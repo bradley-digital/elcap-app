@@ -1,10 +1,10 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-// contexts
-import { AuthContext } from "contexts/AuthContext";
+// hooks
+import useAuth from "hooks/useAuth";
 
 // components
 import {
@@ -22,7 +22,7 @@ import styles from "./Register.module.scss";
 
 export default function Register() {
   const router = useIonRouter();
-  const { isAuthenticated, register } = useContext(AuthContext);
+  const { isAuthenticated, register } = useAuth();
   const [loading, setLoading] = useState(false);
 
   const phoneRegExp =
