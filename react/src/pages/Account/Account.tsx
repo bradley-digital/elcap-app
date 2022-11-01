@@ -19,9 +19,7 @@ import {
   IonToolbar,
   useIonRouter,
 } from "@ionic/react";
-
 import styles from "./Account.module.scss";
-import { randAvatar, randUser } from "@ngneat/falso";
 
 // hooks
 import useAuth from "hooks/useAuth";
@@ -36,15 +34,14 @@ type Profile = {
   address: string;
 };
 
-const user = randUser({ locale: "us" });
 const profile: Profile = {
-  img: randAvatar(),
-  name: user.firstName + " " + user.lastName,
-  username: user.username,
+  img: "/assets/headshot.jpg",
+  name: "Joshua Bradley",
+  username: "joshbradley012",
   joined: "8/20/2022",
-  phone: user.phone,
-  email: user.username + "@elcapitanadvisors.com",
-  address: user.address.city + ", " + user.address.street,
+  phone: "661-706-9625",
+  email: "joshbradleydigital@gmail.com",
+  address: "25 Leslie Dr., Santa Barbara, CA",
 };
 
 export default function Account() {
