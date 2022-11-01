@@ -18,9 +18,10 @@ export default function PayTransactionsTransaction() {
 
   return (
     <>
-      {transactions.map(({ date, note, amount, ...rest }, i) => {
+      {transactions.map((transaction, i) => {
         let divider = null;
         let lines = true;
+        const { date, note, amount } = transaction;
         const nextTransaction = transactions[i + 1];
 
         if (date !== currentDate) {
@@ -42,7 +43,7 @@ export default function PayTransactionsTransaction() {
         }
 
         return (
-          <Fragment key={hash(rest)}>
+          <Fragment key={hash(transaction)}>
             {divider}
             <IonItem lines={lines ? "inset" : "none"}>
               <IonLabel>

@@ -6,6 +6,10 @@ services:
     restart: unless-stopped
     build:
       context: ./react
+    environment:
+      - REACT_APP_FRONTEND_HOST=${FRONTEND_HOST}
+      - REACT_APP_BACKEND_HOST=${BACKEND_HOST}
+      - REACT_APP_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
     volumes:
       - ./react:/var/www/app
       - /var/www/app/node_modules

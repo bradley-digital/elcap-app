@@ -1,4 +1,4 @@
-import { useCookies } from "react-cookie";
+import { useEffect } from "react";
 import {
   IonAvatar,
   IonButton,
@@ -21,8 +21,10 @@ import {
 } from "@ionic/react";
 
 import styles from "./Account.module.scss";
-
 import { randAvatar, randUser } from "@ngneat/falso";
+
+// hooks
+import useAuth from "hooks/useAuth";
 
 type Profile = {
   img: string;
@@ -41,19 +43,30 @@ const profile: Profile = {
   username: user.username,
   joined: "8/20/2022",
   phone: user.phone,
-  email: user.username + "@elcapitan.com",
+  email: user.username + "@elcapitanadvisors.com",
   address: user.address.city + ", " + user.address.street,
 };
 
 export default function Account() {
   const router = useIonRouter();
-  const [, , removeCookie] = useCookies(["user"]);
+  const { authFetch, logout } = useAuth();
 
   const { img, name, username, joined, phone, email, address } = profile;
 
+  useEffect(() => {
+    async function getUser() {
+      const json = await authFetch("/users/account");
+      console.log(json);
+    }
+    getUser();
+  }, []);
+
   function handleLogout() {
-    removeCookie("user", { path: "/" });
-    router.push("/");
+    async function asyncLogout() {
+      await logout();
+      router.push("/login");
+    }
+    asyncLogout();
   }
 
   return (

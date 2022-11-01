@@ -1,3 +1,5 @@
+@import "theme/variables.scss";
+
 .loginPage {
   h1 {
     margin-bottom: 15px;
@@ -50,20 +52,72 @@
     padding: 18px 0;
   }
 
+  .formGroup {
+    position: relative;
+    padding: 15px 0 0;
+    margin-top: 10px;
+    width: 100%;
+  }
+
   .inputLabel {
-    font-size: 18px;
-    font-weight: 600;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    display: block;
+    transition: 0.2s;
+    font-size: 1rem;
+    pointer-events: none;
     color: var(--ion-color-primary);
   }
 
   .formInput {
-    border-bottom: 1px solid black;
+    width: 100%;
+    border: 0;
+    border-bottom: 2px solid $gray;
+    outline: 0;
+    padding: 7px 0;
+    background: transparent;
+    transition: border-color 0.2s;
+
+    &::placeholder {
+      color: transparent;
+    }
+
+    &:placeholder-shown ~ .inputLabel {
+      font-size: 1.3rem;
+      cursor: text;
+      top: 20px;
+    }
+
+    &:focus {
+      padding-bottom: 6px;
+      font-weight: 700;
+      border-width: 3px;
+      border-image: linear-gradient(to right, $primary, $secondary);
+      border-image-slice: 1;
+
+      ~ .inputLabel {
+        position: absolute;
+        top: 0;
+        display: block;
+        transition: 0.2s;
+        font-size: 1rem;
+        color: $primary;
+        font-weight: 700;
+      }
+    }
+
+    // Reset input
+    &:required,
+    &:invalid {
+      box-shadow: none;
+    }
   }
 
   .socialLogin {
     display: flex;
     justify-content: space-between;
-    padding-bottom: 25px;
+    padding: 24px 0;
 
     ion-button {
       width: 44%;
@@ -90,5 +144,16 @@
     .register {
       font-weight: 500;
     }
+  }
+
+  .stacked {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 2em;
+  }
+
+  .errorMsg {
+    color: red;
+    padding: 5px 0;
   }
 }
