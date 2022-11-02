@@ -15,8 +15,10 @@
     "typescript": "^4.8.4"
   },
   "scripts": {
+    "test": "docker compose --profile test up",
     "kill": "docker compose rm -f && docker volume prune",
-    "start": "docker compose up --build",
+    "start": "docker compose up",
+    "build": "docker compose up --build",
     "precommit": "husky install"
   },
   "repository": {

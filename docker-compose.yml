@@ -15,6 +15,12 @@ services:
       - /var/www/app/node_modules
     ports:
       - "${PORT}:${PORT}"
+    healthcheck:
+      test: curl --fail http://localhost:${PORT} || exit 1
+      interval: 10s
+      retries: 5
+      start_period: 5s
+      timeout: 10s
     expose:
       - "${PORT}"
 
@@ -33,5 +39,21 @@ services:
     depends_on:
       - "react"
 
+  playwright:
+    container_name: elcap_test
+    profiles:
+      - "test"
+    depends_on:
+      react:
+        condition: service_healthy
+    build:
+      context: ./playwright
+    environment:
+      - REACT_APP_FRONTEND_HOST=${APPLICATION_CONTAINER}
+      - REACT_APP_FRONTEND_PORT=${PORT}
+    volumes:
+      - ./test-report:/var/www/app/playwright-report
+      - /var/www/app/node_modules
 volumes:
   react-data:
+  test-report:

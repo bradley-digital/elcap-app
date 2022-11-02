@@ -9,7 +9,6 @@ test.describe("Login", () => {
   test("user navigates to login", async ({ page }) => {
     const title = page.locator("h1");
     const logo = page.locator("ion-content svg");
-    console.log(logo);
     await expect(title).toHaveText("Login");
     await expect(logo).toBeDefined();
   });

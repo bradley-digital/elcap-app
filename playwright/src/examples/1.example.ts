@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test';
-import { config, screenshot } from './libs/utils';
+// import { config, screenshot } from './libs/utils';
 
 test.describe('Page dashboard', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto(config.url);
+    // await page.goto(config.url);
 
     // mock request
     await page.route('**/api/user', (route) =>
@@ -51,6 +51,6 @@ test.describe('Page dashboard', () => {
 
   test.afterEach(async ({ page }) => {
     await page.waitForTimeout(200);
-    await screenshot(page);
+    // await screenshot(page);
   });
 });

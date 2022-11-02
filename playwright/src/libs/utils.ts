@@ -14,8 +14,9 @@ const emailOptions = {
   suffix: "com",
 };
 
-// export const url = 'https://hub-app-dev.vercel.app';
-export const url = "http://localhost:8100";
+const FRONTEND_PORT = process.env.REACT_APP_FRONTEND_PORT || 3021;
+const FRONTEND_CONTAINER = process.env.REACT_APP_FRONTEND_HOST || "elcap_react";
+export const url = `http://${FRONTEND_CONTAINER}:${FRONTEND_PORT}`;
 
 export const user = {
   // @ts-ignore
@@ -33,7 +34,7 @@ export const config = {
   url: url,
 };
 
-const getDeviceHeight = async (page) => {
+const getDeviceHeight = async (page: any) => {
   return await page.evaluate(async () => {
     const navigation = 56;
     // @ts-ignore
@@ -43,7 +44,7 @@ const getDeviceHeight = async (page) => {
   });
 };
 
-export const screenshot = async (page, path = "") => {
+export const screenshot = async (page: any, path = "") => {
   const height = await getDeviceHeight(page);
   const urlName = page.url().replace(/\//g, "_");
   const pathname = path.length > 0 ? `${urlName}_${path}` : urlName;
