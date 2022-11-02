@@ -1,5 +1,6 @@
-import { test as base } from '@playwright/test';
-import { user } from './utils';
+import { test as base } from "@playwright/test";
+import { user } from "./utils";
+
 export type Options = {
   user: {
     email: string;

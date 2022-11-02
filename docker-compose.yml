@@ -40,7 +40,7 @@ services:
       - "react"
 
   playwright:
-    container_name: elcap_test
+    container_name: ${TEST_CONTAINER}
     profiles:
       - "test"
     depends_on:
@@ -54,6 +54,7 @@ services:
     volumes:
       - ./test-report:/var/www/app/playwright-report
       - /var/www/app/node_modules
+
 volumes:
   react-data:
   test-report:

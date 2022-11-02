@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { config, screenshot, user } from "./libs/utils";
+import { config, screenshot, user } from "./lib/utils";
 
 test.describe("Login", () => {
   test.beforeEach(async ({ page }) => {
