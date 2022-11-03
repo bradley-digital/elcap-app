@@ -19,7 +19,6 @@ import {
   IonToolbar,
   useIonRouter,
 } from "@ionic/react";
-
 import styles from "./Account.module.scss";
 
 // hooks

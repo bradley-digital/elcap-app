@@ -7,9 +7,13 @@ node_modules
 package-lock.json
 
 # testing
+<<<<<<< HEAD
 playwright-report
 e2e/screenshots
 test-report
+=======
+/coverage
+>>>>>>> dev
 
 # production
 /build
