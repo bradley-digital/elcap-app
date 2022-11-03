@@ -7,8 +7,9 @@ node_modules
 package-lock.json
 
 # testing
-playwright/e2e/screenshots
-/test-report
+playwright-report
+e2e/screenshots
+test-report
 
 # production
 /build
