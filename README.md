@@ -97,7 +97,7 @@ yarn test
 
 ## Building for Production
 
-In production, this repo will be pulled in by the (`elcap-docker`)[https://github.com/joshuabradley012/elcap-docker] repository and the `Dockerfile` will be run.
+In production, this repo will be pulled in by the [`elcap-docker`](https://github.com/joshuabradley012/elcap-docker) repository and the `Dockerfile` will be run.
 
 To test the production output, run:
 
