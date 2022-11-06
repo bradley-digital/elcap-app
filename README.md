@@ -11,31 +11,31 @@
 
 ### macOS Monterey v12.4
 
-**Homebrew**
+#### Homebrew
 
 ```
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
-**Node/NPM**
+#### Node/NPM
 
 ```
 brew install node@16
 ```
 
-**Yarn**
+#### Yarn
 
 ```
 npm install --global yarn
 ```
 
-**Dotenv CLI**
+#### Dotenv CLI
 
 ```
 npm install --global dotenv-cli
 ```
 
-**TypeScript**
+#### TypeScript
 
 ```
 npm install --global typescript
@@ -43,26 +43,26 @@ npm install --global typescript
 
 ### Ubuntu v20.04
 
-**Node/NPM**
+#### Node/NPM
 
 ```
 curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
 sudo apt-get -y install nodejs
 ```
 
-**Yarn**
+#### Yarn
 
 ```
 npm install --global yarn
 ```
 
-**Dotenv CLI**
+#### Dotenv CLI
 
 ```
 npm install --global dotenv-cli
 ```
 
-**TypeScript**
+#### TypeScript
 
 ```
 npm install --global typescript
