@@ -2,4 +2,5 @@
 . "$(dirname "$0")/_/husky.sh"
 
 yarn pretty-quick --staged
-yarn eslint ./react/src/ --ext .ts,.tsx
+yarn eslint ./src/ --ext .ts,.tsx
+yarn eslint ./playwright/ --ext .ts,.tsx

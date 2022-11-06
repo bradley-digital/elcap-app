@@ -7,10 +7,12 @@ node_modules
 package-lock.json
 
 # testing
-/coverage
+playwright-report
+test-report
+playwright/screenshots
 
 # production
-/build
+build
 
 # secrets
 .env
@@ -21,16 +23,11 @@ package-lock.json
 .DS_Store
 .vscode
 .idea
+.eslintcache
+.vercel
 *.iml
+*.swp
 
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# Optional eslint cache
-.eslintcache
-.vercel
-/test-results/
-/playwright-report/
-/playwright/.cache/
-/e2e/screenshots

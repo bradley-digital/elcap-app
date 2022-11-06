@@ -2,79 +2,107 @@
 
 ## Dependencies
 
-- Docker v20.10.17
+- Homebrew v3.6.2 (macOS only)
+- Node v16.17.0
+- NPM v8.15.0
+- Yarn v1.22.19
+- Dotenv CLI v6.0.0
+- TypeScript v4.8.3
 
-### macOS
+### macOS Monterey v12.4
 
-#### Docker
+**Homebrew**
 
-Install the desktop application: https://docs.docker.com/get-started/#download-and-install-docker
+```
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+**Node/NPM**
+
+```
+brew install node@16
+```
+
+**Yarn**
+
+```
+npm install --global yarn
+```
+
+**Dotenv CLI**
+
+```
+npm install --global dotenv-cli
+```
+
+**TypeScript**
+
+```
+npm install --global typescript
+```
 
 ### Ubuntu v20.04
 
-#### Update and upgrade apt-get
+**Node/NPM**
 
 ```
-sudo apt-get -y update
-sudo apt-get -y upgrade
+curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+sudo apt-get -y install nodejs
 ```
 
-#### Docker
+**Yarn**
 
 ```
-sudo apt-get remove docker docker-engine docker.io containerd runc
-sudo apt-get update
-sudo apt-get install \
-    ca-certificates \
-    curl \
-    gnupg \
-    lsb-release
-sudo mkdir -p /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt-get update
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+npm install --global yarn
+```
+
+**Dotenv CLI**
+
+```
+npm install --global dotenv-cli
+```
+
+**TypeScript**
+
+```
+npm install --global typescript
 ```
 
 ## Getting Started
 
-#### Environment Variables
+### Environment Variables
 
 ```
 cp sample.env .env
 ```
 
-#### Node Modules
+Get these secrets from another developer
+
+- `REACT_APP_GOOGLE_CLIENT_ID`
+
+### Project Setup
 
 ```
 yarn install
 yarn precommit
 ```
 
-#### Formatter
-
-Auto linting is enabled on commit as a Git hook using `husky`, `pretty-quick`, and `eslint`.
-
-To change what runs on commit update the `pre-commit` file in the `/.husky` directory. To change what files are ignored, update the `react/.eslintignore` file.
-
-#### Docker
-```
-docker compose up
-```
-
-If you're changing the docker config, you might need to trigger a fresh build for changes to take affect:
-
-```
-docker compose rm -f
-docker volume prune
-docker compose up --build
-```
-
-You can also use yarn commands:
+### Yarn Commands
 
 ```
 yarn start
-yarn kill
+yarn test
+# `yarn test` requires `yarn start` to be running
 ```
+
+## Building for Production
+
+In production, this repo will be pulled in by the (`elcap-docker`)[https://github.com/joshuabradley012/elcap-docker] repository and the `Dockerfile` will be run.
+
+To test the production output, run:
+
+```
+yarn build
+```
+
+You would need to have NGINX hosting these files to view them correctly. It is recommended to use the Docker container.
