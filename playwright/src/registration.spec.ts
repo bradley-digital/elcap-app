@@ -1,9 +1,10 @@
 import { test, expect } from "@playwright/test";
-import { config, screenshot, user } from "./lib/utils";
+import { screenshot, user } from "./lib/utils";
+import { baseURL } from "../playwright.config";
 
 test.describe("Login", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto(config.url);
+    await page.goto(baseURL);
   });
 
   test("user navigates to login", async ({ page }) => {

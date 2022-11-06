@@ -56,7 +56,7 @@ export default function Account() {
       console.log(json);
     }
     getUser();
-  }, []);
+  }, [authFetch]);
 
   function handleLogout() {
     async function asyncLogout() {

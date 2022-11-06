@@ -7,16 +7,13 @@ import {
   randPhoneNumber,
   randAvatar,
 } from "@ngneat/falso";
+import config from "../../playwright.config";
 
 const emailOptions = {
-  provider: "elcapitan",
+  provider: "elcapitanadvisors",
   nameSeparator: "none",
   suffix: "com",
 };
-
-const FRONTEND_PORT = process.env.REACT_APP_FRONTEND_PORT || 3021;
-const FRONTEND_CONTAINER = process.env.REACT_APP_FRONTEND_HOST || "elcap_react";
-export const url = `http://${FRONTEND_CONTAINER}:${FRONTEND_PORT}`;
 
 export const user = {
   // @ts-ignore
@@ -27,11 +24,6 @@ export const user = {
   address: randAddress(),
   phone: randPhoneNumber(),
   avatar: randAvatar(),
-};
-
-export const config = {
-  pathScrenshots: "./e2e/screenshots",
-  url: url,
 };
 
 const getDeviceHeight = async (page: any) => {
@@ -52,7 +44,7 @@ export const screenshot = async (page: any, path = "") => {
 
   return page.screenshot({
     quality: 80,
-    path: `${config.pathScrenshots}/${pathname}.jpg`,
+    path: `${config.screenshotDir}/${pathname}.jpg`,
     fullPage: true,
   });
 };

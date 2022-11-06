@@ -14,4 +14,4 @@ RUN yarn install
 COPY --chown=node:node ./ ./
 
 # start command
-CMD ["yarn", "start"]
+CMD ["yarn", "build"]
