@@ -105,4 +105,4 @@ To test the production output, run:
 yarn build
 ```
 
-You would need to have NGINX hosting these files to view them correctly. It is recommended to use the Docker container.
+You would need to have NGINX hosting these files to view them correctly. You could also use Vercel's [serve](https://www.npmjs.com/package/serve) package. It is recommended to use the Docker container.
