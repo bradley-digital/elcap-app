@@ -1,83 +1,26 @@
-import { Redirect, Route, Switch } from 'react-router-dom';
-import {
-  IonApp,
-  IonIcon,
-  IonLabel,
-  IonRouterOutlet,
-  IonTabBar,
-  IonTabButton,
-  IonTabs,
-  setupIonicReact
-} from '@ionic/react';
-import { IonReactRouter } from '@ionic/react-router';
-import { bag, card, personCircle } from 'ionicons/icons';
-import { useCookies } from 'react-cookie';
+// components
+import { IonApp, setupIonicReact } from "@ionic/react";
+import { AuthProvider } from "contexts/AuthContext";
+import Routes from "components/Routes/Routes";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
-/* Pages */
-import Account from 'pages/Account';
-import Example from 'pages/Example';
-import Login from 'pages/Login';
-import Pay from 'pages/Pay';
-import Register from 'pages/Register';
-import Shop from 'pages/Shop';
-import Loader from 'components/Loader';
+// theme variables
+import "theme/global.scss";
+import "theme/variables.scss";
+import "theme/utilities.scss";
 
-/* Theme variables */
-import 'theme/global.scss';
-import 'theme/variables.scss';
-import 'theme/utilities.scss';
+const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || "";
 
 setupIonicReact();
 
 export default function App() {
-  const [cookies] = useCookies(['user']);
-
   return (
-    <IonApp>
-      {cookies.user === 'admin' ? (
-        <IonReactRouter>
-          <IonTabs>
-            <IonRouterOutlet>
-              <Switch>
-                <Route path="/pay" component={Pay} />
-                <Route exact path="/account" component={Account} />
-                <Route exact path="/shop" component={Shop} />
-                <Route exact path="/example" component={Example} />
-                <Route exact path="/loader" component={Loader} />
-
-                {/* Fallback route */}
-                <Route render={() => <Redirect to="/pay" />} />
-              </Switch>
-            </IonRouterOutlet>
-            <IonTabBar slot="bottom">
-              <IonTabButton tab="shop" href="/shop">
-                <IonIcon icon={bag} />
-                <IonLabel>Shop</IonLabel>
-              </IonTabButton>
-              <IonTabButton tab="pay" href="/pay">
-                <IonIcon icon={card} />
-                <IonLabel>Pay</IonLabel>
-              </IonTabButton>
-              <IonTabButton tab="account" href="/account">
-                <IonIcon icon={personCircle} />
-                <IonLabel>Account</IonLabel>
-              </IonTabButton>
-            </IonTabBar>
-          </IonTabs>
-        </IonReactRouter>
-      ) : (
-        <IonReactRouter>
-          <IonRouterOutlet>
-            <Switch>
-              <Route exact path="/login" component={Login} />
-              <Route exact path="/register" component={Register} />
-
-              {/* Fallback route */}
-              <Route render={() => <Redirect to="/login" />} />
-            </Switch>
-          </IonRouterOutlet>
-        </IonReactRouter>
-      )}
-    </IonApp>
+    <GoogleOAuthProvider clientId={googleClientId}>
+      <AuthProvider>
+        <IonApp>
+          <Routes />
+        </IonApp>
+      </AuthProvider>
+    </GoogleOAuthProvider>
   );
 }
