@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { createContext, useState } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
+import { useCookies } from "react-cookie";
 
 const host = process.env.REACT_APP_BACKEND_HOST || "http://localhost:3020";
 
@@ -22,11 +23,6 @@ type GoogleLoginArgs = {
   code: string;
 };
 
-type LoginArgs = {
-  email: string;
-  password: string;
-};
-
 type RegisterArgs = {
   firstName: string;
   lastName: string;
@@ -35,10 +31,16 @@ type RegisterArgs = {
   password: string;
 };
 
+type LoginArgs = {
+  email: string;
+  password: string;
+};
+
 // There has to be a better way to do this,
 // this is bad TypeScript
 export const AuthContext = createContext({
   isAuthenticated: false,
+  isGoogleAuthError: false,
   /* eslint-disable  @typescript-eslint/no-unused-vars */
   register: async function (arg: RegisterArgs) {
     return;
@@ -57,10 +59,15 @@ export const AuthContext = createContext({
   authFetch: async function (endpoint: string) {
     return {};
   },
+  verifyJwt: async function () {
+    return;
+  },
 });
 
 export function AuthProvider({ children }: AuthProviderProps) {
+  const [cookies, setCookie, removeCookie] = useCookies(["jwt-cookie"]);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isGoogleAuthError, setIsGoogleAuthError] = useState<boolean>(false);
   const [accessToken, setAccessToken] = useState<string>("");
   const [refreshToken, setRefreshToken] = useState<string>("");
 
@@ -121,11 +128,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
       });
 
       if (res.status !== 200) {
+        endpoint === "/auth/google" && setIsGoogleAuthError(true);
         throw new Error(`Failed POST to: ${endpoint}`);
       }
 
       const tokens = await res.json();
       handleSetTokens(tokens);
+      setCookie("jwt-cookie", tokens, { path: "/", sameSite: "strict" });
+      endpoint === "/auth/google" && setIsGoogleAuthError(false);
     } catch (err) {
       console.error(err);
     }
@@ -180,7 +190,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       if (res.status !== 200) {
         throw new Error("Logout failed");
       }
-
+      removeCookie("jwt-cookie", { path: "/" });
       setAccessToken("");
       setRefreshToken("");
       setIsAuthenticated(false);
@@ -241,15 +251,39 @@ export function AuthProvider({ children }: AuthProviderProps) {
     return {};
   }
 
+  async function verifyJwt(): Promise<void> {
+    if (cookies["jwt-cookie"]) {
+      const res = await handleFetch("/auth/refresh-token", {
+        method: "POST",
+        body: {
+          refreshToken: cookies["jwt-cookie"].refreshToken,
+        },
+      });
+
+      if (res.status !== 200) {
+        throw new Error("Token refresh failed");
+      }
+
+      if (res.status === 200) {
+        const tokens = await res.json();
+        handleSetTokens(tokens);
+        setCookie("jwt-cookie", tokens, { path: "/", sameSite: "strict" });
+        return;
+      }
+    }
+  }
+
   return (
     <AuthContext.Provider
       value={{
         isAuthenticated,
+        isGoogleAuthError,
         register,
         login,
         googleLogin,
         logout,
         authFetch,
+        verifyJwt,
       }}
     >
       {children}

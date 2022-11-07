@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -11,19 +11,23 @@ import {
   IonContent,
   IonPage,
   IonText,
+  IonIcon,
   IonButton,
   useIonRouter,
 } from "@ionic/react";
 import Loader from "components/Loader/Loader";
 import { ReactComponent as Logo } from "assets/elcapitanadvisors_logo.svg";
+import { ReactComponent as GoogleLogo } from "assets/google-icon.svg";
+import { closeOutline } from "ionicons/icons";
 
 // styles
 import styles from "./Login.module.scss";
 
 export default function Login() {
   const router = useIonRouter();
-  const { isAuthenticated, googleLogin, login } = useAuth();
+  const { isAuthenticated, isGoogleAuthError, googleLogin, login } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [isGoogleAuthAlertShown, setIsGoogleAuthAlertShown] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -56,6 +60,10 @@ export default function Login() {
     },
   });
 
+  useEffect(() => {
+    isGoogleAuthError && setIsGoogleAuthAlertShown(true);
+  }, [isGoogleAuthError]);
+
   return (
     <>
       {loading === false ? (
@@ -71,6 +79,18 @@ export default function Login() {
                   <h1>Login</h1>
                   <p>Hi there! Welcome to El Cap.</p>
                 </IonText>
+                {isGoogleAuthAlertShown && (
+                  <div className={styles.googleAuthError}>
+                    <p>Please register to use Google Login.</p>
+                    <IonIcon
+                      size="large"
+                      icon={closeOutline}
+                      onClick={() =>
+                        setIsGoogleAuthAlertShown(!setIsGoogleAuthAlertShown)
+                      }
+                    />
+                  </div>
+                )}
 
                 <form onSubmit={formik.handleSubmit}>
                   <div className={styles.stacked}>
@@ -115,15 +135,8 @@ export default function Login() {
 
                 <div className={styles.socialLogin}>
                   <IonButton color="light" onClick={googleLogin}>
-                    Google login
+                    <GoogleLogo /> Google Login
                   </IonButton>
-
-                  {/* <IonButton color="light" type="submit">
-                    Google
-                  </IonButton> */}
-                  {/* <IonButton color="tertiary" type="submit">
-                    Facebook
-                  </IonButton> */}
                 </div>
 
                 <div className={styles.accountHelp}>

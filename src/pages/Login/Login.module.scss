@@ -18,7 +18,7 @@
   ion-button {
     width: 100%;
     font-size: 18px;
-    box-shadow: -1px 1px 20px 1px rgba(0, 0, 0, 0.4);
+    box-shadow: -1px 1px 20px 1px rgba(0, 0, 0, 0.3);
     border-radius: 28px;
   }
 
@@ -68,6 +68,20 @@
     font-size: 1rem;
     pointer-events: none;
     color: var(--ion-color-primary);
+  }
+
+  .googleAuthError {
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--ion-color-warning);
+    border-radius: 5px;
+    p {
+      color: $black;
+      padding: 10px;
+    }
+    ion-icon {
+      cursor: pointer;
+    }
   }
 
   .formInput {
@@ -121,7 +135,12 @@
 
     ion-button {
       width: 44%;
-      box-shadow: none;
+
+      svg {
+        margin-right: 10px;
+        float: left;
+      }
+      font-size: 13px;
     }
   }
 
