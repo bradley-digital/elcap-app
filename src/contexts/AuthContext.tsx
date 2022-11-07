@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { createContext, useState } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 
-const host = process.env.REACT_APP_BACKEND_HOST || "http://localhost:3030";
+const host = process.env.REACT_APP_BACKEND_HOST || "http://localhost:3020";
 
 type Json = {
   /* eslint-disable  @typescript-eslint/no-explicit-any */
