@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -8,22 +8,29 @@ import useAuth from "hooks/useAuth";
 
 // components
 import {
+  IonButton,
   IonContent,
+  IonIcon,
   IonPage,
   IonText,
-  IonButton,
   useIonRouter,
 } from "@ionic/react";
 import Loader from "components/Loader/Loader";
 import { ReactComponent as Logo } from "assets/elcapitanadvisors_logo.svg";
+import { closeOutline } from "ionicons/icons";
 
 // styles
-import styles from "./Register.module.scss";
+import styles from "../Login/Login.module.scss";
 
 export default function Register() {
   const router = useIonRouter();
-  const { isAuthenticated, register } = useAuth();
-  const [loading, setLoading] = useState(false);
+  const { errorMessage, isAuthenticated, register } = useAuth();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [showError, setShowError] = useState<boolean>(false);
+
+  useEffect(() => {
+    errorMessage && setShowError(true);
+  }, [errorMessage]);
 
   const phoneRegExp =
     /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -68,7 +75,7 @@ export default function Register() {
   return (
     <>
       {loading === false ? (
-        <IonPage className={styles.registerPage}>
+        <IonPage className={styles.page}>
           <IonContent fullscreen className="ion-padding">
             <div className={styles.elcapLogo}>
               <Logo />
@@ -79,6 +86,17 @@ export default function Register() {
                 <IonText>
                   <h1>Sign Up</h1>
                 </IonText>
+                {showError && errorMessage && (
+                  <div className={styles.authError}>
+                    {errorMessage}
+                    <IonIcon
+                      icon={closeOutline}
+                      onClick={() =>
+                        setShowError(false)
+                      }
+                    />
+                  </div>
+                )}
 
                 <form onSubmit={formik.handleSubmit}>
                   <div className={styles.formGroup}>
@@ -176,9 +194,9 @@ export default function Register() {
                   <IonButton type="submit">Register</IonButton>
                 </form>
 
-                <div className={styles.accountHelp}>
+                <div className={styles.registerAccountHelp}>
                   <p>
-                    Have an Account?{" "}
+                    Have an account?{" "}
                     <Link to="/login" className={styles.register}>
                       Sign In
                     </Link>

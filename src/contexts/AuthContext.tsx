@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useCookies } from "react-cookie";
 
@@ -36,11 +37,25 @@ type LoginArgs = {
   password: string;
 };
 
-// There has to be a better way to do this,
-// this is bad TypeScript
-export const AuthContext = createContext({
-  isAuthenticated: false,
-  isGoogleAuthError: false,
+type RegisterFunction = (args: RegisterArgs) => Promise<void>;
+type LoginFunction = (args: LoginArgs) => Promise<void>;
+type GoogleLoginFunction = () => void;
+type LogoutFunction = () => Promise<void>;
+type AuthFetchFunction = (endpoint: string) => Promise<object>;
+
+type AuthContextProps = {
+  isAuthenticated: boolean;
+  errorMessage: ReactNode | null;
+  register: RegisterFunction;
+  login: LoginFunction;
+  googleLogin: GoogleLoginFunction;
+  logout: LogoutFunction;
+  authFetch: AuthFetchFunction;
+};
+
+export const AuthContext = createContext<AuthContextProps>({
+  isAuthenticated: true,
+  errorMessage: null,
   /* eslint-disable  @typescript-eslint/no-unused-vars */
   register: async function (arg: RegisterArgs) {
     return;
@@ -59,17 +74,62 @@ export const AuthContext = createContext({
   authFetch: async function (endpoint: string) {
     return {};
   },
-  verifyJwt: async function () {
-    return;
-  },
 });
+
+function getCookie(name: string): string {
+  name = name + '=';
+  var value = '';
+  var cookies = document.cookie.split(';');
+  for (var i = 0; i < cookies.length; i++) {
+    var cookie = cookies[i];
+    cookie = cookie.trim();
+    if (cookie.includes(name)) {
+      value = cookie.substring(name.length, cookie.length);
+      break;
+    }
+  }
+  return value;
+}
+
+const defaultRefreshToken = getCookie('jwt-cookie');
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [cookies, setCookie, removeCookie] = useCookies(["jwt-cookie"]);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [isGoogleAuthError, setIsGoogleAuthError] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
+  const [errorMessage, setErrorMessage] = useState<ReactNode | null>(null);
   const [accessToken, setAccessToken] = useState<string>("");
-  const [refreshToken, setRefreshToken] = useState<string>("");
+  const [refreshToken, setRefreshToken] = useState<string>(defaultRefreshToken);
+
+  useEffect(() => {
+    async function refresh() {
+      const refreshToken = cookies["jwt-cookie"];
+      if (refreshToken) {
+        setRefreshToken(refreshToken);
+        await refreshAccessToken(refreshToken);
+      } else {
+        setIsAuthenticated(false);
+      }
+    }
+    refresh();
+  }, []);
+
+  function handleSetTokens(tokens: TokenResponse): void {
+    const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
+      tokens;
+
+    if (newAccessToken && newRefreshToken) {
+      setCookie("jwt-cookie", newRefreshToken, {
+        path: "/",
+        sameSite: "strict"
+      });
+      setAccessToken(newAccessToken);
+      setRefreshToken(newRefreshToken);
+      setIsAuthenticated(true);
+      setErrorMessage(null);
+    } else {
+      throw new Error("Access tokens not provided");
+    }
+  }
 
   function handleFetch(
     endpoint: string,
@@ -83,10 +143,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
       options.headers
     );
     delete options.headers;
-
-    if (accessToken && typeof finalHeaders["Authorization"] === "undefined") {
-      finalHeaders["Authorization"] = `Bearer ${accessToken}`;
-    }
 
     if (options.body && typeof options.body !== "string") {
       options.body = JSON.stringify(options.body);
@@ -104,23 +160,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     return fetch(`${host}${endpoint}`, finalOptions);
   }
 
-  function handleSetTokens(tokens: TokenResponse) {
-    const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
-      tokens;
-
-    if (newAccessToken && newRefreshToken) {
-      setAccessToken(newAccessToken);
-      setRefreshToken(newRefreshToken);
-      setIsAuthenticated(true);
-    } else {
-      throw new Error("Access tokens not provided");
-    }
-  }
-
   async function handleAuthentication(
     endpoint: string,
-    args: RegisterArgs | LoginArgs | GoogleLoginArgs
-  ) {
+    args: RegisterArgs | LoginArgs | GoogleLoginArgs,
+    newErrorMessage: ReactNode | null
+  ): Promise<void> {
     try {
       const res = await handleFetch(`${endpoint}`, {
         method: "POST",
@@ -128,14 +172,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
       });
 
       if (res.status !== 200) {
-        endpoint === "/auth/google" && setIsGoogleAuthError(true);
+        setErrorMessage(newErrorMessage);
         throw new Error(`Failed POST to: ${endpoint}`);
       }
 
       const tokens = await res.json();
       handleSetTokens(tokens);
-      setCookie("jwt-cookie", tokens, { path: "/", sameSite: "strict" });
-      endpoint === "/auth/google" && setIsGoogleAuthError(false);
     } catch (err) {
       console.error(err);
     }
@@ -149,13 +191,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
     password,
   }: RegisterArgs): Promise<void> {
     try {
+      const registerErrorMessage = <p>Failed to register.</p>;
       await handleAuthentication("/auth/register", {
         firstName,
         lastName,
         email,
         phone,
         password,
-      });
+      }, registerErrorMessage);
     } catch (err) {
       console.error(err);
     }
@@ -163,26 +206,36 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function login({ email, password }: LoginArgs): Promise<void> {
     try {
+      const loginErrorMessage = <p>Please <Link to="/register">register</Link> before logging in.</p>;
       await handleAuthentication("/auth/login", {
         email,
         password,
-      });
+      }, loginErrorMessage);
     } catch (err) {
       console.error(err);
     }
   }
 
+  const googleLoginErrorMessage = <p>Please <Link to="/register">register</Link> before using Google to login.</p>;
   const googleLogin = useGoogleLogin({
     onSuccess: async ({ code }) => {
       await handleAuthentication("/auth/google", {
         code,
-      });
+      }, googleLoginErrorMessage);
+    },
+    onError: () => {
+      setErrorMessage(googleLoginErrorMessage);
     },
     flow: "auth-code",
   });
 
   async function logout(): Promise<void> {
     try {
+      removeCookie("jwt-cookie", { path: "/" });
+      setAccessToken("");
+      setRefreshToken("");
+      setIsAuthenticated(false);
+
       const res = await handleFetch("/auth/revoke-refresh-tokens", {
         method: "POST",
       });
@@ -190,42 +243,44 @@ export function AuthProvider({ children }: AuthProviderProps) {
       if (res.status !== 200) {
         throw new Error("Logout failed");
       }
-      removeCookie("jwt-cookie", { path: "/" });
-      setAccessToken("");
-      setRefreshToken("");
-      setIsAuthenticated(false);
     } catch (err) {
       console.error(err);
     }
   }
 
-  async function refreshAccessToken(): Promise<boolean> {
+  async function refreshAccessToken(refreshTokenArg?: string): Promise<void> {
     try {
+      let finalRefreshToken = refreshToken;
+
+      if (typeof refreshTokenArg === "string") {
+        finalRefreshToken = refreshTokenArg;
+      }
+
       const res = await handleFetch("/auth/refresh-token", {
         method: "POST",
         body: {
-          refreshToken,
+          refreshToken: finalRefreshToken,
         },
       });
 
       if (res.status !== 200) {
-        return false;
+        throw new Error("Unauthorized");
       }
 
       const tokens = await res.json();
       handleSetTokens(tokens);
-      return true;
     } catch (err) {
       console.error(err);
     }
-
-    return false;
   }
 
-  async function authFetch(endpoint: string, options?: any): Promise<Json> {
+  async function authFetch(
+    endpoint: string,
+    options: any = { headers: {} }
+  ): Promise<Json> {
     try {
-      if (!isAuthenticated || !accessToken) {
-        throw new Error("Unauthorized");
+      if (accessToken && options.headers && typeof options.headers["Authorization"] === "undefined") {
+        options.headers["Authorization"] = `Bearer ${accessToken}`;
       }
 
       const res = await handleFetch(endpoint, options);
@@ -236,14 +291,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
 
       if (res.status === 401) {
-        const refreshed = await refreshAccessToken();
-        if (refreshed) {
-          const json = await handleFetch(endpoint, options);
-          return json;
-        }
+        await refreshAccessToken();
+        const json = await handleFetch(endpoint, options);
+        return json;
       }
-
-      throw new Error("Unauthorized");
     } catch (err) {
       console.error(err);
     }
@@ -251,39 +302,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
     return {};
   }
 
-  async function verifyJwt(): Promise<void> {
-    if (cookies["jwt-cookie"]) {
-      const res = await handleFetch("/auth/refresh-token", {
-        method: "POST",
-        body: {
-          refreshToken: cookies["jwt-cookie"].refreshToken,
-        },
-      });
-
-      if (res.status !== 200) {
-        throw new Error("Token refresh failed");
-      }
-
-      if (res.status === 200) {
-        const tokens = await res.json();
-        handleSetTokens(tokens);
-        setCookie("jwt-cookie", tokens, { path: "/", sameSite: "strict" });
-        return;
-      }
-    }
-  }
-
   return (
     <AuthContext.Provider
       value={{
         isAuthenticated,
-        isGoogleAuthError,
+        errorMessage,
         register,
         login,
         googleLogin,
         logout,
         authFetch,
-        verifyJwt,
       }}
     >
       {children}

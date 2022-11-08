@@ -8,11 +8,11 @@ import useAuth from "hooks/useAuth";
 
 // components
 import {
+  IonButton,
   IonContent,
+  IonIcon,
   IonPage,
   IonText,
-  IonIcon,
-  IonButton,
   useIonRouter,
 } from "@ionic/react";
 import Loader from "components/Loader/Loader";
@@ -25,9 +25,13 @@ import styles from "./Login.module.scss";
 
 export default function Login() {
   const router = useIonRouter();
-  const { isAuthenticated, isGoogleAuthError, googleLogin, login } = useAuth();
-  const [loading, setLoading] = useState(false);
-  const [isGoogleAuthAlertShown, setIsGoogleAuthAlertShown] = useState(false);
+  const { errorMessage, isAuthenticated, googleLogin, login } = useAuth();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [showError, setShowError] = useState<boolean>(false);
+
+  useEffect(() => {
+    errorMessage && setShowError(true);
+  }, [errorMessage]);
 
   const formik = useFormik({
     initialValues: {
@@ -39,12 +43,12 @@ export default function Login() {
       password: Yup.string().required("Password required").min(8).max(28),
     }),
     onSubmit: (values, actions) => {
-      const vals = { ...values };
+      const loginValues = { ...values };
       actions.resetForm();
 
       async function handleLogin() {
         try {
-          await login(vals);
+          await login(loginValues);
           if (isAuthenticated) {
             setTimeout(() => setLoading(true), 0);
             setTimeout(() => {
@@ -60,14 +64,10 @@ export default function Login() {
     },
   });
 
-  useEffect(() => {
-    isGoogleAuthError && setIsGoogleAuthAlertShown(true);
-  }, [isGoogleAuthError]);
-
   return (
     <>
       {loading === false ? (
-        <IonPage className={styles.loginPage}>
+        <IonPage className={styles.page}>
           <IonContent fullscreen className="ion-padding">
             <div className={styles.elcapLogo}>
               <Logo />
@@ -77,16 +77,15 @@ export default function Login() {
               <div>
                 <IonText>
                   <h1>Login</h1>
-                  <p>Hi there! Welcome to El Cap.</p>
+                  <p>Hi there! Welcome to El Capitan.</p>
                 </IonText>
-                {isGoogleAuthAlertShown && (
-                  <div className={styles.googleAuthError}>
-                    <p>Please register to use Google Login.</p>
+                {showError && errorMessage && (
+                  <div className={styles.authError}>
+                    {errorMessage}
                     <IonIcon
-                      size="large"
                       icon={closeOutline}
                       onClick={() =>
-                        setIsGoogleAuthAlertShown(!setIsGoogleAuthAlertShown)
+                        setShowError(false)
                       }
                     />
                   </div>
@@ -139,12 +138,12 @@ export default function Login() {
                   </IonButton>
                 </div>
 
-                <div className={styles.accountHelp}>
+                <div className={styles.loginAccountHelp}>
                   <Link to="/" className={styles.forgotPassword}>
-                    Forgot Password?
+                    Forgot password?
                   </Link>
                   <Link to="/register" className={styles.register}>
-                    Create Account
+                    Create account
                   </Link>
                 </div>
               </div>
