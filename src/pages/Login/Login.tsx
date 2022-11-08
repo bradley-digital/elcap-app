@@ -50,7 +50,7 @@ export default function Login() {
         try {
           await login(loginValues);
           if (isAuthenticated) {
-            setTimeout(() => setLoading(true), 0);
+            setLoading(true);
             setTimeout(() => {
               router.push("/");
             }, 800);

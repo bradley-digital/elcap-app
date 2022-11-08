@@ -3,6 +3,7 @@ import { createContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useCookies } from "react-cookie";
+import { getCookie } from "lib/cookies";
 
 const host = process.env.REACT_APP_BACKEND_HOST || "http://localhost:3020";
 
@@ -76,22 +77,7 @@ export const AuthContext = createContext<AuthContextProps>({
   },
 });
 
-function getCookie(name: string): string {
-  name = name + '=';
-  var value = '';
-  var cookies = document.cookie.split(';');
-  for (var i = 0; i < cookies.length; i++) {
-    var cookie = cookies[i];
-    cookie = cookie.trim();
-    if (cookie.includes(name)) {
-      value = cookie.substring(name.length, cookie.length);
-      break;
-    }
-  }
-  return value;
-}
-
-const defaultRefreshToken = getCookie('jwt-cookie');
+const defaultRefreshToken = getCookie("jwt-cookie");
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [cookies, setCookie, removeCookie] = useCookies(["jwt-cookie"]);
@@ -102,15 +88,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   useEffect(() => {
     async function refresh() {
-      const refreshToken = cookies["jwt-cookie"];
-      if (refreshToken) {
-        setRefreshToken(refreshToken);
-        await refreshAccessToken(refreshToken);
+      console.log("Cookie authorization, refresh access token");
+      if (refreshToken !== "") {
+        await refreshAccessToken();
       } else {
         setIsAuthenticated(false);
       }
     }
     refresh();
+  // Don't want to trigger refresh when cookies are set
+  // Ignoring dependency array warnings
+  /* eslint-disable-next-line */
   }, []);
 
   function handleSetTokens(tokens: TokenResponse): void {
@@ -166,6 +154,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     newErrorMessage: ReactNode | null
   ): Promise<void> {
     try {
+      console.log("handleAuthentication");
       const res = await handleFetch(`${endpoint}`, {
         method: "POST",
         body: args,
@@ -250,6 +239,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function refreshAccessToken(refreshTokenArg?: string): Promise<void> {
     try {
+      console.log("refreshAccessToken");
       let finalRefreshToken = refreshToken;
 
       if (typeof refreshTokenArg === "string") {
@@ -279,6 +269,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     options: any = { headers: {} }
   ): Promise<Json> {
     try {
+      console.log("authFetch", endpoint);
       if (accessToken && options.headers && typeof options.headers["Authorization"] === "undefined") {
         options.headers["Authorization"] = `Bearer ${accessToken}`;
       }
@@ -291,6 +282,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
 
       if (res.status === 401) {
+        console.log("Refreshing token for authFetch");
         await refreshAccessToken();
         const json = await handleFetch(endpoint, options);
         return json;
