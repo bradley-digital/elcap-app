@@ -1,6 +1,3 @@
-// hooks
-import useSessionTimeout from "hooks/useSessionTimeout";
-
 // components
 import {
   IonContent,
@@ -17,8 +14,6 @@ import ShopProduct from "components/Shop/ShopProduct";
 import styles from "./Shop.module.scss";
 
 export default function Shop() {
-  useSessionTimeout();
-
   return (
     <IonPage className={styles.shopPage}>
       <IonHeader>

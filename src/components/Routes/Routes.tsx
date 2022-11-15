@@ -7,8 +7,13 @@ import useAuth from "hooks/useAuth";
 import AdminRoutes from "./RoutesAdmin";
 import UserRoutes from "./RoutesUser";
 
+// hooks
+import useSessionTimeout from "hooks/useSessionTimeout";
+
 export default function Routes() {
   const { isAuthenticated } = useAuth();
+
+  useSessionTimeout();
 
   return (
     <IonReactRouter>

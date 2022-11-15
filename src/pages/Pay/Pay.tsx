@@ -1,8 +1,5 @@
 import { Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
 
-// hooks
-import useSessionTimeout from "hooks/useSessionTimeout";
-
 // components
 import {
   IonContent,
@@ -21,8 +18,6 @@ import Transactions from "components/Pay/PayTransactions";
 import PayMenuLinks from "components/Pay/PayMenuLinks";
 
 export default function Pay({ match }: RouteComponentProps) {
-  useSessionTimeout();
-
   return (
     <IonPage>
       <IonSplitPane contentId="main">

@@ -22,7 +22,6 @@ import styles from "./Account.module.scss";
 
 // hooks
 import useAuth from "hooks/useAuth";
-import useSessionTimeout from "hooks/useSessionTimeout";
 
 type Profile = {
   img: string;
@@ -47,8 +46,6 @@ const profile: Profile = {
 export default function Account() {
   const { authFetch, logout } = useAuth();
   const { img, name, username, joined, phone, email, address } = profile;
-
-  useSessionTimeout();
 
   useEffect(() => {
     async function getUser() {
