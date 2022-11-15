@@ -43,6 +43,7 @@ type LoginFunction = (args: LoginArgs) => Promise<void>;
 type GoogleLoginFunction = () => void;
 type LogoutFunction = () => Promise<void>;
 type AuthFetchFunction = (endpoint: string) => Promise<object>;
+type RefreshAccessToken = () => Promise<void>;
 
 type AuthContextProps = {
   isAuthenticated: boolean;
@@ -52,6 +53,7 @@ type AuthContextProps = {
   googleLogin: GoogleLoginFunction;
   logout: LogoutFunction;
   authFetch: AuthFetchFunction;
+  refreshAccessToken: RefreshAccessToken;
 };
 
 export const AuthContext = createContext<AuthContextProps>({
@@ -75,6 +77,9 @@ export const AuthContext = createContext<AuthContextProps>({
   authFetch: async function (endpoint: string) {
     return {};
   },
+  refreshAccessToken: async function (refreshTokenArg?: string) {
+    return;
+  },
 });
 
 const defaultRefreshToken = getCookie("jwt-cookie");
@@ -96,9 +101,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
     }
     refresh();
-  // Don't want to trigger refresh when cookies are set
-  // Ignoring dependency array warnings
-  /* eslint-disable-next-line */
+    // Don't want to trigger refresh when cookies are set
+    // Ignoring dependency array warnings
+    /* eslint-disable-next-line */
   }, []);
 
   function handleSetTokens(tokens: TokenResponse): void {
@@ -108,7 +113,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     if (newAccessToken && newRefreshToken) {
       setCookie("jwt-cookie", newRefreshToken, {
         path: "/",
-        sameSite: "strict"
+        sameSite: "strict",
       });
       setAccessToken(newAccessToken);
       setRefreshToken(newRefreshToken);
@@ -181,13 +186,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }: RegisterArgs): Promise<void> {
     try {
       const registerErrorMessage = <p>Failed to register.</p>;
-      await handleAuthentication("/auth/register", {
-        firstName,
-        lastName,
-        email,
-        phone,
-        password,
-      }, registerErrorMessage);
+      await handleAuthentication(
+        "/auth/register",
+        {
+          firstName,
+          lastName,
+          email,
+          phone,
+          password,
+        },
+        registerErrorMessage
+      );
     } catch (err) {
       console.error(err);
     }
@@ -195,22 +204,38 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function login({ email, password }: LoginArgs): Promise<void> {
     try {
-      const loginErrorMessage = <p>Please <Link to="/register">register</Link> before logging in.</p>;
-      await handleAuthentication("/auth/login", {
-        email,
-        password,
-      }, loginErrorMessage);
+      const loginErrorMessage = (
+        <p>
+          Please <Link to="/register">register</Link> before logging in.
+        </p>
+      );
+      await handleAuthentication(
+        "/auth/login",
+        {
+          email,
+          password,
+        },
+        loginErrorMessage
+      );
     } catch (err) {
       console.error(err);
     }
   }
 
-  const googleLoginErrorMessage = <p>Please <Link to="/register">register</Link> before using Google to login.</p>;
+  const googleLoginErrorMessage = (
+    <p>
+      Please <Link to="/register">register</Link> before using Google to login.
+    </p>
+  );
   const googleLogin = useGoogleLogin({
     onSuccess: async ({ code }) => {
-      await handleAuthentication("/auth/google", {
-        code,
-      }, googleLoginErrorMessage);
+      await handleAuthentication(
+        "/auth/google",
+        {
+          code,
+        },
+        googleLoginErrorMessage
+      );
     },
     onError: () => {
       setErrorMessage(googleLoginErrorMessage);
@@ -270,7 +295,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
   ): Promise<Json> {
     try {
       console.log("authFetch", endpoint);
-      if (accessToken && options.headers && typeof options.headers["Authorization"] === "undefined") {
+      if (
+        accessToken &&
+        options.headers &&
+        typeof options.headers["Authorization"] === "undefined"
+      ) {
         options.headers["Authorization"] = `Bearer ${accessToken}`;
       }
 
@@ -304,6 +333,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         googleLogin,
         logout,
         authFetch,
+        refreshAccessToken,
       }}
     >
       {children}

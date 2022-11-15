@@ -17,12 +17,12 @@ import {
   IonText,
   IonTitle,
   IonToolbar,
-  useIonRouter,
 } from "@ionic/react";
 import styles from "./Account.module.scss";
 
 // hooks
 import useAuth from "hooks/useAuth";
+import useSessionTimeout from "hooks/useSessionTimeout";
 
 type Profile = {
   img: string;
@@ -45,10 +45,10 @@ const profile: Profile = {
 };
 
 export default function Account() {
-  const router = useIonRouter();
   const { authFetch, logout } = useAuth();
-
   const { img, name, username, joined, phone, email, address } = profile;
+
+  useSessionTimeout();
 
   useEffect(() => {
     async function getUser() {
@@ -61,7 +61,6 @@ export default function Account() {
   function handleLogout() {
     async function asyncLogout() {
       await logout();
-      router.push("/login");
     }
     asyncLogout();
   }
