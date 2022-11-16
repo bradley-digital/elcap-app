@@ -35,6 +35,13 @@ type RegisterArgs = {
   password: string;
 };
 
+type UpdateArgs = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+};
+
 // There has to be a better way to do this,
 // this is bad TypeScript
 export const AuthContext = createContext({
@@ -45,6 +52,9 @@ export const AuthContext = createContext({
   },
   /* eslint-disable  @typescript-eslint/no-unused-vars */
   login: async function (arg: LoginArgs) {
+    return;
+  },
+  update: async function (arg: UpdateArgs) {
     return;
   },
   googleLogin: function () {
@@ -112,7 +122,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function handleAuthentication(
     endpoint: string,
-    args: RegisterArgs | LoginArgs | GoogleLoginArgs
+    args: RegisterArgs | LoginArgs | GoogleLoginArgs | UpdateArgs
   ) {
     try {
       const res = await handleFetch(`${endpoint}`, {
@@ -145,6 +155,24 @@ export function AuthProvider({ children }: AuthProviderProps) {
         email,
         phone,
         password,
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function update({
+    firstName,
+    lastName,
+    email,
+    phone,
+  }: UpdateArgs): Promise<void> {
+    try {
+      await handleAuthentication("/auth/updateAccount", {
+        firstName,
+        lastName,
+        email,
+        phone,
       });
     } catch (err) {
       console.error(err);
@@ -246,6 +274,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       value={{
         isAuthenticated,
         register,
+        update,
         login,
         googleLogin,
         logout,

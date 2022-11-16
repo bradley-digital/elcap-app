@@ -1,4 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { Formik, useFormik } from "formik";
+import * as Yup from "yup";
 import {
   IonAvatar,
   IonButton,
@@ -24,38 +27,51 @@ import styles from "./Account.module.scss";
 // hooks
 import useAuth from "hooks/useAuth";
 
-type Profile = {
-  img: string;
-  name: string;
-  username: string;
-  joined: string;
-  phone: string;
-  email: string;
-  address: string;
-};
+// type Profile = {
+//   img: string;
+//   name: string;
+//   username: string;
+//   joined: string;
+//   phone: string;
+//   email: string;
+//   address: string;
+// };
 
-const profile: Profile = {
-  img: "/assets/headshot.jpg",
-  name: "Joshua Bradley",
-  username: "joshbradley012",
-  joined: "8/20/2022",
-  phone: "661-706-9625",
-  email: "joshbradleydigital@gmail.com",
-  address: "25 Leslie Dr., Santa Barbara, CA",
-};
+// const profile: Profile = {
+//   img: "/assets/headshot.jpg",
+//   name: "Joshua Bradley",
+//   username: "joshbradley012",
+//   joined: "8/20/2022",
+//   phone: "661-706-9625",
+//   email: "joshbradleydigital@gmail.com",
+//   address: "25 Leslie Dr., Santa Barbara, CA",
+// };
 
 export default function Account() {
   const router = useIonRouter();
   const { authFetch, logout } = useAuth();
+  const [profile, setProfile] = useState<{ [key: string]: any }>({});
+  const [loading, setLoading] = useState<boolean>();
+  const { update } = useAuth();
 
-  const { img, name, username, joined, phone, email, address } = profile;
+  const date = new Date(profile.createdAt);
+  const joinedDate = date.toLocaleDateString("en-US");
+
+  const img = profile.img ? profile.img : "/assets/headshot.jpg";
+  const name = profile.firstName
+    ? profile.firstName + " " + profile.lastName
+    : "N/A";
+  const username = profile.userName ? profile.userName : "N/A";
+  const joined = profile.createdAt ? joinedDate : "N/A";
 
   useEffect(() => {
     async function getUser() {
-      const json = await authFetch("/users/account");
-      console.log(json);
+      const data = await authFetch("/users/account");
+      setProfile(data);
+      setLoading(false);
     }
     getUser();
+    setFormikValues();
   }, [authFetch]);
 
   function handleLogout() {
@@ -66,7 +82,54 @@ export default function Account() {
     asyncLogout();
   }
 
-  return (
+  function setFormikValues() {
+    formik.setFieldValue("firstName", profile.firstName);
+    formik.setFieldValue("lastName", profile.lastName);
+    formik.setFieldValue("email", profile.email);
+    formik.setFieldValue("phone", profile.phone);
+    formik.setFieldValue("userName", profile.userName);
+    formik.setFieldValue("address", profile.address ? profile.address : "N/A");
+  }
+
+  const phoneRegExp =
+    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+
+  const formik = useFormik({
+    initialValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      userName: "",
+      address: "",
+    },
+    validationSchema: Yup.object({
+      firstName: Yup.string().required("First Name required"),
+      lastName: Yup.string().required("Last Name required"),
+      email: Yup.string().email().required("Email required"),
+      phone: Yup.string().matches(phoneRegExp, "Phone number is not valid"),
+      userName: Yup.string().required("User Name required"),
+      address: Yup.string(),
+    }),
+    onSubmit: (values, actions) => {
+      const vals = { ...values };
+      actions.resetForm();
+
+      async function handleRegister() {
+        try {
+          await update(vals);
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      handleRegister();
+    },
+  });
+
+  return loading ? (
+    <div>loading...</div>
+  ) : (
     <IonPage className={styles.accountPage}>
       <IonHeader>
         <IonToolbar>
@@ -76,7 +139,7 @@ export default function Account() {
       <IonContent>
         <IonGrid>
           <IonRow className="ion-justify-content-center">
-            <IonCol size-md="8" size-lg="6">
+            <IonCol size-md="8" size-lg="8">
               <IonCard className={styles.profileCard}>
                 <div className="d-flex ion-justify-content-center">
                   <IonAvatar>
@@ -94,32 +157,136 @@ export default function Account() {
                   </IonButton>
                 </div>
               </IonCard>
-              <IonList>
-                <IonListHeader>Personal information</IonListHeader>
-                <IonItem>
-                  <IonLabel position="stacked">Name</IonLabel>
-                  <IonInput value={name} readonly />
-                </IonItem>
-                <IonItem>
-                  <IonLabel position="stacked">Username</IonLabel>
-                  <IonInput value={username} readonly />
-                </IonItem>
-                <IonItem>
-                  <IonLabel position="stacked">Email</IonLabel>
-                  <IonInput value={email} readonly />
-                </IonItem>
-                <IonItem>
-                  <IonLabel position="stacked">Phone</IonLabel>
-                  <IonInput value={phone} readonly />
-                </IonItem>
-                <IonItem>
-                  <IonLabel position="stacked">Address</IonLabel>
-                  <IonInput value={address} readonly />
-                </IonItem>
-              </IonList>
             </IonCol>
           </IonRow>
         </IonGrid>
+        <div className={styles.contentBottom}>
+          <div>
+            <IonText>
+              <h1>Sign Up</h1>
+            </IonText>
+
+            <form onSubmit={formik.handleSubmit}>
+              <div className={styles.formGroup}>
+                <input
+                  name="firstName"
+                  type="text"
+                  value={formik.values.firstName}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className={styles.formInput}
+                  placeholder="First Name"
+                />
+                <label className={styles.inputLabel}>First Name</label>
+                {formik.touched.firstName && formik.errors.firstName ? (
+                  <div className={styles.errorMsg}>
+                    {formik.errors.firstName}
+                  </div>
+                ) : null}
+              </div>
+
+              <div className={styles.formGroup}>
+                <input
+                  name="lastName"
+                  type="text"
+                  value={formik.values.lastName}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className={styles.formInput}
+                  placeholder="Last Name"
+                />
+                <label className={styles.inputLabel}>Last Name</label>
+                {formik.touched.lastName && formik.errors.lastName ? (
+                  <div className={styles.errorMsg}>
+                    {formik.errors.lastName}
+                  </div>
+                ) : null}
+              </div>
+
+              <div className={styles.formGroup}>
+                <input
+                  name="userName"
+                  type="text"
+                  value={formik.values.userName}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className={styles.formInput}
+                  placeholder="Username"
+                />
+                <label className={styles.inputLabel}>Username</label>
+                {formik.touched.userName && formik.errors.userName ? (
+                  <div className={styles.errorMsg}>
+                    {formik.errors.userName}
+                  </div>
+                ) : null}
+              </div>
+
+              <div className={styles.stacked}>
+                <div className={styles.formGroup}>
+                  <input
+                    name="email"
+                    type="email"
+                    value={formik.values.email}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    className={styles.formInput}
+                    placeholder="Email"
+                    readOnly
+                  />
+                  <label className={styles.inputLabel}>Email</label>
+                  {formik.touched.email && formik.errors.email ? (
+                    <div className={styles.errorMsg}>{formik.errors.email}</div>
+                  ) : null}
+                </div>
+
+                <div className={styles.formGroup}>
+                  <input
+                    name="phone"
+                    type="text"
+                    value={formik.values.phone}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    className={styles.formInput}
+                    placeholder="Phone"
+                  />
+                  <label className={styles.inputLabel}>Phone</label>
+                  {formik.touched.phone && formik.errors.phone ? (
+                    <div className={styles.errorMsg}>{formik.errors.phone}</div>
+                  ) : null}
+                </div>
+
+                <div className={styles.formGroup}>
+                  <input
+                    name="address"
+                    type="text"
+                    value={formik.values.address}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    className={styles.formInput}
+                    placeholder="Address"
+                  />
+                  <label className={styles.inputLabel}>Address</label>
+                  {formik.touched.address && formik.errors.address ? (
+                    <div className={styles.errorMsg}>
+                      {formik.errors.address}
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+
+              <IonButton type="submit">Register</IonButton>
+            </form>
+
+            <div className={styles.accountHelp}>
+              <p>
+                Have an Account?{" "}
+                <Link to="/login" className={styles.register}>
+                  Sign In
+                </Link>
+              </p>
+            </div>
+          </div>
+        </div>
       </IonContent>
     </IonPage>
   );
