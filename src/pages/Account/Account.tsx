@@ -10,11 +10,6 @@ import {
   IonContent,
   IonGrid,
   IonHeader,
-  IonItem,
-  IonInput,
-  IonLabel,
-  IonList,
-  IonListHeader,
   IonPage,
   IonRow,
   IonText,
@@ -26,26 +21,6 @@ import styles from "./Account.module.scss";
 
 // hooks
 import useAuth from "hooks/useAuth";
-
-// type Profile = {
-//   img: string;
-//   name: string;
-//   username: string;
-//   joined: string;
-//   phone: string;
-//   email: string;
-//   address: string;
-// };
-
-// const profile: Profile = {
-//   img: "/assets/headshot.jpg",
-//   name: "Joshua Bradley",
-//   username: "joshbradley012",
-//   joined: "8/20/2022",
-//   phone: "661-706-9625",
-//   email: "joshbradleydigital@gmail.com",
-//   address: "25 Leslie Dr., Santa Barbara, CA",
-// };
 
 export default function Account() {
   const router = useIonRouter();
@@ -88,7 +63,7 @@ export default function Account() {
     formik.setFieldValue("email", profile.email);
     formik.setFieldValue("phone", profile.phone);
     formik.setFieldValue("userName", profile.userName);
-    formik.setFieldValue("address", profile.address ? profile.address : "N/A");
+    formik.setFieldValue("address", profile.address ? profile.address : "");
   }
 
   const phoneRegExp =
