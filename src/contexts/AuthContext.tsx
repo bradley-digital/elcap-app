@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { createContext, useEffect, useRef, useState } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useCookies } from "react-cookie";
+import EventEmitter from "events";
 import cookies from "lib/cookies";
 import waitForRef from "lib/waitForRef";
 
@@ -83,8 +84,9 @@ export const AuthContext = createContext<AuthContextProps>({
 });
 
 const refreshTokenCookie = "ec_rt";
-
 const defaultRefreshToken = cookies.get(refreshTokenCookie);
+const authEvents = new EventEmitter();
+const waitForRefresh = () => new Promise<void>(res => authEvents.once("refreshed", res));
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [cookies, setCookie, removeCookie] = useCookies([refreshTokenCookie]);
@@ -96,7 +98,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   useEffect(() => {
     async function refresh() {
-      console.log("refresh", refreshTokenRef.current);
       if (typeof refreshTokenRef.current === "undefined") {
         setIsAuthenticated(false);
       } else {
@@ -109,7 +110,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   function handleSetTokens(tokens: TokenResponse): void {
-    console.log("handleSetTokens");
     const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
       tokens;
 
@@ -128,7 +128,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   function handleRemoveTokens(): void {
-    console.log("handleRemoveTokens");
     accessTokenRef.current = "";
     refreshTokenRef.current = "";
     setIsAuthenticated(false);
@@ -140,7 +139,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     /* eslint-disable  @typescript-eslint/no-explicit-any */
     options: any = { headers: {} }
   ): Promise<Response> {
-    console.log("handleFetch", endpoint);
     const finalHeaders = Object.assign(
       {
         "Content-Type": "application/json",
@@ -169,7 +167,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     endpoint: string,
     args: RegisterArgs | LoginArgs | GoogleLoginArgs
   ): Promise<void> {
-    console.log("handleAuthentication", endpoint);
     try {
       const res = await handleFetch(`${endpoint}`, {
         method: "POST",
@@ -188,43 +185,28 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
-  async function handleRefreshAccessToken() {
-    console.log("handleRefreshAccessToken");
-    try {
-      isRefreshingRef.current = true;
-      const res = await handleFetch("/auth/refresh-token", {
-        method: "POST",
-        body: {
-          refreshToken: refreshTokenRef.current,
-        },
-      });
-
-      if (res.status !== 200) {
-        handleRemoveTokens();
-        throw new Error("Unauthorized");
-      }
-
-      console.log("handleRefreshAccessToken handleFetch done", isRefreshingRef);
-
-      const tokens = await res.json();
-      handleSetTokens(tokens);
-      isRefreshingRef.current = false;
-      console.log("handleRefreshAccessToken handleSetTokens done", isRefreshingRef);
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
   async function refreshAccessToken(): Promise<void> {
-    console.log("refreshAccessToken");
     try {
       if (isRefreshingRef.current) {
-        await waitForRef({
-          ref: isRefreshingRef,
-          toEqual: false,
-        });
+        await waitForRefresh();
       } else {
-        await handleRefreshAccessToken();
+        isRefreshingRef.current = true;
+        const res = await handleFetch("/auth/refresh-token", {
+          method: "POST",
+          body: {
+            refreshToken: refreshTokenRef.current,
+          },
+        });
+
+        if (res.status !== 200) {
+          handleRemoveTokens();
+          throw new Error("Unauthorized");
+        }
+
+        const tokens = await res.json();
+        handleSetTokens(tokens);
+        isRefreshingRef.current = false;
+        authEvents.emit("refreshed");
       }
     } catch (err) {
       console.error(err);
@@ -236,12 +218,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
     options: any = { headers: {} }
   ): Promise<Json> {
     try {
-      console.log("authFetch", endpoint, isRefreshingRef);
-
-      await waitForRef({
-        ref: isRefreshingRef,
-        toEqual: false,
-      });
+      if (isRefreshingRef.current) {
+        await waitForRefresh();
+      }
 
       if (
         accessTokenRef.current &&
