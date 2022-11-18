@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from "react";
 import cookies from "lib/cookies";
-import jwt_decode from "jwt-decode";
+import jwtDecode from "jwt-decode";
 
 // hooks
 import useAuth from "hooks/useAuth";
@@ -9,42 +9,35 @@ const useSessionTimeout = () => {
   const { logout, refreshAccessToken } = useAuth();
 
   const refreshTokenOrLogOut = useCallback(
-    (lastMovementTime: Date) => {
-      const authToken = cookies.get("jwt-cookie");
-      const decodedAuthToken: any = authToken?.length && jwt_decode(authToken);
-      const currentTime: Date = new Date();
-      const timeThreeMinutesAgo: Date = new Date(
-        currentTime.getTime() - 3 * 60 * 1000
-      );
-      const expirationWindowStart: Date = new Date(
-        decodedAuthToken?.exp * 1000 - 3000
-      );
-      const isTokenAboutToExpire: boolean = expirationWindowStart < currentTime;
-      const isUserInMovementWindow = lastMovementTime >= timeThreeMinutesAgo;
+    (lastMovementTime: number) => {
+      const refreshToken = cookies.get("ec_rt");
+      const refreshTokenExists = Boolean(refreshToken?.length);
 
-      function handleLogout() {
-        async function asyncLogout() {
-          await logout();
-        }
-        asyncLogout();
-      }
+      if (!refreshTokenExists) return;
 
-      if (authToken?.length && isTokenAboutToExpire) {
-        isUserInMovementWindow ? refreshAccessToken() : handleLogout();
+      const decodedRefreshToken: any = jwtDecode(refreshToken);
+      const currentTime = Date.now();
+      const threeMinutesAgo = currentTime - 3 * 60 * 1000;
+      const expirationWindowStart = decodedRefreshToken?.exp * 1000 - 3000
+      const isTokenAboutToExpire = expirationWindowStart < currentTime;
+      const isUserInMovementWindow = lastMovementTime >= threeMinutesAgo;
+
+      if (isTokenAboutToExpire) {
+        isUserInMovementWindow ? refreshAccessToken() : logout();
       }
     },
     [refreshAccessToken, logout]
   );
 
   useEffect(() => {
-    let lastMovementTime = new Date();
+    let lastMovementTime = Date.now();
 
     const updateLastMovement = () => {
-      lastMovementTime = new Date();
+      lastMovementTime = Date.now();
     };
+
     window.addEventListener("click", updateLastMovement);
     window.addEventListener("scroll", updateLastMovement);
-    window.addEventListener("mousemove", updateLastMovement);
     window.addEventListener("keypress", updateLastMovement);
 
     const checker = () => refreshTokenOrLogOut(lastMovementTime);
@@ -54,7 +47,6 @@ const useSessionTimeout = () => {
     return () => {
       window.removeEventListener("click", updateLastMovement);
       window.removeEventListener("onscroll", updateLastMovement);
-      window.removeEventListener("mousemove", updateLastMovement);
       window.removeEventListener("onkeypress", updateLastMovement);
       window.clearInterval(intervalId);
     };

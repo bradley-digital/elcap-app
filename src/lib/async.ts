@@ -15,7 +15,7 @@ export function waitForRef(condition: Condition): Promise<void> {
         res();
       } else if (Date.now() > start + (3 * 1000)) {
         clearInterval(intervalId);
-        rej(new Error('waitFor exceeded timeout'));
+        rej(new Error('waitFor timeout'));
       }
     }, 100);
   });

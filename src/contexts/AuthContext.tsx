@@ -58,7 +58,7 @@ type AuthContextProps = {
 };
 
 export const AuthContext = createContext<AuthContextProps>({
-  isAuthenticated: true,
+  isAuthenticated: false,
   errorMessage: null,
   /* eslint-disable  @typescript-eslint/no-unused-vars */
   register: async function (arg: RegisterArgs) {
@@ -83,11 +83,11 @@ export const AuthContext = createContext<AuthContextProps>({
   },
 });
 
-const defaultRefreshToken = cookies.get("jwt-cookie");
+const defaultRefreshToken = cookies.get("ec_rt");
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [cookies, setCookie, removeCookie] = useCookies(["jwt-cookie"]);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
+  const [cookies, setCookie, removeCookie] = useCookies(["ec_rt"]);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<ReactNode | null>(null);
   const accessTokenRef = useRef<string>("");
   const refreshTokenRef = useRef<undefined | string>(defaultRefreshToken);
@@ -103,7 +103,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
     }
     refresh();
-    // Only want this to run on load
+    // Only run on load
     /* eslint-disable-next-line */
   }, []);
 
@@ -116,7 +116,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       accessTokenRef.current = newAccessToken;
       refreshTokenRef.current = newRefreshToken;
       setIsAuthenticated(true);
-      setCookie("jwt-cookie", newRefreshToken, {
+      setCookie("ec_rt", newRefreshToken, {
         path: "/",
         sameSite: "strict",
       });
@@ -131,7 +131,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     accessTokenRef.current = "";
     refreshTokenRef.current = "";
     setIsAuthenticated(false);
-    removeCookie("jwt-cookie", { path: "/" });
+    removeCookie("ec_rt", { path: "/" });
   }
 
   function handleFetch(
@@ -200,6 +200,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       });
 
       if (res.status !== 200) {
+        handleRemoveTokens();
         throw new Error("Unauthorized");
       }
 
@@ -237,12 +238,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       console.log("authFetch", endpoint, isRefreshingRef);
 
-      if (isRefreshingRef.current) {
-        await waitForRef({
-          ref: isRefreshingRef,
-          toEqual: false,
-        });
-      }
+      await waitForRef({
+        ref: isRefreshingRef,
+        toEqual: false,
+      });
 
       if (
         accessTokenRef.current &&

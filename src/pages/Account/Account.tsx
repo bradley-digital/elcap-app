@@ -53,16 +53,9 @@ export default function Account() {
       console.log(json);
     }
     getUser();
-    // Only want this to run on load
+    // Only run on load
     /* eslint-disable-next-line */
   }, []);
-
-  function handleLogout() {
-    async function asyncLogout() {
-      await logout();
-    }
-    asyncLogout();
-  }
 
   return (
     <IonPage className={styles.accountPage}>
@@ -87,7 +80,7 @@ export default function Account() {
                   <p>Joined: {joined}</p>
                 </IonText>
                 <div className="d-flex ion-justify-content-end">
-                  <IonButton onClick={handleLogout} color="danger">
+                  <IonButton onClick={logout} color="danger">
                     Logout
                   </IonButton>
                 </div>
