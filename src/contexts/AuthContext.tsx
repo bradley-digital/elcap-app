@@ -4,7 +4,6 @@ import { useGoogleLogin } from "@react-oauth/google";
 import { useCookies } from "react-cookie";
 import EventEmitter from "events";
 import cookies from "lib/cookies";
-import waitForRef from "lib/waitForRef";
 
 const host = process.env.REACT_APP_BACKEND_HOST || "http://localhost:3020";
 
