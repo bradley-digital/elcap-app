@@ -141,6 +141,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const finalHeaders = Object.assign(
       {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${accessTokenRef.current}`,
       },
       options.headers
     );
@@ -214,19 +215,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function authFetch(
     endpoint: string,
-    options: any = { headers: {} }
+    options: any = {}
   ): Promise<Json> {
     try {
       if (isRefreshingRef.current) {
         await waitForRefresh();
-      }
-
-      if (
-        accessTokenRef.current &&
-        options.headers &&
-        typeof options.headers["Authorization"] === "undefined"
-      ) {
-        options.headers["Authorization"] = `Bearer ${accessTokenRef.current}`;
       }
 
       const res = await handleFetch(endpoint, options);
@@ -293,15 +286,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function logout(): Promise<void> {
     try {
-      handleRemoveTokens();
-
-      const res = await handleFetch("/auth/revoke-refresh-tokens", {
+      // Logout is an authenticated route
+      // so that userId can be derived from the accessToken
+      await authFetch("/auth/logout", {
         method: "POST",
       });
 
-      if (res.status !== 200) {
-        throw new Error("Logout failed");
-      }
+      handleRemoveTokens();
     } catch (err) {
       console.error(err);
     }
