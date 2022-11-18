@@ -1,10 +1,9 @@
 import type { ReactNode } from "react";
 import { createContext, useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useCookies } from "react-cookie";
 import cookies from "lib/cookies";
-import { waitForRef } from "lib/async";
+import waitForRef from "lib/waitForRef";
 
 const host = process.env.REACT_APP_BACKEND_HOST || "http://localhost:3020";
 
@@ -48,7 +47,7 @@ type RefreshAccessToken = () => Promise<void>;
 
 type AuthContextProps = {
   isAuthenticated: boolean;
-  errorMessage: ReactNode | null;
+  error: boolean;
   register: RegisterFunction;
   login: LoginFunction;
   googleLogin: GoogleLoginFunction;
@@ -59,7 +58,7 @@ type AuthContextProps = {
 
 export const AuthContext = createContext<AuthContextProps>({
   isAuthenticated: false,
-  errorMessage: null,
+  error: false,
   /* eslint-disable  @typescript-eslint/no-unused-vars */
   register: async function (arg: RegisterArgs) {
     return;
@@ -83,12 +82,14 @@ export const AuthContext = createContext<AuthContextProps>({
   },
 });
 
-const defaultRefreshToken = cookies.get("ec_rt");
+const refreshTokenCookie = "ec_rt";
+
+const defaultRefreshToken = cookies.get(refreshTokenCookie);
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [cookies, setCookie, removeCookie] = useCookies(["ec_rt"]);
+  const [cookies, setCookie, removeCookie] = useCookies([refreshTokenCookie]);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<ReactNode | null>(null);
+  const [error, setError] = useState<boolean>(false);
   const accessTokenRef = useRef<string>("");
   const refreshTokenRef = useRef<undefined | string>(defaultRefreshToken);
   const isRefreshingRef = useRef<boolean>(false);
@@ -116,11 +117,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
       accessTokenRef.current = newAccessToken;
       refreshTokenRef.current = newRefreshToken;
       setIsAuthenticated(true);
-      setCookie("ec_rt", newRefreshToken, {
+      setCookie(refreshTokenCookie, newRefreshToken, {
         path: "/",
         sameSite: "strict",
       });
-      setErrorMessage(null);
+      setError(false);
     } else {
       throw new Error("Access tokens not provided");
     }
@@ -131,7 +132,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     accessTokenRef.current = "";
     refreshTokenRef.current = "";
     setIsAuthenticated(false);
-    removeCookie("ec_rt", { path: "/" });
+    removeCookie(refreshTokenCookie, { path: "/" });
   }
 
   function handleFetch(
@@ -166,8 +167,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function handleAuthentication(
     endpoint: string,
-    args: RegisterArgs | LoginArgs | GoogleLoginArgs,
-    newErrorMessage: ReactNode | null
+    args: RegisterArgs | LoginArgs | GoogleLoginArgs
   ): Promise<void> {
     console.log("handleAuthentication", endpoint);
     try {
@@ -177,7 +177,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       });
 
       if (res.status !== 200) {
-        setErrorMessage(newErrorMessage);
+        setError(true);
         throw new Error(`Failed POST to: ${endpoint}`);
       }
 
@@ -278,18 +278,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
     password,
   }: RegisterArgs): Promise<void> {
     try {
-      const registerErrorMessage = <p>Failed to register.</p>;
-      await handleAuthentication(
-        "/auth/register",
-        {
-          firstName,
-          lastName,
-          email,
-          phone,
-          password,
-        },
-        registerErrorMessage
-      );
+      await handleAuthentication("/auth/register", {
+        firstName,
+        lastName,
+        email,
+        phone,
+        password,
+      });
     } catch (err) {
       console.error(err);
     }
@@ -297,41 +292,23 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function login({ email, password }: LoginArgs): Promise<void> {
     try {
-      const loginErrorMessage = (
-        <p>
-          Please <Link to="/register">register</Link> before logging in.
-        </p>
-      );
-      await handleAuthentication(
-        "/auth/login",
-        {
-          email,
-          password,
-        },
-        loginErrorMessage
-      );
+      await handleAuthentication("/auth/login", {
+        email,
+        password,
+      });
     } catch (err) {
       console.error(err);
     }
   }
 
-  const googleLoginErrorMessage = (
-    <p>
-      Please <Link to="/register">register</Link> before using Google to login.
-    </p>
-  );
   const googleLogin = useGoogleLogin({
     onSuccess: async ({ code }) => {
-      await handleAuthentication(
-        "/auth/google",
-        {
-          code,
-        },
-        googleLoginErrorMessage
-      );
+      await handleAuthentication("/auth/google", {
+        code,
+      });
     },
     onError: () => {
-      setErrorMessage(googleLoginErrorMessage);
+      setError(true);
     },
     flow: "auth-code",
   });
@@ -356,7 +333,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     <AuthContext.Provider
       value={{
         isAuthenticated,
-        errorMessage,
+        error,
         register,
         login,
         googleLogin,

@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
@@ -21,12 +22,14 @@ import { closeOutline } from "ionicons/icons";
 import styles from "../Login/Login.module.scss";
 
 export default function Register() {
-  const { errorMessage, register } = useAuth();
-  const [showError, setShowError] = useState<boolean>(false);
+  const { error, register } = useAuth();
+  const [errorMessage, setErrorMessage] = useState<ReactNode>(null);
 
+  // Not correct
+  // Will improve after Jairo's update is merged
   useEffect(() => {
-    errorMessage && setShowError(true);
-  }, [errorMessage]);
+    error && setErrorMessage(<p>A link to activate your account has been emailed to the address provided.</p>);
+  }, [error]);
 
   const phoneRegExp =
     /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -65,13 +68,13 @@ export default function Register() {
             <IonText>
               <h1>Sign Up</h1>
             </IonText>
-            {showError && errorMessage && (
+            {errorMessage && (
               <div className={styles.authError}>
                 {errorMessage}
                 <IonIcon
                   icon={closeOutline}
                   onClick={() =>
-                    setShowError(false)
+                    setErrorMessage(null)
                   }
                 />
               </div>

@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
@@ -22,12 +23,12 @@ import { closeOutline } from "ionicons/icons";
 import styles from "./Login.module.scss";
 
 export default function Login() {
-  const { errorMessage, googleLogin, login } = useAuth();
-  const [showError, setShowError] = useState<boolean>(false);
+  const { error, googleLogin, login } = useAuth();
+  const [errorMessage, setErrorMessage] = useState<ReactNode>(null);
 
   useEffect(() => {
-    errorMessage && setShowError(true);
-  }, [errorMessage]);
+    error && setErrorMessage(<p>Login failed; Invalid user ID or password.</p>);
+  }, [error]);
 
   const formik = useFormik({
     initialValues: {
@@ -58,13 +59,13 @@ export default function Login() {
               <h1>Login</h1>
               <p>Hi there! Welcome to El Capitan.</p>
             </IonText>
-            {showError && errorMessage && (
+            {errorMessage && (
               <div className={styles.authError}>
                 {errorMessage}
                 <IonIcon
                   icon={closeOutline}
                   onClick={() =>
-                    setShowError(false)
+                    setErrorMessage(null)
                   }
                 />
               </div>

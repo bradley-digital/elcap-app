@@ -5,11 +5,12 @@ type Condition = {
   toEqual: string | number | boolean;
 }
 
-export function waitForRef(condition: Condition): Promise<void> {
+export default function waitForRef(condition: Condition): Promise<void> {
   return new Promise((res, rej) => {
     const start = Date.now();
     let timer: ReturnType<typeof setTimeout>;
     function checkCondition() {
+      console.log("waitForRef checkCondition", condition);
       if (condition.ref.current === condition.toEqual) {
         if (timer) clearTimeout(timer);
         res();
