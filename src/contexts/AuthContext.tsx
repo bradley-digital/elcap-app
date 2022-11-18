@@ -1,9 +1,10 @@
 import type { ReactNode } from "react";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useCookies } from "react-cookie";
-import { getCookie } from "lib/cookies";
+import cookies from "lib/cookies";
+import { waitForRef } from "lib/async";
 
 const host = process.env.REACT_APP_BACKEND_HOST || "http://localhost:3020";
 
@@ -77,51 +78,60 @@ export const AuthContext = createContext<AuthContextProps>({
   authFetch: async function (endpoint: string) {
     return {};
   },
-  refreshAccessToken: async function (refreshTokenArg?: string) {
+  refreshAccessToken: async function () {
     return;
   },
 });
 
-const defaultRefreshToken = getCookie("jwt-cookie");
+const defaultRefreshToken = cookies.get("jwt-cookie");
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [cookies, setCookie, removeCookie] = useCookies(["jwt-cookie"]);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<ReactNode | null>(null);
-  const [accessToken, setAccessToken] = useState<string>("");
-  const [refreshToken, setRefreshToken] = useState<string>(defaultRefreshToken);
+  const accessTokenRef = useRef<string>("");
+  const refreshTokenRef = useRef<undefined | string>(defaultRefreshToken);
+  const isRefreshingRef = useRef<boolean>(false);
 
   useEffect(() => {
     async function refresh() {
-      console.log("Cookie authorization, refresh access token");
-      if (refreshToken !== "") {
-        await refreshAccessToken();
-      } else {
+      console.log("refresh", refreshTokenRef.current);
+      if (typeof refreshTokenRef.current === "undefined") {
         setIsAuthenticated(false);
+      } else {
+        await refreshAccessToken();
       }
     }
     refresh();
-    // Don't want to trigger refresh when cookies are set
-    // Ignoring dependency array warnings
+    // Only want this to run on load
     /* eslint-disable-next-line */
   }, []);
 
   function handleSetTokens(tokens: TokenResponse): void {
+    console.log("handleSetTokens");
     const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
       tokens;
 
     if (newAccessToken && newRefreshToken) {
+      accessTokenRef.current = newAccessToken;
+      refreshTokenRef.current = newRefreshToken;
+      setIsAuthenticated(true);
       setCookie("jwt-cookie", newRefreshToken, {
         path: "/",
         sameSite: "strict",
       });
-      setAccessToken(newAccessToken);
-      setRefreshToken(newRefreshToken);
-      setIsAuthenticated(true);
       setErrorMessage(null);
     } else {
       throw new Error("Access tokens not provided");
     }
+  }
+
+  function handleRemoveTokens(): void {
+    console.log("handleRemoveTokens");
+    accessTokenRef.current = "";
+    refreshTokenRef.current = "";
+    setIsAuthenticated(false);
+    removeCookie("jwt-cookie", { path: "/" });
   }
 
   function handleFetch(
@@ -129,6 +139,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     /* eslint-disable  @typescript-eslint/no-explicit-any */
     options: any = { headers: {} }
   ): Promise<Response> {
+    console.log("handleFetch", endpoint);
     const finalHeaders = Object.assign(
       {
         "Content-Type": "application/json",
@@ -158,8 +169,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     args: RegisterArgs | LoginArgs | GoogleLoginArgs,
     newErrorMessage: ReactNode | null
   ): Promise<void> {
+    console.log("handleAuthentication", endpoint);
     try {
-      console.log("handleAuthentication");
       const res = await handleFetch(`${endpoint}`, {
         method: "POST",
         body: args,
@@ -175,6 +186,89 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } catch (err) {
       console.error(err);
     }
+  }
+
+  async function handleRefreshAccessToken() {
+    console.log("handleRefreshAccessToken");
+    try {
+      isRefreshingRef.current = true;
+      const res = await handleFetch("/auth/refresh-token", {
+        method: "POST",
+        body: {
+          refreshToken: refreshTokenRef.current,
+        },
+      });
+
+      if (res.status !== 200) {
+        throw new Error("Unauthorized");
+      }
+
+      console.log("handleRefreshAccessToken handleFetch done", isRefreshingRef);
+
+      const tokens = await res.json();
+      handleSetTokens(tokens);
+      isRefreshingRef.current = false;
+      console.log("handleRefreshAccessToken handleSetTokens done", isRefreshingRef);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function refreshAccessToken(): Promise<void> {
+    console.log("refreshAccessToken");
+    try {
+      if (isRefreshingRef.current) {
+        await waitForRef({
+          ref: isRefreshingRef,
+          toEqual: false,
+        });
+      } else {
+        await handleRefreshAccessToken();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function authFetch(
+    endpoint: string,
+    options: any = { headers: {} }
+  ): Promise<Json> {
+    try {
+      console.log("authFetch", endpoint, isRefreshingRef);
+
+      if (isRefreshingRef.current) {
+        await waitForRef({
+          ref: isRefreshingRef,
+          toEqual: false,
+        });
+      }
+
+      if (
+        accessTokenRef.current &&
+        options.headers &&
+        typeof options.headers["Authorization"] === "undefined"
+      ) {
+        options.headers["Authorization"] = `Bearer ${accessTokenRef.current}`;
+      }
+
+      const res = await handleFetch(endpoint, options);
+
+      if (res.status === 200) {
+        const json = res.json();
+        return json;
+      }
+
+      if (res.status === 401) {
+        await refreshAccessToken();
+        const json = await handleFetch(endpoint, options);
+        return json;
+      }
+    } catch (err) {
+      console.error(err);
+    }
+
+    return {};
   }
 
   async function register({
@@ -245,10 +339,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function logout(): Promise<void> {
     try {
-      removeCookie("jwt-cookie", { path: "/" });
-      setAccessToken("");
-      setRefreshToken("");
-      setIsAuthenticated(false);
+      handleRemoveTokens();
 
       const res = await handleFetch("/auth/revoke-refresh-tokens", {
         method: "POST",
@@ -260,67 +351,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } catch (err) {
       console.error(err);
     }
-  }
-
-  async function refreshAccessToken(refreshTokenArg?: string): Promise<void> {
-    try {
-      console.log("refreshAccessToken");
-      let finalRefreshToken = refreshToken;
-
-      if (typeof refreshTokenArg === "string") {
-        finalRefreshToken = refreshTokenArg;
-      }
-
-      const res = await handleFetch("/auth/refresh-token", {
-        method: "POST",
-        body: {
-          refreshToken: finalRefreshToken,
-        },
-      });
-
-      if (res.status !== 200) {
-        throw new Error("Unauthorized");
-      }
-
-      const tokens = await res.json();
-      handleSetTokens(tokens);
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  async function authFetch(
-    endpoint: string,
-    options: any = { headers: {} }
-  ): Promise<Json> {
-    try {
-      console.log("authFetch", endpoint);
-      if (
-        accessToken &&
-        options.headers &&
-        typeof options.headers["Authorization"] === "undefined"
-      ) {
-        options.headers["Authorization"] = `Bearer ${accessToken}`;
-      }
-
-      const res = await handleFetch(endpoint, options);
-
-      if (res.status === 200) {
-        const json = res.json();
-        return json;
-      }
-
-      if (res.status === 401) {
-        console.log("Refreshing token for authFetch");
-        await refreshAccessToken();
-        const json = await handleFetch(endpoint, options);
-        return json;
-      }
-    } catch (err) {
-      console.error(err);
-    }
-
-    return {};
   }
 
   return (

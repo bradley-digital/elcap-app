@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react";
-import { getCookie } from "lib/cookies";
+import cookies from "lib/cookies";
 import jwt_decode from "jwt-decode";
 
 // hooks
@@ -10,7 +10,7 @@ const useSessionTimeout = () => {
 
   const refreshTokenOrLogOut = useCallback(
     (lastMovementTime: Date) => {
-      const authToken = getCookie("jwt-cookie");
+      const authToken = cookies.get("jwt-cookie");
       const decodedAuthToken: any = authToken?.length && jwt_decode(authToken);
       const currentTime: Date = new Date();
       const timeThreeMinutesAgo: Date = new Date(

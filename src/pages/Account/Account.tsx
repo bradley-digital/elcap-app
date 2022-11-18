@@ -53,7 +53,9 @@ export default function Account() {
       console.log(json);
     }
     getUser();
-  }, [authFetch]);
+    // Only want this to run on load
+    /* eslint-disable-next-line */
+  }, []);
 
   function handleLogout() {
     async function asyncLogout() {
