@@ -8,15 +8,18 @@ type Condition = {
 export function waitForRef(condition: Condition): Promise<void> {
   return new Promise((res, rej) => {
     const start = Date.now();
-    const intervalId = setInterval(function() {
-      console.log("waitForRef", condition);
+    let timer: ReturnType<typeof setTimeout>;
+    function checkCondition() {
       if (condition.ref.current === condition.toEqual) {
-        clearInterval(intervalId);
+        if (timer) clearTimeout(timer);
         res();
-      } else if (Date.now() > start + (3 * 1000)) {
-        clearInterval(intervalId);
-        rej(new Error('waitFor timeout'));
+      } else if (Date.now() > start + (15 * 1000)) {
+        if (timer) clearTimeout(timer);
+        rej(new Error('waitForRef timeout'));
+      } else {
+        timer = setTimeout(checkCondition, 500);
       }
-    }, 100);
+    }
+    checkCondition();
   });
 }
