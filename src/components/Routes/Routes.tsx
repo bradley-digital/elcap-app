@@ -1,18 +1,11 @@
-import { IonReactRouter } from "@ionic/react-router";
-
-// hooks
-import useAuth from "hooks/useAuth";
-
 // components
-import AdminRoutes from "./RoutesAdmin";
-import UserRoutes from "./RoutesUser";
+import { IonReactRouter } from "@ionic/react-router";
+import AuthRouter from "./AuthRouter";
 
 export default function Routes() {
-  const { isAuthenticated } = useAuth();
-
   return (
     <IonReactRouter>
-      {isAuthenticated ? <AdminRoutes /> : <UserRoutes />}
+      <AuthRouter />
     </IonReactRouter>
   );
 }

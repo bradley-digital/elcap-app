@@ -7,7 +7,7 @@ import Register from "pages/Register/Register";
 // components
 import { IonRouterOutlet } from "@ionic/react";
 
-export default function UserRoutes() {
+export default function LoginRoutes() {
   return (
     <IonRouterOutlet>
       <Switch>

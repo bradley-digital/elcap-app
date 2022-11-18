@@ -17,7 +17,6 @@ import {
   IonText,
   IonTitle,
   IonToolbar,
-  useIonRouter,
 } from "@ionic/react";
 import styles from "./Account.module.scss";
 
@@ -45,9 +44,7 @@ const profile: Profile = {
 };
 
 export default function Account() {
-  const router = useIonRouter();
   const { authFetch, logout } = useAuth();
-
   const { img, name, username, joined, phone, email, address } = profile;
 
   useEffect(() => {
@@ -56,15 +53,9 @@ export default function Account() {
       console.log(json);
     }
     getUser();
-  }, [authFetch]);
-
-  function handleLogout() {
-    async function asyncLogout() {
-      await logout();
-      router.push("/login");
-    }
-    asyncLogout();
-  }
+    // Only run on load
+    /* eslint-disable-next-line */
+  }, []);
 
   return (
     <IonPage className={styles.accountPage}>
@@ -89,7 +80,7 @@ export default function Account() {
                   <p>Joined: {joined}</p>
                 </IonText>
                 <div className="d-flex ion-justify-content-end">
-                  <IonButton onClick={handleLogout} color="danger">
+                  <IonButton onClick={logout} color="danger">
                     Logout
                   </IonButton>
                 </div>
