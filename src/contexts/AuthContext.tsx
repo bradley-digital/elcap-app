@@ -1,6 +1,9 @@
 import type { ReactNode } from "react";
-import { createContext, useState } from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
+import { useCookies } from "react-cookie";
+import EventEmitter from "events";
+import cookies from "lib/cookies";
 
 const host = process.env.REACT_APP_BACKEND_HOST || "http://localhost:3020";
 
@@ -22,11 +25,6 @@ type GoogleLoginArgs = {
   code: string;
 };
 
-type LoginArgs = {
-  email: string;
-  password: string;
-};
-
 type RegisterArgs = {
   firstName: string;
   lastName: string;
@@ -42,10 +40,32 @@ type UpdateArgs = {
   phone: string;
 };
 
-// There has to be a better way to do this,
-// this is bad TypeScript
-export const AuthContext = createContext({
+type LoginArgs = {
+  email: string;
+  password: string;
+};
+
+type RegisterFunction = (args: RegisterArgs) => Promise<void>;
+type LoginFunction = (args: LoginArgs) => Promise<void>;
+type GoogleLoginFunction = () => void;
+type LogoutFunction = () => Promise<void>;
+type AuthFetchFunction = (endpoint: string) => Promise<object>;
+type RefreshAccessToken = () => Promise<void>;
+
+type AuthContextProps = {
+  isAuthenticated: boolean;
+  error: boolean;
+  register: RegisterFunction;
+  login: LoginFunction;
+  googleLogin: GoogleLoginFunction;
+  logout: LogoutFunction;
+  authFetch: AuthFetchFunction;
+  refreshAccessToken: RefreshAccessToken;
+};
+
+export const AuthContext = createContext<AuthContextProps>({
   isAuthenticated: false,
+  error: false,
   /* eslint-disable  @typescript-eslint/no-unused-vars */
   register: async function (arg: RegisterArgs) {
     return;
@@ -67,12 +87,61 @@ export const AuthContext = createContext({
   authFetch: async function (endpoint: string) {
     return {};
   },
+  refreshAccessToken: async function () {
+    return;
+  },
 });
 
+const refreshTokenCookie = "ec_rt";
+const defaultRefreshToken = cookies.get(refreshTokenCookie);
+const authEvents = new EventEmitter();
+const waitForRefresh = () => new Promise<void>(res => authEvents.once("refreshed", res));
+
 export function AuthProvider({ children }: AuthProviderProps) {
+  const [cookies, setCookie, removeCookie] = useCookies([refreshTokenCookie]);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [accessToken, setAccessToken] = useState<string>("");
-  const [refreshToken, setRefreshToken] = useState<string>("");
+  const [error, setError] = useState<boolean>(false);
+  const accessTokenRef = useRef<string>("");
+  const refreshTokenRef = useRef<undefined | string>(defaultRefreshToken);
+  const isRefreshingRef = useRef<boolean>(false);
+
+  useEffect(() => {
+    async function refresh() {
+      if (typeof refreshTokenRef.current === "undefined") {
+        setIsAuthenticated(false);
+      } else {
+        await refreshAccessToken();
+      }
+    }
+    refresh();
+    // Only run on load
+    /* eslint-disable-next-line */
+  }, []);
+
+  function handleSetTokens(tokens: TokenResponse): void {
+    const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
+      tokens;
+
+    if (newAccessToken && newRefreshToken) {
+      accessTokenRef.current = newAccessToken;
+      refreshTokenRef.current = newRefreshToken;
+      setIsAuthenticated(true);
+      setCookie(refreshTokenCookie, newRefreshToken, {
+        path: "/",
+        sameSite: "strict",
+      });
+      setError(false);
+    } else {
+      throw new Error("Access tokens not provided");
+    }
+  }
+
+  function handleRemoveTokens(): void {
+    accessTokenRef.current = "";
+    refreshTokenRef.current = "";
+    setIsAuthenticated(false);
+    removeCookie(refreshTokenCookie, { path: "/" });
+  }
 
   function handleFetch(
     endpoint: string,
@@ -82,14 +151,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const finalHeaders = Object.assign(
       {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${accessTokenRef.current}`,
       },
       options.headers
     );
     delete options.headers;
-
-    if (accessToken && typeof finalHeaders["Authorization"] === "undefined") {
-      finalHeaders["Authorization"] = `Bearer ${accessToken}`;
-    }
 
     if (options.body && typeof options.body !== "string") {
       options.body = JSON.stringify(options.body);
@@ -107,23 +173,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     return fetch(`${host}${endpoint}`, finalOptions);
   }
 
-  function handleSetTokens(tokens: TokenResponse) {
-    const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
-      tokens;
-
-    if (newAccessToken && newRefreshToken) {
-      setAccessToken(newAccessToken);
-      setRefreshToken(newRefreshToken);
-      setIsAuthenticated(true);
-    } else {
-      throw new Error("Access tokens not provided");
-    }
-  }
-
   async function handleAuthentication(
     endpoint: string,
     args: RegisterArgs | LoginArgs | GoogleLoginArgs | UpdateArgs
-  ) {
+  ): Promise<void> {
     try {
       const res = await handleFetch(`${endpoint}`, {
         method: "POST",
@@ -131,6 +184,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       });
 
       if (res.status !== 200) {
+        setError(true);
         throw new Error(`Failed POST to: ${endpoint}`);
       }
 
@@ -139,6 +193,62 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } catch (err) {
       console.error(err);
     }
+  }
+
+  async function refreshAccessToken(): Promise<void> {
+    try {
+      if (isRefreshingRef.current) {
+        await waitForRefresh();
+      } else {
+        isRefreshingRef.current = true;
+        const res = await handleFetch("/auth/refresh-token", {
+          method: "POST",
+          body: {
+            refreshToken: refreshTokenRef.current,
+          },
+        });
+
+        if (res.status !== 200) {
+          handleRemoveTokens();
+          throw new Error("Unauthorized");
+        }
+
+        const tokens = await res.json();
+        handleSetTokens(tokens);
+        isRefreshingRef.current = false;
+        authEvents.emit("refreshed");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function authFetch(
+    endpoint: string,
+    options: any = {}
+  ): Promise<Json> {
+    try {
+      if (isRefreshingRef.current) {
+        await waitForRefresh();
+      }
+
+      const res = await handleFetch(endpoint, options);
+
+      if (res.status === 200) {
+        const json = res.json();
+        return json;
+      }
+
+      if (res.status === 401) {
+        await refreshAccessToken();
+        const json = await handleFetch(endpoint, options);
+        return json;
+      }
+    } catch (err) {
+      console.error(err);
+    }
+
+    return {};
   }
 
   async function register({
@@ -196,89 +306,38 @@ export function AuthProvider({ children }: AuthProviderProps) {
         code,
       });
     },
+    onError: () => {
+      setError(true);
+    },
     flow: "auth-code",
   });
 
   async function logout(): Promise<void> {
     try {
-      const res = await handleFetch("/auth/revoke-refresh-tokens", {
+      // Logout is an authenticated route
+      // so that userId can be derived from the accessToken
+      await authFetch("/auth/logout", {
         method: "POST",
       });
 
-      if (res.status !== 200) {
-        throw new Error("Logout failed");
-      }
-
-      setAccessToken("");
-      setRefreshToken("");
-      setIsAuthenticated(false);
+      handleRemoveTokens();
     } catch (err) {
       console.error(err);
     }
-  }
-
-  async function refreshAccessToken(): Promise<boolean> {
-    try {
-      const res = await handleFetch("/auth/refresh-token", {
-        method: "POST",
-        body: {
-          refreshToken,
-        },
-      });
-
-      if (res.status !== 200) {
-        return false;
-      }
-
-      const tokens = await res.json();
-      handleSetTokens(tokens);
-      return true;
-    } catch (err) {
-      console.error(err);
-    }
-
-    return false;
-  }
-
-  async function authFetch(endpoint: string, options?: any): Promise<Json> {
-    try {
-      if (!isAuthenticated || !accessToken) {
-        throw new Error("Unauthorized");
-      }
-
-      const res = await handleFetch(endpoint, options);
-
-      if (res.status === 200) {
-        const json = res.json();
-        return json;
-      }
-
-      if (res.status === 401) {
-        const refreshed = await refreshAccessToken();
-        if (refreshed) {
-          const json = await handleFetch(endpoint, options);
-          return json;
-        }
-      }
-
-      throw new Error("Unauthorized");
-    } catch (err) {
-      console.error(err);
-    }
-
-    return {};
   }
 
   return (
     <AuthContext.Provider
       value={{
         isAuthenticated,
+        error,
         register,
         update,
         login,
         googleLogin,
         logout,
         authFetch,
+        refreshAccessToken,
       }}
     >
       {children}

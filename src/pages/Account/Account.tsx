@@ -15,7 +15,6 @@ import {
   IonText,
   IonTitle,
   IonToolbar,
-  useIonRouter,
 } from "@ionic/react";
 import styles from "./Account.module.scss";
 
@@ -23,7 +22,6 @@ import styles from "./Account.module.scss";
 import useAuth from "hooks/useAuth";
 
 export default function Account() {
-  const router = useIonRouter();
   const { authFetch, logout } = useAuth();
   const [profile, setProfile] = useState<{ [key: string]: any }>({});
   const [loading, setLoading] = useState<boolean>();
@@ -43,19 +41,14 @@ export default function Account() {
     async function getUser() {
       const data = await authFetch("/users/account");
       setProfile(data);
+      setFormikValues();
       setLoading(false);
     }
     getUser();
-    setFormikValues();
-  }, [authFetch]);
-
-  function handleLogout() {
-    async function asyncLogout() {
-      await logout();
-      router.push("/login");
-    }
-    asyncLogout();
-  }
+    
+    // Only run on load
+    /* eslint-disable-next-line */
+  }, []);
 
   function setFormikValues() {
     formik.setFieldValue("firstName", profile.firstName);
@@ -127,7 +120,7 @@ export default function Account() {
                   <p>Joined: {joined}</p>
                 </IonText>
                 <div className="d-flex ion-justify-content-end">
-                  <IonButton onClick={handleLogout} color="danger">
+                  <IonButton onClick={logout} color="danger">
                     Logout
                   </IonButton>
                 </div>

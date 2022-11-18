@@ -1,3 +1,4 @@
+// components
 import {
   IonContent,
   IonHeader,
@@ -8,6 +9,8 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import ShopProduct from "components/Shop/ShopProduct";
+
+// styles
 import styles from "./Shop.module.scss";
 
 export default function Shop() {
