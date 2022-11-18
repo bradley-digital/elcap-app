@@ -127,7 +127,7 @@ export default function Login() {
                 </div>
 
                 <div className={styles.accountHelp}>
-                  <Link to="/" className={styles.forgotPassword}>
+                  <Link to="/forgot-password" className={styles.forgotPassword}>
                     Forgot Password?
                   </Link>
                   <Link to="/register" className={styles.register}>
