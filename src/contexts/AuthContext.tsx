@@ -33,13 +33,6 @@ type RegisterArgs = {
   password: string;
 };
 
-type UpdateArgs = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-};
-
 type LoginArgs = {
   email: string;
   password: string;
@@ -49,7 +42,7 @@ type RegisterFunction = (args: RegisterArgs) => Promise<void>;
 type LoginFunction = (args: LoginArgs) => Promise<void>;
 type GoogleLoginFunction = () => void;
 type LogoutFunction = () => Promise<void>;
-type AuthFetchFunction = (endpoint: string) => Promise<object>;
+type AuthFetchFunction = (endpoint: string, options?: any) => Promise<object>;
 type RefreshAccessToken = () => Promise<void>;
 
 type AuthContextProps = {
@@ -74,9 +67,6 @@ export const AuthContext = createContext<AuthContextProps>({
   login: async function (arg: LoginArgs) {
     return;
   },
-  update: async function (arg: UpdateArgs) {
-    return;
-  },
   googleLogin: function () {
     return;
   },
@@ -84,7 +74,7 @@ export const AuthContext = createContext<AuthContextProps>({
     return;
   },
   /* eslint-disable  @typescript-eslint/no-unused-vars */
-  authFetch: async function (endpoint: string) {
+  authFetch: async function (endpoint: string, options?: any) {
     return {};
   },
   refreshAccessToken: async function () {
@@ -175,7 +165,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function handleAuthentication(
     endpoint: string,
-    args: RegisterArgs | LoginArgs | GoogleLoginArgs | UpdateArgs
+    args: RegisterArgs | LoginArgs | GoogleLoginArgs
   ): Promise<void> {
     try {
       const res = await handleFetch(`${endpoint}`, {
@@ -210,6 +200,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
         if (res.status !== 200) {
           handleRemoveTokens();
+          isRefreshingRef.current = false;
+          authEvents.emit("refreshed");
           throw new Error("Unauthorized");
         }
 
@@ -237,9 +229,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       if (res.status === 200) {
         const json = res.json();
         return json;
-      }
-
-      if (res.status === 401) {
+      } else {
         await refreshAccessToken();
         const json = await handleFetch(endpoint, options);
         return json;
@@ -265,24 +255,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
         email,
         phone,
         password,
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  async function update({
-    firstName,
-    lastName,
-    email,
-    phone,
-  }: UpdateArgs): Promise<void> {
-    try {
-      await handleAuthentication("/auth/updateAccount", {
-        firstName,
-        lastName,
-        email,
-        phone,
       });
     } catch (err) {
       console.error(err);
@@ -332,7 +304,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
         isAuthenticated,
         error,
         register,
-        update,
         login,
         googleLogin,
         logout,
