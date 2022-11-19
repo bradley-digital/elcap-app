@@ -35,6 +35,15 @@ ion-menu {
   --side-max-width: 300px;
 
   ion-item {
+    ion-icon {
+      margin-left: 20px;
+
+      @supports (-webkit-margin-start: 0) or (margin-inline-start: 0) {
+        margin-left: unset;
+        margin-inline-start: 20px;
+      }
+    }
+
     &.active {
       &,
       ion-icon {

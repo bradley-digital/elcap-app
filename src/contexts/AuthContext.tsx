@@ -42,7 +42,7 @@ type RegisterFunction = (args: RegisterArgs) => Promise<void>;
 type LoginFunction = (args: LoginArgs) => Promise<void>;
 type GoogleLoginFunction = () => void;
 type LogoutFunction = () => Promise<void>;
-type AuthFetchFunction = (endpoint: string) => Promise<object>;
+type AuthFetchFunction = (endpoint: string, options?: any) => Promise<object>;
 type RefreshAccessToken = () => Promise<void>;
 
 type AuthContextProps = {
@@ -74,7 +74,7 @@ export const AuthContext = createContext<AuthContextProps>({
     return;
   },
   /* eslint-disable  @typescript-eslint/no-unused-vars */
-  authFetch: async function (endpoint: string) {
+  authFetch: async function (endpoint: string, options?: any) {
     return {};
   },
   refreshAccessToken: async function () {
@@ -200,6 +200,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
         if (res.status !== 200) {
           handleRemoveTokens();
+          isRefreshingRef.current = false;
+          authEvents.emit("refreshed");
           throw new Error("Unauthorized");
         }
 
@@ -227,9 +229,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       if (res.status === 200) {
         const json = res.json();
         return json;
-      }
-
-      if (res.status === 401) {
+      } else {
         await refreshAccessToken();
         const json = await handleFetch(endpoint, options);
         return json;

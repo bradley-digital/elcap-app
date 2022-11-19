@@ -1,6 +1,5 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
-  IonAvatar,
   IonButton,
   IonCard,
   IonCol,
@@ -24,38 +23,64 @@ import styles from "./Account.module.scss";
 import useAuth from "hooks/useAuth";
 
 type Profile = {
-  img: string;
-  name: string;
-  username: string;
-  joined: string;
+  firstName: string;
+  lastName: string;
+  userName: string;
+  createdAt: string;
   phone: string;
   email: string;
   address: string;
 };
 
-const profile: Profile = {
-  img: "/assets/headshot.jpg",
-  name: "Joshua Bradley",
-  username: "joshbradley012",
-  joined: "8/20/2022",
-  phone: "661-706-9625",
-  email: "joshbradleydigital@gmail.com",
-  address: "25 Leslie Dr., Santa Barbara, CA",
-};
-
 export default function Account() {
   const { authFetch, logout } = useAuth();
-  const { img, name, username, joined, phone, email, address } = profile;
+  const [profile, setProfile] = useState<Profile>({
+    firstName: "",
+    lastName: "",
+    userName: "",
+    createdAt: "",
+    phone: "",
+    email: "",
+    address: "",
+  });
 
   useEffect(() => {
     async function getUser() {
-      const json = await authFetch("/users/account");
-      console.log(json);
+      const {
+        firstName,
+        lastName,
+        userName,
+        createdAt,
+        phone,
+        email,
+        address,
+      } = await authFetch("/users/account") as Profile;
+      setProfile({
+        firstName,
+        lastName,
+        userName,
+        createdAt,
+        phone,
+        email,
+        address,
+      });
     }
     getUser();
     // Only run on load
     /* eslint-disable-next-line */
   }, []);
+
+  const {
+    firstName,
+    lastName,
+    userName,
+    createdAt,
+    phone,
+    email,
+    address,
+  } = profile;
+
+  const joined = new Date(createdAt).toLocaleString("en-US");
 
   return (
     <IonPage className={styles.accountPage}>
@@ -69,14 +94,9 @@ export default function Account() {
           <IonRow className="ion-justify-content-center">
             <IonCol size-md="8" size-lg="6">
               <IonCard className={styles.profileCard}>
-                <div className="d-flex ion-justify-content-center">
-                  <IonAvatar>
-                    <img src={img} alt={name} />
-                  </IonAvatar>
-                </div>
                 <IonText className="ion-text-center">
-                  <h1>{name}</h1>
-                  <h3>{username}</h3>
+                  <h1>{`${firstName} ${lastName}`}</h1>
+                  <h3>{userName}</h3>
                   <p>Joined: {joined}</p>
                 </IonText>
                 <div className="d-flex ion-justify-content-end">
@@ -88,12 +108,16 @@ export default function Account() {
               <IonList>
                 <IonListHeader>Personal information</IonListHeader>
                 <IonItem>
-                  <IonLabel position="stacked">Name</IonLabel>
-                  <IonInput value={name} readonly />
+                  <IonLabel position="stacked">First Name</IonLabel>
+                  <IonInput value={firstName} readonly />
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="stacked">Last Name</IonLabel>
+                  <IonInput value={lastName} readonly />
                 </IonItem>
                 <IonItem>
                   <IonLabel position="stacked">Username</IonLabel>
-                  <IonInput value={username} readonly />
+                  <IonInput value={userName} readonly />
                 </IonItem>
                 <IonItem>
                   <IonLabel position="stacked">Email</IonLabel>
