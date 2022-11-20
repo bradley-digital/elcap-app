@@ -1,4 +1,5 @@
-import { useState } from "react";
+import type { ReactNode } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -8,22 +9,26 @@ import useAuth from "hooks/useAuth";
 
 // components
 import {
+  IonButton,
   IonContent,
+  IonIcon,
   IonPage,
   IonText,
-  IonButton,
-  useIonRouter,
 } from "@ionic/react";
-import Loader from "components/Loader/Loader";
 import { ReactComponent as Logo } from "assets/elcapitanadvisors_logo.svg";
+import { ReactComponent as GoogleLogo } from "assets/google-icon.svg";
+import { closeOutline } from "ionicons/icons";
 
 // styles
 import styles from "./Login.module.scss";
 
 export default function Login() {
-  const router = useIonRouter();
-  const { isAuthenticated, googleLogin, login } = useAuth();
-  const [loading, setLoading] = useState(false);
+  const { error, googleLogin, login } = useAuth();
+  const [errorMessage, setErrorMessage] = useState<ReactNode>(null);
+
+  useEffect(() => {
+    error && setErrorMessage(<p>Login failed; Invalid user ID or password.</p>);
+  }, [error]);
 
   const formik = useFormik({
     initialValues: {
@@ -35,112 +40,95 @@ export default function Login() {
       password: Yup.string().required("Password required").min(8).max(28),
     }),
     onSubmit: (values, actions) => {
-      const vals = { ...values };
+      const loginValues = { ...values };
       actions.resetForm();
-
-      async function handleLogin() {
-        try {
-          await login(vals);
-          if (isAuthenticated) {
-            setTimeout(() => setLoading(true), 0);
-            setTimeout(() => {
-              router.push("/");
-            }, 800);
-          }
-        } catch (err) {
-          console.error(err);
-        }
-      }
-
-      handleLogin();
+      login(loginValues);
     },
   });
 
   return (
-    <>
-      {loading === false ? (
-        <IonPage className={styles.loginPage}>
-          <IonContent fullscreen className="ion-padding">
-            <div className={styles.elcapLogo}>
-              <Logo />
-              <p>EL CAPITAN PAYMENTS</p>
-            </div>
-            <div className={styles.contentBottom}>
-              <div>
-                <IonText>
-                  <h1>Login</h1>
-                  <p>Hi there! Welcome to El Cap.</p>
-                </IonText>
+    <IonPage className={styles.page}>
+      <IonContent fullscreen className="ion-padding">
+        <div className={styles.elcapLogo}>
+          <Logo />
+          <p>EL CAPITAN PAYMENTS</p>
+        </div>
+        <div className={styles.contentBottom}>
+          <div>
+            <IonText>
+              <h1>Login</h1>
+              <p>Hi there! Welcome to El Capitan.</p>
+            </IonText>
+            {errorMessage && (
+              <div className={styles.authError}>
+                {errorMessage}
+                <IonIcon
+                  icon={closeOutline}
+                  onClick={() =>
+                    setErrorMessage(null)
+                  }
+                />
+              </div>
+            )}
 
-                <form onSubmit={formik.handleSubmit}>
-                  <div className={styles.stacked}>
-                    <div className={styles.formGroup}>
-                      <input
-                        name="email"
-                        type="email"
-                        value={formik.values.email}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        className={styles.formInput}
-                        placeholder="Email"
-                      />
-                      <label className={styles.inputLabel}>Email</label>
-                      {formik.touched.email && formik.errors.email ? (
-                        <div className={styles.errorMsg}>
-                          {formik.errors.email}
-                        </div>
-                      ) : null}
+            <form onSubmit={formik.handleSubmit}>
+              <div className={styles.stacked}>
+                <div className={styles.formGroup}>
+                  <input
+                    name="email"
+                    type="email"
+                    value={formik.values.email}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    className={styles.formInput}
+                    placeholder="Email"
+                  />
+                  <label className={styles.inputLabel}>Email</label>
+                  {formik.touched.email && formik.errors.email ? (
+                    <div className={styles.errorMsg}>
+                      {formik.errors.email}
                     </div>
-
-                    <div className={styles.formGroup}>
-                      <input
-                        name="password"
-                        type="password"
-                        value={formik.values.password}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        className={styles.formInput}
-                        placeholder="Password"
-                      />
-                      <label className={styles.inputLabel}>Password</label>
-                      {formik.touched.password && formik.errors.password ? (
-                        <div className={styles.errorMsg}>
-                          {formik.errors.password}
-                        </div>
-                      ) : null}
-                    </div>
-                  </div>
-                  <IonButton type="submit">Login</IonButton>
-                </form>
-
-                <div className={styles.socialLogin}>
-                  <IonButton color="light" onClick={googleLogin}>
-                    Google login
-                  </IonButton>
-
-                  {/* <IonButton color="light" type="submit">
-                    Google
-                  </IonButton> */}
-                  {/* <IonButton color="tertiary" type="submit">
-                    Facebook
-                  </IonButton> */}
+                  ) : null}
                 </div>
 
-                <div className={styles.accountHelp}>
-                  <Link to="/forgot-password" className={styles.forgotPassword}>
-                    Forgot Password?
-                  </Link>
-                  <Link to="/register" className={styles.register}>
-                    Create Account
-                  </Link>
+                <div className={styles.formGroup}>
+                  <input
+                    name="password"
+                    type="password"
+                    value={formik.values.password}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    className={styles.formInput}
+                    placeholder="Password"
+                  />
+                  <label className={styles.inputLabel}>Password</label>
+                  {formik.touched.password && formik.errors.password ? (
+                    <div className={styles.errorMsg}>
+                      {formik.errors.password}
+                    </div>
+                  ) : null}
                 </div>
               </div>
+              <IonButton type="submit">Login</IonButton>
+            </form>
+
+            <div className={styles.socialLogin}>
+              <IonButton color="light" onClick={googleLogin}>
+                <GoogleLogo /> Google Login
+              </IonButton>
             </div>
-          </IonContent>
-        </IonPage>
-      ) : (
-        <Loader />
-      )}
-    </>
+
+            <div className={styles.loginAccountHelp}>
+              <Link to="/forgot-password" className={styles.forgotPassword}>
+                Forgot password?
+              </Link>
+              <Link to="/register" className={styles.register}>
+                Create account
+              </Link>
+            </div>
+          </div>
+        </div>
+      </IonContent>
+    </IonPage>
   );
 }

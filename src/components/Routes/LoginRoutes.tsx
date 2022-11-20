@@ -7,7 +7,7 @@ import Register from "pages/Register/Register";
 import ForgotPassword from "pages/ForgotPassword/ForgotPassword";
 import ResetPassword from "pages/ResetPassword/ResetPassword";
 
-export default function UserRoutes() {
+export default function LoginRoutes() {
   return (
     <IonRouterOutlet>
       <Switch>

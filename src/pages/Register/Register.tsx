@@ -1,4 +1,5 @@
-import { useState } from "react";
+import type { ReactNode } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -8,22 +9,27 @@ import useAuth from "hooks/useAuth";
 
 // components
 import {
+  IonButton,
   IonContent,
+  IonIcon,
   IonPage,
   IonText,
-  IonButton,
-  useIonRouter,
 } from "@ionic/react";
-import Loader from "components/Loader/Loader";
 import { ReactComponent as Logo } from "assets/elcapitanadvisors_logo.svg";
+import { closeOutline } from "ionicons/icons";
 
 // styles
-import styles from "./Register.module.scss";
+import styles from "../Login/Login.module.scss";
 
 export default function Register() {
-  const router = useIonRouter();
-  const { isAuthenticated, register } = useAuth();
-  const [loading, setLoading] = useState(false);
+  const { error, register } = useAuth();
+  const [errorMessage, setErrorMessage] = useState<ReactNode>(null);
+
+  // Not correct
+  // Will improve after Jairo's update is merged
+  useEffect(() => {
+    error && setErrorMessage(<p>A link to activate your account has been emailed to the address provided.</p>);
+  }, [error]);
 
   const phoneRegExp =
     /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -46,151 +52,141 @@ export default function Register() {
     onSubmit: (values, actions) => {
       const vals = { ...values };
       actions.resetForm();
-
-      async function handleRegister() {
-        try {
-          await register(vals);
-          if (isAuthenticated) {
-            setTimeout(() => setLoading(true), 0);
-            setTimeout(() => {
-              router.push("/");
-            }, 800);
-          }
-        } catch (err) {
-          console.error(err);
-        }
-      }
-
-      handleRegister();
+      register(vals);
     },
   });
 
   return (
-    <>
-      {loading === false ? (
-        <IonPage className={styles.registerPage}>
-          <IonContent fullscreen className="ion-padding">
-            <div className={styles.elcapLogo}>
-              <Logo />
-              <p>EL CAPITAN PAYMENTS</p>
-            </div>
-            <div className={styles.contentBottom}>
-              <div>
-                <IonText>
-                  <h1>Sign Up</h1>
-                </IonText>
+    <IonPage className={styles.page}>
+      <IonContent fullscreen className="ion-padding">
+        <div className={styles.elcapLogo}>
+          <Logo />
+          <p>EL CAPITAN PAYMENTS</p>
+        </div>
+        <div className={styles.contentBottom}>
+          <div>
+            <IonText>
+              <h1>Sign Up</h1>
+            </IonText>
+            {errorMessage && (
+              <div className={styles.authError}>
+                {errorMessage}
+                <IonIcon
+                  icon={closeOutline}
+                  onClick={() =>
+                    setErrorMessage(null)
+                  }
+                />
+              </div>
+            )}
 
-                <form onSubmit={formik.handleSubmit}>
-                  <div className={styles.formGroup}>
-                    <input
-                      name="firstName"
-                      type="text"
-                      value={formik.values.firstName}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      className={styles.formInput}
-                      placeholder="First Name"
-                    />
-                    <label className={styles.inputLabel}>First Name</label>
-                    {formik.touched.firstName && formik.errors.firstName ? (
-                      <div className={styles.errorMsg}>
-                        {formik.errors.firstName}
-                      </div>
-                    ) : null}
+            <form onSubmit={formik.handleSubmit}>
+              <div className={styles.formGroup}>
+                <input
+                  name="firstName"
+                  type="text"
+                  value={formik.values.firstName}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className={styles.formInput}
+                  placeholder="First Name"
+                />
+                <label className={styles.inputLabel}>First Name</label>
+                {formik.touched.firstName && formik.errors.firstName ? (
+                  <div className={styles.errorMsg}>
+                    {formik.errors.firstName}
                   </div>
+                ) : null}
+              </div>
 
-                  <div className={styles.formGroup}>
-                    <input
-                      name="lastName"
-                      type="text"
-                      value={formik.values.lastName}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      className={styles.formInput}
-                      placeholder="First Name"
-                    />
-                    <label className={styles.inputLabel}>Last Name</label>
-                    {formik.touched.lastName && formik.errors.lastName ? (
-                      <div className={styles.errorMsg}>
-                        {formik.errors.lastName}
-                      </div>
-                    ) : null}
+              <div className={styles.formGroup}>
+                <input
+                  name="lastName"
+                  type="text"
+                  value={formik.values.lastName}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className={styles.formInput}
+                  placeholder="First Name"
+                />
+                <label className={styles.inputLabel}>Last Name</label>
+                {formik.touched.lastName && formik.errors.lastName ? (
+                  <div className={styles.errorMsg}>
+                    {formik.errors.lastName}
                   </div>
+                ) : null}
+              </div>
 
-                  <div className={styles.stacked}>
-                    <div className={styles.formGroup}>
-                      <input
-                        name="email"
-                        type="email"
-                        value={formik.values.email}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        className={styles.formInput}
-                        placeholder="Email"
-                      />
-                      <label className={styles.inputLabel}>Email</label>
-                      {formik.touched.email && formik.errors.email ? (
-                        <div className={styles.errorMsg}>
-                          {formik.errors.email}
-                        </div>
-                      ) : null}
+              <div className={styles.stacked}>
+                <div className={styles.formGroup}>
+                  <input
+                    name="email"
+                    type="email"
+                    value={formik.values.email}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    className={styles.formInput}
+                    placeholder="Email"
+                  />
+                  <label className={styles.inputLabel}>Email</label>
+                  {formik.touched.email && formik.errors.email ? (
+                    <div className={styles.errorMsg}>
+                      {formik.errors.email}
                     </div>
+                  ) : null}
+                </div>
 
-                    <div className={styles.formGroup}>
-                      <input
-                        name="phone"
-                        type="text"
-                        value={formik.values.phone}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        className={styles.formInput}
-                        placeholder="Phone"
-                      />
-                      <label className={styles.inputLabel}>Phone</label>
-                      {formik.touched.phone && formik.errors.phone ? (
-                        <div className={styles.errorMsg}>
-                          {formik.errors.phone}
-                        </div>
-                      ) : null}
+                <div className={styles.formGroup}>
+                  <input
+                    name="phone"
+                    type="text"
+                    value={formik.values.phone}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    className={styles.formInput}
+                    placeholder="Phone"
+                  />
+                  <label className={styles.inputLabel}>Phone</label>
+                  {formik.touched.phone && formik.errors.phone ? (
+                    <div className={styles.errorMsg}>
+                      {formik.errors.phone}
                     </div>
+                  ) : null}
+                </div>
 
-                    <div className={styles.formGroup}>
-                      <input
-                        name="password"
-                        type="password"
-                        value={formik.values.password}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        className={styles.formInput}
-                        placeholder="Password"
-                      />
-                      <label className={styles.inputLabel}>Password</label>
-                      {formik.touched.password && formik.errors.password ? (
-                        <div className={styles.errorMsg}>
-                          {formik.errors.password}
-                        </div>
-                      ) : null}
+                <div className={styles.formGroup}>
+                  <input
+                    name="password"
+                    type="password"
+                    value={formik.values.password}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    className={styles.formInput}
+                    placeholder="Password"
+                  />
+                  <label className={styles.inputLabel}>Password</label>
+                  {formik.touched.password && formik.errors.password ? (
+                    <div className={styles.errorMsg}>
+                      {formik.errors.password}
                     </div>
-                  </div>
-
-                  <IonButton type="submit">Register</IonButton>
-                </form>
-
-                <div className={styles.accountHelp}>
-                  <p>
-                    Have an Account?{" "}
-                    <Link to="/login" className={styles.register}>
-                      Sign In
-                    </Link>
-                  </p>
+                  ) : null}
                 </div>
               </div>
+
+              <IonButton type="submit">Register</IonButton>
+            </form>
+
+            <div className={styles.registerAccountHelp}>
+              <p>
+                Have an account?{" "}
+                <Link to="/login" className={styles.register}>
+                  Sign In
+                </Link>
+              </p>
             </div>
-          </IonContent>
-        </IonPage>
-      ) : (
-        <Loader />
-      )}
-    </>
+          </div>
+        </div>
+      </IonContent>
+    </IonPage>
   );
 }
