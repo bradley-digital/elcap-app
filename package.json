@@ -2,7 +2,7 @@
   "name": "elcap-app",
   "main": "src/index.tsx",
   "author": "joshuabradley012 <joshuabradley012@gmail.com>",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "license": "MIT",
   "dependencies": {
