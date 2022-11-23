@@ -7,24 +7,6 @@ import styles from "./ResetPasswordForm.module.scss";
 import updatePassword from "./update-password";
 import getErrorMessage from "utils/error";
 
-const isValidPass = (value: string | undefined, context: Object) => {
-  if (!value) {
-    return false;
-  }
-
-  const hasUpperCase = /[A-Z]/.test(value);
-  const hasLowerCase = /[a-z]/.test(value);
-  const hasNumber = /[0-9]/.test(value);
-  let validConditions = 0;
-  const numberOfMustBeValidConditions = 3;
-  const conditions = [hasLowerCase, hasUpperCase, hasNumber];
-  conditions.forEach((condition) => (condition ? validConditions++ : null));
-  if (validConditions >= numberOfMustBeValidConditions) {
-    return true;
-  }
-  return false;
-};
-
 export default function ResetPasswordForm() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [present] = useIonToast();
@@ -37,25 +19,9 @@ export default function ResetPasswordForm() {
       confirmPassword: "",
     },
     validationSchema: Yup.object({
-      password: Yup.string()
-        .required("Please enter your password.")
-        .min(8, "Your password is too short.")
-        .max(36, "Your password is too long.")
-        .test(
-          "isValidPass",
-          "Password must be 8 char (one uppercase & one symbol)",
-          isValidPass
-        ),
-
+      password: Yup.string().required("Password required").min(8).max(28),
       confirmPassword: Yup.string()
-        .required("Please enter your confirm password.")
-        .min(8, "Your password is too short.")
-        .max(36, "Your password is too long.")
-        .test(
-          "isValidPass",
-          "Password must be 8 char (one uppercase & one symbol)",
-          isValidPass
-        )
+        .required("Password required").min(8).max(28)
         .oneOf([Yup.ref("password"), null], "Passwords must match."),
     }),
     onSubmit: async (values) => {

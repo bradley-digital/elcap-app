@@ -17,10 +17,12 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import styles from "./Account.module.scss";
 
 // hooks
 import useAuth from "hooks/useAuth";
+
+// Styles
+import styles from "./Account.module.scss";
 
 type Profile = {
   firstName: string;
