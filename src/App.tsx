@@ -1,8 +1,8 @@
 // components
 import { IonApp, setupIonicReact } from "@ionic/react";
 import { AuthProvider } from "contexts/AuthContext";
-import Routes from "components/Routes/Routes";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import Routes from "components/Routes/Routes";
 
 // theme variables
 import "theme/global.scss";

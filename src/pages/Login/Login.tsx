@@ -119,7 +119,7 @@ export default function Login() {
             </div>
 
             <div className={styles.loginAccountHelp}>
-              <Link to="/" className={styles.forgotPassword}>
+              <Link to="/forgot-password" className={styles.forgotPassword}>
                 Forgot password?
               </Link>
               <Link to="/register" className={styles.register}>
