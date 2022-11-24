@@ -11,6 +11,11 @@ jobs:
           # Make sure the actual branch is checked out when running on pull requests
           ref: ${{ github.head_ref }}
           fetch-depth: 0
+          token: ${{ secrets.BOT_ACCESS_TOKEN }}
+      - name: Setup Git
+        run: |
+          git config user.name "josh-bradley-digital-bot"
+          git config user.email "<>"
       - name: Prettify code
         uses: creyD/prettier_action@v4.2
         with:
