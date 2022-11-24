@@ -12,6 +12,7 @@ jobs:
           ref: ${{ github.head_ref }}
           fetch-depth: 0
           token: ${{ secrets.BOT_ACCESS_TOKEN }}
+          persist-credentials: false
       - name: Setup Git
         run: |
           git config user.name "josh-bradley-digital-bot"
@@ -22,6 +23,7 @@ jobs:
           prettier_options: --write **/*.{ts,tsx}
           only_changed: True
           same_commit: True
+          github_token: ${{ secrets.BOT_ACCESS_TOKEN }}
 
   eslint:
     runs-on: ubuntu-latest
