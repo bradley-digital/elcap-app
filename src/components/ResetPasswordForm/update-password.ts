@@ -1,10 +1,6 @@
 const host = process.env.REACT_APP_BACKEND_HOST || "";
 
-const updatePassword = async (
-  resetToken: string,
-  password: string,
-  confirmPassword: string
-) => {
+const updatePassword = async (resetToken: string, password: string) => {
   const res = await fetch(`${host}/users/reset-password`, {
     method: "PATCH",
     headers: {

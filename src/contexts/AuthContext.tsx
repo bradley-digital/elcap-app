@@ -33,6 +33,19 @@ type RegisterArgs = {
   password: string;
 };
 
+type User = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  userName: string;
+  address: string;
+  createdAt: string;
+  updatedAt: string;
+  role: string;
+};
+
 type LoginArgs = {
   email: string;
   password: string;
@@ -47,6 +60,7 @@ type RefreshAccessToken = () => Promise<void>;
 
 type AuthContextProps = {
   isAuthenticated: boolean;
+  user: undefined | User;
   error: boolean;
   register: RegisterFunction;
   login: LoginFunction;
@@ -58,6 +72,7 @@ type AuthContextProps = {
 
 export const AuthContext = createContext<AuthContextProps>({
   isAuthenticated: false,
+  user: undefined,
   error: false,
   /* eslint-disable  @typescript-eslint/no-unused-vars */
   register: async function (arg: RegisterArgs) {
@@ -85,11 +100,13 @@ export const AuthContext = createContext<AuthContextProps>({
 const refreshTokenCookie = "ec_rt";
 const defaultRefreshToken = cookies.get(refreshTokenCookie);
 const authEvents = new EventEmitter();
-const waitForRefresh = () => new Promise<void>(res => authEvents.once("refreshed", res));
+const waitForRefresh = () =>
+  new Promise<void>((res) => authEvents.once("refreshed", res));
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [cookies, setCookie, removeCookie] = useCookies([refreshTokenCookie]);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [user, setUser] = useState<undefined | User>(undefined);
   const [error, setError] = useState<boolean>(false);
   const accessTokenRef = useRef<string>("");
   const refreshTokenRef = useRef<undefined | string>(defaultRefreshToken);
@@ -141,7 +158,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const finalHeaders = Object.assign(
       {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${accessTokenRef.current}`,
+        Authorization: `Bearer ${accessTokenRef.current}`,
       },
       options.headers
     );
@@ -179,7 +196,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
 
       const tokens = await res.json();
+      console.log(tokens);
       handleSetTokens(tokens);
+
+      const userInfo = await authFetch("/users/account");
+      setUser(userInfo);
     } catch (err) {
       console.error(err);
     }
@@ -215,10 +236,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
-  async function authFetch(
-    endpoint: string,
-    options: any = {}
-  ): Promise<Json> {
+  async function authFetch(endpoint: string, options: any = {}): Promise<any> {
     try {
       if (isRefreshingRef.current) {
         await waitForRefresh();
@@ -302,6 +320,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     <AuthContext.Provider
       value={{
         isAuthenticated,
+        user,
         error,
         register,
         login,
