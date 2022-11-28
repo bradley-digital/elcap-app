@@ -6,11 +6,13 @@ import useSessionTimeout from "hooks/useSessionTimeout";
 
 // components
 import { useIonRouter } from "@ionic/react";
-import UserRoutes from "./UserRoutes";
+import AdminRoutes from "./AdminRoutes";
 import LoginRoutes from "./LoginRoutes";
+import PaymentsRoutes from "./PaymentsRoutes";
+import PortalRoutes from "./PortalRoutes";
 
 export default function AuthRouter() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, role } = useAuth();
   const router = useIonRouter();
   const startPath = useRef(router.routeInfo.pathname);
 
@@ -24,6 +26,18 @@ export default function AuthRouter() {
     /* eslint-disable-next-line */
   }, [isAuthenticated]);
 
-  return isAuthenticated ? <UserRoutes /> : <LoginRoutes />;
-}
+  // do redirect base on roles. | ADMIN, PAYMENTS, PORTAL
+  if (isAuthenticated && role === "ADMIN") {
+    return <AdminRoutes />;
+  }
 
+  if (isAuthenticated && role === "PAYMENTS") {
+    return <PaymentsRoutes />;
+  }
+
+  if (isAuthenticated && role === "PORTAL") {
+    return <PortalRoutes />;
+  }
+
+  return <LoginRoutes />;
+}
