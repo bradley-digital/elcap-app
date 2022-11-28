@@ -16,8 +16,6 @@ export default function AuthRouter() {
   const router = useIonRouter();
   const startPath = useRef(router.routeInfo.pathname);
 
-  console.log(isAuthenticated, role);
-
   useSessionTimeout();
 
   useLayoutEffect(() => {
