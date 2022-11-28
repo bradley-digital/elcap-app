@@ -5,7 +5,6 @@ import Account from "pages/Account/Account";
 import Example from "pages/Example/Example";
 import Pay from "pages/Pay/Pay";
 import Shop from "pages/Shop/Shop";
-import Loader from "components/Loader/Loader";
 
 // components
 import {
