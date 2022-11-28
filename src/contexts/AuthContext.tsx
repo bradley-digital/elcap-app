@@ -112,7 +112,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const {
       accessToken: newAccessToken,
       refreshToken: newRefreshToken,
-      role: newRole
+      role: newRole,
     } = tokens;
 
     if (newAccessToken && newRefreshToken && newRole) {
