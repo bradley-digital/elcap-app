@@ -20,13 +20,13 @@ export default function PortalRoutes() {
     <IonTabs>
       <IonRouterOutlet>
         <Switch>
-          <Route exact path="/portal-account" component={Account} />
+          <Route exact path="/admin-account" component={Account} />
           {/* Fallback route */}
-          <Route render={() => <Redirect to="/portal-account" />} />
+          <Route render={() => <Redirect to="/admin-account" />} />
         </Switch>
       </IonRouterOutlet>
       <IonTabBar slot="bottom">
-        <IonTabButton tab="account" href="/portal-account">
+        <IonTabButton tab="account" href="/admin-account">
           <IonIcon icon={personCircle} />
           <IonLabel>Account</IonLabel>
         </IonTabButton>
