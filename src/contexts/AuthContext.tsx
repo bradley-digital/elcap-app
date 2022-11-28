@@ -7,14 +7,10 @@ import cookies from "lib/cookies";
 
 const host = process.env.REACT_APP_BACKEND_HOST || "http://localhost:3020";
 
-type Json = {
-  /* eslint-disable  @typescript-eslint/no-explicit-any */
-  [key: string]: any;
-};
-
 type TokenResponse = {
   accessToken: string;
   refreshToken: string;
+  role: string;
 };
 
 type AuthProviderProps = {
@@ -47,6 +43,7 @@ type RefreshAccessToken = () => Promise<void>;
 
 type AuthContextProps = {
   isAuthenticated: boolean;
+  role: string;
   error: boolean;
   register: RegisterFunction;
   login: LoginFunction;
@@ -58,6 +55,7 @@ type AuthContextProps = {
 
 export const AuthContext = createContext<AuthContextProps>({
   isAuthenticated: false,
+  role: "",
   error: false,
   /* eslint-disable  @typescript-eslint/no-unused-vars */
   register: async function (arg: RegisterArgs) {
@@ -85,11 +83,13 @@ export const AuthContext = createContext<AuthContextProps>({
 const refreshTokenCookie = "ec_rt";
 const defaultRefreshToken = cookies.get(refreshTokenCookie);
 const authEvents = new EventEmitter();
-const waitForRefresh = () => new Promise<void>(res => authEvents.once("refreshed", res));
+const waitForRefresh = () =>
+  new Promise<void>((res) => authEvents.once("refreshed", res));
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [cookies, setCookie, removeCookie] = useCookies([refreshTokenCookie]);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [role, setRole] = useState<string>("");
   const [error, setError] = useState<boolean>(false);
   const accessTokenRef = useRef<string>("");
   const refreshTokenRef = useRef<undefined | string>(defaultRefreshToken);
@@ -109,13 +109,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   function handleSetTokens(tokens: TokenResponse): void {
-    const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
-      tokens;
+    const {
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
+      role: newRole,
+    } = tokens;
 
-    if (newAccessToken && newRefreshToken) {
+    if (newAccessToken && newRefreshToken && newRole) {
       accessTokenRef.current = newAccessToken;
       refreshTokenRef.current = newRefreshToken;
       setIsAuthenticated(true);
+      setRole(newRole);
       setCookie(refreshTokenCookie, newRefreshToken, {
         path: "/",
         sameSite: "strict",
@@ -141,7 +145,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const finalHeaders = Object.assign(
       {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${accessTokenRef.current}`,
+        Authorization: `Bearer ${accessTokenRef.current}`,
       },
       options.headers
     );
@@ -215,10 +219,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
-  async function authFetch(
-    endpoint: string,
-    options: any = {}
-  ): Promise<Json> {
+  async function authFetch(endpoint: string, options: any = {}): Promise<any> {
     try {
       if (isRefreshingRef.current) {
         await waitForRefresh();
@@ -302,6 +303,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     <AuthContext.Provider
       value={{
         isAuthenticated,
+        role,
         error,
         register,
         login,

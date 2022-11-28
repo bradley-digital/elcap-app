@@ -5,7 +5,6 @@ import Account from "pages/Account/Account";
 import Example from "pages/Example/Example";
 import Pay from "pages/Pay/Pay";
 import Shop from "pages/Shop/Shop";
-import Loader from "components/Loader/Loader";
 
 // components
 import {
@@ -20,7 +19,7 @@ import {
 // icons
 import { bag, card, personCircle } from "ionicons/icons";
 
-export default function UserRoutes() {
+export default function PaymentsRoutes() {
   return (
     <IonTabs>
       <IonRouterOutlet>
@@ -29,8 +28,6 @@ export default function UserRoutes() {
           <Route exact path="/account" component={Account} />
           <Route exact path="/shop" component={Shop} />
           <Route exact path="/example" component={Example} />
-          <Route exact path="/loader" component={Loader} />
-
           {/* Fallback route */}
           <Route render={() => <Redirect to="/pay" />} />
         </Switch>

@@ -21,15 +21,17 @@ export default function ResetPasswordForm() {
     validationSchema: Yup.object({
       password: Yup.string().required("Password required").min(8).max(28),
       confirmPassword: Yup.string()
-        .required("Password required").min(8).max(28)
+        .required("Password required")
+        .min(8)
+        .max(28)
         .oneOf([Yup.ref("password"), null], "Passwords must match."),
     }),
     onSubmit: async (values) => {
       setIsLoaded(true);
-      const { resetToken, password, confirmPassword } = values;
+      const { resetToken, password } = values;
 
       try {
-        await updatePassword(resetToken, password, confirmPassword);
+        await updatePassword(resetToken, password);
         present({
           duration: 4000,
           keyboardClose: true,
