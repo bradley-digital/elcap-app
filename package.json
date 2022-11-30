@@ -82,7 +82,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/joshuabradley012/elcap-app.git"
+    "url": "git+https://github.com/josh-bradley-digital/elcap-app.git"
   },
   "devDependencies": {
     "eslint-plugin-react": "^7.31.11"
