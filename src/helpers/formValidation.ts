@@ -18,3 +18,9 @@ export const passwordValidation = Yup.string()
   .required("Password required")
   .min(8)
   .max(28);
+
+export const confirmPasswordValidation = Yup.string()
+  .required("Password required")
+  .min(8)
+  .max(28)
+  .oneOf([Yup.ref("password"), null], "Passwords must match.");
