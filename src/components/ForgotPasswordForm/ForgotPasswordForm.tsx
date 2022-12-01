@@ -6,7 +6,8 @@ import * as Yup from "yup";
 import { IonButton, useIonToast } from "@ionic/react";
 
 // helpers
-import sendForgotPasswordEmail from "./send-email";
+// import sendForgotPasswordEmail from "./send-email";
+import { fetchApi } from "utils/fetchApi";
 import { emailValidation } from "helpers/formValidation";
 import getErrorMessage from "utils/error";
 
@@ -28,7 +29,10 @@ export default function ForgotPasswordForm() {
       onSubmit={async (values) => {
         setIsLoaded(true);
         try {
-          const res: any = await sendForgotPasswordEmail(values.email);
+          // const res: any = await sendForgotPasswordEmail(values.email);
+          const res: any = await fetchApi("/email/forgot-password", "POST", [
+            values.email,
+          ]);
           present({
             duration: 4000,
             keyboardClose: true,
