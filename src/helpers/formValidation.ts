@@ -16,11 +16,11 @@ export const phoneValidation = Yup.string().matches(
 
 export const passwordValidation = Yup.string()
   .required("Password required")
-  .min(8)
-  .max(28);
+  .min(8, "Must be at least 8 characters")
+  .max(28, "Must be 28 characters or less");
 
 export const confirmPasswordValidation = Yup.string()
   .required("Password required")
-  .min(8)
-  .max(28)
+  .min(8, "Must be at least 8 characters")
+  .max(28, "Must be 28 characters or less")
   .oneOf([Yup.ref("password"), null], "Passwords must match.");
