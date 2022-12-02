@@ -34,7 +34,7 @@
   }
 
   p {
-    color: var(--ion-color-primary);
+    color: $primary;
     font-weight: 700;
     margin: 0;
   }
@@ -80,7 +80,7 @@
     color: $gray;
 
     &:hover {
-      color: var(--ion-color-primary);
+      color: $primary;
     }
   }
 
