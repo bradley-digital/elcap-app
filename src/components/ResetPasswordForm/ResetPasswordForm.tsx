@@ -5,6 +5,7 @@ import * as Yup from "yup";
 
 // components
 import { IonButton, useIonToast } from "@ionic/react";
+import { FormInput } from "components/Form/FormInput";
 
 // helpers
 // import updatePassword from "./update-password";
@@ -75,40 +76,23 @@ export default function ResetPasswordForm() {
             </ol>
 
             <div className={styles.formGroup}>
-              <input
+              <FormInput
+                label="New Password"
                 name="password"
                 type="password"
-                value={formik.values.password}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
                 className={styles.formInput}
                 placeholder="Password"
               />
-
-              <label className={styles.inputLabel}>New Password</label>
-              {formik.touched.password && formik.errors.password ? (
-                <div className={styles.errorMsg}>{formik.errors.password}</div>
-              ) : null}
             </div>
 
             <div className={styles.formGroup}>
-              <input
+              <FormInput
+                label="Confirm New Password"
                 name="confirmPassword"
                 type="password"
-                value={formik.values.confirmPassword}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
                 className={styles.formInput}
                 placeholder="Password"
               />
-
-              <label className={styles.inputLabel}>Confirm Password</label>
-              {formik.touched.confirmPassword &&
-              formik.errors.confirmPassword ? (
-                <div className={styles.errorMsg}>
-                  {formik.errors.confirmPassword}
-                </div>
-              ) : null}
             </div>
           </div>
           <IonButton disabled={isLoaded} type="submit">

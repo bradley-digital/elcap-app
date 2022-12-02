@@ -12,6 +12,7 @@ import { IonButton, IonContent, IonIcon, IonPage, IonText } from "@ionic/react";
 import { ReactComponent as Logo } from "assets/elcapitanadvisors_logo.svg";
 import { ReactComponent as GoogleLogo } from "assets/google-icon.svg";
 import { closeOutline } from "ionicons/icons";
+import { FormInput } from "components/Form/FormInput";
 
 // helpers
 import { emailValidation, passwordValidation } from "helpers/formValidation";
@@ -68,25 +69,18 @@ export default function Login() {
                 <form onSubmit={formik.handleSubmit}>
                   <div className={styles.stacked}>
                     <div className={styles.formGroup}>
-                      <input
+                      <FormInput
+                        label="Email"
                         name="email"
                         type="email"
-                        value={formik.values.email}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
                         className={styles.formInput}
                         placeholder="Email"
                       />
-                      <label className={styles.inputLabel}>Email</label>
-                      {formik.touched.email && formik.errors.email ? (
-                        <div className={styles.errorMsg}>
-                          {formik.errors.email}
-                        </div>
-                      ) : null}
                     </div>
 
                     <div className={styles.formGroup}>
-                      <input
+                      <FormInput
+                        label="Password"
                         name="password"
                         type="password"
                         value={formik.values.password}
@@ -95,12 +89,6 @@ export default function Login() {
                         className={styles.formInput}
                         placeholder="Password"
                       />
-                      <label className={styles.inputLabel}>Password</label>
-                      {formik.touched.password && formik.errors.password ? (
-                        <div className={styles.errorMsg}>
-                          {formik.errors.password}
-                        </div>
-                      ) : null}
                     </div>
                   </div>
                   <IonButton type="submit">Login</IonButton>
