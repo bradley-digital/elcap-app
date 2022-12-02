@@ -8,7 +8,6 @@ import { IonButton, useIonToast } from "@ionic/react";
 import { FormInput } from "components/Form/FormInput";
 
 // helpers
-// import updatePassword from "./update-password";
 import { fetchApi } from "utils/fetchApi";
 import {
   passwordValidation,
@@ -40,7 +39,6 @@ export default function ResetPasswordForm() {
         const { resetToken, password } = values;
 
         try {
-          // await updatePassword(resetToken, password);
           await fetchApi({
             url: "/users/reset-password",
             method: "PATCH",
