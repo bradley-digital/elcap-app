@@ -124,7 +124,7 @@ export default function Register() {
               )}
             </Formik>
 
-            <div className={styles.registerAccountHelp}>
+            <div className={styles.accountHelp}>
               <p>
                 Have an account?{" "}
                 <Link to="/login" className={styles.register}>

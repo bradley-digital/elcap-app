@@ -6,7 +6,7 @@
   }
 
   p {
-    color: gray;
+    color: $gray;
   }
 
   ion-item {
@@ -72,30 +72,16 @@
     text-decoration: none;
   }
 
+  p {
+    margin: 0 auto;
+  }
+
   .forgotPassword {
-    color: grey;
+    color: $gray;
 
     &:hover {
       color: var(--ion-color-primary);
     }
-  }
-
-  .register {
-    font-weight: 500;
-  }
-}
-
-.registerAccountHelp {
-  display: flex;
-  justify-content: center;
-  padding: 24px 0;
-
-  p {
-    margin: 0;
-  }
-
-  a {
-    text-decoration: none;
   }
 
   .register {
