@@ -23,7 +23,7 @@ import {
 } from "helpers/formValidation";
 
 // styles
-import styles from "../Login/Login.module.scss";
+import styles from "components/Form/Form.module.scss";
 
 export default function Register() {
   const { error, register } = useAuth();

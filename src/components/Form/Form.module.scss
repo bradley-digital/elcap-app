@@ -1,0 +1,110 @@
+@import "theme/variables.scss";
+
+.page {
+  h1 {
+    margin-bottom: 16px;
+  }
+
+  p {
+    color: gray;
+  }
+
+  ion-item {
+    --padding-start: 0;
+    --ripple-color: transparent;
+    --border-color: transparent;
+  }
+
+  ion-button {
+    width: 100%;
+  }
+}
+
+.elcapLogo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 16px;
+  z-index: 101;
+
+  svg {
+    height: 128px;
+    width: 160px;
+  }
+
+  p {
+    color: var(--ion-color-primary);
+    font-weight: 700;
+    margin: 0;
+  }
+}
+
+.stacked {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 32px;
+}
+
+.socialLogin {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 20px;
+
+  ion-button {
+    width: 44%;
+
+    svg {
+      margin-right: 10px;
+      float: left;
+    }
+
+    font-size: 12px;
+  }
+}
+
+.accountHelp {
+  padding-top: 20px;
+  display: flex;
+  justify-content: space-between;
+
+  a {
+    text-decoration: none;
+  }
+
+  .forgotPassword {
+    color: grey;
+
+    &:hover {
+      color: var(--ion-color-primary);
+    }
+  }
+
+  .register {
+    font-weight: 500;
+  }
+}
+
+.registerAccountHelp {
+  display: flex;
+  justify-content: center;
+  padding: 24px 0;
+
+  p {
+    margin: 0;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  .register {
+    font-weight: 500;
+  }
+}
+
+.contentBottom {
+  padding: 0 16px;
+  max-width: 420px;
+  margin: 0 auto;
+}

@@ -18,7 +18,7 @@ import { FormInput } from "components/Form/FormInput";
 import { emailValidation, passwordValidation } from "helpers/formValidation";
 
 // styles
-import styles from "./Login.module.scss";
+import styles from "components/Form/Form.module.scss";
 
 export default function Login() {
   const { error, googleLogin, login } = useAuth();
@@ -102,7 +102,7 @@ export default function Login() {
               </IonButton>
             </div>
 
-            <div className={styles.loginAccountHelp}>
+            <div className={styles.accountHelp}>
               <Link to="/forgot-password" className={styles.forgotPassword}>
                 Forgot password?
               </Link>

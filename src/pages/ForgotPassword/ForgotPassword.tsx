@@ -1,8 +1,12 @@
-import { IonContent, IonPage, IonText } from "@ionic/react";
 import { Link } from "react-router-dom";
+
+// components
+import { IonContent, IonPage, IonText } from "@ionic/react";
 import Logo from "components/Logo/Logo";
 import ForgotPasswordForm from "components/ForgotPasswordForm/ForgotPasswordForm";
-import styles from "./ForgotPassword.module.scss";
+
+// styles
+import styles from "components/Form/Form.module.scss";
 
 export default function ForgotPassword() {
   return (

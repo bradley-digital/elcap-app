@@ -13,7 +13,7 @@ import { emailValidation } from "helpers/formValidation";
 import getErrorMessage from "utils/error";
 
 // styles
-import styles from "./ForgotPasswordForm.module.scss";
+import styles from "components/Form/Form.module.scss";
 
 export default function ForgotPasswordForm() {
   const [isLoaded, setIsLoaded] = useState(false);
