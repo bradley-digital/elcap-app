@@ -4,6 +4,7 @@ import * as Yup from "yup";
 
 // components
 import { IonButton, useIonToast } from "@ionic/react";
+import { FormInput } from "components/Form/FormInput";
 
 // helpers
 // import sendForgotPasswordEmail from "./send-email";
@@ -30,9 +31,11 @@ export default function ForgotPasswordForm() {
         setIsLoaded(true);
         try {
           // const res: any = await sendForgotPasswordEmail(values.email);
-          const res: any = await fetchApi("/email/forgot-password", "POST", [
-            values.email,
-          ]);
+          const res: any = await fetchApi({
+            url: "/email/forgot-password",
+            method: "POST",
+            email: values.email,
+          });
           present({
             duration: 4000,
             keyboardClose: true,
@@ -55,20 +58,14 @@ export default function ForgotPasswordForm() {
         <form onSubmit={formik.handleSubmit}>
           <div className={styles.stacked}>
             <div className={styles.formGroup}>
-              <input
+              <FormInput
+                label="Email"
                 name="email"
                 type="email"
                 disabled={isLoaded}
-                value={formik.values.email}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
                 className={styles.formInput}
                 placeholder="Email"
               />
-              <label className={styles.inputLabel}>Email</label>
-              {formik.touched.email && formik.errors.email ? (
-                <div className={styles.errorMsg}>{formik.errors.email}</div>
-              ) : null}
             </div>
           </div>
           <IonButton disabled={isLoaded} type="submit">

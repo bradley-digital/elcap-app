@@ -40,10 +40,12 @@ export default function ResetPasswordForm() {
 
         try {
           // await updatePassword(resetToken, password);
-          await fetchApi("/users/reset-password", "PATCH", [
-            resetToken,
-            password,
-          ]);
+          await fetchApi({
+            url: "/users/reset-password",
+            method: "PATCH",
+            resetToken: resetToken,
+            password: password,
+          });
           present({
             duration: 4000,
             keyboardClose: true,

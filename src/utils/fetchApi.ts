@@ -1,16 +1,28 @@
 const host = process.env.REACT_APP_BACKEND_HOST || "";
 
-export const fetchApi = async (
-  url: string,
-  method: string,
-  options: string[]
-) => {
+type fetchApiProps = {
+  url: string;
+  method: string;
+  email?: string;
+  resetToken?: string;
+  password?: string;
+};
+
+export const fetchApi = async ({
+  url,
+  method,
+  email,
+  resetToken,
+  password,
+}: fetchApiProps) => {
+  const validatedBody = resetToken ? { resetToken, password } : { email };
+
   const res = await fetch(`${host}${url}`, {
     method: method,
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ ...options }),
+    body: JSON.stringify(validatedBody),
   });
 
   const body = await res.json();
