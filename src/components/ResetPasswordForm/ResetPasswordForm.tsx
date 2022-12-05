@@ -15,9 +15,6 @@ import {
 } from "helpers/formValidation";
 import getErrorMessage from "utils/error";
 
-// styles
-import styles from "./ResetPasswordForm.module.scss";
-
 export default function ResetPasswordForm() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [present] = useIonToast();
@@ -65,7 +62,7 @@ export default function ResetPasswordForm() {
     >
       {(formik) => (
         <form onSubmit={formik.handleSubmit}>
-          <div className={styles.stacked}>
+          <div className="Form__inputGroup">
             <p>Your new password must:</p>
             <ol>
               <li>Contain 8-36 characters.</li>
@@ -73,25 +70,19 @@ export default function ResetPasswordForm() {
               <li>Contain at least one number.</li>
             </ol>
 
-            <div className={styles.formGroup}>
-              <FormInput
-                label="New Password"
-                name="password"
-                type="password"
-                className={styles.formInput}
-                placeholder="Password"
-              />
-            </div>
+            <FormInput
+              label="New Password"
+              name="password"
+              type="password"
+              placeholder="Password"
+            />
 
-            <div className={styles.formGroup}>
-              <FormInput
-                label="Confirm New Password"
-                name="confirmPassword"
-                type="password"
-                className={styles.formInput}
-                placeholder="Password"
-              />
-            </div>
+            <FormInput
+              label="Confirm New Password"
+              name="confirmPassword"
+              type="password"
+              placeholder="Password"
+            />
           </div>
           <IonButton disabled={isLoaded} type="submit">
             Go

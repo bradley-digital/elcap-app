@@ -16,12 +16,14 @@
     width: 100%;
   }
 
-  h1 {
-    margin-bottom: 16px;
+  ion-text {
+    p {
+      color: $gray;
+    }
   }
 
-  p {
-    color: $gray;
+  h1 {
+    margin-bottom: 16px;
   }
 
   &__authError {
@@ -81,6 +83,7 @@
 
     p {
       margin: 0 auto;
+      color: $gray;
     }
 
     &--left {

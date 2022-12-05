@@ -11,9 +11,6 @@ import { fetchApi } from "utils/fetchApi";
 import { emailValidation } from "helpers/formValidation";
 import getErrorMessage from "utils/error";
 
-// styles
-import "components/Form/Form.scss";
-
 export default function ForgotPasswordForm() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [present] = useIonToast();
