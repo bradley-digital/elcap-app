@@ -12,7 +12,7 @@ import { emailValidation } from "helpers/formValidation";
 import getErrorMessage from "utils/error";
 
 // styles
-import styles from "components/Form/Form.module.scss";
+import "components/Form/Form.scss";
 
 export default function ForgotPasswordForm() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -54,17 +54,14 @@ export default function ForgotPasswordForm() {
     >
       {(formik) => (
         <form onSubmit={formik.handleSubmit}>
-          <div className={styles.stacked}>
-            <div className={styles.formGroup}>
-              <FormInput
-                label="Email"
-                name="email"
-                type="email"
-                disabled={isLoaded}
-                className={styles.formInput}
-                placeholder="Email"
-              />
-            </div>
+          <div className="Form__inputGroup">
+            <FormInput
+              label="Email"
+              name="email"
+              type="email"
+              disabled={isLoaded}
+              placeholder="Email"
+            />
           </div>
           <IonButton disabled={isLoaded} type="submit">
             Go

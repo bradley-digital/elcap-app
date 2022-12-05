@@ -6,26 +6,22 @@ import Logo from "components/Logo/Logo";
 import ForgotPasswordForm from "components/ForgotPasswordForm/ForgotPasswordForm";
 
 // styles
-import styles from "components/Form/Form.module.scss";
+import "components/Form/Form.scss";
 
 export default function ForgotPassword() {
   return (
-    <IonPage className={styles.page}>
+    <IonPage className="Form">
       <IonContent fullscreen className="ion-padding">
         <Logo />
-        <div className={styles.contentBottom}>
-          <div>
-            <IonText>
-              <h1>Forgot Password</h1>
-            </IonText>
+        <div>
+          <IonText>
+            <h1>Forgot Password</h1>
+          </IonText>
 
-            <ForgotPasswordForm />
-          </div>
-          <div className={styles.accountHelp}>
-            <Link to="/" className={styles.forgotPassword}>
-              Back to login
-            </Link>
-          </div>
+          <ForgotPasswordForm />
+        </div>
+        <div className="Form__accountHelp">
+          <Link to="/">Back to login</Link>
         </div>
       </IonContent>
     </IonPage>

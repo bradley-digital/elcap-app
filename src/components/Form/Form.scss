@@ -24,26 +24,6 @@
     color: $gray;
   }
 
-  &__elcapLogo {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding-top: 16px;
-    z-index: 101;
-
-    svg {
-      height: 128px;
-      width: 160px;
-    }
-
-    p {
-      color: $primary;
-      font-weight: 700;
-      margin: 0;
-    }
-  }
-
   &__authError {
     display: flex;
     align-items: center;

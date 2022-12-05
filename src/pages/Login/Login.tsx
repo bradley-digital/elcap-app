@@ -4,12 +4,14 @@ import { Link } from "react-router-dom";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
+import Loader from "components/Loader/Loader";
+
 // hooks
 import useAuth from "hooks/useAuth";
 
 // components
 import { IonButton, IonContent, IonIcon, IonPage, IonText } from "@ionic/react";
-import { ReactComponent as Logo } from "assets/elcapitanadvisors_logo.svg";
+import Logo from "components/Logo/Logo";
 import { ReactComponent as GoogleLogo } from "assets/google-icon.svg";
 import { closeOutline } from "ionicons/icons";
 import { FormInput } from "components/Form/FormInput";
@@ -31,10 +33,8 @@ export default function Login() {
   return (
     <IonPage className="Form">
       <IonContent fullscreen>
-        <div className="Form__elcapLogo">
-          <Logo />
-          <p>EL CAPITAN PAYMENTS</p>
-        </div>
+      <Loader />
+        <Logo />
         <IonText>
           <h1>Login</h1>
           <p>Hi there! Welcome to El Capitan.</p>

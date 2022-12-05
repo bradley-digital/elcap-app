@@ -1,0 +1,26 @@
+@import "theme/variables.scss";
+@import "theme/ionic-variables.scss";
+
+.Loader {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 0 18px;
+
+  h1 {
+    color: $primary;
+    max-width: 500px;
+    font-weight: 600;
+    width: 100%;
+    margin: 0 auto;
+    font-size: 2rem;
+    text-transform: uppercase;
+    text-align: center;
+
+    @media screen and (min-width: 576px) {
+      font-size: 2.85rem;
+    }
+  }
+}
