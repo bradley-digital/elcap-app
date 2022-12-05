@@ -4,8 +4,6 @@ import { Link } from "react-router-dom";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
-import Loader from "components/Loader/Loader";
-
 // hooks
 import useAuth from "hooks/useAuth";
 
@@ -33,7 +31,6 @@ export default function Login() {
   return (
     <IonPage className="Form">
       <IonContent fullscreen>
-      <Loader />
         <Logo />
         <IonText>
           <h1>Login</h1>
