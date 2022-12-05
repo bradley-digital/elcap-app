@@ -1,0 +1,67 @@
+@import "theme/variables.scss";
+
+.FormInput {
+  position: relative;
+  padding: 16px 0 0;
+  margin-top: 8px;
+  width: 100%;
+
+  label {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    display: block;
+    transition: 0.2s;
+    font-size: 16px;
+    pointer-events: none;
+    color: $primary;
+  }
+
+  input {
+    width: 100%;
+    border: 0;
+    border-bottom: 2px solid $gray;
+    outline: 0;
+    padding: 8px 0;
+    background: transparent;
+    transition: border-color 0.2s;
+
+    &::placeholder {
+      color: transparent;
+    }
+
+    &:placeholder-shown ~ label {
+      cursor: text;
+      font-size: 20px;
+      top: 20px;
+    }
+
+    &:focus {
+      padding-bottom: 7px;
+      border-width: 3px;
+      border-image: linear-gradient(to right, $primary, $sucess);
+      border-image-slice: 1;
+
+      ~ label {
+        position: absolute;
+        top: 0;
+        display: block;
+        transition: 0.2s;
+        font-size: 16px;
+        color: $primary;
+        font-weight: 700;
+      }
+    }
+
+    // Reset input
+    &:required,
+    &:invalid {
+      box-shadow: none;
+    }
+  }
+
+  .errorMsg {
+    color: $red;
+    padding: 4px 0;
+  }
+}

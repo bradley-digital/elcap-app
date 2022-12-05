@@ -18,7 +18,7 @@ import { FormInput } from "components/Form/FormInput";
 import { emailValidation, passwordValidation } from "helpers/formValidation";
 
 // styles
-import styles from "components/Form/Form.module.scss";
+import "components/Form/Form.scss";
 
 export default function Login() {
   const { error, googleLogin, login } = useAuth();
@@ -29,88 +29,74 @@ export default function Login() {
   }, [error]);
 
   return (
-    <IonPage className={styles.page}>
-      <IonContent fullscreen className="ion-padding">
-        <div className={styles.elcapLogo}>
+    <IonPage className="Form">
+      <IonContent fullscreen>
+        <div className="Form__elcapLogo">
           <Logo />
           <p>EL CAPITAN PAYMENTS</p>
         </div>
-        <div className={styles.contentBottom}>
-          <div>
-            <IonText>
-              <h1>Login</h1>
-              <p>Hi there! Welcome to El Capitan.</p>
-            </IonText>
-            {errorMessage && (
-              <div className={styles.authError}>
-                {errorMessage}
-                <IonIcon
-                  icon={closeOutline}
-                  onClick={() => setErrorMessage(null)}
+        <IonText>
+          <h1>Login</h1>
+          <p>Hi there! Welcome to El Capitan.</p>
+        </IonText>
+        {errorMessage && (
+          <div className="Form__authError">
+            {errorMessage}
+            <IonIcon
+              icon={closeOutline}
+              onClick={() => setErrorMessage(null)}
+            />
+          </div>
+        )}
+        <Formik
+          initialValues={{
+            email: "",
+            password: "",
+          }}
+          validationSchema={Yup.object({
+            email: emailValidation,
+            password: passwordValidation,
+          })}
+          onSubmit={(values, actions) => {
+            const loginValues = { ...values };
+            actions.resetForm();
+            login(loginValues);
+          }}
+        >
+          {(formik) => (
+            <form onSubmit={formik.handleSubmit}>
+              <div className="Form__inputGroup">
+                <FormInput
+                  label="Email"
+                  name="email"
+                  type="email"
+                  placeholder="Email"
+                />
+
+                <FormInput
+                  label="Password"
+                  name="password"
+                  type="password"
+                  value={formik.values.password}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  placeholder="Password"
                 />
               </div>
-            )}
-            <Formik
-              initialValues={{
-                email: "",
-                password: "",
-              }}
-              validationSchema={Yup.object({
-                email: emailValidation,
-                password: passwordValidation,
-              })}
-              onSubmit={(values, actions) => {
-                const loginValues = { ...values };
-                actions.resetForm();
-                login(loginValues);
-              }}
-            >
-              {(formik) => (
-                <form onSubmit={formik.handleSubmit}>
-                  <div className={styles.stacked}>
-                    <div className={styles.formGroup}>
-                      <FormInput
-                        label="Email"
-                        name="email"
-                        type="email"
-                        className={styles.formInput}
-                        placeholder="Email"
-                      />
-                    </div>
+              <IonButton type="submit">Login</IonButton>
+            </form>
+          )}
+        </Formik>
 
-                    <div className={styles.formGroup}>
-                      <FormInput
-                        label="Password"
-                        name="password"
-                        type="password"
-                        value={formik.values.password}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        className={styles.formInput}
-                        placeholder="Password"
-                      />
-                    </div>
-                  </div>
-                  <IonButton type="submit">Login</IonButton>
-                </form>
-              )}
-            </Formik>
+        <div className="Form__socialLogin">
+          <IonButton color="light" onClick={googleLogin}>
+            <GoogleLogo /> Google Login
+          </IonButton>
+        </div>
 
-            <div className={styles.socialLogin}>
-              <IonButton color="light" onClick={googleLogin}>
-                <GoogleLogo /> Google Login
-              </IonButton>
-            </div>
-
-            <div className={styles.accountHelp}>
-              <Link to="/forgot-password" className={styles.forgotPassword}>
-                Forgot password?
-              </Link>
-              <Link to="/register" className={styles.register}>
-                Create account
-              </Link>
-            </div>
-          </div>
+        <div className="Form__accountHelp">
+          <Link to="/forgot-password">Forgot password?</Link>
+          <Link to="/register">Create account</Link>
         </div>
       </IonContent>
     </IonPage>

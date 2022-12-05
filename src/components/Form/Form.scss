@@ -1,0 +1,118 @@
+@import "theme/variables.scss";
+@import "theme/ionic-variables.scss";
+
+.Form {
+  padding: 16px;
+  max-width: 420px;
+  margin: 0 auto;
+
+  ion-item {
+    --padding-start: 0;
+    --ripple-color: transparent;
+    --border-color: transparent;
+  }
+
+  ion-button {
+    width: 100%;
+  }
+
+  h1 {
+    margin-bottom: 16px;
+  }
+
+  p {
+    color: $gray;
+  }
+
+  &__elcapLogo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 16px;
+    z-index: 101;
+
+    svg {
+      height: 128px;
+      width: 160px;
+    }
+
+    p {
+      color: $primary;
+      font-weight: 700;
+      margin: 0;
+    }
+  }
+
+  &__authError {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: $warning;
+    border-radius: 4px;
+    padding: 8px;
+
+    ion-icon {
+      cursor: pointer;
+      font-size: 24px;
+    }
+
+    p {
+      color: $black;
+      margin: 0;
+    }
+
+    a {
+      color: $black;
+    }
+  }
+
+  &__inputGroup {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 32px;
+  }
+
+  &__socialLogin {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 20px;
+
+    ion-button {
+      width: 44%;
+
+      svg {
+        margin-right: 10px;
+        float: left;
+      }
+
+      font-size: 12px;
+    }
+  }
+
+  &__accountHelp {
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+
+    a {
+      text-decoration: none;
+    }
+
+    p {
+      margin: 0 auto;
+    }
+
+    a:nth-of-type(1) {
+      color: $gray;
+
+      &:hover {
+        color: $primary;
+      }
+    }
+
+    a:nth-of-type(1) {
+      font-weight: 500;
+    }
+  }
+}
