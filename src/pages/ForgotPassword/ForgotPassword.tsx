@@ -21,7 +21,9 @@ export default function ForgotPassword() {
           <ForgotPasswordForm />
         </div>
         <div className="Form__accountHelp">
-          <Link to="/">Back to login</Link>
+          <Link to="/" className="Form__accountHelp--left">
+            Back to login
+          </Link>
         </div>
       </IonContent>
     </IonPage>

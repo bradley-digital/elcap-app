@@ -9,7 +9,7 @@ import useAuth from "hooks/useAuth";
 
 // components
 import { IonButton, IonContent, IonIcon, IonPage, IonText } from "@ionic/react";
-import { ReactComponent as Logo } from "assets/elcapitanadvisors_logo.svg";
+import Logo from "components/Logo/Logo";
 import { closeOutline } from "ionicons/icons";
 import { FormInput } from "components/Form/FormInput";
 
@@ -23,7 +23,7 @@ import {
 } from "helpers/formValidation";
 
 // styles
-import styles from "components/Form/Form.module.scss";
+import "components/Form/Form.scss";
 
 export default function Register() {
   const { error, register } = useAuth();
@@ -42,96 +42,91 @@ export default function Register() {
   }, [error]);
 
   return (
-    <IonPage className={styles.page}>
+    <IonPage className="Form">
       <IonContent fullscreen className="ion-padding">
-        <div className={styles.elcapLogo}>
-          <Logo />
-          <p>EL CAPITAN PAYMENTS</p>
-        </div>
-        <div className={styles.contentBottom}>
-          <div>
-            <IonText>
-              <h1>Sign Up</h1>
-            </IonText>
-            {errorMessage && (
-              <div className={styles.authError}>
-                {errorMessage}
-                <IonIcon
-                  icon={closeOutline}
-                  onClick={() => setErrorMessage(null)}
-                />
-              </div>
-            )}
-
-            <Formik
-              initialValues={{
-                firstName: "",
-                lastName: "",
-                email: "",
-                phone: "",
-                password: "",
-              }}
-              validationSchema={Yup.object({
-                firstName: firstNameValidation,
-                lastName: lastNameValidation,
-                email: emailValidation,
-                phone: phoneValidation,
-                password: passwordValidation,
-              })}
-              onSubmit={(values, actions) => {
-                const vals = { ...values };
-                actions.resetForm();
-                register(vals);
-              }}
-            >
-              {(formik) => (
-                <form onSubmit={formik.handleSubmit}>
-                  <FormInput
-                    label="First Name"
-                    name="firstName"
-                    type="text"
-                    placeholder="Jane"
-                  />
-                  <FormInput
-                    label="Last Name"
-                    name="lastName"
-                    type="text"
-                    placeholder="First Name"
-                  />
-                  <div className={styles.stacked}>
-                    <FormInput
-                      label="Email"
-                      name="email"
-                      type="email"
-                      placeholder="Email"
-                    />
-                    <FormInput
-                      label="Phone"
-                      name="phone"
-                      type="text"
-                      placeholder="Phone"
-                    />
-                    <FormInput
-                      label="Password"
-                      name="password"
-                      type="password"
-                      placeholder="Password"
-                    />
-                  </div>
-
-                  <IonButton type="submit">Register</IonButton>
-                </form>
-              )}
-            </Formik>
-
-            <div className={styles.accountHelp}>
-              <p>
-                Have an account?{" "}
-                <Link to="/login" className={styles.register}>
-                  Sign In
-                </Link>
-              </p>
+        <Logo />
+        <div>
+          <IonText>
+            <h1>Sign Up</h1>
+          </IonText>
+          {errorMessage && (
+            <div className="Form__authError">
+              {errorMessage}
+              <IonIcon
+                icon={closeOutline}
+                onClick={() => setErrorMessage(null)}
+              />
             </div>
+          )}
+
+          <Formik
+            initialValues={{
+              firstName: "",
+              lastName: "",
+              email: "",
+              phone: "",
+              password: "",
+            }}
+            validationSchema={Yup.object({
+              firstName: firstNameValidation,
+              lastName: lastNameValidation,
+              email: emailValidation,
+              phone: phoneValidation,
+              password: passwordValidation,
+            })}
+            onSubmit={(values, actions) => {
+              const vals = { ...values };
+              actions.resetForm();
+              register(vals);
+            }}
+          >
+            {(formik) => (
+              <form onSubmit={formik.handleSubmit}>
+                <FormInput
+                  label="First Name"
+                  name="firstName"
+                  type="text"
+                  placeholder="Jane"
+                />
+                <FormInput
+                  label="Last Name"
+                  name="lastName"
+                  type="text"
+                  placeholder="First Name"
+                />
+                <div className="Form__inputGroup">
+                  <FormInput
+                    label="Email"
+                    name="email"
+                    type="email"
+                    placeholder="Email"
+                  />
+                  <FormInput
+                    label="Phone"
+                    name="phone"
+                    type="text"
+                    placeholder="Phone"
+                  />
+                  <FormInput
+                    label="Password"
+                    name="password"
+                    type="password"
+                    placeholder="Password"
+                  />
+                </div>
+
+                <IonButton type="submit">Register</IonButton>
+              </form>
+            )}
+          </Formik>
+
+          <div className="Form__accountHelp">
+            <p>
+              Have an account?{" "}
+              <Link to="/login" className="Form__accountHelp--right">
+                Sign In
+              </Link>
+            </p>
           </div>
         </div>
       </IonContent>

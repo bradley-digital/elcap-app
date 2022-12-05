@@ -92,8 +92,15 @@ export default function Login() {
         </div>
 
         <div className="Form__accountHelp">
-          <Link to="/forgot-password">Forgot password?</Link>
-          <Link to="/register">Create account</Link>
+          <Link
+            to="/forgot-password"
+            className="Form__accountHelp--left"
+          >
+            Forgot password?
+          </Link>
+          <Link to="/register" className="Form__accountHelp--right">
+            Create account
+          </Link>
         </div>
       </IonContent>
     </IonPage>

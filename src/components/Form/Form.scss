@@ -83,7 +83,7 @@
       margin: 0 auto;
     }
 
-    a:nth-of-type(1) {
+    &--left {
       color: $gray;
 
       &:hover {
@@ -91,7 +91,7 @@
       }
     }
 
-    a:nth-of-type(1) {
+    &--right {
       font-weight: 500;
     }
   }
