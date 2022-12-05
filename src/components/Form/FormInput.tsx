@@ -18,7 +18,7 @@ export const FormInput = (props: InputProps & FieldHookConfig<string>) => {
       <label htmlFor={props.name}>{props.label}</label>
 
       {meta.touched && meta.error ? (
-        <div className="errorMsg">{meta.error}</div>
+        <div className="FormInput__errorMsg">{meta.error}</div>
       ) : null}
     </div>
   );
