@@ -13,14 +13,14 @@ import { ReactComponent as Logo } from "assets/elcapitanadvisors_logo.svg";
 import { closeOutline } from "ionicons/icons";
 import { FormInput } from "components/Form/FormInput";
 
-// helpers
+// lib
 import {
   firstNameValidation,
   lastNameValidation,
   emailValidation,
   phoneValidation,
   passwordValidation,
-} from "helpers/formValidation";
+} from "lib/formValidation";
 
 // styles
 import styles from "components/Form/Form.module.scss";

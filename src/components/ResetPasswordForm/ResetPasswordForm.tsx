@@ -7,13 +7,13 @@ import * as Yup from "yup";
 import { IonButton, useIonToast } from "@ionic/react";
 import { FormInput } from "components/Form/FormInput";
 
-// helpers
-import { fetchApi } from "utils/fetchApi";
+// lib
+import { fetchApi } from "lib/fetchApi";
 import {
   passwordValidation,
   confirmPasswordValidation,
-} from "helpers/formValidation";
-import getErrorMessage from "utils/error";
+} from "lib/formValidation";
+import getErrorMessage from "lib/error";
 
 // styles
 import styles from "./ResetPasswordForm.module.scss";

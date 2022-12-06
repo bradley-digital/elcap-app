@@ -6,10 +6,10 @@ import * as Yup from "yup";
 import { IonButton, useIonToast } from "@ionic/react";
 import { FormInput } from "components/Form/FormInput";
 
-// helpers
-import { fetchApi } from "utils/fetchApi";
-import { emailValidation } from "helpers/formValidation";
-import getErrorMessage from "utils/error";
+// lib
+import { fetchApi } from "lib/fetchApi";
+import { emailValidation } from "lib/formValidation";
+import getErrorMessage from "lib/error";
 
 // styles
 import styles from "components/Form/Form.module.scss";
