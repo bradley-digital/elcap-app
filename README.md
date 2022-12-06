@@ -111,7 +111,7 @@ You would need to have NGINX hosting these files to view them correctly. You cou
 
 ### Build Docker Images
 ```
-docker build . -f Dockerfile.prod -t {name}:{tag}
+docker build --platform linux/amd64 -f Dockerfile.prod -t {name}:{tag} .
 ```
 
 ### Run the docker image
