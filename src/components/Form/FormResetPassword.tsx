@@ -15,7 +15,7 @@ import {
 } from "helpers/formValidation";
 import getErrorMessage from "utils/error";
 
-export default function ResetPasswordForm() {
+export default function FormResetPassword() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [present] = useIonToast();
   const { resetToken } = useParams<{ resetToken: string }>();

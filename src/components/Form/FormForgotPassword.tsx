@@ -11,7 +11,7 @@ import { fetchApi } from "utils/fetchApi";
 import { emailValidation } from "helpers/formValidation";
 import getErrorMessage from "utils/error";
 
-export default function ForgotPasswordForm() {
+export default function FormForgotPassword() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [present] = useIonToast();
 
@@ -47,7 +47,7 @@ export default function ForgotPasswordForm() {
             color: "danger",
           });
         }
-      }}
+      }} 
     >
       {(formik) => (
         <form onSubmit={formik.handleSubmit}>
