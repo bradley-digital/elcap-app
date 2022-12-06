@@ -14,8 +14,8 @@ import { ReactComponent as GoogleLogo } from "assets/google-icon.svg";
 import { closeOutline } from "ionicons/icons";
 import { FormInput } from "components/Form/FormInput";
 
-// helpers
-import { emailValidation, passwordValidation } from "helpers/formValidation";
+// lib
+import { emailValidation, passwordValidation } from "lib/formValidation";
 
 // styles
 import styles from "components/Form/Form.module.scss";
