@@ -24,7 +24,7 @@ import useAuth from "hooks/useAuth";
 // Styles
 import styles from "./Account.module.scss";
 
-type Profile = {
+export type Profile = {
   firstName: string;
   lastName: string;
   userName: string;
@@ -32,6 +32,7 @@ type Profile = {
   phone: string;
   email: string;
   address: string;
+  role?: string;
 };
 
 export default function Account() {
@@ -56,7 +57,7 @@ export default function Account() {
         phone,
         email,
         address,
-      } = await authFetch("/users/account") as Profile;
+      } = (await authFetch("/users/account")) as Profile;
       setProfile({
         firstName,
         lastName,
@@ -72,15 +73,8 @@ export default function Account() {
     /* eslint-disable-next-line */
   }, []);
 
-  const {
-    firstName,
-    lastName,
-    userName,
-    createdAt,
-    phone,
-    email,
-    address,
-  } = profile;
+  const { firstName, lastName, userName, createdAt, phone, email, address } =
+    profile;
 
   const joined = new Date(createdAt).toLocaleString("en-US");
 
