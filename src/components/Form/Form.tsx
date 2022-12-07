@@ -88,22 +88,14 @@ export default function Form({
           {accountHelpCenter && (
             <p>
               {accountHelpCenter.text}{" "}
-              <Link
-                to={accountHelpCenter.link}
-                className="Form__accountHelp--left"
-              >
+              <Link to={accountHelpCenter.link}>
                 {accountHelpCenter.linkText}
               </Link>
             </p>
           )}
 
           {accountHelpRight && (
-            <Link
-              to={accountHelpRight.link}
-              className="Form__accountHelp--right"
-            >
-              {accountHelpRight.text}
-            </Link>
+            <Link to={accountHelpRight.link}>{accountHelpRight.text}</Link>
           )}
         </div>
       </IonContent>
