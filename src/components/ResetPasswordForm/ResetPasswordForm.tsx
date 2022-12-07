@@ -8,12 +8,14 @@ import { IonButton, useIonToast } from "@ionic/react";
 import { FormInput } from "components/Form/FormInput";
 
 // lib
-import { fetchApi } from "lib/fetchApi";
 import {
   passwordValidation,
   confirmPasswordValidation,
 } from "lib/formValidation";
 import getErrorMessage from "lib/error";
+
+// hooks
+import useAuthFetch from "hooks/useAuthFetch";
 
 // styles
 import styles from "./ResetPasswordForm.module.scss";
@@ -22,6 +24,7 @@ export default function ResetPasswordForm() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [present] = useIonToast();
   const { resetToken } = useParams<{ resetToken: string }>();
+  const { fetchJson } = useAuthFetch();
 
   return (
     <Formik
@@ -34,16 +37,15 @@ export default function ResetPasswordForm() {
         password: passwordValidation,
         confirmPassword: confirmPasswordValidation,
       })}
-      onSubmit={async (values) => {
+      onSubmit={async ({ resetToken, password }) => {
         setIsLoaded(true);
-        const { resetToken, password } = values;
-
         try {
-          await fetchApi({
-            url: "/users/reset-password",
+          await fetchJson("/users/reset-password", {
             method: "PATCH",
-            resetToken: resetToken,
-            password: password,
+            body: {
+              resetToken,
+              password,
+            },
           });
           present({
             duration: 4000,
@@ -69,8 +71,6 @@ export default function ResetPasswordForm() {
             <p>Your new password must:</p>
             <ol>
               <li>Contain 8-36 characters.</li>
-              <li>Contain at least one mixed-case letter.</li>
-              <li>Contain at least one number.</li>
             </ol>
 
             <div className={styles.formGroup}>

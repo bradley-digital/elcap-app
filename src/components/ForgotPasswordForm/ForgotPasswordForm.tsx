@@ -7,9 +7,11 @@ import { IonButton, useIonToast } from "@ionic/react";
 import { FormInput } from "components/Form/FormInput";
 
 // lib
-import { fetchApi } from "lib/fetchApi";
 import { emailValidation } from "lib/formValidation";
 import getErrorMessage from "lib/error";
+
+// hooks
+import useAuthFetch from "hooks/useAuthFetch";
 
 // styles
 import styles from "components/Form/Form.module.scss";
@@ -17,6 +19,7 @@ import styles from "components/Form/Form.module.scss";
 export default function ForgotPasswordForm() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [present] = useIonToast();
+  const { fetchJson } = useAuthFetch();
 
   return (
     <Formik
@@ -26,13 +29,12 @@ export default function ForgotPasswordForm() {
       validationSchema={Yup.object({
         email: emailValidation,
       })}
-      onSubmit={async (values) => {
+      onSubmit={async ({ email }) => {
         setIsLoaded(true);
         try {
-          const res: any = await fetchApi({
-            url: "/email/forgot-password",
+          const res = await fetchJson("/email/forgot-password", {
             method: "POST",
-            email: values.email,
+            body: { email },
           });
           present({
             duration: 4000,
