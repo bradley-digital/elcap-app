@@ -18,10 +18,19 @@ type FormProps = {
   subtitle?: string;
   form?: ReactNode;
   isSocialLoginShown?: boolean;
-  accountHelpLeftText?: ReactNode;
-  accountHelpLeftLink?: string;
-  accountHelpRightText?: ReactNode;
-  accountHelpRightLink?: string;
+  accountHelpLeft?: {
+    text: string;
+    link: string;
+  };
+  accountHelpCenter?: {
+    text: string;
+    link: string;
+    linkText: string;
+  };
+  accountHelpRight?: {
+    text: string;
+    link: string;
+  };
 };
 
 export default function Form({
@@ -29,10 +38,9 @@ export default function Form({
   subtitle,
   form,
   isSocialLoginShown = false,
-  accountHelpLeftText,
-  accountHelpLeftLink,
-  accountHelpRightText,
-  accountHelpRightLink,
+  accountHelpLeft,
+  accountHelpCenter,
+  accountHelpRight,
 }: FormProps) {
   const { error, googleLogin } = useAuth();
   const [errorMessage, setErrorMessage] = useState<ReactNode>(null);
@@ -71,18 +79,30 @@ export default function Form({
         )}
 
         <div className="Form__accountHelp">
-          {accountHelpLeftText && accountHelpLeftLink && (
-            <Link to={accountHelpLeftLink} className="Form__accountHelp--left">
-              {accountHelpLeftText}
+          {accountHelpLeft && (
+            <Link to={accountHelpLeft.link} className="Form__accountHelp--left">
+              {accountHelpLeft.text}
             </Link>
           )}
 
-          {accountHelpRightText && accountHelpRightLink && (
+          {accountHelpCenter && (
+            <p>
+              {accountHelpCenter.text}{" "}
+              <Link
+                to={accountHelpCenter.link}
+                className="Form__accountHelp--left"
+              >
+                {accountHelpCenter.linkText}
+              </Link>
+            </p>
+          )}
+
+          {accountHelpRight && (
             <Link
-              to={accountHelpRightLink}
+              to={accountHelpRight.link}
               className="Form__accountHelp--right"
             >
-              {accountHelpRightText}
+              {accountHelpRight.text}
             </Link>
           )}
         </div>

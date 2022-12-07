@@ -3,12 +3,16 @@ import FormResetPassword from "components/Form/FormResetPassword";
 import "components/Form/Form.scss";
 
 export default function ResetPassword() {
+  const accountHelpLeft = {
+    text: "Back to login",
+    link: "/",
+  };
+
   return (
     <Form
       title="Reset Password"
       form={<FormResetPassword />}
-      accountHelpLeftText="Back to login"
-      accountHelpLeftLink="/"
+      accountHelpLeft={accountHelpLeft}
     />
   );
 }
