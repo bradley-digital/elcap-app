@@ -116,7 +116,7 @@ docker build --platform linux/amd64 -f Dockerfile.prod -t {name}:{tag} .
 
 ### Run the docker image
 ```
-docker run -p 8080:3000 --name prodtest app:prod-test
+docker run -p 3000:3000 --name prodtest app:prod-test
 ```
 
 We map the localhost port 8080 to the container port 3000
