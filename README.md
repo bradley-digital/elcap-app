@@ -106,3 +106,17 @@ yarn build
 ```
 
 You would need to have NGINX hosting these files to view them correctly. You could also use Vercel's [serve](https://www.npmjs.com/package/serve) package. It is recommended to use the Docker container.
+
+## Docker
+
+### Build Docker Images
+```
+docker build --platform linux/amd64 -f Dockerfile.prod -t {name}:{tag} .
+```
+
+### Run the docker image
+```
+docker run -p 3000:3000 --name prodtest app:prod-test
+```
+
+We map the localhost port 8080 to the container port 3000
