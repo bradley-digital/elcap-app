@@ -21,8 +21,8 @@ import {
 // hooks
 import useAuth from "hooks/useAuth";
 
-// Styles
-import styles from "./Account.module.scss";
+// styles
+import "./Account.scss";
 
 type Profile = {
   firstName: string;
@@ -73,20 +73,13 @@ export default function Account() {
     /* eslint-disable-next-line */
   }, []);
 
-  const {
-    firstName,
-    lastName,
-    userName,
-    createdAt,
-    phone,
-    email,
-    address,
-  } = profile;
+  const { firstName, lastName, userName, createdAt, phone, email, address } =
+    profile;
 
   const joined = new Date(createdAt).toLocaleString("en-US");
 
   return (
-    <IonPage className={styles.accountPage}>
+    <IonPage className="Account">
       <IonHeader>
         <IonToolbar>
           <IonTitle>Account</IonTitle>
@@ -96,7 +89,7 @@ export default function Account() {
         <IonGrid>
           <IonRow className="ion-justify-content-center">
             <IonCol size-md="8" size-lg="6">
-              <IonCard className={styles.profileCard}>
+              <IonCard className="Account__profileCard">
                 <IonText className="ion-text-center">
                   <h1>{`${firstName} ${lastName}`}</h1>
                   <h3>{userName}</h3>

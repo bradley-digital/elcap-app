@@ -13,9 +13,6 @@ import getErrorMessage from "lib/error";
 // hooks
 import useAuth from "hooks/useAuth";
 
-// styles
-import styles from "components/Form/Form.module.scss";
-
 export default function ForgotPasswordForm() {
   const { authApi } = useAuth();
   const [isLoaded, setIsLoaded] = useState(false);
@@ -55,17 +52,14 @@ export default function ForgotPasswordForm() {
     >
       {(formik) => (
         <form onSubmit={formik.handleSubmit}>
-          <div className={styles.stacked}>
-            <div className={styles.formGroup}>
-              <FormInput
-                label="Email"
-                name="email"
-                type="email"
-                disabled={isLoaded}
-                className={styles.formInput}
-                placeholder="Email"
-              />
-            </div>
+          <div className="Form__inputGroup">
+            <FormInput
+              label="Email"
+              name="email"
+              type="email"
+              disabled={isLoaded}
+              placeholder="Email"
+            />
           </div>
           <IonButton disabled={isLoaded} type="submit">
             Go

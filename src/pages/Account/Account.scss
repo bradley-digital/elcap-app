@@ -1,7 +1,7 @@
 @import "theme/variables.scss";
 
-.accountPage {
-  .profileCard {
+.Account {
+  &__profileCard {
     padding: 20px;
 
     h1 {

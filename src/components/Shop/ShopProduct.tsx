@@ -14,7 +14,7 @@ import {
 import { products } from "pages/Shop/consts";
 
 // styles
-import styles from "./ShopProduct.module.scss";
+import "./ShopProduct.scss";
 
 export default function ShopProduct() {
   return (
@@ -26,7 +26,7 @@ export default function ShopProduct() {
           size-sm="6"
           size-md="4"
           size-lg="3"
-          className={styles.shopProduct}
+          className="ShopProduct"
         >
           <IonCard>
             <img src={img} alt={name} />

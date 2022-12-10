@@ -17,10 +17,7 @@ import getErrorMessage from "lib/error";
 // hooks
 import useAuth from "hooks/useAuth";
 
-// styles
-import styles from "./ResetPasswordForm.module.scss";
-
-export default function ResetPasswordForm() {
+export default function FormResetPassword() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [present] = useIonToast();
   const { resetToken } = useParams<{ resetToken: string }>();
@@ -64,31 +61,25 @@ export default function ResetPasswordForm() {
     >
       {(formik) => (
         <form onSubmit={formik.handleSubmit}>
-          <div className={styles.stacked}>
+          <div className="Form__inputGroup">
             <p>Your new password must:</p>
             <ol>
               <li>Contain 8-36 characters.</li>
             </ol>
 
-            <div className={styles.formGroup}>
-              <FormInput
-                label="New Password"
-                name="password"
-                type="password"
-                className={styles.formInput}
-                placeholder="Password"
-              />
-            </div>
+            <FormInput
+              label="New Password"
+              name="password"
+              type="password"
+              placeholder="Password"
+            />
 
-            <div className={styles.formGroup}>
-              <FormInput
-                label="Confirm New Password"
-                name="confirmPassword"
-                type="password"
-                className={styles.formInput}
-                placeholder="Password"
-              />
-            </div>
+            <FormInput
+              label="Confirm New Password"
+              name="confirmPassword"
+              type="password"
+              placeholder="Password"
+            />
           </div>
           <IonButton disabled={isLoaded} type="submit">
             Go
