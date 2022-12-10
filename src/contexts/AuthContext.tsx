@@ -1,27 +1,28 @@
+import type { AxiosInstance } from "axios";
 import type { ReactNode } from "react";
 import { createContext } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
+import axios from "axios";
 
 // hooks
-import type { RegisterArgs, LoginArgs } from "hooks/useAuthFetch";
-import useAuthFetch from "hooks/useAuthFetch";
+import type { RegisterBody, LoginBody } from "hooks/useAuthApi";
+import useAuthApi from "hooks/useAuthApi";
 
 type AuthProviderProps = {
   children: ReactNode;
 };
 
-type RegisterFunction = (args: RegisterArgs) => Promise<void>;
-type LoginFunction = (args: LoginArgs) => Promise<void>;
+type RegisterFunction = (args: RegisterBody) => Promise<void>;
+type LoginFunction = (args: LoginBody) => Promise<void>;
 type GoogleLoginFunction = () => void;
 type LogoutFunction = () => Promise<void>;
-type AuthFetchFunction = (endpoint: string, options?: any) => Promise<object>;
 type RefreshAccessToken = () => Promise<void>;
 
 type AuthContextProps = {
   isAuthenticated: boolean;
   role: string;
   error: boolean;
-  authFetch: AuthFetchFunction;
+  authApi: AxiosInstance;
   refreshAccessToken: RefreshAccessToken;
   register: RegisterFunction;
   login: LoginFunction;
@@ -34,11 +35,11 @@ export const AuthContext = createContext<AuthContextProps>({
   role: "",
   error: false,
   /* eslint-disable  @typescript-eslint/no-unused-vars */
-  register: async function (arg: RegisterArgs) {
+  register: async function (body: RegisterBody) {
     return;
   },
   /* eslint-disable  @typescript-eslint/no-unused-vars */
-  login: async function (arg: LoginArgs) {
+  login: async function (body: LoginBody) {
     return;
   },
   googleLogin: function () {
@@ -47,10 +48,7 @@ export const AuthContext = createContext<AuthContextProps>({
   logout: async function () {
     return;
   },
-  /* eslint-disable  @typescript-eslint/no-unused-vars */
-  authFetch: async function (endpoint: string, options?: any) {
-    return {};
-  },
+  authApi: axios,
   refreshAccessToken: async function () {
     return;
   },
@@ -58,45 +56,22 @@ export const AuthContext = createContext<AuthContextProps>({
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const {
+    authApi,
     isAuthenticated,
     role,
     error,
     setError,
-    authFetch,
     refreshAccessToken,
     handleAuthentication,
     handleRemoveTokens,
-  } = useAuthFetch();
+  } = useAuthApi();
 
-  async function register({
-    firstName,
-    lastName,
-    email,
-    phone,
-    password,
-  }: RegisterArgs): Promise<void> {
-    try {
-      await handleAuthentication("/auth/register", {
-        firstName,
-        lastName,
-        email,
-        phone,
-        password,
-      });
-    } catch (err) {
-      console.error(err);
-    }
+  async function register(body: RegisterBody): Promise<void> {
+    await handleAuthentication("/auth/register", body);
   }
 
-  async function login({ email, password }: LoginArgs): Promise<void> {
-    try {
-      await handleAuthentication("/auth/login", {
-        email,
-        password,
-      });
-    } catch (err) {
-      console.error(err);
-    }
+  async function login(body: LoginBody): Promise<void> {
+    await handleAuthentication("/auth/login", body);
   }
 
   const googleLogin = useGoogleLogin({
@@ -112,17 +87,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
   });
 
   async function logout(): Promise<void> {
-    try {
-      // Logout is an authenticated route
-      // so that userId can be derived from the accessToken
-      await authFetch("/auth/logout", {
-        method: "POST",
-      });
-
-      handleRemoveTokens();
-    } catch (err) {
-      console.error(err);
-    }
+    // Logout is an authenticated route
+    // so that userId can be derived from the accessToken
+    await authApi.post("/auth/logout");
+    handleRemoveTokens();
   }
 
   return (
@@ -131,7 +99,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         isAuthenticated,
         role,
         error,
-        authFetch,
+        authApi,
         refreshAccessToken,
         register,
         login,

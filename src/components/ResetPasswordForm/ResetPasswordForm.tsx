@@ -15,7 +15,7 @@ import {
 import getErrorMessage from "lib/error";
 
 // hooks
-import useAuthFetch from "hooks/useAuthFetch";
+import useAuth from "hooks/useAuth";
 
 // styles
 import styles from "./ResetPasswordForm.module.scss";
@@ -24,7 +24,7 @@ export default function ResetPasswordForm() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [present] = useIonToast();
   const { resetToken } = useParams<{ resetToken: string }>();
-  const { fetchJson } = useAuthFetch();
+  const { authApi } = useAuth();
 
   return (
     <Formik
@@ -40,12 +40,9 @@ export default function ResetPasswordForm() {
       onSubmit={async ({ resetToken, password }) => {
         setIsLoaded(true);
         try {
-          await fetchJson("/users/reset-password", {
-            method: "PATCH",
-            body: {
-              resetToken,
-              password,
-            },
+          await authApi.patch("/users/reset-password", {
+            resetToken,
+            password,
           });
           present({
             duration: 4000,

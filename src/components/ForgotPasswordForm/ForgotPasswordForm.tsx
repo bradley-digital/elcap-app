@@ -11,15 +11,15 @@ import { emailValidation } from "lib/formValidation";
 import getErrorMessage from "lib/error";
 
 // hooks
-import useAuthFetch from "hooks/useAuthFetch";
+import useAuth from "hooks/useAuth";
 
 // styles
 import styles from "components/Form/Form.module.scss";
 
 export default function ForgotPasswordForm() {
+  const { authApi } = useAuth();
   const [isLoaded, setIsLoaded] = useState(false);
   const [present] = useIonToast();
-  const { fetchJson } = useAuthFetch();
 
   return (
     <Formik
@@ -32,14 +32,13 @@ export default function ForgotPasswordForm() {
       onSubmit={async ({ email }) => {
         setIsLoaded(true);
         try {
-          const res = await fetchJson("/email/forgot-password", {
-            method: "POST",
-            body: { email },
+          const res = await authApi.post("/email/forgot-password", {
+            email,
           });
           present({
             duration: 4000,
             keyboardClose: true,
-            message: res.message,
+            message: res.data.message,
             position: "bottom",
             color: "success",
           });
