@@ -7,7 +7,7 @@ export const firstNameValidation = Yup.string().required("First Name required");
 
 export const lastNameValidation = Yup.string().required("Last Name required");
 
-export const emailValidation = Yup.string().email().required("Email required");
+export const emailValidation = Yup.string().email("Email must be valid").required("Email required");
 
 export const phoneValidation = Yup.string().matches(
   phoneRegExp,
@@ -16,11 +16,11 @@ export const phoneValidation = Yup.string().matches(
 
 export const passwordValidation = Yup.string()
   .required("Password required")
-  .min(8, "Must be at least 8 characters")
-  .max(28, "Must be 28 characters or less");
+  .min(8, "Must be at least 8 characters long")
+  .max(36, "Must be less than 36 characters long");
 
 export const confirmPasswordValidation = Yup.string()
   .required("Password required")
-  .min(8, "Must be at least 8 characters")
-  .max(28, "Must be 28 characters or less")
+  .min(8, "Must be at least 8 characters long")
+  .max(36, "Must be less than 36 characters long")
   .oneOf([Yup.ref("password"), null], "Passwords must match.");

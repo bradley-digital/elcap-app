@@ -10,14 +10,14 @@ import useAuth from "hooks/useAuth";
 import { IonButton } from "@ionic/react";
 import { FormInput } from "components/Form/FormInput";
 
-// helpers
+// lib
 import {
   firstNameValidation,
   lastNameValidation,
   emailValidation,
   phoneValidation,
   passwordValidation,
-} from "helpers/formValidation";
+} from "lib/formValidation";
 
 // styles
 import "components/Form/Form.scss";

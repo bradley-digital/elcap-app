@@ -1,8 +1,8 @@
 import { useCallback, useEffect } from "react";
-import cookies from "lib/cookies";
 import jwtDecode from "jwt-decode";
 
 // hooks
+import { getRefreshToken } from "hooks/useTokens";
 import useAuth from "hooks/useAuth";
 
 const useSessionTimeout = () => {
@@ -10,10 +10,9 @@ const useSessionTimeout = () => {
 
   const refreshTokenOrLogOut = useCallback(
     (lastMovementTime: number) => {
-      const refreshToken = cookies.get("ec_rt");
-      const refreshTokenExists = Boolean(refreshToken?.length);
+      const refreshToken = getRefreshToken();
 
-      if (!refreshTokenExists) return;
+      if (refreshToken === "") return;
 
       const decodedRefreshToken: any = jwtDecode(refreshToken);
       const currentTime = Date.now();

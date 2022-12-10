@@ -21,7 +21,7 @@ import {
 // hooks
 import useAuth from "hooks/useAuth";
 
-// Styles
+// styles
 import "./Account.scss";
 
 type Profile = {
@@ -35,7 +35,7 @@ type Profile = {
 };
 
 export default function Account() {
-  const { authFetch, logout } = useAuth();
+  const { authApi, logout } = useAuth();
   const [profile, setProfile] = useState<Profile>({
     firstName: "",
     lastName: "",
@@ -48,6 +48,7 @@ export default function Account() {
 
   useEffect(() => {
     async function getUser() {
+      const { data } = await authApi.get("/users/account");
       const {
         firstName,
         lastName,
@@ -56,7 +57,7 @@ export default function Account() {
         phone,
         email,
         address,
-      } = (await authFetch("/users/account")) as Profile;
+      } = data;
       setProfile({
         firstName,
         lastName,

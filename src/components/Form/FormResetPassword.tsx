@@ -7,18 +7,21 @@ import * as Yup from "yup";
 import { IonButton, useIonToast } from "@ionic/react";
 import { FormInput } from "components/Form/FormInput";
 
-// helpers
-import { fetchApi } from "utils/fetchApi";
+// lib
 import {
   passwordValidation,
   confirmPasswordValidation,
-} from "helpers/formValidation";
-import getErrorMessage from "utils/error";
+} from "lib/formValidation";
+import getErrorMessage from "lib/error";
+
+// hooks
+import useAuth from "hooks/useAuth";
 
 export default function FormResetPassword() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [present] = useIonToast();
   const { resetToken } = useParams<{ resetToken: string }>();
+  const { authApi } = useAuth();
 
   return (
     <Formik
@@ -31,16 +34,12 @@ export default function FormResetPassword() {
         password: passwordValidation,
         confirmPassword: confirmPasswordValidation,
       })}
-      onSubmit={async (values) => {
+      onSubmit={async ({ resetToken, password }) => {
         setIsLoaded(true);
-        const { resetToken, password } = values;
-
         try {
-          await fetchApi({
-            url: "/users/reset-password",
-            method: "PATCH",
-            resetToken: resetToken,
-            password: password,
+          await authApi.patch("/users/reset-password", {
+            resetToken,
+            password,
           });
           present({
             duration: 4000,
@@ -66,8 +65,6 @@ export default function FormResetPassword() {
             <p>Your new password must:</p>
             <ol>
               <li>Contain 8-36 characters.</li>
-              <li>Contain at least one mixed-case letter.</li>
-              <li>Contain at least one number.</li>
             </ol>
 
             <FormInput

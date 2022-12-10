@@ -6,12 +6,15 @@ import * as Yup from "yup";
 import { IonButton, useIonToast } from "@ionic/react";
 import { FormInput } from "components/Form/FormInput";
 
-// helpers
-import { fetchApi } from "utils/fetchApi";
-import { emailValidation } from "helpers/formValidation";
-import getErrorMessage from "utils/error";
+// lib
+import { emailValidation } from "lib/formValidation";
+import getErrorMessage from "lib/error";
 
-export default function FormForgotPassword() {
+// hooks
+import useAuth from "hooks/useAuth";
+
+export default function ForgotPasswordForm() {
+  const { authApi } = useAuth();
   const [isLoaded, setIsLoaded] = useState(false);
   const [present] = useIonToast();
 
@@ -23,18 +26,16 @@ export default function FormForgotPassword() {
       validationSchema={Yup.object({
         email: emailValidation,
       })}
-      onSubmit={async (values) => {
+      onSubmit={async ({ email }) => {
         setIsLoaded(true);
         try {
-          const res: any = await fetchApi({
-            url: "/email/forgot-password",
-            method: "POST",
-            email: values.email,
+          const res = await authApi.post("/email/forgot-password", {
+            email,
           });
           present({
             duration: 4000,
             keyboardClose: true,
-            message: res.message,
+            message: res.data.message,
             position: "bottom",
             color: "success",
           });
@@ -47,7 +48,7 @@ export default function FormForgotPassword() {
             color: "danger",
           });
         }
-      }} 
+      }}
     >
       {(formik) => (
         <form onSubmit={formik.handleSubmit}>

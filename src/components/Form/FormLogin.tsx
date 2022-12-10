@@ -10,8 +10,8 @@ import useAuth from "hooks/useAuth";
 import { IonButton } from "@ionic/react";
 import { FormInput } from "components/Form/FormInput";
 
-// helpers
-import { emailValidation, passwordValidation } from "helpers/formValidation";
+// lib
+import { emailValidation, passwordValidation } from "lib/formValidation";
 
 // styles
 import "components/Form/Form.scss";
@@ -35,6 +35,7 @@ export default function FormLogin() {
         password: passwordValidation,
       })}
       onSubmit={(values, actions) => {
+        console.log('on submit');
         const loginValues = { ...values };
         actions.resetForm();
         login(loginValues);
