@@ -30,13 +30,16 @@ type GoogleLoginBody = {
 
 const host = process.env.REACT_APP_BACKEND_HOST || "http://localhost:3020";
 
-const authApi = axios.create({
+const config = {
   baseURL: host,
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
-});
+};
+
+const api = axios.create(config);
+const authApi = axios.create(config);
 
 const authEvents = new EventEmitter();
 const onceRefreshed = () =>
@@ -52,7 +55,6 @@ export default function useAuthApi() {
     handleSetTokens,
     handleRemoveTokens,
   } = useTokens();
-  const [error, setError] = useState<boolean>(false);
   const isRefreshingRef = useRef<boolean>(false);
 
   useEffect(() => {
@@ -90,7 +92,7 @@ export default function useAuthApi() {
     const originalRequest = error.config;
 
     if (typeof originalRequest === "undefined") {
-      throw new Error('No request config defined');
+      throw new Error("No request config defined");
     }
 
     const errorStatus = error.response?.status;
@@ -102,7 +104,6 @@ export default function useAuthApi() {
       return authApi(originalRequest)
     }
 
-    setError(true);
     handleRemoveTokens();
     finishRefresh();
 
@@ -129,12 +130,15 @@ export default function useAuthApi() {
   }
 
   async function refreshAccessToken(): Promise<void> {
-    startRefresh();
-    const { data } = await axios.post(`${host}/auth/refresh-token`, {
-      refreshToken: refreshTokenRef.current,
-    });
-    handleSetTokens(data);
-    finishRefresh();
+    try {
+      startRefresh();
+      const { data } = await api.post("/auth/refresh-token", {
+        refreshToken: refreshTokenRef.current,
+      });
+      handleSetTokens(data);
+    } finally {
+      finishRefresh();
+    }
   }
 
   async function handleAuthentication(
@@ -149,8 +153,6 @@ export default function useAuthApi() {
     authApi,
     isAuthenticated,
     role,
-    error,
-    setError,
     refreshAccessToken,
     handleAuthentication,
     handleRemoveTokens,

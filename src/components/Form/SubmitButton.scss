@@ -1,0 +1,9 @@
+.SubmitButton {
+  margin-top: 32px;
+
+  &__hiddenInput {
+    visibility: hidden;
+    position: absolute;
+    position: -10000px;
+  }
+}

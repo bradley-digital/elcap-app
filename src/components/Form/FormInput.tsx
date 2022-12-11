@@ -8,7 +8,7 @@ type InputProps = {
   placeholder: string;
 };
 
-export const FormInput = (props: InputProps & FieldHookConfig<string>) => {
+export default function FormInput(props: InputProps & FieldHookConfig<string>) {
   const [field, meta] = useField(props);
 
   return (
@@ -22,4 +22,4 @@ export const FormInput = (props: InputProps & FieldHookConfig<string>) => {
       ) : null}
     </div>
   );
-};
+}

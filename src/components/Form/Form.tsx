@@ -42,12 +42,7 @@ export default function Form({
   accountHelpCenter,
   accountHelpRight,
 }: FormProps) {
-  const { error, googleLogin } = useAuth();
-  const [errorMessage, setErrorMessage] = useState<ReactNode>(null);
-
-  useEffect(() => {
-    error && setErrorMessage(<p>Login failed; Invalid user ID or password.</p>);
-  }, [error]);
+  const { googleLogin } = useAuth();
 
   return (
     <IonPage className="Form">
@@ -57,16 +52,6 @@ export default function Form({
           {title && <h1>{title}</h1>}
           {subtitle && <p>{subtitle}</p>}
         </IonText>
-
-        {errorMessage && (
-          <div className="Form__authError">
-            {errorMessage}
-            <IonIcon
-              icon={closeOutline}
-              onClick={() => setErrorMessage(null)}
-            />
-          </div>
-        )}
 
         {form}
 

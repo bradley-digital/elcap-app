@@ -6,7 +6,7 @@ type TokenResponse = {
   role: string;
 };
 
-const refreshTokenName = "refresh-token";
+const refreshTokenName = "refreshToken";
 
 function setRefreshToken(token: string): void {
   sessionStorage.setItem(refreshTokenName, token);

@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Formik } from "formik";
+import { Form, Formik } from "formik";
 import * as Yup from "yup";
 
 // components
-import { IonButton, useIonToast } from "@ionic/react";
-import { FormInput } from "components/Form/FormInput";
+import { useIonToast } from "@ionic/react";
+import SubmitButton from "components/Form/SubmitButton";
+import FormInput from "components/Form/FormInput";
 
 // lib
 import { emailValidation } from "lib/formValidation";
@@ -15,8 +16,8 @@ import useAuth from "hooks/useAuth";
 
 export default function ForgotPasswordForm() {
   const { authApi } = useAuth();
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [present] = useIonToast();
+  const [didSubmit, setDidSubmit] = useState(false);
+  const [showToast] = useIonToast();
 
   return (
     <Formik
@@ -27,21 +28,21 @@ export default function ForgotPasswordForm() {
         email: emailValidation,
       })}
       onSubmit={async ({ email }) => {
-        setIsLoaded(true);
+        setDidSubmit(true);
         try {
           const res = await authApi.post("/email/forgot-password", {
             email,
           });
-          present({
+          showToast({
+            message: res.data.message,
             duration: 4000,
             keyboardClose: true,
-            message: res.data.message,
             position: "bottom",
             color: "success",
           });
         } catch (error) {
-          setIsLoaded(false);
-          present({
+          setDidSubmit(false);
+          showToast({
             message: getErrorMessage(error),
             duration: 4000,
             position: "bottom",
@@ -50,22 +51,18 @@ export default function ForgotPasswordForm() {
         }
       }}
     >
-      {(formik) => (
-        <form onSubmit={formik.handleSubmit}>
-          <div className="Form__inputGroup">
-            <FormInput
-              label="Email"
-              name="email"
-              type="email"
-              disabled={isLoaded}
-              placeholder="Email"
-            />
-          </div>
-          <IonButton disabled={isLoaded} type="submit">
-            Go
-          </IonButton>
-        </form>
-      )}
+      <Form>
+        <FormInput
+          label="Email"
+          name="email"
+          type="email"
+          disabled={didSubmit}
+          placeholder="Email"
+        />
+        <SubmitButton disabled={didSubmit}>
+          Go
+        </SubmitButton>
+      </Form>
     </Formik>
   );
 }

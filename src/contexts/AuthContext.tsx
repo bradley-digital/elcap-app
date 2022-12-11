@@ -21,7 +21,6 @@ type RefreshAccessToken = () => Promise<void>;
 type AuthContextProps = {
   isAuthenticated: boolean;
   role: string;
-  error: boolean;
   authApi: AxiosInstance;
   refreshAccessToken: RefreshAccessToken;
   register: RegisterFunction;
@@ -33,7 +32,6 @@ type AuthContextProps = {
 export const AuthContext = createContext<AuthContextProps>({
   isAuthenticated: false,
   role: "",
-  error: false,
   /* eslint-disable  @typescript-eslint/no-unused-vars */
   register: async function (body: RegisterBody) {
     return;
@@ -59,8 +57,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     authApi,
     isAuthenticated,
     role,
-    error,
-    setError,
     refreshAccessToken,
     handleAuthentication,
     handleRemoveTokens,
@@ -80,8 +76,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         code,
       });
     },
-    onError: () => {
-      setError(true);
+    onError: (error) => {
+      console.error(error);
     },
     flow: "auth-code",
   });
@@ -96,10 +92,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   return (
     <AuthContext.Provider
       value={{
+        authApi,
         isAuthenticated,
         role,
-        error,
-        authApi,
         refreshAccessToken,
         register,
         login,
