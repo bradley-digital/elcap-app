@@ -48,8 +48,7 @@ export default function Account() {
 
   useEffect(() => {
     async function getUser() {
-      const { data } = await authApi.get("/users/account");
-      const {
+      const { data: {
         firstName,
         lastName,
         userName,
@@ -57,7 +56,7 @@ export default function Account() {
         phone,
         email,
         address,
-      } = data;
+      } } = await authApi.get("/users/account");
       setProfile({
         firstName,
         lastName,

@@ -1,14 +1,5 @@
-import type { ReactNode } from "react";
-import { useEffect, useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-
-// hooks
-import useAuth from "hooks/useAuth";
-
-// components
-import SubmitButton from "components/Form/SubmitButton";
-import FormInput from "components/Form/FormInput";
 
 // lib
 import {
@@ -18,6 +9,13 @@ import {
   phoneValidation,
   passwordValidation,
 } from "lib/formValidation";
+
+// hooks
+import useAuth from "hooks/useAuth";
+
+// components
+import SubmitButton from "components/Form/SubmitButton";
+import FormInput from "components/Form/FormInput";
 
 // styles
 import "components/Form/Form.scss";
@@ -41,10 +39,9 @@ export default function FormRegister() {
         phone: phoneValidation,
         password: passwordValidation,
       })}
-      onSubmit={(values, actions) => {
-        const registerValues = { ...values };
+      onSubmit={async (values, actions) => {
         actions.resetForm();
-        register(registerValues);
+        await register(values);
       }}
     >
       <Form>
@@ -78,7 +75,9 @@ export default function FormRegister() {
           type="password"
           placeholder="Password"
         />
-        <SubmitButton>Register</SubmitButton>
+        <SubmitButton>
+          Register
+        </SubmitButton>
       </Form>
     </Formik>
   );

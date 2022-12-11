@@ -1,7 +1,8 @@
-import type { ReactNode } from "react";
-import { useEffect, useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
+
+// lib
+import { emailValidation, passwordValidation } from "lib/formValidation";
 
 // hooks
 import useAuth from "hooks/useAuth";
@@ -9,9 +10,6 @@ import useAuth from "hooks/useAuth";
 // components
 import SubmitButton from "components/Form/SubmitButton";
 import FormInput from "components/Form/FormInput";
-
-// lib
-import { emailValidation, passwordValidation } from "lib/formValidation";
 
 // styles
 import "components/Form/Form.scss";
@@ -29,10 +27,9 @@ export default function FormLogin() {
         email: emailValidation,
         password: passwordValidation,
       })}
-      onSubmit={(values, actions) => {
-        const loginValues = { ...values };
+      onSubmit={async (values, actions) => {
         actions.resetForm();
-        login(loginValues);
+        await login(values);
       }}
     >
       <Form>
@@ -48,7 +45,9 @@ export default function FormLogin() {
           type="password"
           placeholder="Password"
         />
-        <SubmitButton>Login</SubmitButton>
+        <SubmitButton>
+          Login
+        </SubmitButton>
       </Form>
     </Formik>
   );
