@@ -75,9 +75,7 @@ export default function FormRegister() {
           type="password"
           placeholder="Password"
         />
-        <SubmitButton>
-          Register
-        </SubmitButton>
+        <SubmitButton>Register</SubmitButton>
       </Form>
     </Formik>
   );
