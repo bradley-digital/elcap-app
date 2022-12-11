@@ -1,0 +1,11 @@
+@import "theme/variables.scss";
+
+.Account {
+  &__profileCard {
+    padding: 20px;
+
+    h1 {
+      color: $black;
+    }
+  }
+}

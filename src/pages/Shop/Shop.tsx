@@ -11,11 +11,11 @@ import {
 import ShopProduct from "components/Shop/ShopProduct";
 
 // styles
-import styles from "./Shop.module.scss";
+import "./Shop.scss";
 
 export default function Shop() {
   return (
-    <IonPage className={styles.shopPage}>
+    <IonPage className="Shop">
       <IonHeader>
         <IonToolbar>
           <IonTitle>Shop</IonTitle>

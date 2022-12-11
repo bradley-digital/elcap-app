@@ -1,4 +1,6 @@
-.logo {
+@import "theme/variables.scss";
+
+.Logo {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -12,7 +14,7 @@
   }
 
   p {
-    color: var(--ion-color-primary);
+    color: $primary;
     font-weight: 700;
     margin: 0;
   }
