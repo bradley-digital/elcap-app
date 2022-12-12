@@ -43,7 +43,8 @@ export default function useAuthApi() {
 
   useEffect(() => {
     const registeredRequestInterceptor = authApi.interceptors.request.use(
-      requestInterceptor, (err) => Promise.reject(err)
+      requestInterceptor,
+      (err) => Promise.reject(err)
     );
 
     const registeredResponseInterceptor = authApi.interceptors.response.use(
@@ -59,13 +60,14 @@ export default function useAuthApi() {
       }
     }
     refresh();
-    // Only run on load
-    /* eslint-disable-next-line */
 
     return () => {
       authApi.interceptors.request.eject(registeredRequestInterceptor);
       authApi.interceptors.response.eject(registeredResponseInterceptor);
     };
+
+    // Only run on load
+    /* eslint-disable-next-line */
   }, []);
 
   function startRefresh(): void {
