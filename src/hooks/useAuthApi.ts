@@ -111,13 +111,12 @@ export default function useAuthApi() {
     error: AxiosError
   ): Promise<AxiosResponse> {
     const originalRequest = error.config;
+    const errorStatus = error.response?.status;
+    const errorData = error.response?.data as APIError;
 
     if (typeof originalRequest === "undefined") {
       throw new Error("Original request undefined");
     }
-
-    const errorStatus = error.response?.status;
-    const errorData = error.response?.data as APIError;
 
     if (errorStatus === 401) {
       await waitForRefresh();
