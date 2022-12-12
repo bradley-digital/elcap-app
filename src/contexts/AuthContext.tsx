@@ -41,17 +41,17 @@ type AuthProviderProps = {
   children: ReactNode;
 };
 
+type RefreshAccessToken = () => Promise<void>;
 type Register = (body: RegisterBody) => Promise<void>;
 type Login = (body: LoginBody) => Promise<void>;
 type GoogleLogin = () => void;
 type ForgotPassword = (body: ForgotPasswordBody) => Promise<void>;
 type ResetPassword = (body: ResetPasswordBody) => Promise<void>;
 type Logout = () => Promise<void>;
-type RefreshAccessToken = () => Promise<void>;
 
 type AuthContextProps = {
-  isAuthenticated: boolean;
   role: string;
+  isAuthenticated: boolean;
   authApi: AxiosInstance;
   refreshAccessToken: RefreshAccessToken;
   register: Register;
@@ -172,8 +172,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function logout(): Promise<void> {
     try {
-      // Logout is an authenticated route because
-      // userId is stored in the accesstoken
       await authApi.post("/auth/logout");
     } finally {
       handleRemoveTokens();
