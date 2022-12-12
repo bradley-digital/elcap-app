@@ -95,9 +95,9 @@ export const AuthContext = createContext<AuthContextProps>({
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const {
-    authApi,
     role,
     isAuthenticated,
+    authApi,
     refreshAccessToken,
     handleSetTokens,
     handleRemoveTokens,

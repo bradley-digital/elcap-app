@@ -42,11 +42,11 @@ export default function useAuthApi() {
   const isRefreshingRef = useRef<boolean>(false);
 
   useEffect(() => {
-    authApi.interceptors.request.use(requestInterceptor, (err) =>
-      Promise.reject(err)
+    const registeredRequestInterceptor = authApi.interceptors.request.use(
+      requestInterceptor, (err) => Promise.reject(err)
     );
 
-    authApi.interceptors.response.use(
+    const registeredResponseInterceptor = authApi.interceptors.response.use(
       (response) => response,
       responseErrorInterceptor
     );
@@ -61,6 +61,11 @@ export default function useAuthApi() {
     refresh();
     // Only run on load
     /* eslint-disable-next-line */
+
+    return () => {
+      authApi.interceptors.request.eject(registeredRequestInterceptor);
+      authApi.interceptors.response.eject(registeredResponseInterceptor);
+    };
   }, []);
 
   function startRefresh(): void {
@@ -129,9 +134,9 @@ export default function useAuthApi() {
   }
 
   return {
-    authApi,
     role,
     isAuthenticated,
+    authApi,
     refreshAccessToken,
     handleSetTokens,
     handleRemoveTokens,
