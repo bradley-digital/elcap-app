@@ -9,12 +9,13 @@ import useTokens from "hooks/useTokens";
 type APIError = {
   status: string;
   message: string;
-}
+};
 
 const host = process.env.REACT_APP_BACKEND_HOST || "http://localhost:3020";
+const apiVersion = "/api";
 
 const config = {
-  baseURL: host,
+  baseURL: `${host}${apiVersion}`,
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
@@ -41,13 +42,12 @@ export default function useAuthApi() {
   const isRefreshingRef = useRef<boolean>(false);
 
   useEffect(() => {
-    authApi.interceptors.request.use(
-      requestInterceptor,
-      err => Promise.reject(err)
+    authApi.interceptors.request.use(requestInterceptor, (err) =>
+      Promise.reject(err)
     );
 
     authApi.interceptors.response.use(
-      response => response,
+      (response) => response,
       responseErrorInterceptor
     );
 
@@ -90,7 +90,9 @@ export default function useAuthApi() {
     }
   }
 
-  async function requestInterceptor(config: AxiosRequestConfig): Promise<AxiosRequestConfig> {
+  async function requestInterceptor(
+    config: AxiosRequestConfig
+  ): Promise<AxiosRequestConfig> {
     await waitForRefresh();
     if (config.headers && accessTokenRef.current) {
       config.headers.Authorization = `Bearer ${accessTokenRef.current}`;
@@ -98,7 +100,9 @@ export default function useAuthApi() {
     return config;
   }
 
-  async function responseErrorInterceptor(error: AxiosError): Promise<AxiosResponse> {
+  async function responseErrorInterceptor(
+    error: AxiosError
+  ): Promise<AxiosResponse> {
     const originalRequest = error.config;
 
     if (typeof originalRequest === "undefined") {
@@ -111,7 +115,7 @@ export default function useAuthApi() {
     if (errorStatus === 401) {
       await waitForRefresh();
       await refreshAccessToken();
-      return authApi(originalRequest)
+      return authApi(originalRequest);
     }
 
     handleRemoveTokens();
