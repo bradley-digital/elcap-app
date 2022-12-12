@@ -1,12 +1,11 @@
-import { ReactNode, useEffect, useState } from "react";
+import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
 // hooks
 import useAuth from "hooks/useAuth";
 
 // components
-import { IonButton, IonContent, IonIcon, IonPage, IonText } from "@ionic/react";
-import { closeOutline } from "ionicons/icons";
+import { IonButton, IonContent, IonPage, IonText } from "@ionic/react";
 import { ReactComponent as GoogleLogo } from "assets/google-icon.svg";
 import Logo from "components/Logo/Logo";
 
