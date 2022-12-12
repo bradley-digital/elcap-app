@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
 import {
   IonButton,
   IonCard,
@@ -20,6 +20,7 @@ import {
 
 // hooks
 import useAuth from "hooks/useAuth";
+import useApi from "hooks/useApi";
 
 // styles
 import "./Account.scss";
@@ -35,102 +36,74 @@ type Profile = {
 };
 
 export default function Account() {
-  const { authApi, logout } = useAuth();
-  const [profile, setProfile] = useState<Profile>({
-    firstName: "",
-    lastName: "",
-    userName: "",
-    createdAt: "",
-    phone: "",
-    email: "",
-    address: "",
-  });
+  const { logout } = useAuth();
+  const { getAccount } = useApi();
+  const { isSuccess, data } = useQuery<Profile>("account", getAccount);
 
-  useEffect(() => {
-    async function getUser() {
-      const { data: {
-        firstName,
-        lastName,
-        userName,
-        createdAt,
-        phone,
-        email,
-        address,
-      } } = await authApi.get("/users/account");
-      setProfile({
-        firstName,
-        lastName,
-        userName,
-        createdAt,
-        phone,
-        email,
-        address,
-      });
-    }
-    getUser();
-    // Only run on load
-    /* eslint-disable-next-line */
-  }, []);
+  if (isSuccess) {
+    const { firstName, lastName, userName, createdAt, phone, email, address } =
+      data;
 
-  const { firstName, lastName, userName, createdAt, phone, email, address } =
-    profile;
+    const joined = new Date(createdAt).toLocaleString("en-US");
 
-  const joined = new Date(createdAt).toLocaleString("en-US");
+    return (
+      <IonPage className="Account">
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Account</IonTitle>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent>
+          <IonGrid>
+            <IonRow className="ion-justify-content-center">
+              <IonCol size-md="8" size-lg="6">
+                <IonCard className="Account__profileCard">
+                  <IonText className="ion-text-center">
+                    <h1>{`${firstName} ${lastName}`}</h1>
+                    <h3>{userName}</h3>
+                    <p>Joined: {joined}</p>
+                  </IonText>
+                  <div className="d-flex ion-justify-content-end">
+                    <IonButton onClick={logout} color="danger">
+                      Logout
+                    </IonButton>
+                  </div>
+                </IonCard>
+                <IonList>
+                  <IonListHeader>Personal information</IonListHeader>
+                  <IonItem>
+                    <IonLabel position="stacked">First Name</IonLabel>
+                    <IonInput value={firstName} readonly />
+                  </IonItem>
+                  <IonItem>
+                    <IonLabel position="stacked">Last Name</IonLabel>
+                    <IonInput value={lastName} readonly />
+                  </IonItem>
+                  <IonItem>
+                    <IonLabel position="stacked">Username</IonLabel>
+                    <IonInput value={userName} readonly />
+                  </IonItem>
+                  <IonItem>
+                    <IonLabel position="stacked">Email</IonLabel>
+                    <IonInput value={email} readonly />
+                  </IonItem>
+                  <IonItem>
+                    <IonLabel position="stacked">Phone</IonLabel>
+                    <IonInput value={phone} readonly />
+                  </IonItem>
+                  <IonItem>
+                    <IonLabel position="stacked">Address</IonLabel>
+                    <IonInput value={address} readonly />
+                  </IonItem>
+                </IonList>
+              </IonCol>
+            </IonRow>
+          </IonGrid>
+        </IonContent>
+      </IonPage>
+    );
+  }
 
-  return (
-    <IonPage className="Account">
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Account</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent>
-        <IonGrid>
-          <IonRow className="ion-justify-content-center">
-            <IonCol size-md="8" size-lg="6">
-              <IonCard className="Account__profileCard">
-                <IonText className="ion-text-center">
-                  <h1>{`${firstName} ${lastName}`}</h1>
-                  <h3>{userName}</h3>
-                  <p>Joined: {joined}</p>
-                </IonText>
-                <div className="d-flex ion-justify-content-end">
-                  <IonButton onClick={logout} color="danger">
-                    Logout
-                  </IonButton>
-                </div>
-              </IonCard>
-              <IonList>
-                <IonListHeader>Personal information</IonListHeader>
-                <IonItem>
-                  <IonLabel position="stacked">First Name</IonLabel>
-                  <IonInput value={firstName} readonly />
-                </IonItem>
-                <IonItem>
-                  <IonLabel position="stacked">Last Name</IonLabel>
-                  <IonInput value={lastName} readonly />
-                </IonItem>
-                <IonItem>
-                  <IonLabel position="stacked">Username</IonLabel>
-                  <IonInput value={userName} readonly />
-                </IonItem>
-                <IonItem>
-                  <IonLabel position="stacked">Email</IonLabel>
-                  <IonInput value={email} readonly />
-                </IonItem>
-                <IonItem>
-                  <IonLabel position="stacked">Phone</IonLabel>
-                  <IonInput value={phone} readonly />
-                </IonItem>
-                <IonItem>
-                  <IonLabel position="stacked">Address</IonLabel>
-                  <IonInput value={address} readonly />
-                </IonItem>
-              </IonList>
-            </IonCol>
-          </IonRow>
-        </IonGrid>
-      </IonContent>
-    </IonPage>
-  );
+  // Need better error state
+  return null;
 }
