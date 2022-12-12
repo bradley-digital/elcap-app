@@ -1,8 +1,8 @@
 // components
+import { QueryClient, QueryClientProvider } from "react-query";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import { IonApp, setupIonicReact } from "@ionic/react";
 import { AuthProvider } from "contexts/AuthContext";
-import { GoogleOAuthProvider } from "@react-oauth/google";
-import { QueryClient, QueryClientProvider } from "react-query";
 import Routes from "components/Routes/Routes";
 
 // theme variables
