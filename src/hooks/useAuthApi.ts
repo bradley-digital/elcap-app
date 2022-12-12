@@ -42,6 +42,15 @@ export default function useAuthApi() {
   const isRefreshingRef = useRef<boolean>(false);
 
   useEffect(() => {
+    async function refresh() {
+      if (refreshTokenRef.current === "") {
+        setIsAuthenticated(false);
+      } else {
+        await refreshAccessToken();
+      }
+    }
+    refresh();
+
     const registeredRequestInterceptor = authApi.interceptors.request.use(
       requestInterceptor,
       (err) => Promise.reject(err)
@@ -51,15 +60,6 @@ export default function useAuthApi() {
       (response) => response,
       responseErrorInterceptor
     );
-
-    async function refresh() {
-      if (refreshTokenRef.current === "") {
-        setIsAuthenticated(false);
-      } else {
-        await refreshAccessToken();
-      }
-    }
-    refresh();
 
     return () => {
       authApi.interceptors.request.eject(registeredRequestInterceptor);
@@ -113,7 +113,7 @@ export default function useAuthApi() {
     const originalRequest = error.config;
 
     if (typeof originalRequest === "undefined") {
-      throw new Error("No request config defined");
+      throw new Error("Original request undefined");
     }
 
     const errorStatus = error.response?.status;
