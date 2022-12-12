@@ -15,7 +15,6 @@ const queryClient = new QueryClient();
 
 setupIonicReact();
 
-
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
