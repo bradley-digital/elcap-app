@@ -1,24 +1,24 @@
-import Form from "components/Form/Form";
-import FormLogin from "components/Form/FormLogin";
+// components
+import { Link } from "react-router-dom";
+import { IonText } from "@ionic/react";
+import Form from "components/AuthForm/AuthForm";
+import FormLogin from "components/AuthForm/FormLogin";
 
 export default function Login() {
-  const accountHelpLeft = {
-    text: "Forgot password?",
-    link: "/forgot-password",
-  };
-
-  const accountHelpRight = {
-    text: "Create account",
-    link: "/register",
-  };
   return (
-    <Form
-      title="Login"
-      subtitle="Hi there! Welcome to El Capitan."
-      form={<FormLogin />}
-      isSocialLoginShown={true}
-      accountHelpLeft={accountHelpLeft}
-      accountHelpRight={accountHelpRight}
-    />
+    <Form title="Login">
+      <IonText>
+        <p>Hi there! Welcome to El Capitan.</p>
+      </IonText>
+      <FormLogin />
+      <IonText className="Form__accountHelp">
+        <Link to="/forgot-password" className="Form__accountHelpLink--secondary">
+          Forgot password?
+        </Link>
+        <Link to="/register" className="Form__accountHelpLink">
+          Create account
+        </Link>
+      </IonText>
+    </Form>
   );
 }

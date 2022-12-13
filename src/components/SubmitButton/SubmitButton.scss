@@ -1,6 +1,10 @@
 .SubmitButton {
   margin-top: 32px;
 
+  ion-button {
+    width: 100%;
+  }
+
   &__hiddenInput {
     visibility: hidden;
     position: absolute;

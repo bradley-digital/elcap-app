@@ -16,7 +16,7 @@ import { add } from "ionicons/icons";
 
 export default function Wallet() {
   return (
-    <PageTemplate title="Payment methods">
+    <PageTemplate title="Payment methods" hasMenu={true}>
       <IonGrid>
         <IonRow className="ion-justify-content-center">
           <IonCol size-md="8" size-lg="6">

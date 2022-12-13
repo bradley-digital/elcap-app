@@ -1,5 +1,5 @@
 import { FieldHookConfig, useField } from "formik";
-import "components/Form/FormInput.scss";
+import "components/AuthForm/AuthFormInput.scss";
 
 type InputProps = {
   label: string;

@@ -1,0 +1,61 @@
+@import "theme/variables.scss";
+
+.Form {
+  padding: 16px;
+  max-width: 420px;
+  margin: 0 auto;
+
+  h1 {
+    color: $black;
+    margin-bottom: 16px;
+  }
+
+  ion-text {
+    color: $gray;
+  }
+
+  &__socialLogin {
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+    padding-top: 16px;
+
+    .Form__socialLoginButton {
+      flex: 1 0 auto;
+    }
+  }
+
+  &__socialLoginButton {
+    font-size: 12px;
+
+    svg {
+      margin-right: 8px;
+      float: left;
+    }
+  }
+
+  &__accountHelp {
+    padding-top: 16px;
+    display: flex;
+    justify-content: space-between;
+
+    &--center {
+      @extend .Form__accountHelp;
+      justify-content: center;
+    }
+  }
+
+  &__accountHelpLink {
+    text-decoration: none;
+    color: $primary;
+
+    &:hover {
+      color: $black;
+    }
+
+    &--secondary {
+      @extend .Form__accountHelpLink;
+      color: $gray;
+    }
+  }
+}

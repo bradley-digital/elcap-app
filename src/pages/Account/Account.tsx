@@ -3,20 +3,16 @@ import {
   IonButton,
   IonCard,
   IonCol,
-  IonContent,
   IonGrid,
-  IonHeader,
   IonItem,
   IonInput,
   IonLabel,
   IonList,
   IonListHeader,
-  IonPage,
   IonRow,
   IonText,
-  IonTitle,
-  IonToolbar,
 } from "@ionic/react";
+import PageTemplate from "components/PageTemplate/PageTemplate";
 
 // hooks
 import useAuth from "hooks/useAuth";
@@ -47,60 +43,53 @@ export default function Account() {
     const joined = new Date(createdAt).toLocaleString("en-US");
 
     return (
-      <IonPage className="Account">
-        <IonHeader>
-          <IonToolbar>
-            <IonTitle>Account</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent>
-          <IonGrid>
-            <IonRow className="ion-justify-content-center">
-              <IonCol size-md="8" size-lg="6">
-                <IonCard className="Account__profileCard">
-                  <IonText className="ion-text-center">
-                    <h1>{`${firstName} ${lastName}`}</h1>
-                    <h3>{userName}</h3>
-                    <p>Joined: {joined}</p>
-                  </IonText>
-                  <div className="d-flex ion-justify-content-end">
-                    <IonButton onClick={logout} color="danger">
-                      Logout
-                    </IonButton>
-                  </div>
-                </IonCard>
-                <IonList>
-                  <IonListHeader>Personal information</IonListHeader>
-                  <IonItem>
-                    <IonLabel position="stacked">First Name</IonLabel>
-                    <IonInput value={firstName} readonly />
-                  </IonItem>
-                  <IonItem>
-                    <IonLabel position="stacked">Last Name</IonLabel>
-                    <IonInput value={lastName} readonly />
-                  </IonItem>
-                  <IonItem>
-                    <IonLabel position="stacked">Username</IonLabel>
-                    <IonInput value={userName} readonly />
-                  </IonItem>
-                  <IonItem>
-                    <IonLabel position="stacked">Email</IonLabel>
-                    <IonInput value={email} readonly />
-                  </IonItem>
-                  <IonItem>
-                    <IonLabel position="stacked">Phone</IonLabel>
-                    <IonInput value={phone} readonly />
-                  </IonItem>
-                  <IonItem>
-                    <IonLabel position="stacked">Address</IonLabel>
-                    <IonInput value={address} readonly />
-                  </IonItem>
-                </IonList>
-              </IonCol>
-            </IonRow>
-          </IonGrid>
-        </IonContent>
-      </IonPage>
+      <PageTemplate title="Account" className="Account">
+        <IonGrid>
+          <IonRow className="ion-justify-content-center">
+            <IonCol size-md="8" size-lg="6">
+              <IonCard className="Account__profileCard">
+                <IonText className="ion-text-center">
+                  <h1>{`${firstName} ${lastName}`}</h1>
+                  <h3>{userName}</h3>
+                  <p>Joined: {joined}</p>
+                </IonText>
+                <div className="d-flex ion-justify-content-end">
+                  <IonButton onClick={logout} color="danger">
+                    Logout
+                  </IonButton>
+                </div>
+              </IonCard>
+              <IonList>
+                <IonListHeader>Personal information</IonListHeader>
+                <IonItem>
+                  <IonLabel position="stacked">First Name</IonLabel>
+                  <IonInput value={firstName} readonly />
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="stacked">Last Name</IonLabel>
+                  <IonInput value={lastName} readonly />
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="stacked">Username</IonLabel>
+                  <IonInput value={userName} readonly />
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="stacked">Email</IonLabel>
+                  <IonInput value={email} readonly />
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="stacked">Phone</IonLabel>
+                  <IonInput value={phone} readonly />
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="stacked">Address</IonLabel>
+                  <IonInput value={address} readonly />
+                </IonItem>
+              </IonList>
+            </IonCol>
+          </IonRow>
+        </IonGrid>
+      </PageTemplate>
     );
   }
 

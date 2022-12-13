@@ -4,7 +4,7 @@ import QRCode from "components/QRCode/QRCode";
 
 export default function Scan() {
   return (
-    <PageTemplate title="Scan to pay">
+    <PageTemplate title="Scan to pay" hasMenu={true}>
       <IonGrid>
         <IonRow className="ion-justify-content-center">
           <IonCol size-md="8" size-lg="6">

@@ -4,7 +4,7 @@ import PayTransactionsTransaction from "./PayTransactionsTransaction";
 
 export default function Transactions() {
   return (
-    <PageTemplate title="Transactions">
+    <PageTemplate title="Transactions" hasMenu={true}>
       <IonGrid>
         <IonRow className="ion-justify-content-center">
           <IonCol size-md="8" size-lg="6">

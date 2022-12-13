@@ -10,18 +10,27 @@ import {
 } from "@ionic/react";
 
 type Props = {
-  title: string;
+  className?: string;
   children: ReactNode;
+  hasMenu?: boolean;
+  title: string;
 };
 
-export default function PageTemplate({ title, children }: Props) {
+export default function PageTemplate({
+  className,
+  children,
+  hasMenu = false,
+  title
+}: Props) {
   return (
-    <IonPage>
+    <IonPage className={className}>
       <IonHeader>
         <IonToolbar>
-          <IonButtons slot="start">
-            <IonMenuButton menu="main" />
-          </IonButtons>
+          {hasMenu && (
+            <IonButtons slot="start">
+              <IonMenuButton menu="main" />
+            </IonButtons>
+          )}
           <IonTitle>{title}</IonTitle>
         </IonToolbar>
       </IonHeader>

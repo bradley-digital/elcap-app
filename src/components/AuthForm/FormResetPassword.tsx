@@ -12,8 +12,8 @@ import {
 import useAuth from "hooks/useAuth";
 
 // components
-import SubmitButton from "components/Form/SubmitButton";
-import FormInput from "components/Form/FormInput";
+import SubmitButton from "components/SubmitButton/SubmitButton";
+import FormInput from "components/AuthForm/AuthFormInput";
 
 export default function FormResetPassword() {
   const { resetPassword } = useAuth();
@@ -37,10 +37,6 @@ export default function FormResetPassword() {
       }}
     >
       <Form>
-        <p>Your new password must:</p>
-        <ul>
-          <li>Contain 8-36 characters.</li>
-        </ul>
         <FormInput
           label="New Password"
           name="password"

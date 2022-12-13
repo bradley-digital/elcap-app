@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { IonButton } from "@ionic/react";
-import "components/Form/SubmitButton.scss";
+import "components/SubmitButton/SubmitButton.scss";
 
 type SubmitButtonProps = {
   children: ReactNode;
