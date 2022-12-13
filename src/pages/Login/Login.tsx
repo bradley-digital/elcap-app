@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { IonText } from "@ionic/react";
 import Form from "components/Form/Form";
 import FormLogin from "components/Form/FormLogin";
+import GoogleLoginButton from "components/Form/GoogleLoginButton";
 
 export default function Login() {
   return (

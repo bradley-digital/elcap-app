@@ -12,23 +12,23 @@ import {
 type Props = {
   className?: string;
   children: ReactNode;
-  hasMenu?: boolean;
+  menuId?: string;
   title: string;
 };
 
 export default function PageTemplate({
   className,
   children,
-  hasMenu = false,
+  menuId,
   title
 }: Props) {
   return (
     <IonPage className={className}>
       <IonHeader>
         <IonToolbar>
-          {hasMenu && (
+          {menuId && (
             <IonButtons slot="start">
-              <IonMenuButton menu="main" />
+              <IonMenuButton menu={menuId} />
             </IonButtons>
           )}
           <IonTitle>{title}</IonTitle>
