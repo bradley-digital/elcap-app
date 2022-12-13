@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { IonText } from "@ionic/react";
 import Form from "components/Form/Form";
 import FormLogin from "components/Form/FormLogin";
+import GoogleLoginButton from "components/Form/GoogleLoginButton";
 
 export default function Login() {
   return (
@@ -11,6 +12,9 @@ export default function Login() {
         <p>Hi there! Welcome to El Capitan.</p>
       </IonText>
       <FormLogin />
+      <div className="Form__socialLogin">
+        <GoogleLoginButton />
+      </div>
       <IonText className="Form__accountHelp">
         <Link to="/forgot-password" className="Form__accountHelpLink--secondary">
           Forgot password?
