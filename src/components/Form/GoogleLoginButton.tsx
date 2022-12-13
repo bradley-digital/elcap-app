@@ -12,7 +12,11 @@ export default function GoogleLoginButton() {
   const { googleLogin } = useAuth();
 
   return (
-    <IonButton color="light" className="Form__socialLoginButton" onClick={googleLogin}>
+    <IonButton
+      color="light"
+      className="Form__socialLoginButton"
+      onClick={googleLogin}
+    >
       <GoogleLogo /> Google Login
     </IonButton>
   );

@@ -63,12 +63,7 @@ export default function FormRegister() {
           type="email"
           placeholder="Email"
         />
-        <FormInput
-          label="Phone"
-          name="phone"
-          type="text"
-          placeholder="Phone"
-        />
+        <FormInput label="Phone" name="phone" type="text" placeholder="Phone" />
         <FormInput
           label="Password"
           name="password"

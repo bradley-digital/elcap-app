@@ -20,9 +20,7 @@ export default function Form({
     <IonPage className="Form">
       <IonContent fullscreen>
         <Logo />
-        <IonText>
-          {title && <h1>{title}</h1>}
-        </IonText>
+        <IonText>{title && <h1>{title}</h1>}</IonText>
         {children}
       </IonContent>
     </IonPage>

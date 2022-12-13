@@ -10,7 +10,7 @@ export default function Register() {
       <FormRegister />
       <IonText className="Form__accountHelp--center">
         <span>
-          Already have an account? {" "}
+          Already have an account?{" "}
           <Link to="/login" className="Form__accountHelpLink">
             Sign in
           </Link>
