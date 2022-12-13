@@ -5,14 +5,14 @@ import { IonContent, IonPage, IonText } from "@ionic/react";
 import Logo from "components/Logo/Logo";
 
 // styles
-import "components/AuthForm/AuthForm.scss";
+import "components/Form/Form.scss";
 
 type FormProps = {
   title: string;
   children: ReactNode;
 };
 
-export default function AuthForm({
+export default function Form({
   title,
   children,
 }: FormProps) {

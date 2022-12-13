@@ -1,8 +1,8 @@
 // components
 import { Link } from "react-router-dom";
 import { IonText } from "@ionic/react";
-import Form from "components/AuthForm/AuthForm";
-import FormLogin from "components/AuthForm/FormLogin";
+import Form from "components/Form/Form";
+import FormLogin from "components/Form/FormLogin";
 
 export default function Login() {
   return (

@@ -9,7 +9,7 @@ import useAuth from "hooks/useAuth";
 
 // components
 import SubmitButton from "components/SubmitButton/SubmitButton";
-import FormInput from "components/AuthForm/AuthFormInput";
+import FormInput from "components/Form/FormInput";
 
 export default function ForgotPasswordForm() {
   const { forgotPassword } = useAuth();

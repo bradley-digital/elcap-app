@@ -15,10 +15,10 @@ import useAuth from "hooks/useAuth";
 
 // components
 import SubmitButton from "components/SubmitButton/SubmitButton";
-import FormInput from "components/AuthForm/AuthFormInput";
+import FormInput from "components/Form/FormInput";
 
 // styles
-import "components/AuthForm/AuthForm.scss";
+import "components/Form/Form.scss";
 
 export default function FormRegister() {
   const { register } = useAuth();
