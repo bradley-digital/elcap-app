@@ -15,10 +15,10 @@ import useAuth from "hooks/useAuth";
 
 // components
 import SubmitButton from "components/SubmitButton/SubmitButton";
-import FormInput from "components/AuthForm/AuthFormInput";
+import FormInput from "components/Form/FormInput";
 
 // styles
-import "components/AuthForm/AuthForm.scss";
+import "components/Form/Form.scss";
 
 export default function FormRegister() {
   const { register } = useAuth();
@@ -63,12 +63,7 @@ export default function FormRegister() {
           type="email"
           placeholder="Email"
         />
-        <FormInput
-          label="Phone"
-          name="phone"
-          type="text"
-          placeholder="Phone"
-        />
+        <FormInput label="Phone" name="phone" type="text" placeholder="Phone" />
         <FormInput
           label="Password"
           name="password"

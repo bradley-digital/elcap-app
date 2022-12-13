@@ -8,12 +8,12 @@ import { emailValidation, passwordValidation } from "lib/formValidation";
 import useAuth from "hooks/useAuth";
 
 // components
-import GoogleLoginButton from "components/AuthForm/GoogleLoginButton";
+import FormInput from "components/Form/FormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
-import FormInput from "components/AuthForm/AuthFormInput";
+import GoogleLoginButton from "components/Form/GoogleLoginButton";
 
 // styles
-import "components/AuthForm/AuthForm.scss";
+import "components/Form/Form.scss";
 
 export default function FormLogin() {
   const { login } = useAuth();

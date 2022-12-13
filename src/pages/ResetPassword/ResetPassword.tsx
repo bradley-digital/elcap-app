@@ -1,8 +1,8 @@
 // components
 import { Link } from "react-router-dom";
 import { IonText } from "@ionic/react";
-import Form from "components/AuthForm/AuthForm";
-import FormResetPassword from "components/AuthForm/FormResetPassword";
+import Form from "components/Form/Form";
+import FormResetPassword from "components/Form/FormResetPassword";
 
 export default function ResetPassword() {
   return (

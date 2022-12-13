@@ -1,8 +1,8 @@
 // components
 import { Link } from "react-router-dom";
 import { IonText } from "@ionic/react";
-import Form from "components/AuthForm/AuthForm";
-import FormForgotPassword from "components/AuthForm/FormForgotPassword";
+import Form from "components/Form/Form";
+import FormForgotPassword from "components/Form/FormForgotPassword";
 
 export default function ForgotPassword() {
   return (
