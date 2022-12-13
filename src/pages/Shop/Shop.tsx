@@ -1,10 +1,9 @@
 // components
-import {
-  IonGrid,
-  IonRow,
-} from "@ionic/react";
-import ShopProduct from "components/Shop/ShopProduct";
+import ShopProducts from "components/ShopProducts/ShopProducts";
 import PageTemplate from "components/PageTemplate/PageTemplate";
+
+// consts
+import { products } from "pages/Shop/consts";
 
 // styles
 import "./Shop.scss";
@@ -12,11 +11,7 @@ import "./Shop.scss";
 export default function Shop() {
   return (
     <PageTemplate title="Shop" className="Shop">
-      <IonGrid fixed>
-        <IonRow>
-          <ShopProduct />
-        </IonRow>
-      </IonGrid>
+      <ShopProducts products={products} />
     </PageTemplate>
   );
 }

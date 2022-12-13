@@ -1,10 +1,19 @@
 import hash from "object-hash";
-import { IonAvatar, IonItem, IonLabel } from "@ionic/react";
-import { paymentMethods } from "pages/Pay/consts";
+import { IonAvatar, IonItem, IonLabel, IonList } from "@ionic/react";
 
-export default function PayWalletPaymentMethods() {
+export type PaymentMethod = {
+  img: string;
+  name: string;
+  domain: string;
+};
+
+type Props = {
+  paymentMethods: PaymentMethod[];
+};
+
+export default function PayWalletPaymentMethods({ paymentMethods }: Props) {
   return (
-    <>
+    <IonList>
       {paymentMethods.map((paymentMethod) => (
         <IonItem key={hash(paymentMethod)}>
           <IonAvatar slot="start">
@@ -16,6 +25,6 @@ export default function PayWalletPaymentMethods() {
           </IonLabel>
         </IonItem>
       ))}
-    </>
+    </IonList>
   );
 }
