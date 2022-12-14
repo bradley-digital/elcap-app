@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { IonApp, setupIonicReact } from "@ionic/react";
 import { AuthProvider } from "contexts/AuthContext";
-import Routes from "components/Routes/Routes";
+import Routes from "routes/Routes";
 
 // theme variables
 import "theme/global.scss";
