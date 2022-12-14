@@ -6,7 +6,7 @@ import { IonButton } from "@ionic/react";
 import { ReactComponent as GoogleLogo } from "assets/google-icon.svg";
 
 // styles
-import "components/Form/Form.scss";
+import "./SocialLoginButton.scss";
 
 export default function GoogleLoginButton() {
   const { googleLogin } = useAuth();
@@ -14,7 +14,7 @@ export default function GoogleLoginButton() {
   return (
     <IonButton
       color="light"
-      className="Form__socialLoginButton"
+      className="SocialLoginButton"
       onClick={googleLogin}
     >
       <GoogleLogo /> Google Login

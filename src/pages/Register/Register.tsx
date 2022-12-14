@@ -1,21 +1,21 @@
 // components
 import { Link } from "react-router-dom";
 import { IonText } from "@ionic/react";
-import Form from "components/Form/Form";
-import FormRegister from "components/Form/FormRegister";
+import AuthPageTemplate from "components/AuthPageTemplate/AuthPageTemplate";
+import FormRegister from "components/FormRegister/FormRegister";
 
 export default function Register() {
   return (
-    <Form title="Sign Up">
+    <AuthPageTemplate title="Sign Up">
       <FormRegister />
-      <IonText className="Form__accountHelp--center">
+      <IonText className="d-flex ion-justify-content-center ion-padding-top">
         <span>
           Already have an account?{" "}
-          <Link to="/login" className="Form__accountHelpLink">
+          <Link to="/login">
             Sign in
           </Link>
         </span>
       </IonText>
-    </Form>
+    </AuthPageTemplate>
   );
 }

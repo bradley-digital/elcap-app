@@ -8,8 +8,8 @@ import { emailValidation } from "lib/formValidation";
 import useAuth from "hooks/useAuth";
 
 // components
+import FormInput from "components/AuthFormInput/AuthFormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
-import FormInput from "components/Form/FormInput";
 
 export default function ForgotPasswordForm() {
   const { forgotPassword } = useAuth();

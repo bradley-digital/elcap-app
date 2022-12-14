@@ -1,12 +1,12 @@
 // components
 import { Link } from "react-router-dom";
 import { IonText } from "@ionic/react";
-import Form from "components/Form/Form";
-import FormResetPassword from "components/Form/FormResetPassword";
+import AuthPageTemplate from "components/AuthPageTemplate/AuthPageTemplate";
+import FormResetPassword from "components/FormResetPassword/FormResetPassword";
 
 export default function ResetPassword() {
   return (
-    <Form title="Reset Password">
+    <AuthPageTemplate title="Reset Password">
       <IonText>
         <p>Your new password must:</p>
         <ul>
@@ -14,11 +14,11 @@ export default function ResetPassword() {
         </ul>
       </IonText>
       <FormResetPassword />
-      <IonText className="Form__accountHelp">
-        <Link to="/login" className="Form__accountHelpLink--secondary">
+      <IonText className="d-flex ion-justify-content-between ion-padding-top">
+        <Link to="/login" className="secondary">
           Back to login
         </Link>
       </IonText>
-    </Form>
+    </AuthPageTemplate>
   );
 }

@@ -8,7 +8,7 @@ import { emailValidation, passwordValidation } from "lib/formValidation";
 import useAuth from "hooks/useAuth";
 
 // components
-import FormInput from "components/Form/FormInput";
+import FormInput from "components/AuthFormInput/AuthFormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
 
 export default function FormLogin() {

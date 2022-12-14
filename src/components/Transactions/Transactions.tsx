@@ -28,7 +28,7 @@ export default function PayTransactionsTransaction({ transactions }: Props) {
       <IonItemGroup>
         {transactions.map((transaction, i) => {
           let divider = null;
-          let lines = true;
+          let lines = false;
           const { date, note, amount } = transaction;
           const nextTransaction = transactions[i + 1];
 
@@ -42,12 +42,8 @@ export default function PayTransactionsTransaction({ transactions }: Props) {
             divider = <IonItemDivider>{formattedDate}</IonItemDivider>;
           }
 
-          if (typeof nextTransaction !== "undefined") {
-            if (nextTransaction.date !== currentDate) {
-              lines = false;
-            }
-          } else {
-            lines = false;
+          if (nextTransaction?.date === currentDate) {
+            lines = true;
           }
 
           return (

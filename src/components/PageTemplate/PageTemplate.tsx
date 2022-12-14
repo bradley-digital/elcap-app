@@ -11,20 +11,20 @@ import {
 } from "@ionic/react";
 
 type Props = {
-  className?: string;
   children: ReactNode;
   menuId?: string;
   title: string;
+  [rest: string]: any;
 };
 
 export default function PageTemplate({
-  className,
   children,
   menuId,
-  title
+  title,
+  ...rest
 }: Props) {
   return (
-    <IonPage className={className}>
+    <IonPage {...rest}>
       <IonHeader>
         <IonToolbar>
           {menuId && (

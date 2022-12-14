@@ -1,18 +1,18 @@
 // components
 import { Link } from "react-router-dom";
 import { IonText } from "@ionic/react";
-import Form from "components/Form/Form";
-import FormForgotPassword from "components/Form/FormForgotPassword";
+import AuthPageTemplate from "components/AuthPageTemplate/AuthPageTemplate";
+import FormForgotPassword from "components/FormForgotPassword/FormForgotPassword";
 
 export default function ForgotPassword() {
   return (
-    <Form title="Forgot Password">
+    <AuthPageTemplate title="Forgot Password">
       <FormForgotPassword />
-      <IonText className="Form__accountHelp">
-        <Link to="/login" className="Form__accountHelpLink--secondary">
+      <IonText className="d-flex ion-justify-content-between ion-padding-top">
+        <Link to="/login" className="secondary">
           Back to login
         </Link>
       </IonText>
-    </Form>
+    </AuthPageTemplate>
   );
 }

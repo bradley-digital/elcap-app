@@ -14,22 +14,22 @@ import {
 import MenuLinks from "components/MenuLinks/MenuLinks";
 
 type Props = {
-  className?: string;
   children: ReactNode;
   menuLinks: MenuLink[];
   menuId: string;
   title: string;
+  [rest: string]: any;
 };
 
 export default function SplitPaneTemplate({
-  className,
   children,
   menuLinks,
   menuId,
   title,
+  ...rest
 }: Props) {
   return (
-    <IonPage className={className}>
+    <IonPage {...rest}>
       <IonSplitPane contentId={menuId}>
         <IonMenu side="start" menuId={menuId} contentId={menuId}>
           <IonHeader>

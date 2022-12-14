@@ -7,6 +7,8 @@ export const firstNameValidation = Yup.string().required("First Name required");
 
 export const lastNameValidation = Yup.string().required("Last Name required");
 
+export const userNameValidation = Yup.string().required("User Name required");
+
 export const emailValidation = Yup.string().email("Email must be valid").required("Email required");
 
 export const phoneValidation = Yup.string().matches(

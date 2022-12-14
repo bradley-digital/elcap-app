@@ -12,8 +12,8 @@ import {
 import useAuth from "hooks/useAuth";
 
 // components
+import FormInput from "components/AuthFormInput/AuthFormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
-import FormInput from "components/Form/FormInput";
 
 export default function FormResetPassword() {
   const { resetPassword } = useAuth();

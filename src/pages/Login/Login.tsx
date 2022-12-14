@@ -1,31 +1,31 @@
 // components
 import { Link } from "react-router-dom";
 import { IonText } from "@ionic/react";
-import Form from "components/Form/Form";
-import FormLogin from "components/Form/FormLogin";
-import GoogleLoginButton from "components/Form/GoogleLoginButton";
+import AuthPageTemplate from "components/AuthPageTemplate/AuthPageTemplate";
+import FormLogin from "components/FormLogin/FormLogin";
+import GoogleLoginButton from "components/SocialLoginButton/GoogleLoginButton";
 
 export default function Login() {
   return (
-    <Form title="Login">
+    <AuthPageTemplate title="Login">
       <IonText>
         <p>Hi there! Welcome to El Capitan.</p>
       </IonText>
       <FormLogin />
-      <div className="Form__socialLogin">
+      <div className="flex-row ion-padding-top">
         <GoogleLoginButton />
       </div>
-      <IonText className="Form__accountHelp">
+      <IonText className="d-flex ion-justify-content-between ion-padding-top">
         <Link
           to="/forgot-password"
-          className="Form__accountHelpLink--secondary"
+          className="secondary"
         >
           Forgot password?
         </Link>
-        <Link to="/register" className="Form__accountHelpLink">
+        <Link to="/register">
           Create account
         </Link>
       </IonText>
-    </Form>
+    </AuthPageTemplate>
   );
 }
