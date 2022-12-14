@@ -1,10 +1,7 @@
 import { Redirect, Route, Switch } from "react-router-dom";
 
-// pages
-import Account from "pages/Account/Account";
-import Example from "pages/Example/Example";
-import Pay from "pages/Pay/Pay";
-import Shop from "pages/Shop/Shop";
+// icons
+import { bag, card, personCircle } from "ionicons/icons";
 
 // components
 import {
@@ -16,8 +13,11 @@ import {
   IonTabs,
 } from "@ionic/react";
 
-// icons
-import { bag, card, personCircle } from "ionicons/icons";
+// pages
+import Account from "pages/Account/Account";
+import Example from "pages/Example/Example";
+import Pay from "pages/Pay/Pay";
+import Shop from "pages/Shop/Shop";
 
 export default function PaymentsRoutes() {
   return (
