@@ -1,6 +1,5 @@
 import type { Profile } from "hooks/useUser";
 import { useState } from "react";
-import { Form, Formik } from "formik";
 import * as Yup from "yup";
 
 // lib
@@ -12,11 +11,12 @@ import {
   phoneValidation,
 } from "lib/formValidation";
 
+// icons
+import { lockClosed, pencil } from "ionicons/icons";
+
 // components
-import {
-  IonList,
-  IonListHeader,
-} from "@ionic/react";
+import { Form, Formik } from "formik";
+import { IonList, IonListHeader } from "@ionic/react";
 import FormObserver from "components/FormObserver/FormObserver";
 import FormInput from "components/FormInput/FormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
@@ -68,32 +68,34 @@ export default function FormAccount({ profile }: Props) {
             label="First Name"
             name="firstName"
             type="text"
+            icon={pencil}
           />
           <FormInput
             label="Last Name"
             name="lastName"
             type="text"
+            icon={pencil}
           />
           <FormInput
             label="User Name"
             name="userName"
             type="text"
+            icon={pencil}
           />
+          <FormInput label="Phone" name="phone" type="text" icon={pencil} />
           <FormInput
             label="Email"
             name="email"
             type="email"
+            icon={lockClosed}
             readonly
           />
-          <FormInput
-            label="Phone"
-            name="phone"
-            type="text"
-          />
-          {edited && <>
-            <SubmitButton>Update</SubmitButton>
-            <hr />
-          </>}
+          {edited && (
+            <>
+              <SubmitButton>Update</SubmitButton>
+              <hr />
+            </>
+          )}
         </IonList>
       </Form>
     </Formik>
