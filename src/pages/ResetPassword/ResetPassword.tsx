@@ -14,7 +14,7 @@ export default function ResetPassword() {
         </ul>
       </IonText>
       <FormResetPassword />
-      <IonText className="d-flex ion-justify-content-between ion-padding-top">
+      <IonText className="AuthPageTemplate__linkRow">
         <Link to="/login" className="secondary">
           Back to login
         </Link>

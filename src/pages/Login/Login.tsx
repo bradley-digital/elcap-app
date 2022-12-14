@@ -12,10 +12,10 @@ export default function Login() {
         <p>Hi there! Welcome to El Capitan.</p>
       </IonText>
       <FormLogin />
-      <div className="flex-row ion-padding-top">
+      <div className="AuthPageTemplate__buttonRow">
         <GoogleLoginButton />
       </div>
-      <IonText className="d-flex ion-justify-content-between ion-padding-top">
+      <IonText className="AuthPageTemplate__linkRow">
         <Link
           to="/forgot-password"
           className="secondary"
