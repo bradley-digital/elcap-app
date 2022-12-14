@@ -1,4 +1,4 @@
-import type { Profile } from "hooks/useApi";
+import type { Profile } from "hooks/useUser";
 
 // components
 import {

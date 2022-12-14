@@ -1,5 +1,3 @@
-import { useQuery } from "react-query";
-
 // components
 import {
   IonCol,
@@ -12,13 +10,12 @@ import FormAccount from "components/FormAccount/FormAccount";
 import LogoutButton from "components/LogoutButton/LogoutButton";
 
 // hooks
-import useApi from "hooks/useApi";
+import useUser from "hooks/useUser";
 
 export default function Account() {
-  const { getUser } = useApi();
-  const { isSuccess, data } = useQuery("userAccount", getUser);
+  const { isSuccess, data } = useUser();
 
-  if (isSuccess) {
+  if (isSuccess && typeof data !== "undefined") {
     return (
       <PageTemplate title="Account">
         <IonGrid>
@@ -26,7 +23,6 @@ export default function Account() {
             <IonCol size-md="8" size-lg="6">
               <ProfileCard profile={data} />
               <FormAccount profile={data} />
-              <hr />
               <LogoutButton className="w-100">Logout</LogoutButton>
             </IonCol>
           </IonRow>

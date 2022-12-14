@@ -1,3 +1,5 @@
+import { useMutation, useQuery, useQueryClient } from "react-query";
+
 // hooks
 import useAuth from "hooks/useAuth";
 
@@ -12,20 +14,25 @@ export type Profile = {
 };
 
 export type ProfileUpdateInput = {
-  firstName: string;
-  lastName: string;
-  userName: string;
-  phone: string;
+  firstName?: string;
+  lastName?: string;
+  userName?: string;
+  phone?: string;
 };
 
-// Keeping all fetches in one file for now
-// May need to break this out as:
-// - useUser
-// - useTransations
-// - useCircle
-// ...
-export default function useApi() {
+const queryKey = "userAccount";
+
+export default function useUser() {
   const { authApi } = useAuth();
+  const queryClient = useQueryClient();
+
+  const { isSuccess, data } = useQuery(queryKey, getUser);
+
+  const { mutate } = useMutation(updateUser, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(queryKey, data);
+    }
+  });
 
   async function getUser() {
     const { data } = await authApi.get<Profile>("/users/account");
@@ -38,7 +45,9 @@ export default function useApi() {
   }
 
   return {
-    getUser,
-    updateUser,
+    queryKey,
+    isSuccess,
+    data,
+    mutate,
   };
 }

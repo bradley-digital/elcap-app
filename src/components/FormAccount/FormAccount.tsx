@@ -1,7 +1,6 @@
-import type { Profile } from "hooks/useApi";
-import { useEffect } from "react";
-import { useMutation, useQueryClient } from "react-query";
-import { Form, Formik, useFormikContext } from "formik";
+import type { Profile } from "hooks/useUser";
+import { useState } from "react";
+import { Form, Formik } from "formik";
 import * as Yup from "yup";
 
 // lib
@@ -18,34 +17,25 @@ import {
   IonList,
   IonListHeader,
 } from "@ionic/react";
+import FormObserver from "components/FormObserver/FormObserver";
 import FormInput from "components/FormInput/FormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
 
 // hooks
-import useApi from "hooks/useApi";
+import useUser from "hooks/useUser";
 
 type Props = {
   profile: Profile;
 };
 
-function FormObserver() {
-  const { values } = useFormikContext();
-
-  useEffect(() => {
-    console.log(values)
-  }, [values]);
-
-  return null;
-}
-
 export default function FormAccount({ profile }: Props) {
-  const { updateUser } = useApi();
-  const queryClient = useQueryClient();
-  const { mutate } = useMutation(updateUser, {
-    onSuccess: (data) => {
-      queryClient.setQueryData("userAccount", data);
-    }
-  });
+  const { mutate } = useUser();
+  const [edited, setEdited] = useState(false);
+
+  function handleChange() {
+    if (edited) return;
+    setEdited(true);
+  }
 
   const { firstName, lastName, userName, email, phone } = profile;
 
@@ -65,9 +55,13 @@ export default function FormAccount({ profile }: Props) {
         email: emailValidation,
         phone: phoneValidation,
       })}
-      onSubmit={(values) => mutate(values)}
+      onSubmit={(values) => {
+        mutate(values);
+        setEdited(false);
+      }}
     >
       <Form>
+        <FormObserver onChange={handleChange} />
         <IonList>
           <IonListHeader>Account information</IonListHeader>
           <FormInput
@@ -96,9 +90,11 @@ export default function FormAccount({ profile }: Props) {
             name="phone"
             type="text"
           />
-          <SubmitButton>Update</SubmitButton>
+          {edited && <>
+            <SubmitButton>Update</SubmitButton>
+            <hr />
+          </>}
         </IonList>
-        <FormObserver />
       </Form>
     </Formik>
   );
