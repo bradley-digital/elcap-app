@@ -1,6 +1,12 @@
 @import "theme/variables.scss";
 
 .ProfileCard {
+  padding: 16px;
+
+  &__text {
+    text-align: center;
+  }
+
   &__title {
     color: $black;
   }
