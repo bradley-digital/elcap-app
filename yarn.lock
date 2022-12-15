@@ -2192,6 +2192,11 @@
     "@types/qs" "*"
     "@types/serve-static" "*"
 
+"@types/facebook-js-sdk@^3.3.6":
+  version "3.3.6"
+  resolved "https://registry.yarnpkg.com/@types/facebook-js-sdk/-/facebook-js-sdk-3.3.6.tgz#a07bc686304c34953931546a207df455777d9ccf"
+  integrity sha512-CxTLMVtZsgrj9Ven5Pn1vcFumCFs+CG8Jfc63xWq/8b9e6uWjGyZlMnvQk7lIVn97Zd1vpu0ZK/OFWAoap0RCw==
+
 "@types/fs-extra@^8.0.0":
   version "8.1.2"
   resolved "https://registry.yarnpkg.com/@types/fs-extra/-/fs-extra-8.1.2.tgz#7125cc2e4bdd9bd2fc83005ffdb1d0ba00cca61f"
