@@ -2,7 +2,7 @@ import type { AxiosInstance } from "axios";
 import type { ReactNode } from "react";
 import { createContext } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
-import axios from "axios";
+import useFacebookLogin from "hooks/useFacebookLogin";
 
 // lib
 import getErrorMessage from "lib/error";
@@ -22,6 +22,10 @@ type RegisterBody = {
 type LoginBody = {
   email: string;
   password: string;
+};
+
+type FacebookLoginBody = {
+  accessToken: string;
 };
 
 type GoogleLoginBody = {
@@ -45,6 +49,7 @@ type RefreshAccessToken = () => Promise<void>;
 type Register = (body: RegisterBody) => Promise<void>;
 type Login = (body: LoginBody) => Promise<void>;
 type GoogleLogin = () => void;
+type FacebookLogin = () => void;
 type ForgotPassword = (body: ForgotPasswordBody) => Promise<void>;
 type ResetPassword = (body: ResetPasswordBody) => Promise<void>;
 type Logout = () => Promise<void>;
@@ -57,41 +62,13 @@ type AuthContextProps = {
   register: Register;
   login: Login;
   googleLogin: GoogleLogin;
+  facebookLogin: FacebookLogin;
   forgotPassword: ForgotPassword;
   resetPassword: ResetPassword;
   logout: Logout;
 };
 
-export const AuthContext = createContext<AuthContextProps>({
-  role: "",
-  isAuthenticated: false,
-  authApi: axios,
-  refreshAccessToken: async function () {
-    return;
-  },
-  /* eslint-disable  @typescript-eslint/no-unused-vars */
-  register: async function (body: RegisterBody) {
-    return;
-  },
-  /* eslint-disable  @typescript-eslint/no-unused-vars */
-  login: async function (body: LoginBody) {
-    return;
-  },
-  googleLogin: function () {
-    return;
-  },
-  /* eslint-disable  @typescript-eslint/no-unused-vars */
-  forgotPassword: async function (body: ForgotPasswordBody) {
-    return;
-  },
-  /* eslint-disable  @typescript-eslint/no-unused-vars */
-  resetPassword: async function (body: ResetPasswordBody) {
-    return;
-  },
-  logout: async function () {
-    return;
-  },
-});
+export const AuthContext = createContext<AuthContextProps>(null!);
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const {
@@ -124,7 +101,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function handleAuthentication(
     url: string,
-    body: RegisterBody | LoginBody | GoogleLoginBody
+    body: RegisterBody | LoginBody | GoogleLoginBody | FacebookLoginBody
   ): Promise<void> {
     try {
       const res = await authApi.post(url, body);
@@ -150,6 +127,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
     },
     onError: handleError,
     flow: "auth-code",
+  });
+
+  const facebookLogin = useFacebookLogin({
+    onSuccess: async ({ accessToken }) => {
+      await handleAuthentication("/auth/facebook", {
+        accessToken,
+      });
+    },
+    onError: handleError,
   });
 
   async function resetPassword(body: ResetPasswordBody): Promise<void> {
@@ -188,6 +174,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         register,
         login,
         googleLogin,
+        facebookLogin,
         forgotPassword,
         resetPassword,
         logout,

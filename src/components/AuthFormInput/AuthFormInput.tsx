@@ -2,14 +2,14 @@ import type { FieldHookConfig } from "formik";
 import { useField } from "formik";
 import "./AuthFormInput.scss";
 
-type InputProps = {
+type Props = {
   label: string;
   name: string;
   type: string;
   placeholder?: string;
-};
+} & FieldHookConfig<string>;
 
-export default function AuthFormInput(props: InputProps & FieldHookConfig<string>) {
+export default function AuthFormInput(props: Props) {
   const [field, meta] = useField(props);
 
   return (

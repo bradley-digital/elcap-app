@@ -1,8 +1,10 @@
-// components
 import { QueryClient, QueryClientProvider } from "react-query";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+
+// components
 import { IonApp, setupIonicReact } from "@ionic/react";
 import { AuthProvider } from "contexts/AuthContext";
+import { FacebookOAuthProvider } from "contexts/FacebookOAuthContext";
 import Routes from "routes/Routes";
 
 // theme variables
@@ -11,6 +13,7 @@ import "theme/variables.scss";
 import "theme/utilities.scss";
 
 const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || "";
+const facebookAppId = process.env.REACT_APP_FACEBOOK_APP_ID || "";
 const queryClient = new QueryClient();
 
 setupIonicReact();
@@ -19,11 +22,13 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <GoogleOAuthProvider clientId={googleClientId}>
-        <AuthProvider>
-          <IonApp>
-            <Routes />
-          </IonApp>
-        </AuthProvider>
+        <FacebookOAuthProvider appId={facebookAppId}>
+          <AuthProvider>
+            <IonApp>
+              <Routes />
+            </IonApp>
+          </AuthProvider>
+        </FacebookOAuthProvider>
       </GoogleOAuthProvider>
     </QueryClientProvider>
   );
