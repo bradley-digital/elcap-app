@@ -8,7 +8,7 @@ export default function Register() {
   return (
     <AuthPageTemplate title="Sign Up">
       <FormRegister />
-      <IonText className="d-flex ion-justify-content-center ion-padding-top">
+      <IonText className="AuthPageTemplate__linkRow--center">
         <span>
           Already have an account?{" "}
           <Link to="/login">
