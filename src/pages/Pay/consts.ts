@@ -1,10 +1,13 @@
+import type { MenuLink } from "components/MenuLinks/MenuLinks";
+import type { Transaction } from "components/Transactions/Transactions";
+import type { PaymentMethod } from "components/PaymentMethods/PaymentMethods";
 import { wallet, qrCode, receipt } from "ionicons/icons";
 
 // tempData
 const chaseLogo = "/assets/chase.png";
 const coinbaseLogo = "/assets/coinbase.png";
 
-export const paymentMethods = [
+export const paymentMethods: PaymentMethod[] = [
   {
     img: chaseLogo,
     name: "Chase Bank",
@@ -18,12 +21,6 @@ export const paymentMethods = [
 ];
 
 // tempData
-type Transaction = {
-  date: string;
-  note: string;
-  amount: string;
-};
-
 export const transactions: Transaction[] = [
   {
     date: "09/01/2022",
@@ -48,13 +45,6 @@ export const transactions: Transaction[] = [
 ];
 
 // tempData
-type MenuLink = {
-  id: number;
-  icon: string;
-  href: string;
-  label: string;
-};
-
 export const menuLinks: MenuLink[] = [
   {
     id: 1,

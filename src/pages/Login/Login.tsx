@@ -1,24 +1,28 @@
-import Form from "components/Form/Form";
-import FormLogin from "components/Form/FormLogin";
+// components
+import { Link } from "react-router-dom";
+import { IonText } from "@ionic/react";
+import AuthPageTemplate from "components/AuthPageTemplate/AuthPageTemplate";
+import FormLogin from "components/FormLogin/FormLogin";
+import GoogleLoginButton from "components/SocialLoginButton/GoogleLoginButton";
+import FacebookLoginButton from "components/SocialLoginButton/FacebookLoginButton";
 
 export default function Login() {
-  const accountHelpLeft = {
-    text: "Forgot password?",
-    link: "/forgot-password",
-  };
-
-  const accountHelpRight = {
-    text: "Create account",
-    link: "/register",
-  };
   return (
-    <Form
-      title="Login"
-      subtitle="Hi there! Welcome to El Capitan."
-      form={<FormLogin />}
-      isSocialLoginShown={true}
-      accountHelpLeft={accountHelpLeft}
-      accountHelpRight={accountHelpRight}
-    />
+    <AuthPageTemplate title="Login">
+      <IonText>
+        <p>Hi there! Welcome to El Capitan.</p>
+      </IonText>
+      <FormLogin />
+      <div className="AuthPageTemplate__buttonRow">
+        <GoogleLoginButton />
+        <FacebookLoginButton />
+      </div>
+      <IonText className="AuthPageTemplate__linkRow">
+        <Link to="/forgot-password" className="secondary">
+          Forgot password?
+        </Link>
+        <Link to="/register">Create account</Link>
+      </IonText>
+    </AuthPageTemplate>
   );
 }

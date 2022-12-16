@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+
 import {
   IonButtons,
   IonContent,
@@ -10,18 +11,27 @@ import {
 } from "@ionic/react";
 
 type Props = {
-  title: string;
   children: ReactNode;
+  menuId?: string;
+  title: string;
+  [rest: string]: any;
 };
 
-export default function PageTemplate({ title, children }: Props) {
+export default function PageTemplate({
+  children,
+  menuId,
+  title,
+  ...rest
+}: Props) {
   return (
-    <IonPage>
+    <IonPage {...rest}>
       <IonHeader>
         <IonToolbar>
-          <IonButtons slot="start">
-            <IonMenuButton menu="main" />
-          </IonButtons>
+          {menuId && (
+            <IonButtons slot="start">
+              <IonMenuButton menu={menuId} />
+            </IonButtons>
+          )}
           <IonTitle>{title}</IonTitle>
         </IonToolbar>
       </IonHeader>
