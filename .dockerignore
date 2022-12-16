@@ -1,3 +1,3 @@
-Dockerfile.dev
-Dockerfile.prod
+Dockerfile.k8s.dev
+sample.env
 node_modules/
