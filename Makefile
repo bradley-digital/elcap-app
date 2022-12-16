@@ -1,5 +1,4 @@
 build-image:
-	echo 'noah'
 	docker build --platform linux/amd64 -f Dockerfile.k8s.$(ENV) -t app:k8s.$(ENV) .
 
 tag-image:
