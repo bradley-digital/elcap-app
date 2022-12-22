@@ -1,29 +1,18 @@
-import { IonContent, IonPage, IonText } from "@ionic/react";
+// components
 import { Link } from "react-router-dom";
-import Logo from "components/Logo/Logo";
-import ForgotPasswordForm from "components/ForgotPasswordForm/ForgotPasswordForm";
-import styles from "./ForgotPassword.module.scss";
+import { IonText } from "@ionic/react";
+import AuthPageTemplate from "components/AuthPageTemplate/AuthPageTemplate";
+import FormForgotPassword from "components/FormForgotPassword/FormForgotPassword";
 
 export default function ForgotPassword() {
   return (
-    <IonPage className={styles.page}>
-      <IonContent fullscreen className="ion-padding">
-        <Logo />
-        <div className={styles.contentBottom}>
-          <div>
-            <IonText>
-              <h1>Forgot Password</h1>
-            </IonText>
-
-            <ForgotPasswordForm />
-          </div>
-          <div className={styles.accountHelp}>
-            <Link to="/" className={styles.forgotPassword}>
-              Back to login
-            </Link>
-          </div>
-        </div>
-      </IonContent>
-    </IonPage>
+    <AuthPageTemplate title="Forgot Password">
+      <FormForgotPassword />
+      <IonText className="AuthPageTemplate__linkRow">
+        <Link to="/login" className="secondary">
+          Back to login
+        </Link>
+      </IonText>
+    </AuthPageTemplate>
   );
 }

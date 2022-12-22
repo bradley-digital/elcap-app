@@ -1,0 +1,21 @@
+@import "theme/variables.scss";
+
+.Logo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 18px;
+  z-index: 101;
+
+  svg {
+    height: 8rem;
+    width: 10rem;
+  }
+
+  p {
+    color: $primary;
+    font-weight: 700;
+    margin: 0;
+  }
+}

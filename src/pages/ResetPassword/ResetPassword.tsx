@@ -1,28 +1,24 @@
-import { IonContent, IonPage, IonText } from "@ionic/react";
+// components
 import { Link } from "react-router-dom";
-import Logo from "components/Logo/Logo";
-import ResetPasswordForm from "components/ResetPasswordForm/ResetPasswordForm";
-import styles from "./ResetPassword.module.scss";
+import { IonText } from "@ionic/react";
+import AuthPageTemplate from "components/AuthPageTemplate/AuthPageTemplate";
+import FormResetPassword from "components/FormResetPassword/FormResetPassword";
 
 export default function ResetPassword() {
   return (
-    <IonPage className={styles.page}>
-      <IonContent fullscreen className="ion-padding">
-        <Logo />
-        <div className={styles.contentBottom}>
-          <div>
-            <IonText>
-              <h1>Reset Password</h1>
-            </IonText>
-            <ResetPasswordForm />
-          </div>
-          <div className={styles.accountHelp}>
-            <Link to="/" className={styles.forgotPassword}>
-              Back to login
-            </Link>
-          </div>
-        </div>
-      </IonContent>
-    </IonPage>
+    <AuthPageTemplate title="Reset Password">
+      <IonText>
+        <p>Your new password must:</p>
+        <ul>
+          <li>Contain 8-36 characters.</li>
+        </ul>
+      </IonText>
+      <FormResetPassword />
+      <IonText className="AuthPageTemplate__linkRow">
+        <Link to="/login" className="secondary">
+          Back to login
+        </Link>
+      </IonText>
+    </AuthPageTemplate>
   );
 }
