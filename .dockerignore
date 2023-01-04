@@ -1,3 +1,4 @@
 Dockerfile.k8s.dev
+.env
 sample.env
 node_modules/
