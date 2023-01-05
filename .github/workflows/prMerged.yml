@@ -1,0 +1,42 @@
+name: PR Merged
+on:
+  pull_request:
+    branches: [develop, main]
+    types:
+      - closed
+
+jobs:
+  prettier:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+          token: ${{ secrets.BOT_ACCESS_TOKEN }}
+          persist-credentials: false
+      - name: Setup Git
+        run: |
+          git config user.name "josh-bradley-digital-bot"
+          git config user.email "<>"
+      - name: Prettify code
+        uses: creyD/prettier_action@v4.2
+        with:
+          prettier_options: --write **/*.{ts,tsx}
+          only_changed: True
+          same_commit: True
+          github_token: ${{ secrets.BOT_ACCESS_TOKEN }}
+
+  eslint:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install modules
+        run: yarn
+      - name: Run ESLint on src
+        run: yarn run eslint --max-warnings 0 ./src/ --ext .ts,.tsx
+      - name: Run ESLint on playright
+        run: yarn run eslint --max-warnings 0 ./playwright/ --ext .ts,.tsx

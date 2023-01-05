@@ -1,33 +1,17 @@
+import type { AxiosInstance } from "axios";
 import type { ReactNode } from "react";
-import { createContext, useState } from "react";
+import { createContext } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
+import useFacebookLogin from "hooks/useFacebookLogin";
 
-const host = process.env.REACT_APP_BACKEND_HOST || "http://localhost:3020";
+// lib
+import getErrorMessage from "lib/error";
 
-type Json = {
-  /* eslint-disable  @typescript-eslint/no-explicit-any */
-  [key: string]: any;
-};
+// hooks
+import useAuthApi from "hooks/useAuthApi";
+import { useIonToast } from "@ionic/react";
 
-type TokenResponse = {
-  accessToken: string;
-  refreshToken: string;
-};
-
-type AuthProviderProps = {
-  children: ReactNode;
-};
-
-type GoogleLoginArgs = {
-  code: string;
-};
-
-type LoginArgs = {
-  email: string;
-  password: string;
-};
-
-type RegisterArgs = {
+type RegisterBody = {
   firstName: string;
   lastName: string;
   email: string;
@@ -35,131 +19,104 @@ type RegisterArgs = {
   password: string;
 };
 
-// There has to be a better way to do this,
-// this is bad TypeScript
-export const AuthContext = createContext({
-  isAuthenticated: false,
-  /* eslint-disable  @typescript-eslint/no-unused-vars */
-  register: async function (arg: RegisterArgs) {
-    return;
-  },
-  /* eslint-disable  @typescript-eslint/no-unused-vars */
-  login: async function (arg: LoginArgs) {
-    return;
-  },
-  googleLogin: function () {
-    return;
-  },
-  logout: async function () {
-    return;
-  },
-  /* eslint-disable  @typescript-eslint/no-unused-vars */
-  authFetch: async function (endpoint: string) {
-    return {};
-  },
-});
+type LoginBody = {
+  email: string;
+  password: string;
+};
+
+type FacebookLoginBody = {
+  accessToken: string;
+};
+
+type GoogleLoginBody = {
+  code: string;
+};
+
+type ForgotPasswordBody = {
+  email: string;
+};
+
+type ResetPasswordBody = {
+  resetToken: string;
+  password: string;
+};
+
+type AuthProviderProps = {
+  children: ReactNode;
+};
+
+type RefreshAccessToken = () => Promise<void>;
+type Register = (body: RegisterBody) => Promise<void>;
+type Login = (body: LoginBody) => Promise<void>;
+type GoogleLogin = () => void;
+type FacebookLogin = () => void;
+type ForgotPassword = (body: ForgotPasswordBody) => Promise<void>;
+type ResetPassword = (body: ResetPasswordBody) => Promise<void>;
+type Logout = () => Promise<void>;
+
+type AuthContextProps = {
+  role: string;
+  isAuthenticated: boolean;
+  authApi: AxiosInstance;
+  refreshAccessToken: RefreshAccessToken;
+  register: Register;
+  login: Login;
+  googleLogin: GoogleLogin;
+  facebookLogin: FacebookLogin;
+  forgotPassword: ForgotPassword;
+  resetPassword: ResetPassword;
+  logout: Logout;
+};
+
+export const AuthContext = createContext<AuthContextProps>(null!);
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [accessToken, setAccessToken] = useState<string>("");
-  const [refreshToken, setRefreshToken] = useState<string>("");
+  const {
+    role,
+    isAuthenticated,
+    authApi,
+    refreshAccessToken,
+    handleSetTokens,
+    handleRemoveTokens,
+  } = useAuthApi();
+  const [showToast] = useIonToast();
 
-  function handleFetch(
-    endpoint: string,
-    /* eslint-disable  @typescript-eslint/no-explicit-any */
-    options: any = { headers: {} }
-  ): Promise<Response> {
-    const finalHeaders = Object.assign(
-      {
-        "Content-Type": "application/json",
-      },
-      options.headers
-    );
-    delete options.headers;
-
-    if (accessToken && typeof finalHeaders["Authorization"] === "undefined") {
-      finalHeaders["Authorization"] = `Bearer ${accessToken}`;
-    }
-
-    if (options.body && typeof options.body !== "string") {
-      options.body = JSON.stringify(options.body);
-    }
-
-    const finalOptions = Object.assign(
-      {
-        method: "GET",
-        credentials: "include",
-        headers: finalHeaders,
-      },
-      options
-    );
-
-    return fetch(`${host}${endpoint}`, finalOptions);
+  function handleSuccess(message: string) {
+    showToast({
+      message,
+      duration: 8 * 1000,
+      position: "bottom",
+      color: "success",
+    });
   }
 
-  function handleSetTokens(tokens: TokenResponse) {
-    const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
-      tokens;
-
-    if (newAccessToken && newRefreshToken) {
-      setAccessToken(newAccessToken);
-      setRefreshToken(newRefreshToken);
-      setIsAuthenticated(true);
-    } else {
-      throw new Error("Access tokens not provided");
-    }
+  function handleError(error: unknown) {
+    showToast({
+      message: getErrorMessage(error),
+      duration: 8 * 1000,
+      position: "bottom",
+      color: "danger",
+    });
   }
 
   async function handleAuthentication(
-    endpoint: string,
-    args: RegisterArgs | LoginArgs | GoogleLoginArgs
-  ) {
+    url: string,
+    body: RegisterBody | LoginBody | GoogleLoginBody | FacebookLoginBody
+  ): Promise<void> {
     try {
-      const res = await handleFetch(`${endpoint}`, {
-        method: "POST",
-        body: args,
-      });
-
-      if (res.status !== 200) {
-        throw new Error(`Failed POST to: ${endpoint}`);
-      }
-
-      const tokens = await res.json();
-      handleSetTokens(tokens);
-    } catch (err) {
-      console.error(err);
+      const res = await authApi.post(url, body);
+      handleSetTokens(res.data);
+    } catch (error) {
+      handleError(error);
     }
   }
 
-  async function register({
-    firstName,
-    lastName,
-    email,
-    phone,
-    password,
-  }: RegisterArgs): Promise<void> {
-    try {
-      await handleAuthentication("/auth/register", {
-        firstName,
-        lastName,
-        email,
-        phone,
-        password,
-      });
-    } catch (err) {
-      console.error(err);
-    }
+  async function register(body: RegisterBody): Promise<void> {
+    await handleAuthentication("/auth/register", body);
   }
 
-  async function login({ email, password }: LoginArgs): Promise<void> {
-    try {
-      await handleAuthentication("/auth/login", {
-        email,
-        password,
-      });
-    } catch (err) {
-      console.error(err);
-    }
+  async function login(body: LoginBody): Promise<void> {
+    await handleAuthentication("/auth/login", body);
   }
 
   const googleLogin = useGoogleLogin({
@@ -168,88 +125,59 @@ export function AuthProvider({ children }: AuthProviderProps) {
         code,
       });
     },
+    onError: handleError,
     flow: "auth-code",
   });
 
+  const facebookLogin = useFacebookLogin({
+    onSuccess: async ({ accessToken }) => {
+      await handleAuthentication("/auth/facebook", {
+        accessToken,
+      });
+    },
+    onError: handleError,
+  });
+
+  async function resetPassword(body: ResetPasswordBody): Promise<void> {
+    try {
+      const res = await authApi.patch("/auth/reset-password", body);
+      handleSuccess(res.data.message);
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  async function forgotPassword(body: ForgotPasswordBody): Promise<void> {
+    try {
+      const res = await authApi.post("/auth/forgot-password", body);
+      handleSuccess(res.data.message);
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
   async function logout(): Promise<void> {
     try {
-      const res = await handleFetch("/auth/revoke-refresh-tokens", {
-        method: "POST",
-      });
-
-      if (res.status !== 200) {
-        throw new Error("Logout failed");
-      }
-
-      setAccessToken("");
-      setRefreshToken("");
-      setIsAuthenticated(false);
-    } catch (err) {
-      console.error(err);
+      await authApi.post("/auth/logout");
+    } finally {
+      handleRemoveTokens();
     }
-  }
-
-  async function refreshAccessToken(): Promise<boolean> {
-    try {
-      const res = await handleFetch("/auth/refresh-token", {
-        method: "POST",
-        body: {
-          refreshToken,
-        },
-      });
-
-      if (res.status !== 200) {
-        return false;
-      }
-
-      const tokens = await res.json();
-      handleSetTokens(tokens);
-      return true;
-    } catch (err) {
-      console.error(err);
-    }
-
-    return false;
-  }
-
-  async function authFetch(endpoint: string, options?: any): Promise<Json> {
-    try {
-      if (!isAuthenticated || !accessToken) {
-        throw new Error("Unauthorized");
-      }
-
-      const res = await handleFetch(endpoint, options);
-
-      if (res.status === 200) {
-        const json = res.json();
-        return json;
-      }
-
-      if (res.status === 401) {
-        const refreshed = await refreshAccessToken();
-        if (refreshed) {
-          const json = await handleFetch(endpoint, options);
-          return json;
-        }
-      }
-
-      throw new Error("Unauthorized");
-    } catch (err) {
-      console.error(err);
-    }
-
-    return {};
   }
 
   return (
     <AuthContext.Provider
       value={{
+        role,
         isAuthenticated,
+        authApi,
+        refreshAccessToken,
         register,
         login,
         googleLogin,
+        facebookLogin,
+        forgotPassword,
+        resetPassword,
         logout,
-        authFetch,
       }}
     >
       {children}

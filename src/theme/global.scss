@@ -14,6 +14,10 @@
 @import "@ionic/react/css/flex-utils.css";
 @import "@ionic/react/css/display.css";
 
+/* Theme variables */
+@import "theme/variables.scss";
+@import "theme/ionic-variables.scss";
+
 html {
   -webkit-text-size-adjust: 100%;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
@@ -29,6 +33,11 @@ img {
   border-style: none;
   height: auto;
   max-width: 100%;
+}
+
+hr {
+  background-color: rgba(0, 0, 0, .13);
+  margin: 32px 0;
 }
 
 ion-menu {
