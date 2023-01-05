@@ -44,8 +44,9 @@ function UserList() {
   };
 
   const openModal = (user?: Profile) => {
-    setIsModalOpen(true);
     setUser(user);
+    setIsModalOpen(true);
+    console.log("open modal");
   };
 
   const groupUser = groupByKey(users, "role");
@@ -53,7 +54,7 @@ function UserList() {
   return (
     <>
       <IonSearchbar
-        debounce={500}
+        debounce={400}
         onIonChange={(ev) => handleChange(ev)}
       ></IonSearchbar>
 
@@ -84,7 +85,6 @@ function UserList() {
             <IonItem
               key={i}
               onClick={() => {
-                console.log("open modal");
                 openModal(user);
               }}
             >
@@ -94,16 +94,13 @@ function UserList() {
         </IonList>
       ))}
 
-      {isModalOpen && (
-        <UserListModal
-          isOpen={isModalOpen}
-          onWillDismiss={() => {
-            console.log("dissmiss modal");
-            setIsModalOpen(false);
-          }}
-          user={user}
-        />
-      )}
+      <UserListModal
+        isOpen={isModalOpen}
+        setIsOpen={() => {
+          setIsModalOpen(false);
+        }}
+        user={user}
+      />
     </>
   );
 }
