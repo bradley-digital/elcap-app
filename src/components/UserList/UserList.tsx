@@ -26,8 +26,10 @@ function UserList() {
       setFilter(data);
     }
 
-    getUserList();
-  }, []);
+    if (!isModalOpen) {
+      getUserList();
+    }
+  }, [isModalOpen]);
 
   const handleChange = (ev: Event) => {
     let query = "";

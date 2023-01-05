@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import {
   IonButtons,
   IonButton,
@@ -9,7 +9,6 @@ import {
   IonTitle,
 } from "@ionic/react";
 
-import { OverlayEventDetail } from "@ionic/core/components";
 import { Profile } from "hooks/useUser";
 import FormUserManagement from "components/FormUserManagement/FormUserManagement";
 
