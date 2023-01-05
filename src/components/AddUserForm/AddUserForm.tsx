@@ -22,14 +22,14 @@ import { closeOutline } from "ionicons/icons";
 import styles from "pages/Login/Login.module.scss";
 
 export default function AddUserForm() {
-  const { error, register } = useAuth();
+  const { register } = useAuth();
   const [errorMessage, setErrorMessage] = useState<ReactNode>(null);
 
   // Not correct
   // Will improve after Jairo's update is merged
-  useEffect(() => {
-    error && setErrorMessage(<p>A link to activate your account has been emailed to the address provided.</p>);
-  }, [error]);
+  // useEffect(() => {
+  //   error && setErrorMessage(<p>A link to activate your account has been emailed to the address provided.</p>);
+  // }, [error]);
 
   const phoneRegExp =
     /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;

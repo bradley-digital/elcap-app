@@ -9,27 +9,24 @@ import {
 } from "@ionic/react";
 import useAuth from "hooks/useAuth";
 import UserListModal from "components/UserListModal/UserListModal";
-import { Profile } from "pages/Account/Account";
-import { groupByKey } from "utils/groupBy";
+import { Profile } from "hooks/useUser";
+import { groupByKey } from "lib/groupBy";
 
 function UserList() {
-  const { authFetch } = useAuth();
+  const { authApi } = useAuth();
   const [users, setUsers] = useState<Profile[]>([]);
   const [filter, setFilter] = useState<Profile[]>([]);
   const [user, setUser] = useState<Profile>();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    async function getDate() {
-      const data = (await authFetch("/users/list")) as Profile[];
-
-      console.log(groupByKey(data, "role"));
-
+    async function getUserList() {
+      const data = (await authApi.get("/users/list")).data as Profile[];
       setUsers(data);
       setFilter(data);
     }
 
-    getDate();
+    getUserList();
   }, []);
 
   const handleChange = (ev: Event) => {
@@ -47,8 +44,8 @@ function UserList() {
   };
 
   const openModal = (user?: Profile) => {
-    setUser(user);
     setIsModalOpen(true);
+    setUser(user);
   };
 
   const groupUser = groupByKey(users, "role");
@@ -84,18 +81,29 @@ function UserList() {
             <IonLabel>{role}</IonLabel>
           </IonListHeader>
           {groupUser[role].map((user: Profile, i: number) => (
-            <IonItem key={i} onClick={() => openModal(user)}>
+            <IonItem
+              key={i}
+              onClick={() => {
+                console.log("open modal");
+                openModal(user);
+              }}
+            >
               {user.firstName} {user.lastName}
             </IonItem>
           ))}
         </IonList>
       ))}
 
-      <UserListModal
-        user={user}
-        isOpen={isModalOpen}
-        onWillDismiss={() => setIsModalOpen(false)}
-      />
+      {isModalOpen && (
+        <UserListModal
+          isOpen={isModalOpen}
+          onWillDismiss={() => {
+            console.log("dissmiss modal");
+            setIsModalOpen(false);
+          }}
+          user={user}
+        />
+      )}
     </>
   );
 }
