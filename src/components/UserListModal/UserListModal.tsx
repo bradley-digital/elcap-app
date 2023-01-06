@@ -12,27 +12,29 @@ import {
 import { Profile } from "hooks/useUser";
 import FormUserManagement from "components/FormUserManagement/FormUserManagement";
 
-function UserListModal({
-  isOpen,
-  setIsOpen,
-  user,
-}: {
+type Props = {
   isOpen: boolean;
-  setIsOpen: () => void;
+  close: () => void;
   user?: Profile;
-}) {
+};
+
+export default function UserListModal({
+  isOpen,
+  close,
+  user,
+}: Props) {
   const modal = useRef<HTMLIonModalElement>(null);
 
   return (
     <IonModal
       ref={modal}
       isOpen={isOpen}
-      // onWillDismiss={(ev) => onWillDismiss(ev)}
+      onWillDismiss={close}
     >
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton onClick={() => setIsOpen()}>Back</IonButton>
+            <IonButton onClick={close}>Back</IonButton>
           </IonButtons>
           <IonTitle>User Management</IonTitle>
         </IonToolbar>
@@ -43,5 +45,3 @@ function UserListModal({
     </IonModal>
   );
 }
-
-export default UserListModal;

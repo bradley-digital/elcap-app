@@ -26,10 +26,6 @@ import SubmitButton from "components/SubmitButton/SubmitButton";
 import useUser from "hooks/useUser";
 import FormSelect from "components/FormSelect/FormSelect";
 
-type Props = {
-  profile?: Profile;
-};
-
 const options = [
   {
     value: "PORTAL",
@@ -44,6 +40,10 @@ const options = [
     label: "ADMIN",
   },
 ];
+
+type Props = {
+  profile?: Profile;
+};
 
 export default function FormUserManagement({ profile }: Props) {
   const { mutate, createUser } = useUser();
@@ -84,7 +84,6 @@ export default function FormUserManagement({ profile }: Props) {
         } else {
           mutate(values);
         }
-        // setEdited(false);
       }}
     >
       <Form>
@@ -129,15 +128,13 @@ export default function FormUserManagement({ profile }: Props) {
             icon={pencil}
             options={options}
           />
-          {/* {edited && (
-            <> */}
+
           {isNewUser ? (
             <SubmitButton>Create New User</SubmitButton>
           ) : (
             <SubmitButton>Update</SubmitButton>
           )}
-          {/* </>
-          )} */}
+
         </IonList>
       </Form>
     </Formik>

@@ -10,20 +10,19 @@ import {
 import useAuth from "hooks/useAuth";
 import UserListModal from "components/UserListModal/UserListModal";
 import { Profile } from "hooks/useUser";
-import { groupByKey } from "lib/groupBy";
+import { groupByKey } from "lib/objectUtils";
 
 function UserList() {
   const { authApi } = useAuth();
+  const [search, setSearch] = useState<string>("");
   const [users, setUsers] = useState<Profile[]>([]);
-  const [filter, setFilter] = useState<Profile[]>([]);
   const [user, setUser] = useState<Profile>();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     async function getUserList() {
-      const data = (await authApi.get("/users/list")).data as Profile[];
+      const { data } = await authApi.get<Profile[]>("/users/list");
       setUsers(data);
-      setFilter(data);
     }
 
     if (!isModalOpen) {
@@ -31,37 +30,34 @@ function UserList() {
     }
   }, [isModalOpen]);
 
-  const handleChange = (ev: Event) => {
-    let query = "";
-    const target = ev.target as HTMLIonSearchbarElement;
-    if (target) query = target.value!.toLowerCase();
+  function handleSearch(e: Event) {
+    const target = e.target as HTMLIonSearchbarElement;
+    if (target && typeof target.value === "string") {
+      setSearch(target.value.toLowerCase());
+    }
+  }
 
-    const filterUsers = filter.filter(
-      (d) =>
-        d.firstName.toLowerCase().indexOf(query) > -1 ||
-        d.lastName.toLowerCase().indexOf(query) > -1
-    );
-
-    setUsers(filterUsers);
-  };
-
-  const openModal = (user?: Profile) => {
+  function openModal(user?: Profile) {
     setUser(user);
     setIsModalOpen(true);
-    console.log("open modal");
-  };
+  }
 
-  const groupUser = groupByKey(users, "role");
+  const filteredUsers = users.filter(
+    (user) =>
+      user.firstName.toLowerCase().indexOf(search) > -1 ||
+      user.lastName.toLowerCase().indexOf(search) > -1
+  );
+
+  const groupedUsers = groupByKey(filteredUsers, "role");
 
   return (
     <>
       <IonSearchbar
         debounce={400}
-        onIonChange={(ev) => handleChange(ev)}
+        onIonChange={handleSearch}
       ></IonSearchbar>
 
       <IonButton
-        style={{ marginLeft: 12, marginRight: 12 }}
         expand="block"
         onClick={() =>
           openModal({
@@ -75,15 +71,15 @@ function UserList() {
           })
         }
       >
-        ADD NEW USER
+        Add New User
       </IonButton>
 
-      {Object.keys(groupUser).map((role: any, i: number) => (
+      {Object.keys(groupedUsers).map((role: any, i: number) => (
         <IonList key={i}>
           <IonListHeader>
             <IonLabel>{role}</IonLabel>
           </IonListHeader>
-          {groupUser[role].map((user: Profile, i: number) => (
+          {groupedUsers[role].map((user: Profile, i: number) => (
             <IonItem
               key={i}
               onClick={() => {
@@ -98,7 +94,7 @@ function UserList() {
 
       <UserListModal
         isOpen={isModalOpen}
-        setIsOpen={() => {
+        close={() => {
           setIsModalOpen(false);
         }}
         user={user}
