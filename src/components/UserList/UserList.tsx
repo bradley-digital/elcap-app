@@ -12,7 +12,9 @@ import UserListModal from "components/UserListModal/UserListModal";
 import { Profile } from "hooks/useUser";
 import { groupByKey } from "lib/objectUtils";
 
-function UserList() {
+import "./UserList.scss";
+
+export default function UserList() {
   const { authApi } = useAuth();
   const [search, setSearch] = useState<string>("");
   const [users, setUsers] = useState<Profile[]>([]);
@@ -75,13 +77,14 @@ function UserList() {
       </IonButton>
 
       {Object.keys(groupedUsers).map((role: any, i: number) => (
-        <IonList key={i}>
+        <IonList key={i} className="UserList">
           <IonListHeader>
             <IonLabel>{role}</IonLabel>
           </IonListHeader>
           {groupedUsers[role].map((user: Profile, i: number) => (
             <IonItem
               key={i}
+              className="UserList__item"
               onClick={() => {
                 openModal(user);
               }}
@@ -102,4 +105,3 @@ function UserList() {
     </>
   );
 }
-export default UserList;

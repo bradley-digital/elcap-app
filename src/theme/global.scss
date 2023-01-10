@@ -52,3 +52,11 @@ ion-menu {
     }
   }
 }
+
+.native-input {
+  &.sc-ion-input-md {
+    &:-webkit-autofill {
+      transition: background-color 9999999s ease-out 0s;
+    }
+  }
+}
