@@ -1,4 +1,3 @@
-import { useRef } from "react";
 import {
   IonButtons,
   IonButton,
@@ -8,33 +7,28 @@ import {
   IonToolbar,
   IonTitle,
 } from "@ionic/react";
+import { useAtom } from "jotai";
+import { userAtom, isOpenAtom } from "atoms/userListModal";
 
-import { Profile } from "hooks/useUser";
 import FormUserManagement from "components/FormUserManagement/FormUserManagement";
 
-type Props = {
-  isOpen: boolean;
-  close: () => void;
-  user?: Profile;
-};
+export default function UserListModal() {
+  const [isOpen, setIsOpen] = useAtom(isOpenAtom);
+  const [user] = useAtom(userAtom);
 
-export default function UserListModal({
-  isOpen,
-  close,
-  user,
-}: Props) {
-  const modal = useRef<HTMLIonModalElement>(null);
+  function closeModal() {
+    setIsOpen(false);
+  }
 
   return (
     <IonModal
-      ref={modal}
       isOpen={isOpen}
-      onWillDismiss={close}
+      onWillDismiss={closeModal}
     >
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton onClick={close}>Cancel</IonButton>
+            <IonButton onClick={closeModal}>Cancel</IonButton>
           </IonButtons>
           <IonTitle>User management</IonTitle>
         </IonToolbar>

@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import {
-  IonButton,
   IonListHeader,
   IonLabel,
   IonItem,
   IonList,
   IonSearchbar,
 } from "@ionic/react";
+import { useAtom } from "jotai";
+import { isOpenAtom, userAtom } from "atoms/userListModal";
 import useAuth from "hooks/useAuth";
 import UserListModal from "components/UserListModal/UserListModal";
 import { Profile } from "hooks/useUser";
@@ -18,8 +19,8 @@ export default function UserList() {
   const { authApi } = useAuth();
   const [search, setSearch] = useState<string>("");
   const [users, setUsers] = useState<Profile[]>([]);
-  const [user, setUser] = useState<Profile>();
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [, setUser] = useAtom(userAtom);
+  const [isOpen, setIsOpen] = useAtom(isOpenAtom);
 
   useEffect(() => {
     async function getUserList() {
@@ -27,10 +28,10 @@ export default function UserList() {
       setUsers(data);
     }
 
-    if (!isModalOpen) {
+    if (!isOpen) {
       getUserList();
     }
-  }, [isModalOpen]);
+  }, [isOpen]);
 
   function handleSearch(e: Event) {
     const target = e.target as HTMLIonSearchbarElement;
@@ -39,9 +40,9 @@ export default function UserList() {
     }
   }
 
-  function openModal(user?: Profile) {
+  function openModal(user: Profile) {
     setUser(user);
-    setIsModalOpen(true);
+    setIsOpen(true);
   }
 
   const filteredUsers = users.filter(
@@ -59,23 +60,6 @@ export default function UserList() {
         onIonChange={handleSearch}
       ></IonSearchbar>
 
-      <IonButton
-        expand="block"
-        onClick={() =>
-          openModal({
-            userName: "",
-            firstName: "",
-            lastName: "",
-            email: "",
-            phone: "",
-            address: "",
-            createdAt: "",
-          })
-        }
-      >
-        Add New User
-      </IonButton>
-
       {Object.keys(groupedUsers).map((role: any, i: number) => (
         <IonList key={i} className="UserList">
           <IonListHeader>
@@ -85,9 +69,7 @@ export default function UserList() {
             <IonItem
               key={i}
               className="UserList__item"
-              onClick={() => {
-                openModal(user);
-              }}
+              onClick={() => openModal(user)}
             >
               {user.firstName} {user.lastName}
             </IonItem>
@@ -95,13 +77,7 @@ export default function UserList() {
         </IonList>
       ))}
 
-      <UserListModal
-        isOpen={isModalOpen}
-        close={() => {
-          setIsModalOpen(false);
-        }}
-        user={user}
-      />
+      <UserListModal />
     </>
   );
 }

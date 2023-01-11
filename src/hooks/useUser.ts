@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import useAuth from "hooks/useAuth";
 
 export type Profile = {
-  id?: string;
+  id: string;
   firstName: string;
   lastName: string;
   userName: string;
@@ -13,7 +13,7 @@ export type Profile = {
   phone: string;
   email: string;
   address: string;
-  role?: string;
+  role: string;
 };
 
 export type ProfileUpdateInput = {

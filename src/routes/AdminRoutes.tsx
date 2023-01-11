@@ -34,7 +34,7 @@ export default function PortalRoutes() {
         </IonTabButton>
         <IonTabButton tab="user" href="/user-management">
           <IonIcon icon={settings} />
-          <IonLabel>User Management</IonLabel>
+          <IonLabel>User management</IonLabel>
         </IonTabButton>
       </IonTabBar>
     </IonTabs>

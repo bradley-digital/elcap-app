@@ -1,5 +1,4 @@
 import type { Profile } from "hooks/useUser";
-import { useState } from "react";
 import * as Yup from "yup";
 
 // lib
@@ -17,8 +16,7 @@ import { lockClosed, pencil } from "ionicons/icons";
 
 // components
 import { Form, Formik } from "formik";
-import { IonList, IonListHeader } from "@ionic/react";
-import FormObserver from "components/FormObserver/FormObserver";
+import { IonList } from "@ionic/react";
 import FormInput from "components/FormInput/FormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
 
@@ -47,12 +45,6 @@ type Props = {
 
 export default function FormUserManagement({ profile }: Props) {
   const { mutate, createUser } = useUser();
-  const [edited, setEdited] = useState(false);
-
-  function handleChange() {
-    if (edited) return;
-    setEdited(true);
-  }
 
   const { firstName, lastName, userName, email, phone, role, address } =
     profile || {};
@@ -87,7 +79,6 @@ export default function FormUserManagement({ profile }: Props) {
       }}
     >
       <Form>
-        <FormObserver onChange={handleChange} />
         <IonList>
           <FormInput
             label="First Name"
