@@ -1,4 +1,8 @@
-import { useEffect, useState } from "react";
+import type { Profile } from "hooks/useUser";
+import { useState } from "react";
+import { useAtom } from "jotai";
+import hash from "object-hash";
+
 import {
   IonListHeader,
   IonLabel,
@@ -6,32 +10,20 @@ import {
   IonList,
   IonSearchbar,
 } from "@ionic/react";
-import { useAtom } from "jotai";
 import { isOpenAtom, userAtom } from "atoms/userListModal";
-import useAuth from "hooks/useAuth";
 import UserListModal from "components/UserListModal/UserListModal";
-import { Profile } from "hooks/useUser";
 import { groupByKey } from "lib/objectUtils";
 
 import "./UserList.scss";
 
-export default function UserList() {
-  const { authApi } = useAuth();
-  const [search, setSearch] = useState<string>("");
-  const [users, setUsers] = useState<Profile[]>([]);
+type Props = {
+  users: Profile[];
+};
+
+export default function UserList({ users }: Props) {
   const [, setUser] = useAtom(userAtom);
-  const [isOpen, setIsOpen] = useAtom(isOpenAtom);
-
-  useEffect(() => {
-    async function getUserList() {
-      const { data } = await authApi.get<Profile[]>("/users/list");
-      setUsers(data);
-    }
-
-    if (!isOpen) {
-      getUserList();
-    }
-  }, [isOpen]);
+  const [, setIsOpen] = useAtom(isOpenAtom);
+  const [search, setSearch] = useState<string>("");
 
   function handleSearch(e: Event) {
     const target = e.target as HTMLIonSearchbarElement;
@@ -45,11 +37,10 @@ export default function UserList() {
     setIsOpen(true);
   }
 
-  const filteredUsers = users.filter(
-    (user) =>
-      user.firstName.toLowerCase().indexOf(search) > -1 ||
-      user.lastName.toLowerCase().indexOf(search) > -1
-  );
+  const filteredUsers = users.filter((user) => {
+    const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
+    return fullName.indexOf(search.toLowerCase()) > -1;
+  });
 
   const groupedUsers = groupByKey(filteredUsers, "role");
 
@@ -60,14 +51,14 @@ export default function UserList() {
         onIonChange={handleSearch}
       ></IonSearchbar>
 
-      {Object.keys(groupedUsers).map((role: any, i: number) => (
-        <IonList key={i} className="UserList">
+      {Object.keys(groupedUsers).map((role: any) => (
+        <IonList key={hash(role)} className="UserList">
           <IonListHeader>
             <IonLabel>{role}</IonLabel>
           </IonListHeader>
-          {groupedUsers[role].map((user: Profile, i: number) => (
+          {groupedUsers[role].map((user: Profile) => (
             <IonItem
-              key={i}
+              key={hash(user)}
               className="UserList__item"
               onClick={() => openModal(user)}
             >

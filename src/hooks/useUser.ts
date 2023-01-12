@@ -8,7 +8,6 @@ export type Profile = {
   firstName: string;
   lastName: string;
   userName: string;
-  password?: string;
   createdAt: string;
   phone: string;
   email: string;
@@ -16,11 +15,12 @@ export type Profile = {
   role: string;
 };
 
-export type ProfileUpdateInput = {
+type ProfileUpdateInput = {
   firstName?: string;
   lastName?: string;
   userName?: string;
   phone?: string;
+  address?: string;
 };
 
 const queryKey = "userAccount";
@@ -47,16 +47,10 @@ export default function useUser() {
     return data;
   }
 
-  async function createUser(body: ProfileUpdateInput) {
-    const { data } = await authApi.post<Profile>("/users/create", body);
-    return data;
-  }
-
   return {
     queryKey,
     isSuccess,
     data,
     mutate,
-    createUser,
   };
 }

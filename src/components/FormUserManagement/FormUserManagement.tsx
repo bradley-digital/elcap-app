@@ -20,8 +20,12 @@ import { IonList } from "@ionic/react";
 import FormInput from "components/FormInput/FormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
 
+//atoms
+import { useAtom } from "jotai";
+import { isOpenAtom } from "atoms/userListModal";
+
 // hooks
-import useUser from "hooks/useUser";
+import useUserManagement from "hooks/useUserManagement";
 import FormSelect from "components/FormSelect/FormSelect";
 
 const options = [
@@ -40,15 +44,16 @@ const options = [
 ];
 
 type Props = {
-  profile?: Profile;
+  profile: Profile;
 };
 
 export default function FormUserManagement({ profile }: Props) {
-  const { mutate, createUser } = useUser();
+  const { create, update } = useUserManagement();
+  const [, setIsOpen] = useAtom(isOpenAtom);
 
-  const { firstName, lastName, userName, email, phone, role, address } =
-    profile || {};
+  const { id, firstName, lastName, userName, email, phone, role, address } = profile;
 
+  // This is brittle, what's a better way?
   const isNewUser = email === "";
 
   return (
@@ -72,10 +77,11 @@ export default function FormUserManagement({ profile }: Props) {
       })}
       onSubmit={(values) => {
         if (isNewUser) {
-          createUser(values);
+          create(values);
         } else {
-          mutate(values);
+          update({ id, ...values });
         }
+        setIsOpen(false);
       }}
     >
       <Form>
