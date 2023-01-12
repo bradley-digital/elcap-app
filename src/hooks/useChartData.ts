@@ -23,16 +23,19 @@ export default function useChartData(
 
       ammount = ammount + initialBalance;
 
-      if (selectedTransactionType === "C") {
-        // filter out all transaction types other than "C"
-        if (transactionType !== "C") {
-          return;
-        }
-      } else if (selectedTransactionType === "D") {
-        // filter out all transaction types other than "D"
-        if (transactionType !== "D") {
-          return;
-        }
+      const filterMap = {
+        C: "C",
+        D: "D",
+        F: "F",
+        M: "M",
+        X: "X",
+      };
+
+      if (
+        filterMap[selectedTransactionType] !== transactionType &&
+        selectedTransactionType !== "all"
+      ) {
+        return;
       }
 
       chartData.push(ammount);
