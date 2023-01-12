@@ -2,6 +2,7 @@ import { Redirect, Route, Switch } from "react-router-dom";
 
 // pages
 import Account from "pages/Account/Account";
+import Dashboard from "pages/Dashboard/Dashboard";
 
 // components
 import {
@@ -21,6 +22,7 @@ export default function PortalRoutes() {
       <IonRouterOutlet>
         <Switch>
           <Route exact path="/portal-account" component={Account} />
+          <Route exact path="/dashboard/overview" component={Dashboard} />
           {/* Fallback route */}
           <Route render={() => <Redirect to="/portal-account" />} />
         </Switch>

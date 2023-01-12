@@ -8,7 +8,7 @@ import useSessionTimeout from "hooks/useSessionTimeout";
 import { useIonRouter } from "@ionic/react";
 import AdminRoutes from "./AdminRoutes";
 import LoginRoutes from "./LoginRoutes";
-import PaymentsRoutes from "./PaymentsRoutes";
+// import PaymentsRoutes from "./PaymentsRoutes";
 import PortalRoutes from "./PortalRoutes";
 
 export default function AuthRouter() {
@@ -31,11 +31,15 @@ export default function AuthRouter() {
     return <AdminRoutes />;
   }
 
-  if (isAuthenticated && role === "PAYMENTS") {
-    return <PaymentsRoutes />;
-  }
+  // if (isAuthenticated && role === "PAYMENTS") {
+  //   return <PaymentsRoutes />;
+  // }
 
-  if (isAuthenticated && role === "PORTAL") {
+  // if (isAuthenticated && role === "PORTAL") {
+  //   return <PortalRoutes />;
+  // }
+
+  if (isAuthenticated && role === "PAYMENTS") {
     return <PortalRoutes />;
   }
 
