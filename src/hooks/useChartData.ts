@@ -10,7 +10,7 @@ export default function useChartData(
 
   const selectedYearData = tempData.filter(({ postingDate }) => {
     const date = new Date(postingDate);
-    return date.getFullYear() === year;
+    return year === 0 ? date.getFullYear() : date.getFullYear() === year;
   });
 
   selectedYearData.forEach(

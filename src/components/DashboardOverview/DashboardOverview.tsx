@@ -5,7 +5,6 @@ import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, registerables } from "chart.js/auto";
 import {
   IonItem,
-  IonLabel,
   IonList,
   IonSelect,
   IonSelectOption,
@@ -48,6 +47,7 @@ export default function DashboardOverview() {
                   placeholder="Select Year"
                   onIonChange={(e) => setSelectedYear(e.detail.value)}
                 >
+                  <IonSelectOption value={0}>All</IonSelectOption>
                   <IonSelectOption value={2021}>2021</IonSelectOption>
                   <IonSelectOption value={2022}>2022</IonSelectOption>
                 </IonSelect>
