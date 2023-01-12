@@ -24,7 +24,7 @@ ChartJS.register(...registerables);
 export default function DashboardOverview() {
   const [isChartVisible, setIsChartVisible] = useState(false);
 
-  const [selectedYear, setSelectedYear] = useState(2021);
+  const [selectedYear, setSelectedYear] = useState(0);
   const [selectedTransactionType, setSelectedTransactionType] = useState("all");
   const { data, options } = useChartData(selectedYear, selectedTransactionType);
 

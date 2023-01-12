@@ -43,8 +43,13 @@ export default function useChartData(
       const date = new Date(postingDate);
       const options: any = { month: "short", day: "numeric", year: "numeric" };
       const shortDate = date.toLocaleDateString("en-US", options);
+
       chartLabels.push(shortDate);
     }
+  );
+
+  chartLabels.sort(
+    (a, b) => new Date(a).getFullYear() - new Date(b).getFullYear()
   );
 
   const data = {
