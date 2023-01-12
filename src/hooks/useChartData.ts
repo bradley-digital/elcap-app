@@ -1,6 +1,9 @@
-import tempData from "pages/Dashboard/tempData";
+import tempData from "components/DashboardOverview/tempData";
 
-export default function useChartData(year: number) {
+export default function useChartData(
+  year: number,
+  selectedTransactionType: string
+) {
   const initialBalance = 1000000;
   const chartData: Array<number> = [];
   const chartLabels: Array<string> = [];
@@ -19,6 +22,18 @@ export default function useChartData(year: number) {
       }
 
       ammount = ammount + initialBalance;
+
+      if (selectedTransactionType === "C") {
+        // filter out all transaction types other than "C"
+        if (transactionType !== "C") {
+          return;
+        }
+      } else if (selectedTransactionType === "D") {
+        // filter out all transaction types other than "D"
+        if (transactionType !== "D") {
+          return;
+        }
+      }
 
       chartData.push(ammount);
 
