@@ -11,6 +11,7 @@ import {
   IonCol,
   IonGrid,
   IonRow,
+  IonSpinner,
 } from "@ionic/react";
 
 // hooks
@@ -86,8 +87,10 @@ export default function DashboardOverview() {
             size-lg="8"
             className="DashboardOverview__content"
           >
-            {isChartVisible && (
+            {isChartVisible ? (
               <Line data={data} options={options} height={500} />
+            ) : (
+              <IonSpinner color="success" />
             )}
           </IonCol>
         </IonRow>

@@ -4,7 +4,7 @@ export default function useChartData(
   year: number,
   selectedTransactionType: string
 ) {
-  const initialBalance = 1000000;
+  const initialBalance = 10000000;
   const chartData: Array<number> = [];
   const chartLabels: Array<string> = [];
   let transactionsYear: string | number;
@@ -87,8 +87,10 @@ export default function useChartData(
     labels: chartLabels,
     datasets: [
       {
-        label: "Transactions",
+        label: "Balance",
         data: chartData,
+        borderColor: "green",
+        backgroundColor: "rgba(102, 204, 153, 0.5)",
         borderWidth: 1,
       },
     ],
@@ -103,7 +105,7 @@ export default function useChartData(
       },
       title: {
         display: true,
-        text: `${transactionsYear} transactions by week`,
+        text: `${transactionsYear} transactions`,
       },
     },
     tooltips: {
