@@ -13,6 +13,22 @@ export default function useChartData(
     return year === 0 ? date.getFullYear() : date.getFullYear() === year;
   });
 
+  const transactionYears = new Set(
+    tempData.map(({ postingDate }) => new Date(postingDate).getFullYear())
+  );
+
+  const transactionTypes = new Set(
+    tempData.map(({ transactionType }) => transactionType)
+  );
+
+  const transactionTypeMap = {
+    C: "Credit",
+    D: "Debit",
+    F: "Float",
+    M: "Miscellaneous Service Charge",
+    X: "Reversed",
+  };
+
   selectedYearData.forEach(
     ({ transactionAmount, transactionType, postingDate }) => {
       let ammount = Number(transactionAmount);
@@ -94,5 +110,11 @@ export default function useChartData(
     },
   };
 
-  return { data, options };
+  return {
+    data,
+    options,
+    transactionYears,
+    transactionTypes,
+    transactionTypeMap,
+  };
 }

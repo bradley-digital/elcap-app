@@ -26,7 +26,13 @@ export default function DashboardOverview() {
 
   const [selectedYear, setSelectedYear] = useState(0);
   const [selectedTransactionType, setSelectedTransactionType] = useState("all");
-  const { data, options } = useChartData(selectedYear, selectedTransactionType);
+  const {
+    data,
+    options,
+    transactionYears,
+    transactionTypes,
+    transactionTypeMap,
+  } = useChartData(selectedYear, selectedTransactionType);
 
   setTimeout(() => {
     setIsChartVisible(true);
@@ -48,8 +54,11 @@ export default function DashboardOverview() {
                   onIonChange={(e) => setSelectedYear(e.detail.value)}
                 >
                   <IonSelectOption value={0}>All</IonSelectOption>
-                  <IonSelectOption value={2021}>2021</IonSelectOption>
-                  <IonSelectOption value={2022}>2022</IonSelectOption>
+                  {Array.from(transactionYears).map((year) => (
+                    <IonSelectOption key={year} value={year}>
+                      {year}
+                    </IonSelectOption>
+                  ))}
                 </IonSelect>
               </IonItem>
 
@@ -61,8 +70,14 @@ export default function DashboardOverview() {
                   }
                 >
                   <IonSelectOption value="all">All</IonSelectOption>
-                  <IonSelectOption value="C">Credit</IonSelectOption>
-                  <IonSelectOption value="D">Debit</IonSelectOption>
+                  {Array.from(transactionTypes).map((transactionType) => (
+                    <IonSelectOption
+                      key={transactionType}
+                      value={transactionType}
+                    >
+                      {transactionTypeMap[transactionType]}
+                    </IonSelectOption>
+                  ))}
                 </IonSelect>
               </IonItem>
             </IonList>
