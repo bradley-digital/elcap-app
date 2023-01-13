@@ -23,8 +23,7 @@ ChartJS.register(...registerables);
 
 export default function DashboardOverview() {
   const [isChartVisible, setIsChartVisible] = useState(false);
-
-  const [selectedYear, setSelectedYear] = useState(0);
+  const [selectedYear, setSelectedYear] = useState(1);
   const [selectedTransactionType, setSelectedTransactionType] = useState("all");
   const {
     data,
@@ -83,8 +82,8 @@ export default function DashboardOverview() {
             </IonList>
           </IonCol>
           <IonCol
-            size-md="6"
-            size-lg="4"
+            size-md="8"
+            size-lg="8"
             className="DashboardOverview__content"
           >
             {isChartVisible && (

@@ -7,11 +7,11 @@ export default function useChartData(
   const initialBalance = 1000000;
   const chartData: Array<number> = [];
   const chartLabels: Array<string> = [];
+  let transactionsYear: string | number;
 
-  const selectedYearData = tempData.filter(({ postingDate }) => {
-    const date = new Date(postingDate);
-    return year === 0 ? date.getFullYear() : date.getFullYear() === year;
-  });
+  const lastTransactionYear = Math.max(
+    ...tempData.map(({ postingDate }) => new Date(postingDate).getFullYear())
+  );
 
   const transactionYears = new Set(
     tempData.map(({ postingDate }) => new Date(postingDate).getFullYear())
@@ -20,6 +20,21 @@ export default function useChartData(
   const transactionTypes = new Set(
     tempData.map(({ transactionType }) => transactionType)
   );
+
+  const selectedYearData = tempData.filter(({ postingDate }) => {
+    const date = new Date(postingDate);
+
+    if (year === 0) {
+      transactionsYear = "All";
+      return date.getFullYear();
+    } else if (year === 1) {
+      transactionsYear = lastTransactionYear;
+      return date.getFullYear() === lastTransactionYear;
+    } else {
+      transactionsYear = year;
+      return date.getFullYear() === year;
+    }
+  });
 
   const transactionTypeMap = {
     C: "Credit",
@@ -88,7 +103,7 @@ export default function useChartData(
       },
       title: {
         display: true,
-        text: `${year} balance by week`,
+        text: `${transactionsYear} transactions by week`,
       },
     },
     tooltips: {
