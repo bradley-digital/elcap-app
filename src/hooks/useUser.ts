@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import useAuth from "hooks/useAuth";
 
 export type Profile = {
+  id: string;
   firstName: string;
   lastName: string;
   userName: string;
@@ -11,13 +12,15 @@ export type Profile = {
   phone: string;
   email: string;
   address: string;
+  role: string;
 };
 
-export type ProfileUpdateInput = {
+type ProfileUpdateInput = {
   firstName?: string;
   lastName?: string;
   userName?: string;
   phone?: string;
+  address?: string;
 };
 
 const queryKey = "userAccount";
@@ -31,7 +34,7 @@ export default function useUser() {
   const { mutate } = useMutation(updateUser, {
     onSuccess: (data) => {
       queryClient.setQueryData(queryKey, data);
-    }
+    },
   });
 
   async function getUser() {

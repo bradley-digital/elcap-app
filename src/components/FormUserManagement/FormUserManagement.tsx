@@ -1,5 +1,4 @@
 import type { Profile } from "hooks/useUser";
-import { useState } from "react";
 import * as Yup from "yup";
 
 // lib
@@ -9,6 +8,7 @@ import {
   userNameValidation,
   emailValidation,
   phoneValidation,
+  addressValidation,
 } from "lib/formValidation";
 
 // icons
@@ -16,82 +16,120 @@ import { lockClosed, pencil } from "ionicons/icons";
 
 // components
 import { Form, Formik } from "formik";
-import { IonList, IonListHeader } from "@ionic/react";
-import FormObserver from "components/FormObserver/FormObserver";
+import { IonList } from "@ionic/react";
 import FormInput from "components/FormInput/FormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
 
+//atoms
+import { useAtom } from "jotai";
+import { isOpenAtom } from "atoms/userListModal";
+
 // hooks
-import useUser from "hooks/useUser";
+import useUserManagement from "hooks/useUserManagement";
+import FormSelect from "components/FormSelect/FormSelect";
+
+const options = [
+  {
+    value: "PORTAL",
+    label: "PORTAL",
+  },
+  {
+    value: "PAYMENTS",
+    label: "PAYMENTS",
+  },
+  {
+    value: "ADMIN",
+    label: "ADMIN",
+  },
+];
 
 type Props = {
   profile: Profile;
 };
 
-export default function FormAccount({ profile }: Props) {
-  const { mutate } = useUser();
-  const [edited, setEdited] = useState(false);
+export default function FormUserManagement({ profile }: Props) {
+  const { create, update } = useUserManagement();
+  const [, setIsOpen] = useAtom(isOpenAtom);
 
-  function handleChange() {
-    if (edited) return;
-    setEdited(true);
-  }
+  const { id, firstName, lastName, userName, email, phone, role, address } = profile;
 
-  const { firstName, lastName, userName, email, phone } = profile;
+  // This is brittle, what's a better way?
+  const isNewUser = email === "";
 
   return (
     <Formik
-      enableReinitialize={true}
       initialValues={{
         firstName,
         lastName,
         userName,
+        address,
         email,
+        role,
         phone,
       }}
       validationSchema={Yup.object({
         firstName: firstNameValidation,
         lastName: lastNameValidation,
         userName: userNameValidation,
+        address: addressValidation,
         email: emailValidation,
         phone: phoneValidation,
       })}
       onSubmit={(values) => {
-        mutate(values);
-        setEdited(false);
+        if (isNewUser) {
+          create(values);
+        } else {
+          update({ id, ...values });
+        }
+        setIsOpen(false);
       }}
     >
       <Form>
-        <FormObserver onChange={handleChange} />
         <IonList>
-          <IonListHeader>Account information</IonListHeader>
           <FormInput
             label="First Name"
             name="firstName"
             type="text"
             icon={pencil}
           />
+
           <FormInput
             label="Last Name"
             name="lastName"
             type="text"
             icon={pencil}
           />
+
           <FormInput
             label="User Name"
             name="userName"
             type="text"
             icon={pencil}
           />
+
+          <FormInput label="Address" name="address" type="text" icon={pencil} />
           <FormInput label="Phone" name="phone" type="text" icon={pencil} />
           <FormInput
             label="Email"
             name="email"
             type="email"
-            icon={lockClosed}
-            readonly
+            icon={isNewUser ? pencil : lockClosed}
+            readonly={isNewUser ? false : true}
           />
-          {edited && <SubmitButton className="w-100">Update</SubmitButton>}
+
+          <FormSelect
+            label="Role"
+            name="role"
+            icon={pencil}
+            options={options}
+          />
+
+          {isNewUser ? (
+            <SubmitButton>Create New User</SubmitButton>
+          ) : (
+            <SubmitButton>Update</SubmitButton>
+          )}
+
         </IonList>
       </Form>
     </Formik>
