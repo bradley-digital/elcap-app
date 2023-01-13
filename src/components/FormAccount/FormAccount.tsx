@@ -41,6 +41,7 @@ export default function FormAccount({ profile }: Props) {
 
   return (
     <Formik
+      enableReinitialize={true}
       initialValues={{
         firstName,
         lastName,
@@ -90,12 +91,7 @@ export default function FormAccount({ profile }: Props) {
             icon={lockClosed}
             readonly
           />
-          {edited && (
-            <>
-              <SubmitButton>Update</SubmitButton>
-              <hr />
-            </>
-          )}
+          {edited && <SubmitButton className="w-100">Update</SubmitButton>}
         </IonList>
       </Form>
     </Formik>

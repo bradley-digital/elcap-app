@@ -1,7 +1,6 @@
 import type { Profile } from "hooks/useUser";
 import { useState } from "react";
 import { useAtom } from "jotai";
-import hash from "object-hash";
 
 import {
   IonListHeader,
@@ -43,6 +42,7 @@ export default function UserList({ users }: Props) {
   });
 
   const groupedUsers = groupByKey(filteredUsers, "role");
+  const sortedKeys = Object.keys(groupedUsers).sort();
 
   return (
     <>
@@ -51,22 +51,24 @@ export default function UserList({ users }: Props) {
         onIonChange={handleSearch}
       ></IonSearchbar>
 
-      {Object.keys(groupedUsers).map((role: any) => (
-        <IonList key={hash(role)} className="UserList">
-          <IonListHeader>
-            <IonLabel>{role}</IonLabel>
-          </IonListHeader>
-          {groupedUsers[role].map((user: Profile) => (
-            <IonItem
-              key={hash(user)}
-              className="UserList__item"
-              onClick={() => openModal(user)}
-            >
-              {user.firstName} {user.lastName}
-            </IonItem>
-          ))}
-        </IonList>
-      ))}
+      <div className="UserList">
+        {sortedKeys.map((role: any) => (
+          <IonList key={role} className="UserList__sublist">
+            <IonListHeader>
+              <IonLabel>{role}</IonLabel>
+            </IonListHeader>
+            {groupedUsers[role].map((user: Profile) => (
+              <IonItem
+                key={user.id}
+                className="UserList__item"
+                onClick={() => openModal(user)}
+              >
+                {user.firstName} {user.lastName}
+              </IonItem>
+            ))}
+          </IonList>
+        ))}
+      </div>
 
       <UserListModal />
     </>
