@@ -9,12 +9,12 @@ export default function useChartData(
   const chartLabels: Array<string> = [];
   let transactionsYear: string | number;
 
-  const lastTransactionYear = Math.max(
-    ...tempData.map(({ postingDate }) => new Date(postingDate).getFullYear())
-  );
-
   const transactionYears = new Set(
     tempData.map(({ postingDate }) => new Date(postingDate).getFullYear())
+  );
+
+  const lastTransactionYear = Math.max(
+    ...tempData.map(({ postingDate }) => new Date(postingDate).getFullYear())
   );
 
   const transactionTypes = new Set(
