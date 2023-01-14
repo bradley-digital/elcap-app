@@ -7,7 +7,10 @@ import {
   lastNameValidation,
   emailValidation,
   phoneValidation,
-  passwordValidation,
+  addressLine1Validation,
+  addressLine2Validation,
+  countryValidation,
+  stateValidation,
 } from "lib/formValidation";
 
 // hooks
@@ -27,14 +30,20 @@ export default function FormRegister() {
         lastName: "",
         email: "",
         phone: "",
-        password: "",
+        addressLine1: "",
+        addressLine2: "",
+        country: "",
+        state: "",
       }}
       validationSchema={Yup.object({
         firstName: firstNameValidation,
         lastName: lastNameValidation,
         email: emailValidation,
         phone: phoneValidation,
-        password: passwordValidation,
+        addressLine1: addressLine1Validation,
+        addressLine2: addressLine2Validation,
+        country: countryValidation,
+        state: stateValidation,
       })}
       onSubmit={async (values, actions) => {
         actions.resetForm();
@@ -48,25 +57,51 @@ export default function FormRegister() {
           type="text"
           placeholder="First Name"
         />
+
         <FormInput
           label="Last Name"
           name="lastName"
           type="text"
           placeholder="Last Name"
         />
+
         <FormInput
           label="Email"
           name="email"
           type="email"
           placeholder="Email"
         />
+
         <FormInput label="Phone" name="phone" type="text" placeholder="Phone" />
+
         <FormInput
-          label="Password"
-          name="password"
-          type="password"
-          placeholder="Password"
+          label="Address line 1"
+          name="addressLine1"
+          type="text"
+          placeholder="Address line 1"
         />
+
+        <FormInput
+          label="Address line 2"
+          name="addressLine2"
+          type="text"
+          placeholder="Address line 2"
+        />
+
+        <FormInput
+          label="Country"
+          name="country"
+          type="text"
+          placeholder="Country"
+        />
+
+        <FormInput
+          label="State"
+          name="state"
+          type="email"
+          placeholder="Email"
+        />
+
         <SubmitButton>Register</SubmitButton>
       </Form>
     </Formik>

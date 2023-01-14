@@ -6,9 +6,12 @@ import * as Yup from "yup";
 import {
   firstNameValidation,
   lastNameValidation,
-  userNameValidation,
   emailValidation,
   phoneValidation,
+  addressLine1Validation,
+  addressLine2Validation,
+  countryValidation,
+  stateValidation,
 } from "lib/formValidation";
 
 // icons
@@ -37,7 +40,16 @@ export default function FormAccount({ profile }: Props) {
     setEdited(true);
   }
 
-  const { firstName, lastName, userName, email, phone } = profile;
+  const {
+    firstName,
+    lastName,
+    email,
+    phone,
+    addressLine1,
+    addressLine2,
+    country,
+    state,
+  } = profile;
 
   return (
     <Formik
@@ -45,16 +57,22 @@ export default function FormAccount({ profile }: Props) {
       initialValues={{
         firstName,
         lastName,
-        userName,
         email,
         phone,
+        addressLine1,
+        addressLine2,
+        country,
+        state,
       }}
       validationSchema={Yup.object({
         firstName: firstNameValidation,
         lastName: lastNameValidation,
-        userName: userNameValidation,
         email: emailValidation,
         phone: phoneValidation,
+        addressLine1: addressLine1Validation,
+        addressLine2: addressLine2Validation,
+        country: countryValidation,
+        state: stateValidation,
       })}
       onSubmit={(values) => {
         mutate(values);
@@ -65,25 +83,21 @@ export default function FormAccount({ profile }: Props) {
         <FormObserver onChange={handleChange} />
         <IonList>
           <IonListHeader>Account information</IonListHeader>
+
           <FormInput
             label="First Name"
             name="firstName"
             type="text"
             icon={pencil}
           />
+
           <FormInput
             label="Last Name"
             name="lastName"
             type="text"
             icon={pencil}
           />
-          <FormInput
-            label="User Name"
-            name="userName"
-            type="text"
-            icon={pencil}
-          />
-          <FormInput label="Phone" name="phone" type="text" icon={pencil} />
+
           <FormInput
             label="Email"
             name="email"
@@ -91,6 +105,37 @@ export default function FormAccount({ profile }: Props) {
             icon={lockClosed}
             readonly
           />
+
+          <FormInput label="Phone" name="phone" type="text" icon={pencil} />
+
+          <FormInput
+            label="Address line 1"
+            name="addressLine1"
+            type="text"
+            icon={pencil}
+          />
+
+          <FormInput
+            label="Address line 2"
+            name="addressLine2"
+            type="text"
+            icon={pencil}
+          />
+
+          <FormInput
+            label="Country"
+            name="country"
+            type="text"
+            icon={pencil}
+          />
+
+          <FormInput
+            label="State"
+            name="state"
+            type="text"
+            icon={pencil}
+          />
+
           {edited && <SubmitButton className="w-100">Update</SubmitButton>}
         </IonList>
       </Form>

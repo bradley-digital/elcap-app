@@ -16,7 +16,6 @@ type RegisterBody = {
   lastName: string;
   email: string;
   phone: string;
-  password: string;
 };
 
 type LoginBody = {
@@ -111,10 +110,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
-  async function register(body: RegisterBody): Promise<void> {
-    await handleAuthentication("/auth/register", body);
-  }
-
   async function login(body: LoginBody): Promise<void> {
     await handleAuthentication("/auth/login", body);
   }
@@ -137,6 +132,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
     },
     onError: handleError,
   });
+
+  async function register(body: RegisterBody): Promise<void> {
+    try {
+      const res = await authApi.post("/auth/register", body);
+      handleSuccess(res.data.message);
+    } catch (error) {
+      handleError(error);
+    }
+  }
 
   async function resetPassword(body: ResetPasswordBody): Promise<void> {
     try {
