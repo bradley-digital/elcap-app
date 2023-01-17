@@ -1,19 +1,66 @@
-import tempData from "components/DashboardOverview/tempData";
+// import tempData from "components/DashboardOverview/tempData";
 
 export default function useChartData(
   year: number,
   selectedTransactionType: string
 ) {
-  const initialBalance = 10000000;
-  const chartData: Array<number> = [];
+  let initialBalance = 0;
+  // const currentBalance = 1000000.86;
+  const currentBalance = 15;
+  const transactionsData: Array<number> = [];
   const chartLabels: Array<string> = [];
   let transactionsYear: string | number;
+
+  const tempData = [
+    { transactionAmount: 1, transactionType: "C", postingDate: "03/01/2021" },
+    { transactionAmount: 2, transactionType: "D", postingDate: "03/02/2021" },
+    { transactionAmount: 1, transactionType: "C", postingDate: "03/03/2021" },
+    { transactionAmount: 5, transactionType: "D", postingDate: "03/04/2022" },
+    { transactionAmount: 5, transactionType: "C", postingDate: "03/05/2022" },
+    { transactionAmount: 5, transactionType: "D", postingDate: "03/06/2022" },
+  ];
+
+  tempData.sort(
+    (a, b) =>
+      new Date(a.postingDate).getTime() - new Date(b.postingDate).getTime()
+  );
+
+  function getInitialAmount(tempData, currentBalance) {
+    tempData.forEach(({ transactionAmount, transactionType }) => {
+      switch (transactionType) {
+        case "C":
+          currentBalance += Number(transactionAmount);
+          break;
+        case "D":
+          currentBalance -= Number(transactionAmount);
+          break;
+        case "F":
+          currentBalance += Number(transactionAmount); // validate
+          break;
+        case "M":
+          currentBalance -= Number(transactionAmount);
+          break;
+        case "X":
+          currentBalance += Number(transactionAmount); // validate
+          break;
+        default:
+          break;
+      }
+    });
+    return currentBalance;
+  }
+
+  initialBalance = getInitialAmount(tempData, currentBalance);
 
   const transactionYears = new Set(
     tempData.map(({ postingDate }) => new Date(postingDate).getFullYear())
   );
 
   const lastTransactionYear = Math.max(
+    ...tempData.map(({ postingDate }) => new Date(postingDate).getFullYear())
+  );
+
+  const firstTransactionYear = Math.min(
     ...tempData.map(({ postingDate }) => new Date(postingDate).getFullYear())
   );
 
@@ -46,13 +93,11 @@ export default function useChartData(
 
   selectedYearData.forEach(
     ({ transactionAmount, transactionType, postingDate }) => {
-      let ammount = Number(transactionAmount);
+      let amount = Number(transactionAmount);
 
       if (transactionType === "C") {
-        ammount = ammount * -1;
+        amount = amount * -1;
       }
-
-      ammount = ammount + initialBalance;
 
       const filterMap = {
         C: "C",
@@ -69,7 +114,7 @@ export default function useChartData(
         return;
       }
 
-      chartData.push(ammount);
+      transactionsData.push(amount);
 
       const date = new Date(postingDate);
       const options: any = { month: "short", day: "numeric", year: "numeric" };
@@ -79,16 +124,43 @@ export default function useChartData(
     }
   );
 
+  const balanceData = transactionsData.reduce(
+    (acc, val) => {
+      const lastVal = acc[acc.length - 1];
+      const newVal = lastVal + val;
+      acc.push(newVal);
+      return acc;
+    },
+    [initialBalance]
+  );
+
+  const yearsAfterFirstYear = Array.from(transactionYears).filter(
+    (year) => year > firstTransactionYear
+  );
+
+  if (
+    yearsAfterFirstYear.includes(year) ||
+    year === 0 ||
+    year === firstTransactionYear
+  ) {
+    balanceData.shift();
+  }
+
   chartLabels.sort(
     (a, b) => new Date(a).getFullYear() - new Date(b).getFullYear()
   );
+
+  // console.log(balanceData);
+  // console.log(transactionsData);
+  // console.log(chartLabels);
 
   const data = {
     labels: chartLabels,
     datasets: [
       {
         label: "Balance",
-        data: chartData,
+        data: balanceData,
+        // data: transactionsData,
         borderColor: "green",
         backgroundColor: "rgba(102, 204, 153, 0.5)",
         borderWidth: 1,
@@ -135,3 +207,5 @@ export default function useChartData(
     transactionTypeMap,
   };
 }
+
+// useChartData(0, "all");
