@@ -60,10 +60,6 @@ export default function useChartData(
     ...tempData.map(({ postingDate }) => new Date(postingDate).getFullYear())
   );
 
-  const firstTransactionYear = Math.min(
-    ...tempData.map(({ postingDate }) => new Date(postingDate).getFullYear())
-  );
-
   const transactionTypes = new Set(
     tempData.map(({ transactionType }) => transactionType)
   );
@@ -133,18 +129,7 @@ export default function useChartData(
     },
     [initialBalance]
   );
-
-  const yearsAfterFirstYear = Array.from(transactionYears).filter(
-    (year) => year > firstTransactionYear
-  );
-
-  if (
-    yearsAfterFirstYear.includes(year) ||
-    year === 0 ||
-    year === firstTransactionYear
-  ) {
-    balanceData.shift();
-  }
+  balanceData.shift();
 
   chartLabels.sort(
     (a, b) => new Date(a).getFullYear() - new Date(b).getFullYear()
