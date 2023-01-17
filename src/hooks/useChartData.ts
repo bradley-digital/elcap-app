@@ -1,24 +1,25 @@
-// import tempData from "components/DashboardOverview/tempData";
+import tempData from "components/DashboardOverview/tempData";
 
 export default function useChartData(
   year: number,
   selectedTransactionType: string
 ) {
   let initialBalance = 0;
-  // const currentBalance = 1000000.86;
-  const currentBalance = 15;
+  let transactionsYear: string | number;
+  const currentBalance = 1000000.86;
+  // const currentBalance = 15;
   const transactionsData: Array<number> = [];
   const chartLabels: Array<string> = [];
-  let transactionsYear: string | number;
+  const label = selectedTransactionType === "all" ? "Balance" : "Transactions";
 
-  const tempData = [
-    { transactionAmount: 1, transactionType: "C", postingDate: "03/01/2021" },
-    { transactionAmount: 2, transactionType: "D", postingDate: "03/02/2021" },
-    { transactionAmount: 1, transactionType: "C", postingDate: "03/03/2021" },
-    { transactionAmount: 5, transactionType: "D", postingDate: "03/04/2022" },
-    { transactionAmount: 5, transactionType: "C", postingDate: "03/05/2022" },
-    { transactionAmount: 5, transactionType: "D", postingDate: "03/06/2022" },
-  ];
+  // const tempData = [
+  //   { transactionAmount: 1, transactionType: "C", postingDate: "03/01/2021" },
+  //   { transactionAmount: 2, transactionType: "D", postingDate: "03/02/2021" },
+  //   { transactionAmount: 1, transactionType: "C", postingDate: "03/03/2021" },
+  //   { transactionAmount: 5, transactionType: "D", postingDate: "03/04/2022" },
+  //   { transactionAmount: 5, transactionType: "C", postingDate: "03/05/2022" },
+  //   { transactionAmount: 5, transactionType: "D", postingDate: "03/06/2022" },
+  // ];
 
   tempData.sort(
     (a, b) =>
@@ -68,7 +69,7 @@ export default function useChartData(
     const date = new Date(postingDate);
 
     if (year === 0) {
-      transactionsYear = "All";
+      transactionsYear = "";
       return date.getFullYear();
     } else if (year === 1) {
       transactionsYear = lastTransactionYear;
@@ -135,17 +136,12 @@ export default function useChartData(
     (a, b) => new Date(a).getFullYear() - new Date(b).getFullYear()
   );
 
-  // console.log(balanceData);
-  // console.log(transactionsData);
-  // console.log(chartLabels);
-
   const data = {
     labels: chartLabels,
     datasets: [
       {
-        label: "Balance",
-        data: balanceData,
-        // data: transactionsData,
+        label: `${label}`,
+        data: transactionsData,
         borderColor: "green",
         backgroundColor: "rgba(102, 204, 153, 0.5)",
         borderWidth: 1,
@@ -162,7 +158,7 @@ export default function useChartData(
       },
       title: {
         display: true,
-        text: `${transactionsYear} transactions`,
+        text: `${transactionsYear} ${label}`,
       },
     },
     tooltips: {
@@ -178,7 +174,7 @@ export default function useChartData(
       y: {
         title: {
           display: true,
-          text: "Balance",
+          text: `${label}`,
         },
       },
     },
