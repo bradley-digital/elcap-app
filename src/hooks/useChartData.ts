@@ -1,60 +1,67 @@
-import tempData from "components/DashboardOverview/tempData";
+// import tempData from "components/DashboardOverview/tempData";
 
 export default function useChartData(
   year: number,
   selectedTransactionType: string
 ) {
   let initialBalance = 0;
+  // const currentBalance = 1000000.86;
+  const currentBalance = 15;
   let transactionsYear: string | number;
-  const currentBalance = 1000000.86;
-  // const currentBalance = 15;
   const transactionsData: Array<number> = [];
   const chartLabels: Array<string> = [];
   const label = selectedTransactionType === "all" ? "Balance" : "Transactions";
 
-  // const tempData = [
-  //   { transactionAmount: 1, transactionType: "C", postingDate: "03/01/2021" },
-  //   { transactionAmount: 2, transactionType: "D", postingDate: "03/02/2021" },
-  //   { transactionAmount: 1, transactionType: "C", postingDate: "03/03/2021" },
-  //   { transactionAmount: 5, transactionType: "D", postingDate: "03/04/2022" },
-  //   { transactionAmount: 5, transactionType: "C", postingDate: "03/05/2022" },
-  //   { transactionAmount: 5, transactionType: "D", postingDate: "03/06/2022" },
-  // ];
+  const tempData = [
+    { transactionAmount: 2, transactionType: "C", postingDate: "03/01/2020" },
+    { transactionAmount: 10, transactionType: "D", postingDate: "03/02/2020" },
+    { transactionAmount: 3, transactionType: "C", postingDate: "03/03/2020" },
+
+    { transactionAmount: 2, transactionType: "D", postingDate: "03/04/2021" },
+    { transactionAmount: 3, transactionType: "C", postingDate: "03/05/2021" },
+    { transactionAmount: 4, transactionType: "D", postingDate: "03/06/2021" },
+
+    { transactionAmount: 2, transactionType: "D", postingDate: "03/04/2022" },
+    { transactionAmount: 10, transactionType: "C", postingDate: "03/05/2022" },
+    { transactionAmount: 7, transactionType: "D", postingDate: "03/06/2022" },
+  ];
 
   tempData.sort(
     (a, b) =>
       new Date(a.postingDate).getTime() - new Date(b.postingDate).getTime()
   );
 
-  function getInitialAmount(tempData, currentBalance) {
-    tempData.forEach(({ transactionAmount, transactionType }) => {
+  function getInitialAmount(data, selectedYearBalance) {
+    data.forEach(({ transactionAmount, transactionType }) => {
       switch (transactionType) {
         case "C":
-          currentBalance += Number(transactionAmount);
+          selectedYearBalance += Number(transactionAmount);
           break;
         case "D":
-          currentBalance -= Number(transactionAmount);
+          selectedYearBalance -= Number(transactionAmount);
           break;
         case "F":
-          currentBalance += Number(transactionAmount); // validate
+          selectedYearBalance += Number(transactionAmount); // validate
           break;
         case "M":
-          currentBalance -= Number(transactionAmount);
+          selectedYearBalance -= Number(transactionAmount);
           break;
         case "X":
-          currentBalance += Number(transactionAmount); // validate
+          selectedYearBalance += Number(transactionAmount); // validate
           break;
         default:
           break;
       }
     });
-    return currentBalance;
+    return selectedYearBalance;
   }
-
-  initialBalance = getInitialAmount(tempData, currentBalance);
 
   const transactionYears = new Set(
     tempData.map(({ postingDate }) => new Date(postingDate).getFullYear())
+  );
+
+  const firstTransactionYear = Math.min(
+    ...tempData.map(({ postingDate }) => new Date(postingDate).getFullYear())
   );
 
   const lastTransactionYear = Math.max(
@@ -121,6 +128,8 @@ export default function useChartData(
     }
   );
 
+  initialBalance = getInitialAmount(tempData, currentBalance);
+
   const balanceData = transactionsData.reduce(
     (acc, val) => {
       const lastVal = acc[acc.length - 1];
@@ -136,12 +145,15 @@ export default function useChartData(
     (a, b) => new Date(a).getFullYear() - new Date(b).getFullYear()
   );
 
+  const chartData =
+    selectedTransactionType === "all" ? balanceData : transactionsData;
+
   const data = {
     labels: chartLabels,
     datasets: [
       {
         label: `${label}`,
-        data: transactionsData,
+        data: chartData,
         borderColor: "green",
         backgroundColor: "rgba(102, 204, 153, 0.5)",
         borderWidth: 1,
