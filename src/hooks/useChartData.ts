@@ -39,6 +39,18 @@ export default function useChartData(
       new Date(a.postingDate).getTime() - new Date(b.postingDate).getTime()
   );
 
+  const transactionYears = new Set(
+    tempData.map(({ postingDate }) => new Date(postingDate).getFullYear())
+  );
+
+  const lastTransactionYear = Math.max(
+    ...tempData.map(({ postingDate }) => new Date(postingDate).getFullYear())
+  );
+
+  const transactionTypes = new Set(
+    tempData.map(({ transactionType }) => transactionType)
+  );
+
   function getInitialBalance(data, currentBalance) {
     data.forEach(({ transactionAmount, transactionType }) => {
       const convertedTransactionAmount = Number(transactionAmount);
@@ -65,18 +77,6 @@ export default function useChartData(
     });
     return currentBalance;
   }
-
-  const transactionYears = new Set(
-    tempData.map(({ postingDate }) => new Date(postingDate).getFullYear())
-  );
-
-  const lastTransactionYear = Math.max(
-    ...tempData.map(({ postingDate }) => new Date(postingDate).getFullYear())
-  );
-
-  const transactionTypes = new Set(
-    tempData.map(({ transactionType }) => transactionType)
-  );
 
   initialBalance = getInitialBalance(tempData, currentBalance);
 
