@@ -7,20 +7,24 @@ export type Profile = {
   id: string;
   firstName: string;
   lastName: string;
-  userName: string;
-  createdAt: string;
-  phone: string;
   email: string;
-  address: string;
+  phone: string;
+  addressLine1: string;
+  addressLine2: string;
+  country: string;
+  state?: string;
   role: string;
+  createdAt: string;
 };
 
 type ProfileUpdateInput = {
   firstName?: string;
   lastName?: string;
-  userName?: string;
   phone?: string;
-  address?: string;
+  addressLine1?: string;
+  addressLine2?: string;
+  country?: string;
+  state?: string;
 };
 
 const queryKey = "userAccount";

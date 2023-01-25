@@ -3,14 +3,16 @@ import { Profile } from "hooks/useUser";
 
 export const defaultUser: Profile = {
   id: "",
-  userName: "",
   firstName: "",
   lastName: "",
   email: "",
   phone: "",
-  address: "",
-  createdAt: "",
+  addressLine1: "",
+  addressLine2: "",
+  country: "",
+  state: "",
   role: "",
+  createdAt: "",
 };
 
 export const isOpenAtom = atom(false);

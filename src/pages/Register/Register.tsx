@@ -6,7 +6,10 @@ import FormRegister from "components/FormRegister/FormRegister";
 
 export default function Register() {
   return (
-    <AuthPageTemplate title="Sign Up">
+    <AuthPageTemplate title="Create account">
+      <IonText>
+        <p>Enter your information below and you&apos;ll recieve an email to complete registration.</p>
+      </IonText>
       <FormRegister />
       <IonText className="AuthPageTemplate__linkRow--center">
         <span>

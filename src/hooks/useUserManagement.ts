@@ -8,16 +8,15 @@ type ProfileUpdateByIdInput = {
   id: string;
   firstName?: string;
   lastName?: string;
-  userName?: string;
   phone?: string;
-  address?: string;
+  addressLine1?: string;
+  addressLine2?: string;
   role?: string;
 };
 
 type ProfileCreateInput = {
   firstName: string;
   lastName: string;
-  userName: string;
   email: string;
   phone: string;
   role: string;
