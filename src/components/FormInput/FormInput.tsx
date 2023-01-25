@@ -22,7 +22,7 @@ export default function FormInput(props: Props) {
   return (
     <IonItem
       className={cn("FormInput", {
-        "ion-invalid": !!meta.error,
+        "ion-invalid": !!meta.error && meta.touched,
         "ion-touched": meta.touched,
       })}
     >

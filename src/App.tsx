@@ -1,5 +1,7 @@
 import { QueryClient, QueryClientProvider } from "react-query";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { CookiesProvider } from "react-cookie";
+import { Provider as JotaiProvider } from "jotai";
 
 // components
 import { IonApp, setupIonicReact } from "@ionic/react";
@@ -20,16 +22,20 @@ setupIonicReact();
 
 export default function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <GoogleOAuthProvider clientId={googleClientId}>
-        <FacebookOAuthProvider appId={facebookAppId}>
-          <AuthProvider>
-            <IonApp>
-              <Routes />
-            </IonApp>
-          </AuthProvider>
-        </FacebookOAuthProvider>
-      </GoogleOAuthProvider>
-    </QueryClientProvider>
+    <JotaiProvider>
+      <QueryClientProvider client={queryClient}>
+        <CookiesProvider>
+          <GoogleOAuthProvider clientId={googleClientId}>
+            <FacebookOAuthProvider appId={facebookAppId}>
+              <AuthProvider>
+                <IonApp>
+                  <Routes />
+                </IonApp>
+              </AuthProvider>
+            </FacebookOAuthProvider>
+          </GoogleOAuthProvider>
+        </CookiesProvider>
+      </QueryClientProvider>
+    </JotaiProvider>
   );
 }

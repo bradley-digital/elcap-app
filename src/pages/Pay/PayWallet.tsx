@@ -27,8 +27,7 @@ export default function Wallet() {
         </IonRow>
       </IonGrid>
       {/* Fabs have to be contained in IonContent */}
-      {/* Will need a good way to hand off control of the payment methods */}
-      {/* Might need a recoil atom */}
+      {/* See UserManagement as an example on creating a jotai atom */}
       <IonFab vertical="bottom" horizontal="end" slot="fixed">
         <IonFabButton>
           <IonIcon icon={add} />
