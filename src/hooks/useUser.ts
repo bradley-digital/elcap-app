@@ -12,7 +12,7 @@ export type Profile = {
   addressLine1: string;
   addressLine2: string;
   country: string;
-  state: string;
+  state?: string;
   role: string;
   createdAt: string;
 };

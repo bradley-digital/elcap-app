@@ -6,6 +6,7 @@ import Login from "pages/Login/Login";
 import Register from "pages/Register/Register";
 import ForgotPassword from "pages/ForgotPassword/ForgotPassword";
 import ResetPassword from "pages/ResetPassword/ResetPassword";
+import SetPassword from "pages/SetPassword/SetPassword";
 
 export default function LoginRoutes() {
   return (
@@ -18,6 +19,11 @@ export default function LoginRoutes() {
           exact
           path="/reset-password/:resetToken"
           component={ResetPassword}
+        />
+        <Route
+          exact
+          path="/register/:registerToken"
+          component={SetPassword}
         />
 
         {/* Fallback route */}

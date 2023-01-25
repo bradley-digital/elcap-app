@@ -40,6 +40,11 @@ type ResetPasswordBody = {
   password: string;
 };
 
+type SetPasswordBody = {
+  registerToken: string;
+  password: string;
+};
+
 type AuthProviderProps = {
   children: ReactNode;
 };
@@ -51,6 +56,7 @@ type GoogleLogin = () => void;
 type FacebookLogin = () => void;
 type ForgotPassword = (body: ForgotPasswordBody) => Promise<void>;
 type ResetPassword = (body: ResetPasswordBody) => Promise<void>;
+type SetPassword = (body: SetPasswordBody) => Promise<void>;
 type Logout = () => Promise<void>;
 
 type AuthContextProps = {
@@ -63,6 +69,7 @@ type AuthContextProps = {
   googleLogin: GoogleLogin;
   facebookLogin: FacebookLogin;
   forgotPassword: ForgotPassword;
+  setPassword: SetPassword;
   resetPassword: ResetPassword;
   logout: Logout;
 };
@@ -100,7 +107,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function handleAuthentication(
     url: string,
-    body: RegisterBody | LoginBody | GoogleLoginBody | FacebookLoginBody
+    body: SetPasswordBody | LoginBody | GoogleLoginBody | FacebookLoginBody
   ): Promise<void> {
     try {
       const res = await authApi.post(url, body);
@@ -137,6 +144,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       const res = await authApi.post("/auth/register", body);
       handleSuccess(res.data.message);
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  async function setPassword(body: SetPasswordBody): Promise<void> {
+    try {
+      await handleAuthentication("/auth/set-password", body);
     } catch (error) {
       handleError(error);
     }
@@ -180,6 +195,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         googleLogin,
         facebookLogin,
         forgotPassword,
+        setPassword,
         resetPassword,
         logout,
       }}

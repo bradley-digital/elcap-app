@@ -98,8 +98,8 @@ export default function FormRegister() {
         <FormInput
           label="State"
           name="state"
-          type="email"
-          placeholder="Email"
+          type="text"
+          placeholder="State"
         />
 
         <SubmitButton>Register</SubmitButton>
