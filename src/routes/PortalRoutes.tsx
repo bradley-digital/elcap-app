@@ -14,21 +14,25 @@ import {
   IonTabs,
 } from "@ionic/react";
 
-import { personCircle } from "ionicons/icons";
+import { personCircle, grid } from "ionicons/icons";
 
 export default function PortalRoutes() {
   return (
     <IonTabs>
       <IonRouterOutlet>
         <Switch>
-          <Route exact path="/portal-account" component={Account} />
+          <Route exact path="/account" component={Account} />
           <Route exact path="/dashboard/overview" component={Dashboard} />
           {/* Fallback route */}
-          <Route render={() => <Redirect to="/portal-account" />} />
+          <Route render={() => <Redirect to="/dashboard/overview" />} />
         </Switch>
       </IonRouterOutlet>
       <IonTabBar slot="bottom">
-        <IonTabButton tab="account" href="/portal-account">
+        <IonTabButton tab="dashboard" href="/dashboard/overview">
+          <IonIcon icon={grid} />
+          <IonLabel>Dashboard</IonLabel>
+        </IonTabButton>
+        <IonTabButton tab="account" href="/account">
           <IonIcon icon={personCircle} />
           <IonLabel>Account</IonLabel>
         </IonTabButton>

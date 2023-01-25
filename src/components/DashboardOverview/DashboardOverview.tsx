@@ -43,8 +43,8 @@ export default function DashboardOverview() {
       <IonGrid>
         <IonRow className="ion-justify-content-center">
           <IonCol
-            size-md="1"
-            size-lg="1"
+            size-md="2"
+            size-lg="2"
             className="DashboardOverview__content"
           >
             <IonList>
