@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Line } from "react-chartjs-2";
 
 // components
-import { Chart as ChartJS, registerables } from "chart.js/auto";
+import "chart.js/auto";
+import { Line } from "react-chartjs-2";
 import {
   IonItem,
   IonList,
@@ -12,6 +12,7 @@ import {
   IonGrid,
   IonRow,
   IonSpinner,
+  useIonViewWillEnter,
 } from "@ionic/react";
 
 // hooks
@@ -19,8 +20,6 @@ import useChartData from "hooks/useChartData";
 
 // styles
 import "./DashboardOverview.scss";
-
-ChartJS.register(...registerables);
 
 export default function DashboardOverview() {
   const [isChartVisible, setIsChartVisible] = useState(false);
@@ -34,9 +33,9 @@ export default function DashboardOverview() {
     transactionTypeMap,
   } = useChartData(selectedYear, selectedTransactionType);
 
-  setTimeout(() => {
+  useIonViewWillEnter(() => {
     setIsChartVisible(true);
-  }, 900);
+  });
 
   return (
     <div className="DashboardOverview">
@@ -83,8 +82,8 @@ export default function DashboardOverview() {
             </IonList>
           </IonCol>
           <IonCol
-            size-md="8"
-            size-lg="8"
+            size-md="10"
+            size-lg="10"
             className="DashboardOverview__content"
           >
             {isChartVisible ? (

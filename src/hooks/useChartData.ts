@@ -1,4 +1,8 @@
-import tempData from "components/DashboardOverview/tempData";
+import tempData, { Transaction } from "components/DashboardOverview/tempData";
+
+type StringMap = {
+  [key: string]: string;
+};
 
 export default function useChartData(
   year: number,
@@ -7,32 +11,18 @@ export default function useChartData(
   let initialBalance = 0;
   const currentBalance = 1000000.86;
   // const currentBalance = 15;
-  let transactionsYear: string | number;
+  let transactionsYear: string | number = "";
   const transactionData: Array<number> = [];
   const chartLabels: Array<string> = [];
   const dataLabel =
     selectedTransactionType === "all" ? "Balance" : "Transactions";
-  const transactionTypeMap = {
+  const transactionTypeMap: StringMap = {
     C: "Credit",
     D: "Debit",
     F: "Float",
     M: "Miscellaneous Service Charge",
     X: "Reversed",
   };
-
-  // const tempData = [
-  //   { transactionAmount: 2, transactionType: "C", postingDate: "03/01/2020" },
-  //   { transactionAmount: 10, transactionType: "D", postingDate: "03/02/2020" },
-  //   { transactionAmount: 3, transactionType: "C", postingDate: "03/03/2020" },
-
-  //   { transactionAmount: 2, transactionType: "D", postingDate: "03/04/2021" },
-  //   { transactionAmount: 3, transactionType: "C", postingDate: "03/05/2021" },
-  //   { transactionAmount: 4, transactionType: "D", postingDate: "03/06/2021" },
-
-  //   { transactionAmount: 2, transactionType: "D", postingDate: "03/04/2022" },
-  //   { transactionAmount: 10, transactionType: "C", postingDate: "03/05/2022" },
-  //   { transactionAmount: 7, transactionType: "D", postingDate: "03/06/2022" },
-  // ];
 
   tempData.sort(
     (a, b) =>
@@ -51,7 +41,7 @@ export default function useChartData(
     tempData.map(({ transactionType }) => transactionType)
   );
 
-  function getInitialBalance(data, currentBalance) {
+  function getInitialBalance(data: Transaction[], currentBalance: number) {
     data.forEach(({ transactionAmount, transactionType }) => {
       const convertedTransactionAmount = Number(transactionAmount);
 
@@ -118,7 +108,7 @@ export default function useChartData(
 
   transactionsWithBalanceByYear.forEach(
     ({ transactionAmount, transactionType, postingDate }) => {
-      const filterMap = {
+      const filterMap: StringMap = {
         C: "C",
         D: "D",
         F: "F",
