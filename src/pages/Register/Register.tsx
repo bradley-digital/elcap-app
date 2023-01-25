@@ -8,15 +8,15 @@ export default function Register() {
   return (
     <AuthPageTemplate title="Create account">
       <IonText>
-        <p>Enter your information below and you&apos;ll recieve an email to complete registration.</p>
+        <p>
+          Enter your information below and you&apos;ll recieve an email to
+          complete registration.
+        </p>
       </IonText>
       <FormRegister />
       <IonText className="AuthPageTemplate__linkRow--center">
         <span>
-          Already have an account?{" "}
-          <Link to="/login">
-            Sign in
-          </Link>
+          Already have an account? <Link to="/login">Sign in</Link>
         </span>
       </IonText>
     </AuthPageTemplate>

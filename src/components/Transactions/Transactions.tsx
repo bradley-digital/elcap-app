@@ -2,7 +2,13 @@ import { Fragment } from "react";
 import hash from "object-hash";
 
 // components
-import { IonItem, IonItemGroup, IonItemDivider, IonLabel, IonList } from "@ionic/react";
+import {
+  IonItem,
+  IonItemGroup,
+  IonItemDivider,
+  IonLabel,
+  IonList,
+} from "@ionic/react";
 
 export type Transaction = {
   date: string;

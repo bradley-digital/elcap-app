@@ -1,9 +1,5 @@
 // components
-import {
-  IonCol,
-  IonGrid,
-  IonRow,
-} from "@ionic/react";
+import { IonCol, IonGrid, IonRow } from "@ionic/react";
 import PageTemplate from "components/PageTemplate/PageTemplate";
 import ProfileCard from "components/ProfileCard/ProfileCard";
 import FormAccount from "components/FormAccount/FormAccount";

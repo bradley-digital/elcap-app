@@ -95,12 +95,7 @@ export default function FormRegister() {
           placeholder="Country"
         />
 
-        <FormInput
-          label="State"
-          name="state"
-          type="text"
-          placeholder="State"
-        />
+        <FormInput label="State" name="state" type="text" placeholder="State" />
 
         <SubmitButton>Register</SubmitButton>
       </Form>
