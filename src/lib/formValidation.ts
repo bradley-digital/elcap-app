@@ -15,21 +15,19 @@ export const countryValidation = Yup.string().required("Country required");
 
 export const roleValidation = Yup.string().required("Role required");
 
-export const stateValidation = Yup.string()
-  .when("country", {
-    is: (val: string) => val === "United States",
-    then: (schema) => schema.required("State required"),
-    otherwise: (schema) => schema,
-  });
+export const stateValidation = Yup.string().when("country", {
+  is: (val: string) => val === "United States",
+  then: (schema) => schema.required("State required"),
+  otherwise: (schema) => schema,
+});
 
 export const emailValidation = Yup.string()
   .email("Email must be valid")
   .required("Email required");
 
-export const phoneValidation = Yup.string().matches(
-  phoneRegExp,
-  "Phone number is not valid"
-).required("Phone number required");
+export const phoneValidation = Yup.string()
+  .matches(phoneRegExp, "Phone number is not valid")
+  .required("Phone number required");
 
 export const passwordValidation = Yup.string()
   .min(8, "Must be at least 8 characters long")

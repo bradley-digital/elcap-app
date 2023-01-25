@@ -1,9 +1,7 @@
 import type { RouteComponentProps } from "react-router-dom";
 import { Redirect, Route, Switch } from "react-router-dom";
 
-import {
-  IonRouterOutlet,
-} from "@ionic/react";
+import { IonRouterOutlet } from "@ionic/react";
 
 import Scan from "pages/Pay/PayScan";
 import Wallet from "pages/Pay/PayWallet";

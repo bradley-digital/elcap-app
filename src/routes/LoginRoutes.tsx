@@ -20,11 +20,7 @@ export default function LoginRoutes() {
           path="/reset-password/:resetToken"
           component={ResetPassword}
         />
-        <Route
-          exact
-          path="/register/:registerToken"
-          component={SetPassword}
-        />
+        <Route exact path="/register/:registerToken" component={SetPassword} />
 
         {/* Fallback route */}
         <Route render={() => <Redirect to="/login" />} />
