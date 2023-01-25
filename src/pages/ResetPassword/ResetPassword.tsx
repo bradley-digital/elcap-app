@@ -6,7 +6,7 @@ import FormResetPassword from "components/FormResetPassword/FormResetPassword";
 
 export default function ResetPassword() {
   return (
-    <AuthPageTemplate title="Reset Password">
+    <AuthPageTemplate title="Reset password">
       <IonText>
         <p>Your new password must:</p>
         <ul>
