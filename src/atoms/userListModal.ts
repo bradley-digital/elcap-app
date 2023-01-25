@@ -1,4 +1,4 @@
-import { atom } from 'jotai';
+import { atom } from "jotai";
 import { Profile } from "hooks/useUser";
 
 export const defaultUser: Profile = {

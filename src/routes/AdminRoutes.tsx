@@ -14,7 +14,7 @@ import {
   IonTabs,
 } from "@ionic/react";
 
-import { personCircle, settings} from "ionicons/icons";
+import { personCircle, settings } from "ionicons/icons";
 
 export default function PortalRoutes() {
   return (

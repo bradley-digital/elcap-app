@@ -21,10 +21,7 @@ export default function UserListModal() {
   }
 
   return (
-    <IonModal
-      isOpen={isOpen}
-      onWillDismiss={closeModal}
-    >
+    <IonModal isOpen={isOpen} onWillDismiss={closeModal}>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">

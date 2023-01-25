@@ -6,7 +6,7 @@ import FormForgotPassword from "components/FormForgotPassword/FormForgotPassword
 
 export default function ForgotPassword() {
   return (
-    <AuthPageTemplate title="Forgot Password">
+    <AuthPageTemplate title="Forgot password">
       <FormForgotPassword />
       <IonText className="AuthPageTemplate__linkRow">
         <Link to="/login" className="secondary">

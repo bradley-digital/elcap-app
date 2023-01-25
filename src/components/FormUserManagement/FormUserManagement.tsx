@@ -143,19 +143,9 @@ export default function FormUserManagement({ profile }: Props) {
             icon={pencil}
           />
 
-          <FormInput
-            label="Country"
-            name="country"
-            type="text"
-            icon={pencil}
-          />
+          <FormInput label="Country" name="country" type="text" icon={pencil} />
 
-          <FormInput
-            label="State"
-            name="state"
-            type="text"
-            icon={pencil}
-          />
+          <FormInput label="State" name="state" type="text" icon={pencil} />
 
           <FormSelect
             label="Role"
@@ -169,7 +159,6 @@ export default function FormUserManagement({ profile }: Props) {
           ) : (
             <SubmitButton>Update</SubmitButton>
           )}
-
         </IonList>
       </Form>
     </Formik>

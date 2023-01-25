@@ -46,10 +46,7 @@ export default function UserList({ users }: Props) {
 
   return (
     <>
-      <IonSearchbar
-        debounce={400}
-        onIonChange={handleSearch}
-      ></IonSearchbar>
+      <IonSearchbar debounce={400} onIonChange={handleSearch}></IonSearchbar>
 
       <div className="UserList">
         {sortedKeys.map((role: any) => (

@@ -41,9 +41,7 @@ export default function SplitPaneTemplate({
             <MenuLinks menuLinks={menuLinks} />
           </IonContent>
         </IonMenu>
-        <IonContent id={menuId}>
-          {children}
-        </IonContent>
+        <IonContent id={menuId}>{children}</IonContent>
       </IonSplitPane>
     </IonPage>
   );

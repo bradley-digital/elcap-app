@@ -122,19 +122,9 @@ export default function FormAccount({ profile }: Props) {
             icon={pencil}
           />
 
-          <FormInput
-            label="Country"
-            name="country"
-            type="text"
-            icon={pencil}
-          />
+          <FormInput label="Country" name="country" type="text" icon={pencil} />
 
-          <FormInput
-            label="State"
-            name="state"
-            type="text"
-            icon={pencil}
-          />
+          <FormInput label="State" name="state" type="text" icon={pencil} />
 
           {edited && <SubmitButton className="w-100">Update</SubmitButton>}
         </IonList>
