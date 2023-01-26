@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { Profile } from "hooks/useUser";
 import * as Yup from "yup";
 
@@ -20,6 +21,7 @@ import { lockClosed, pencil } from "ionicons/icons";
 // components
 import { Form, Formik } from "formik";
 import { IonList } from "@ionic/react";
+import FormObserver from "components/FormObserver/FormObserver";
 import FormInput from "components/FormInput/FormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
 
@@ -33,16 +35,16 @@ import FormSelect from "components/FormSelect/FormSelect";
 
 const roleOptions = [
   {
-    value: "PORTAL",
-    label: "PORTAL",
+    value: "ADMIN",
+    label: "ADMIN",
   },
   {
     value: "PAYMENTS",
     label: "PAYMENTS",
   },
   {
-    value: "ADMIN",
-    label: "ADMIN",
+    value: "PORTAL",
+    label: "PORTAL",
   },
 ];
 
@@ -53,6 +55,7 @@ type Props = {
 export default function FormUserManagement({ profile }: Props) {
   const { create, update } = useUserManagement();
   const [, setIsOpen] = useAtom(isOpenAtom);
+  const [role, setRole] = useState(profile.role);
 
   const {
     id,
@@ -64,11 +67,15 @@ export default function FormUserManagement({ profile }: Props) {
     addressLine2,
     country,
     state,
-    role,
+    role: origRole,
   } = profile;
 
   // This is brittle, what's a better way?
   const isNewUser = email === "";
+
+  function handleRoleChange(values: any) {
+    setRole(values.role);
+  }
 
   return (
     <Formik
@@ -81,7 +88,7 @@ export default function FormUserManagement({ profile }: Props) {
         addressLine2,
         country,
         state,
-        role,
+        role: origRole,
       }}
       validationSchema={Yup.object({
         firstName: firstNameValidation,
@@ -104,6 +111,7 @@ export default function FormUserManagement({ profile }: Props) {
       }}
     >
       <Form>
+        <FormObserver onChange={handleRoleChange} />
         <IonList>
           <FormInput
             label="First Name"
@@ -153,6 +161,11 @@ export default function FormUserManagement({ profile }: Props) {
             icon={pencil}
             options={roleOptions}
           />
+
+          {role === "PORTAL" && (
+            <>
+            </>
+          )}
 
           {isNewUser ? (
             <SubmitButton>Create New User</SubmitButton>

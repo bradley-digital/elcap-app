@@ -1,4 +1,4 @@
-import tempData, { Transaction } from "components/DashboardOverview/tempData";
+import tempData from "components/DashboardOverview/tempData";
 
 type StringMap = {
   [key: string]: string;
@@ -8,10 +8,7 @@ export default function useChartData(
   year: number,
   selectedTransactionType: string
 ) {
-  let initialBalance = 0;
-  const currentBalance = 1000000.86;
-  // const currentBalance = 15;
-  let transactionsYear: string | number = "";
+  const currentBalance = 749471.59;
   const transactionData: Array<number> = [];
   const chartLabels: Array<string> = [];
   const dataLabel =
@@ -33,74 +30,56 @@ export default function useChartData(
     tempData.map(({ postingDate }) => new Date(postingDate).getFullYear())
   );
 
-  const lastTransactionYear = Math.max(
-    ...tempData.map(({ postingDate }) => new Date(postingDate).getFullYear())
-  );
-
   const transactionTypes = new Set(
     tempData.map(({ transactionType }) => transactionType)
   );
 
-  function getInitialBalance(data: Transaction[], currentBalance: number) {
-    data.forEach(({ transactionAmount, transactionType }) => {
+  let balanceAtTimeOfTransaction = currentBalance;
+
+  const transactionsWithBalance = tempData.reverse().map(
+    ({ transactionType, transactionAmount, postingDate }) => {
       const convertedTransactionAmount = Number(transactionAmount);
+
+      // Round to avoid float precision errors
+      const roundedBalance = Math.round(balanceAtTimeOfTransaction * 100) / 100;
+
+      const transaction = {
+        transactionAmount: convertedTransactionAmount,
+        transactionType,
+        postingDate,
+        balanceAtTimeOfTransaction: roundedBalance,
+      };
 
       switch (transactionType) {
         case "C":
-          currentBalance += convertedTransactionAmount;
+          balanceAtTimeOfTransaction -= convertedTransactionAmount;
           break;
         case "D":
-          currentBalance -= convertedTransactionAmount;
+          balanceAtTimeOfTransaction += convertedTransactionAmount;
           break;
         case "F":
-          currentBalance += convertedTransactionAmount; // validate
+          balanceAtTimeOfTransaction -= convertedTransactionAmount;
           break;
         case "M":
-          currentBalance -= convertedTransactionAmount;
+          balanceAtTimeOfTransaction += convertedTransactionAmount;
           break;
         case "X":
-          currentBalance += convertedTransactionAmount; // validate
+          balanceAtTimeOfTransaction -= convertedTransactionAmount;
           break;
         default:
           break;
       }
-    });
-    return currentBalance;
-  }
 
-  initialBalance = getInitialBalance(tempData, currentBalance);
-
-  let balanceAtTimeOfTransaction = initialBalance;
-  const transactionsWithBalance = tempData.map(
-    ({ transactionType, transactionAmount, postingDate }) => {
-      const convertedTransactionAmount = Number(transactionAmount);
-
-      if (transactionType === "C") {
-        balanceAtTimeOfTransaction -= convertedTransactionAmount;
-      } else {
-        balanceAtTimeOfTransaction += convertedTransactionAmount;
-      }
-
-      return {
-        transactionAmount: convertedTransactionAmount,
-        transactionType: transactionType,
-        postingDate: postingDate,
-        balanceAtTimeOfTransaction: balanceAtTimeOfTransaction,
-      };
+      return transaction;
     }
-  );
+  ).reverse();
 
   const transactionsWithBalanceByYear = transactionsWithBalance.filter(
     (transaction) => {
       const date = new Date(transaction.postingDate);
       if (year === 0) {
-        transactionsYear = "";
         return date.getFullYear();
-      } else if (year === 1) {
-        transactionsYear = lastTransactionYear;
-        return date.getFullYear() === lastTransactionYear;
       } else {
-        transactionsYear = year;
         return date.getFullYear() === year;
       }
     }
@@ -165,7 +144,7 @@ export default function useChartData(
       },
       title: {
         display: true,
-        text: `${transactionsYear} ${dataLabel}`,
+        text: "Account Balance Timeline",
       },
     },
     tooltips: {
@@ -190,6 +169,7 @@ export default function useChartData(
   return {
     data,
     options,
+    currentBalance,
     transactionYears,
     transactionTypes,
     transactionTypeMap,

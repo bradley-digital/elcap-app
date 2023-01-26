@@ -12,6 +12,7 @@ import {
   IonGrid,
   IonRow,
   IonSpinner,
+  IonText,
   useIonViewWillEnter,
 } from "@ionic/react";
 
@@ -23,15 +24,23 @@ import "./DashboardOverview.scss";
 
 export default function DashboardOverview() {
   const [isChartVisible, setIsChartVisible] = useState(false);
-  const [selectedYear, setSelectedYear] = useState(1);
+  const [selectedYear, setSelectedYear] = useState(0);
   const [selectedTransactionType, setSelectedTransactionType] = useState("all");
   const {
     data,
     options,
+    currentBalance,
     transactionYears,
     transactionTypes,
     transactionTypeMap,
   } = useChartData(selectedYear, selectedTransactionType);
+
+  const USD = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  });
+
+  const currentBalanceUSD = USD.format(currentBalance);
 
   useIonViewWillEnter(() => {
     setIsChartVisible(true);
@@ -42,8 +51,22 @@ export default function DashboardOverview() {
       <IonGrid>
         <IonRow className="ion-justify-content-center">
           <IonCol
-            size-md="2"
-            size-lg="2"
+            size-xs="12"
+            size-sm="6"
+            size-md="8"
+            size-lg="9"
+            className="DashboardOverview__header"
+          >
+            <IonText>
+              <h1>Account Balance</h1>
+              <p>{currentBalanceUSD}</p>
+            </IonText>
+          </IonCol>
+          <IonCol
+            size-xs="12"
+            size-sm="6"
+            size-md="4"
+            size-lg="3"
             className="DashboardOverview__content"
           >
             <IonList>
@@ -81,11 +104,7 @@ export default function DashboardOverview() {
               </IonItem>
             </IonList>
           </IonCol>
-          <IonCol
-            size-md="10"
-            size-lg="10"
-            className="DashboardOverview__content"
-          >
+          <IonCol className="DashboardOverview__content">
             {isChartVisible ? (
               <Line data={data} options={options} height={500} />
             ) : (
