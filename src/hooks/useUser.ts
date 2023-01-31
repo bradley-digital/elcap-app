@@ -4,20 +4,27 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import useAuth from "hooks/useAuth";
 
 export type Profile = {
+  id: string;
   firstName: string;
   lastName: string;
-  userName: string;
-  createdAt: string;
-  phone: string;
   email: string;
-  address: string;
+  phone: string;
+  addressLine1: string;
+  addressLine2: string;
+  country: string;
+  state?: string;
+  role: string;
+  createdAt: string;
 };
 
-export type ProfileUpdateInput = {
+type ProfileUpdateInput = {
   firstName?: string;
   lastName?: string;
-  userName?: string;
   phone?: string;
+  addressLine1?: string;
+  addressLine2?: string;
+  country?: string;
+  state?: string;
 };
 
 const queryKey = "userAccount";
@@ -31,7 +38,7 @@ export default function useUser() {
   const { mutate } = useMutation(updateUser, {
     onSuccess: (data) => {
       queryClient.setQueryData(queryKey, data);
-    }
+    },
   });
 
   async function getUser() {

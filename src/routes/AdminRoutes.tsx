@@ -2,6 +2,7 @@ import { Redirect, Route, Switch } from "react-router-dom";
 
 // pages
 import Account from "pages/Account/Account";
+import UserManagement from "pages/UserManagement/UserManagement";
 
 // components
 import {
@@ -13,20 +14,25 @@ import {
   IonTabs,
 } from "@ionic/react";
 
-import { personCircle } from "ionicons/icons";
+import { personCircle, settings } from "ionicons/icons";
 
 export default function PortalRoutes() {
   return (
     <IonTabs>
       <IonRouterOutlet>
         <Switch>
-          <Route exact path="/admin-account" component={Account} />
+          <Route exact path="/account" component={Account} />
+          <Route exact path="/user-management" component={UserManagement} />
           {/* Fallback route */}
-          <Route render={() => <Redirect to="/admin-account" />} />
+          <Route render={() => <Redirect to="/user-management" />} />
         </Switch>
       </IonRouterOutlet>
       <IonTabBar slot="bottom">
-        <IonTabButton tab="account" href="/admin-account">
+        <IonTabButton tab="user" href="/user-management">
+          <IonIcon icon={settings} />
+          <IonLabel>User management</IonLabel>
+        </IonTabButton>
+        <IonTabButton tab="account" href="/account">
           <IonIcon icon={personCircle} />
           <IonLabel>Account</IonLabel>
         </IonTabButton>

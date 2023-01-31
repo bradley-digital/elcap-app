@@ -2,18 +2,19 @@
 import { Link } from "react-router-dom";
 import { IonText } from "@ionic/react";
 import AuthPageTemplate from "components/AuthPageTemplate/AuthPageTemplate";
-import FormResetPassword from "components/FormResetPassword/FormResetPassword";
+import FormSetPassword from "components/FormSetPassword/FormSetPassword";
 
-export default function ResetPassword() {
+export default function SetPassword() {
   return (
-    <AuthPageTemplate title="Reset password">
+    <AuthPageTemplate title="Complete registration">
       <IonText>
-        <p>Your new password must:</p>
+        <p>Create your password to complete registration.</p>
+        <p>Your password must:</p>
         <ul>
           <li>Contain 8-36 characters.</li>
         </ul>
       </IonText>
-      <FormResetPassword />
+      <FormSetPassword />
       <IonText className="AuthPageTemplate__linkRow">
         <Link to="/login" className="secondary">
           Back to login

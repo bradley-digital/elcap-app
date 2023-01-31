@@ -2,7 +2,13 @@ import { useLocation } from "react-router-dom";
 import hash from "object-hash";
 
 // components
-import { IonIcon, IonItem, IonLabel, IonList, IonMenuToggle } from "@ionic/react";
+import {
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonMenuToggle,
+} from "@ionic/react";
 
 export type MenuLink = {
   id: number;
@@ -13,7 +19,7 @@ export type MenuLink = {
 
 type Props = {
   menuLinks: MenuLink[];
-}
+};
 
 export default function MenuLinks({ menuLinks }: Props) {
   const { pathname } = useLocation();

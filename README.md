@@ -84,7 +84,6 @@ Get these secrets from another developer
 
 ```
 yarn install
-yarn precommit
 ```
 
 ### Yarn Commands

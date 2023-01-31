@@ -5,7 +5,7 @@ export default function Logo() {
   return (
     <div className="Logo">
       <LogoSvg />
-      <p>EL CAPITAN PAYMENTS</p>
+      <p>EL CAPITAN ADVISORS</p>
     </div>
   );
 }

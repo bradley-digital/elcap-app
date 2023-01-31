@@ -1,0 +1,10 @@
+.FormSelect {
+  position: relative;
+
+  .FormSelect__icon {
+    position: absolute;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}

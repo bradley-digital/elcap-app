@@ -17,7 +17,7 @@ const useSessionTimeout = () => {
       const decodedRefreshToken: any = jwtDecode(refreshToken);
       const currentTime = Date.now();
       const threeMinutesAgo = currentTime - 3 * 60 * 1000;
-      const expirationWindowStart = decodedRefreshToken?.exp * 1000 - 3000
+      const expirationWindowStart = decodedRefreshToken?.exp * 1000 - 3000;
       const isTokenAboutToExpire = expirationWindowStart < currentTime;
       const isUserInMovementWindow = lastMovementTime >= threeMinutesAgo;
 
