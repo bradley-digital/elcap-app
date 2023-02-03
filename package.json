@@ -64,7 +64,7 @@
     "yup": "^0.32.11"
   },
   "scripts": {
-    "start": "vite --port 3021",
+    "start": "vite",
     "build": "tsc && vite build",
     "serve": "vite preview",
     "test": "dotenv -- npx playwright test",
