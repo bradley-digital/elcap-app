@@ -13,6 +13,9 @@ export const defaultUser: Profile = {
   state: "",
   role: "",
   createdAt: "",
+  accounts: [
+    { accountNumber: "" },
+  ],
 };
 
 export const isOpenAtom = atom(false);

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import type { Profile } from "hooks/useUser";
 import * as Yup from "yup";
 
@@ -19,9 +18,8 @@ import {
 import { lockClosed, pencil } from "ionicons/icons";
 
 // components
-import { Form, Formik } from "formik";
-import { IonList } from "@ionic/react";
-import FormObserver from "components/FormObserver/FormObserver";
+import { Form, Formik, FieldArray } from "formik";
+import { IonButton, IonList } from "@ionic/react";
 import FormInput from "components/FormInput/FormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
 
@@ -31,6 +29,7 @@ import { isOpenAtom } from "atoms/userListModal";
 
 // hooks
 import useUserManagement from "hooks/useUserManagement";
+import useWesternAllianceAccount from "hooks/useWesternAllianceAccount";
 import FormSelect from "components/FormSelect/FormSelect";
 
 const roleOptions = [
@@ -53,9 +52,9 @@ type Props = {
 };
 
 export default function FormUserManagement({ profile }: Props) {
+  const { accounts, accountsIsSuccess } = useWesternAllianceAccount();
   const { create, update } = useUserManagement();
   const [, setIsOpen] = useAtom(isOpenAtom);
-  const [role, setRole] = useState(profile.role);
 
   const {
     id,
@@ -68,14 +67,21 @@ export default function FormUserManagement({ profile }: Props) {
     country,
     state,
     role: origRole,
+    accounts: profileAccounts,
   } = profile;
+
+
+  const accountNumbers = profileAccounts ? profileAccounts.map(account => account.accountNumber) : [];
+
+  const accountOptions = accounts ? accounts.map(account => {
+    return {
+      value: account.accountNumber,
+      label: account.accountNumber,
+    };
+  }) : [];
 
   // This is brittle, what's a better way?
   const isNewUser = email === "";
-
-  function handleRoleChange(values: any) {
-    setRole(values.role);
-  }
 
   return (
     <Formik
@@ -89,6 +95,7 @@ export default function FormUserManagement({ profile }: Props) {
         country,
         state,
         role: origRole,
+        accounts: accountNumbers,
       }}
       validationSchema={Yup.object({
         firstName: firstNameValidation,
@@ -109,71 +116,93 @@ export default function FormUserManagement({ profile }: Props) {
         }
         setIsOpen(false);
       }}
-    >
-      <Form>
-        <FormObserver onChange={handleRoleChange} />
-        <IonList>
-          <FormInput
-            label="First Name"
-            name="firstName"
-            type="text"
-            icon={pencil}
-          />
+      render={({ values }) => (
+        <Form>
+          <IonList>
+            <FormInput
+              label="First Name"
+              name="firstName"
+              type="text"
+              icon={pencil}
+            />
 
-          <FormInput
-            label="Last Name"
-            name="lastName"
-            type="text"
-            icon={pencil}
-          />
+            <FormInput
+              label="Last Name"
+              name="lastName"
+              type="text"
+              icon={pencil}
+            />
 
-          <FormInput
-            label="Email"
-            name="email"
-            type="email"
-            icon={isNewUser ? pencil : lockClosed}
-            readonly={isNewUser ? false : true}
-          />
+            <FormInput
+              label="Email"
+              name="email"
+              type="email"
+              icon={isNewUser ? pencil : lockClosed}
+              readonly={isNewUser ? false : true}
+            />
 
-          <FormInput label="Phone" name="phone" type="text" icon={pencil} />
+            <FormInput label="Phone" name="phone" type="text" icon={pencil} />
 
-          <FormInput
-            label="Address line 1"
-            name="addressLine1"
-            type="text"
-            icon={pencil}
-          />
+            <FormInput
+              label="Address line 1"
+              name="addressLine1"
+              type="text"
+              icon={pencil}
+            />
 
-          <FormInput
-            label="Address line 2"
-            name="addressLine2"
-            type="text"
-            icon={pencil}
-          />
+            <FormInput
+              label="Address line 2"
+              name="addressLine2"
+              type="text"
+              icon={pencil}
+            />
 
-          <FormInput label="Country" name="country" type="text" icon={pencil} />
+            <FormInput label="Country" name="country" type="text" icon={pencil} />
 
-          <FormInput label="State" name="state" type="text" icon={pencil} />
+            <FormInput label="State" name="state" type="text" icon={pencil} />
 
-          <FormSelect
-            label="Role"
-            name="role"
-            icon={pencil}
-            options={roleOptions}
-          />
+            <FormSelect
+              label="Role"
+              name="role"
+              icon={pencil}
+              options={roleOptions}
+            />
 
-          {role === "PORTAL" && (
-            <>
-            </>
-          )}
+            {values.role === "PORTAL" && (
+              <FieldArray
+                name="accounts"
+                render={arrayHelpers => (
+                  <>
+                    {values.accounts.map((account, index) => (
+                      <div key={index}>
+                        {accountsIsSuccess && (
+                          <FormSelect
+                            label="Account"
+                            name={`accounts.${index}`}
+                            options={accountOptions}
+                          />
+                        )}
+                        <IonButton onClick={() => arrayHelpers.remove(index)}>
+                          -
+                        </IonButton>
+                      </div>
+                    ))}
+                    <IonButton onClick={() => arrayHelpers.push("")}>
+                      Add account
+                    </IonButton>
+                  </>
+                )}
+              />
+            )}
 
-          {isNewUser ? (
-            <SubmitButton>Create New User</SubmitButton>
-          ) : (
-            <SubmitButton>Update</SubmitButton>
-          )}
-        </IonList>
-      </Form>
-    </Formik>
+            {isNewUser ? (
+              <SubmitButton>Create New User</SubmitButton>
+            ) : (
+              <SubmitButton>Update</SubmitButton>
+            )}
+          </IonList>
+        </Form>
+      )}
+    />
   );
 }
