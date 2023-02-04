@@ -27,6 +27,7 @@ export default function DashboardOverview() {
   const [selectedYear, setSelectedYear] = useState(0);
   const [selectedTransactionType, setSelectedTransactionType] = useState("all");
   const {
+    isSuccess,
     data,
     options,
     currentBalance,
@@ -35,16 +36,28 @@ export default function DashboardOverview() {
     transactionTypeMap,
   } = useChartData(selectedYear, selectedTransactionType);
 
+  useIonViewWillEnter(() => {
+    setIsChartVisible(true);
+  });
+
+  if (
+    !isSuccess
+    || typeof data === "undefined"
+    || typeof options === "undefined"
+    || typeof currentBalance === "undefined"
+    || typeof transactionYears === "undefined"
+    || typeof transactionTypes === "undefined"
+    || typeof transactionTypeMap === "undefined"
+  ) {
+    return null;
+  }
+
   const USD = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
   });
 
   const currentBalanceUSD = USD.format(currentBalance);
-
-  useIonViewWillEnter(() => {
-    setIsChartVisible(true);
-  });
 
   return (
     <div className="DashboardOverview">

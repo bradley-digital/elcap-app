@@ -1,4 +1,4 @@
-import tempData from "components/DashboardOverview/tempData";
+import useUser from "hooks/useUser";
 
 type StringMap = {
   [key: string]: string;
@@ -8,7 +8,25 @@ export default function useChartData(
   year: number,
   selectedTransactionType: string
 ) {
-  const currentBalance = 749471.59;
+  const {
+    accounts,
+    transactions,
+  } = useUser();
+
+  if (!transactions) {
+    return {
+      isSuccess: false,
+      data: undefined,
+      options: undefined,
+      currentBalance: undefined,
+      transactionYears: undefined,
+      transactionTypes: undefined,
+      transactionTypeMap: undefined,
+    };
+  }
+
+  // Still need to add this data to the accounts endpoint
+  const currentBalance = 1479702.78;
   const transactionData: Array<number> = [];
   const chartLabels: Array<string> = [];
   const dataLabel =
@@ -21,22 +39,22 @@ export default function useChartData(
     X: "Reversed",
   };
 
-  tempData.sort(
+  transactions.sort(
     (a, b) =>
       new Date(a.postingDate).getTime() - new Date(b.postingDate).getTime()
   );
 
   const transactionYears = new Set(
-    tempData.map(({ postingDate }) => new Date(postingDate).getFullYear())
+    transactions.map(({ postingDate }) => new Date(postingDate).getFullYear())
   );
 
   const transactionTypes = new Set(
-    tempData.map(({ transactionType }) => transactionType)
+    transactions.map(({ transactionType }) => transactionType)
   );
 
   let balanceAtTimeOfTransaction = currentBalance;
 
-  const transactionsWithBalance = tempData.reverse().map(
+  const transactionsWithBalance = transactions.reverse().map(
     ({ transactionType, transactionAmount, postingDate }) => {
       const convertedTransactionAmount = Number(transactionAmount);
 
@@ -167,6 +185,7 @@ export default function useChartData(
   };
 
   return {
+    isSuccess: true,
     data,
     options,
     currentBalance,

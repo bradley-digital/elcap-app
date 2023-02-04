@@ -1,7 +1,7 @@
+import type { Account, Transaction } from "./useWesternAllianceAccount";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
 // hooks
-import type { Account } from "hooks/useWesternAllianceAccount";
 import useAuth from "hooks/useAuth";
 
 type ProfileAccount = Pick<Account, "accountNumber">
@@ -20,6 +20,7 @@ export type Profile = {
   createdAt: string;
   accounts?: ProfileAccount[];
 };
+
 
 type ProfileUpdateInput = {
   firstName?: string;
@@ -45,8 +46,28 @@ export default function useUser() {
     },
   });
 
+  const {
+    isSuccess: accountsIsSuccess,
+    data: accounts
+  } = useQuery(`${queryKey}WesternAllianceAccounts`, getWesternAllianceAccounts);
+
+  const {
+    isSuccess: transactionsIsSuccess,
+    data: transactions
+  } = useQuery(`${queryKey}WesternAllianceTransactions`, getWesternAllianceTransactions);
+
   async function getUser() {
     const { data } = await authApi.get<Profile>("/users/account");
+    return data;
+  }
+
+  async function getWesternAllianceAccounts() {
+    const { data } = await authApi.get<Account[]>("/users/western-alliance-accounts");
+    return data;
+  }
+
+  async function getWesternAllianceTransactions() {
+    const { data } = await authApi.get<Transaction[]>("/users/western-alliance-transactions");
     return data;
   }
 
@@ -60,5 +81,9 @@ export default function useUser() {
     isSuccess,
     data,
     mutate,
+    accountsIsSuccess,
+    accounts,
+    transactionsIsSuccess,
+    transactions,
   };
 }
