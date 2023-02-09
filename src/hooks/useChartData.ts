@@ -1,4 +1,4 @@
-import useUser from "hooks/useUser";
+import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
 
 type StringMap = {
   [key: string]: string;
@@ -11,7 +11,7 @@ export default function useChartData(
   const {
     accounts,
     transactions,
-  } = useUser();
+  } = useUserWesternAllianceAccount();
 
   if (!transactions) {
     return {
