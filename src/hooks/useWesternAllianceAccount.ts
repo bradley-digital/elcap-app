@@ -6,7 +6,9 @@ import useAuth from "hooks/useAuth";
 export type Account = {
   id: string;
   accountNumber: string;
+  accountBalance: string;
   accountTitle: string;
+  client: string;
 };
 
 export type Transaction = {

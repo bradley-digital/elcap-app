@@ -14,8 +14,8 @@ import "theme/global.scss";
 import "theme/variables.scss";
 import "theme/utilities.scss";
 
-const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || "";
-const facebookAppId = process.env.REACT_APP_FACEBOOK_APP_ID || "";
+const googleClientId = import.meta.env.VITE_REACT_APP_GOOGLE_CLIENT_ID || "";
+const facebookAppId = import.meta.env.VITE_REACT_APP_FACEBOOK_APP_ID || "";
 const queryClient = new QueryClient();
 
 setupIonicReact();
