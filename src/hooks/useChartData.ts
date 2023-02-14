@@ -6,12 +6,10 @@ type StringMap = {
 
 export default function useChartData(
   year: number,
-  selectedTransactionType: string
+  selectedTransactionType: string,
+  selectedAccountNumber?: number
 ) {
-  const {
-    accounts,
-    transactions,
-  } = useUserWesternAllianceAccount();
+  const { accounts, transactions } = useUserWesternAllianceAccount();
 
   if (!transactions) {
     return {
@@ -39,23 +37,36 @@ export default function useChartData(
     X: "Reversed",
   };
 
-  transactions.sort(
+  const transactionsPerAccount = (accountNumber: string | number) => {
+    return transactions?.filter(
+      (transaction) => transaction.accountNumber === accountNumber
+    );
+  };
+
+  const accountTransactions = selectedAccountNumber
+    ? transactionsPerAccount(selectedAccountNumber)
+    : transactions;
+
+  accountTransactions.sort(
     (a, b) =>
       new Date(a.postingDate).getTime() - new Date(b.postingDate).getTime()
   );
 
   const transactionYears = new Set(
-    transactions.map(({ postingDate }) => new Date(postingDate).getFullYear())
+    accountTransactions.map(({ postingDate }) =>
+      new Date(postingDate).getFullYear()
+    )
   );
 
   const transactionTypes = new Set(
-    transactions.map(({ transactionType }) => transactionType)
+    accountTransactions.map(({ transactionType }) => transactionType)
   );
 
   let balanceAtTimeOfTransaction = currentBalance;
 
-  const transactionsWithBalance = transactions.reverse().map(
-    ({ transactionType, transactionAmount, postingDate }) => {
+  const transactionsWithBalance = accountTransactions
+    .reverse()
+    .map(({ transactionType, transactionAmount, postingDate }) => {
       const convertedTransactionAmount = Number(transactionAmount);
 
       // Round to avoid float precision errors
@@ -89,8 +100,8 @@ export default function useChartData(
       }
 
       return transaction;
-    }
-  ).reverse();
+    })
+    .reverse();
 
   const transactionsWithBalanceByYear = transactionsWithBalance.filter(
     (transaction) => {
@@ -128,7 +139,6 @@ export default function useChartData(
       chartLabels.push(shortDate);
     }
   );
-
   const balanceData = transactionsWithBalanceByYear.map(
     (x) => x.balanceAtTimeOfTransaction
   );
@@ -187,6 +197,7 @@ export default function useChartData(
   return {
     isSuccess: true,
     data,
+    accounts,
     options,
     currentBalance,
     transactionYears,

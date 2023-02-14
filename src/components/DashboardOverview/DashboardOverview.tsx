@@ -24,30 +24,37 @@ import "./DashboardOverview.scss";
 
 export default function DashboardOverview() {
   const [isChartVisible, setIsChartVisible] = useState(false);
+  const [selectedAccountNumber, setSelectedAccountNumber] = useState(undefined);
   const [selectedYear, setSelectedYear] = useState(0);
   const [selectedTransactionType, setSelectedTransactionType] = useState("all");
   const {
     isSuccess,
     data,
+    accounts,
     options,
     currentBalance,
     transactionYears,
     transactionTypes,
     transactionTypeMap,
-  } = useChartData(selectedYear, selectedTransactionType);
+  } = useChartData(
+    selectedYear,
+    selectedTransactionType,
+    selectedAccountNumber
+  );
 
   useIonViewWillEnter(() => {
     setIsChartVisible(true);
   });
 
   if (
-    !isSuccess
-    || typeof data === "undefined"
-    || typeof options === "undefined"
-    || typeof currentBalance === "undefined"
-    || typeof transactionYears === "undefined"
-    || typeof transactionTypes === "undefined"
-    || typeof transactionTypeMap === "undefined"
+    !isSuccess ||
+    typeof data === "undefined" ||
+    typeof accounts === "undefined" ||
+    typeof options === "undefined" ||
+    typeof currentBalance === "undefined" ||
+    typeof transactionYears === "undefined" ||
+    typeof transactionTypes === "undefined" ||
+    typeof transactionTypeMap === "undefined"
   ) {
     return null;
   }
@@ -83,6 +90,23 @@ export default function DashboardOverview() {
             className="DashboardOverview__content"
           >
             <IonList>
+              <IonItem>
+                <IonSelect
+                  placeholder="Select Account"
+                  onIonChange={(e) => setSelectedAccountNumber(e.detail.value)}
+                >
+                  <IonSelectOption value={0}>All</IonSelectOption>
+                  {accounts?.accounts.map((account: any) => (
+                    <IonSelectOption
+                      key={account.accountNumber}
+                      value={account.accountNumber}
+                    >
+                      {account.accountTitle}
+                    </IonSelectOption>
+                  ))}
+                </IonSelect>
+              </IonItem>
+
               <IonItem>
                 <IonSelect
                   placeholder="Select Year"
