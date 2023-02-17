@@ -7,7 +7,7 @@ type StringMap = {
 export default function useChartData(
   year: number,
   selectedTransactionType: string,
-  selectedAccountNumber?: number
+  selectedAccountNumber: number
 ) {
   const { accounts, transactions } = useUserWesternAllianceAccount();
 
@@ -26,7 +26,7 @@ export default function useChartData(
   // Still need to add this data to the accounts endpoint
   const currentBalance = 1479702.78;
   const transactionData: Array<number> = [];
-  const chartLabels: Array<string> = [];
+  // const chartLabels: Array<string> = [];
   const dataLabel =
     selectedTransactionType === "all" ? "Balance" : "Transactions";
   const transactionTypeMap: StringMap = {
@@ -37,130 +37,165 @@ export default function useChartData(
     X: "Reversed",
   };
 
-  const transactionsPerAccount = (accountNumber: string | number) => {
+  const filteredAccountTransactions = (accountNumber: string | number) => {
     return transactions?.filter(
       (transaction) => transaction.accountNumber === accountNumber
     );
   };
 
-  const accountTransactions = selectedAccountNumber
-    ? transactionsPerAccount(selectedAccountNumber)
-    : transactions;
+  const individualAccounts: any = [];
+  accounts?.accounts.forEach((account: any) => {
+    individualAccounts.push({
+      accountTitle: account.accountTitle,
+      accountNumber: account.accountNumber,
+      transactions: filteredAccountTransactions(account.accountNumber),
+    });
+  });
 
-  accountTransactions.sort(
-    (a, b) =>
-      new Date(a.postingDate).getTime() - new Date(b.postingDate).getTime()
-  );
+  const selectedIndividualAccount =
+    selectedAccountNumber !== 0
+      ? individualAccounts.filter(
+          (account: any) => account.accountNumber === selectedAccountNumber
+        )
+      : individualAccounts;
 
-  const transactionYears = new Set(
-    accountTransactions.map(({ postingDate }) =>
-      new Date(postingDate).getFullYear()
-    )
-  );
+  const selectedAccountTransactions =
+    selectedAccountNumber !== 0
+      ? filteredAccountTransactions(selectedAccountNumber)
+      : transactions;
 
-  const transactionTypes = new Set(
-    accountTransactions.map(({ transactionType }) => transactionType)
-  );
+  function createChartData(accountTransactions) {
+    const chartLabels: Array<string> = [];
 
-  let balanceAtTimeOfTransaction = currentBalance;
+    accountTransactions.sort(
+      (a, b) =>
+        new Date(a.postingDate).getTime() - new Date(b.postingDate).getTime()
+    );
 
-  const transactionsWithBalance = accountTransactions
-    .reverse()
-    .map(({ transactionType, transactionAmount, postingDate }) => {
-      const convertedTransactionAmount = Number(transactionAmount);
+    const transactionYears = new Set(
+      accountTransactions.map(({ postingDate }) =>
+        new Date(postingDate).getFullYear()
+      )
+    );
 
-      // Round to avoid float precision errors
-      const roundedBalance = Math.round(balanceAtTimeOfTransaction * 100) / 100;
+    const transactionTypes = new Set(
+      accountTransactions.map(({ transactionType }) => transactionType)
+    );
 
-      const transaction = {
-        transactionAmount: convertedTransactionAmount,
-        transactionType,
-        postingDate,
-        balanceAtTimeOfTransaction: roundedBalance,
-      };
+    let balanceAtTimeOfTransaction = currentBalance;
 
-      switch (transactionType) {
-        case "C":
-          balanceAtTimeOfTransaction -= convertedTransactionAmount;
-          break;
-        case "D":
-          balanceAtTimeOfTransaction += convertedTransactionAmount;
-          break;
-        case "F":
-          balanceAtTimeOfTransaction -= convertedTransactionAmount;
-          break;
-        case "M":
-          balanceAtTimeOfTransaction += convertedTransactionAmount;
-          break;
-        case "X":
-          balanceAtTimeOfTransaction -= convertedTransactionAmount;
-          break;
-        default:
-          break;
+    const transactionsWithBalance = accountTransactions
+      .reverse()
+      .map(({ transactionType, transactionAmount, postingDate }) => {
+        const convertedTransactionAmount = Number(transactionAmount);
+
+        // Round to avoid float precision errors
+        const roundedBalance =
+          Math.round(balanceAtTimeOfTransaction * 100) / 100;
+
+        const transaction = {
+          transactionAmount: convertedTransactionAmount,
+          transactionType,
+          postingDate,
+          balanceAtTimeOfTransaction: roundedBalance,
+        };
+
+        switch (transactionType) {
+          case "C":
+            balanceAtTimeOfTransaction -= convertedTransactionAmount;
+            break;
+          case "D":
+            balanceAtTimeOfTransaction += convertedTransactionAmount;
+            break;
+          case "F":
+            balanceAtTimeOfTransaction -= convertedTransactionAmount;
+            break;
+          case "M":
+            balanceAtTimeOfTransaction += convertedTransactionAmount;
+            break;
+          case "X":
+            balanceAtTimeOfTransaction -= convertedTransactionAmount;
+            break;
+          default:
+            break;
+        }
+
+        return transaction;
+      })
+      .reverse();
+
+    const transactionsWithBalanceByYear = transactionsWithBalance.filter(
+      (transaction) => {
+        const date = new Date(transaction.postingDate);
+        if (year === 0) {
+          return date.getFullYear();
+        } else {
+          return date.getFullYear() === year;
+        }
       }
+    );
 
-      return transaction;
-    })
-    .reverse();
+    transactionsWithBalanceByYear.forEach(
+      ({ transactionAmount, transactionType, postingDate }) => {
+        const filterMap: StringMap = {
+          C: "C",
+          D: "D",
+          F: "F",
+          M: "M",
+          X: "X",
+        };
 
-  const transactionsWithBalanceByYear = transactionsWithBalance.filter(
-    (transaction) => {
-      const date = new Date(transaction.postingDate);
-      if (year === 0) {
-        return date.getFullYear();
-      } else {
-        return date.getFullYear() === year;
+        if (
+          filterMap[selectedTransactionType] !== transactionType &&
+          selectedTransactionType !== "all"
+        ) {
+          return;
+        }
+
+        const date = new Date(postingDate);
+        const options: any = {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        };
+        const shortDate = date.toLocaleDateString("en-US", options);
+
+        transactionData.push(transactionAmount);
+        chartLabels.push(shortDate);
       }
-    }
-  );
+    );
+    const balanceData = transactionsWithBalanceByYear.map(
+      (x) => x.balanceAtTimeOfTransaction
+    );
 
-  transactionsWithBalanceByYear.forEach(
-    ({ transactionAmount, transactionType, postingDate }) => {
-      const filterMap: StringMap = {
-        C: "C",
-        D: "D",
-        F: "F",
-        M: "M",
-        X: "X",
-      };
+    const chartData =
+      selectedTransactionType === "all" ? balanceData : transactionData;
 
-      if (
-        filterMap[selectedTransactionType] !== transactionType &&
-        selectedTransactionType !== "all"
-      ) {
-        return;
-      }
+    chartLabels.sort(
+      (a, b) => new Date(a).getFullYear() - new Date(b).getFullYear()
+    );
 
-      const date = new Date(postingDate);
-      const options: any = { month: "short", day: "numeric", year: "numeric" };
-      const shortDate = date.toLocaleDateString("en-US", options);
+    return [chartData, chartLabels, transactionYears, transactionTypes];
+  }
 
-      transactionData.push(transactionAmount);
-      chartLabels.push(shortDate);
-    }
-  );
-  const balanceData = transactionsWithBalanceByYear.map(
-    (x) => x.balanceAtTimeOfTransaction
-  );
-
-  const chartData =
-    selectedTransactionType === "all" ? balanceData : transactionData;
-
-  chartLabels.sort(
-    (a, b) => new Date(a).getFullYear() - new Date(b).getFullYear()
-  );
+  const colorArray = ["#007854", "#3dc2ff", "#5260ff"];
+  const chartLabels = createChartData(individualAccounts[0].transactions)[1];
 
   const data = {
     labels: chartLabels,
-    datasets: [
-      {
-        label: `${dataLabel}`,
-        data: chartData,
-        borderColor: "green",
-        backgroundColor: "rgba(102, 204, 153, 0.5)",
+    datasets: selectedIndividualAccount.map((account: any, index: number) => {
+      return {
+        label: account.accountTitle,
+        // data: chartData,
+        data: createChartData(account.transactions)[0],
+        // borderColor: "green",
+        borderColor: colorArray[index],
+
+        // backgroundColor: "rgba(102, 204, 153, 0.5)",
+        backgroundColor: colorArray[index],
         borderWidth: 1,
-      },
-    ],
+      };
+    }),
   };
 
   const options = {
@@ -193,6 +228,9 @@ export default function useChartData(
       },
     },
   };
+
+  const transactionYears = createChartData(selectedAccountTransactions)[2];
+  const transactionTypes = createChartData(selectedAccountTransactions)[3];
 
   return {
     isSuccess: true,

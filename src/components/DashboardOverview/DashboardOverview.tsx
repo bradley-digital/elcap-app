@@ -24,7 +24,7 @@ import "./DashboardOverview.scss";
 
 export default function DashboardOverview() {
   const [isChartVisible, setIsChartVisible] = useState(false);
-  const [selectedAccountNumber, setSelectedAccountNumber] = useState(undefined);
+  const [selectedAccountNumber, setSelectedAccountNumber] = useState(0);
   const [selectedYear, setSelectedYear] = useState(0);
   const [selectedTransactionType, setSelectedTransactionType] = useState("all");
   const {
