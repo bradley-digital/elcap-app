@@ -203,9 +203,7 @@ export default function useChartData(
     individualAccounts[0].transactions
   )[0];
 
-  const chartLabels: string[] = createChartData(
-    individualAccounts[0].transactions
-  )[1];
+  const chartLabels: string[] = createChartData(selectedAccountTransactions)[1];
 
   const transactionYears: string[] = createChartData(
     selectedAccountTransactions
@@ -254,6 +252,7 @@ export default function useChartData(
     },
     scales: {
       x: {
+        offset: true,
         title: {
           display: true,
           text: "Weeks",
