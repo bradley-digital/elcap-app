@@ -3,6 +3,7 @@ import { Redirect, Route, Switch } from "react-router-dom";
 // pages
 import Account from "pages/Account/Account";
 import UserManagement from "pages/UserManagement/UserManagement";
+import User from "pages/User/User";
 
 // components
 import {
@@ -23,6 +24,7 @@ export default function PortalRoutes() {
         <Switch>
           <Route exact path="/account" component={Account} />
           <Route exact path="/user-management" component={UserManagement} />
+          <Route exact path="/user-management/:userId" component={User} />
           {/* Fallback route */}
           <Route render={() => <Redirect to="/user-management" />} />
         </Switch>
