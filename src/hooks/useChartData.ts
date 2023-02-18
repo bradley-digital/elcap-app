@@ -32,7 +32,6 @@ export default function useChartData(
 
   // Still need to add this data to the accounts endpoint
   const currentBalance = 1479702.78;
-  const transactionData: Array<number> = [];
   const dataLabel =
     selectedTransactionType === "all" ? "Balance" : "Transactions";
   const transactionTypeMap: StringMap = {
@@ -72,6 +71,7 @@ export default function useChartData(
 
   function createChartData(accountTransactions) {
     const chartLabels: Array<string> = [];
+    const transactionData: Array<number> = [];
 
     accountTransactions.sort(
       (a, b) =>
@@ -181,7 +181,13 @@ export default function useChartData(
       (a, b) => new Date(a).getFullYear() - new Date(b).getFullYear()
     );
 
-    return [chartData, chartLabels, transactionYears, transactionTypes];
+    return [
+      chartData,
+      chartLabels,
+      transactionYears,
+      transactionTypes,
+      transactionData,
+    ];
   }
 
   const colorArray = [
@@ -193,6 +199,10 @@ export default function useChartData(
     "#eb445a",
   ];
 
+  const chartData: string[] = createChartData(
+    individualAccounts[0].transactions
+  )[0];
+
   const chartLabels: string[] = createChartData(
     individualAccounts[0].transactions
   )[1];
@@ -200,20 +210,26 @@ export default function useChartData(
   const transactionYears: string[] = createChartData(
     selectedAccountTransactions
   )[2];
+
   const transactionTypes: string[] = createChartData(
     selectedAccountTransactions
   )[3];
+
+  const transactionData: string[] = createChartData(
+    selectedAccountTransactions
+  )[4];
 
   const data = {
     labels: chartLabels,
     datasets: selectedIndividualAccount.map((account: any, index: number) => {
       return {
         label: account.accountTitle,
-        // data: chartData,
-        data: createChartData(account.transactions)[0],
+        data:
+          selectedTransactionType === "all"
+            ? createChartData(account.transactions)[0]
+            : createChartData(account.transactions)[4],
         // borderColor: "green",
         borderColor: colorArray[index],
-
         // backgroundColor: "rgba(102, 204, 153, 0.5)",
         backgroundColor: colorArray[index],
         borderWidth: 1,
