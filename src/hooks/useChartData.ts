@@ -4,6 +4,13 @@ type StringMap = {
   [key: string]: string;
 };
 
+type transactionMap = {
+  transactionAmount: number;
+  transactionType: string;
+  postingDate: string;
+  balanceAtTimeOfTransaction: number;
+};
+
 export default function useChartData(
   year: number,
   selectedTransactionType: string,
@@ -26,7 +33,6 @@ export default function useChartData(
   // Still need to add this data to the accounts endpoint
   const currentBalance = 1479702.78;
   const transactionData: Array<number> = [];
-  // const chartLabels: Array<string> = [];
   const dataLabel =
     selectedTransactionType === "all" ? "Balance" : "Transactions";
   const transactionTypeMap: StringMap = {
@@ -125,7 +131,7 @@ export default function useChartData(
       .reverse();
 
     const transactionsWithBalanceByYear = transactionsWithBalance.filter(
-      (transaction) => {
+      (transaction: transactionMap) => {
         const date = new Date(transaction.postingDate);
         if (year === 0) {
           return date.getFullYear();
@@ -178,8 +184,25 @@ export default function useChartData(
     return [chartData, chartLabels, transactionYears, transactionTypes];
   }
 
-  const colorArray = ["#007854", "#3dc2ff", "#5260ff"];
-  const chartLabels = createChartData(individualAccounts[0].transactions)[1];
+  const colorArray = [
+    "#007854",
+    "#3dc2ff",
+    "#5260ff",
+    "#2dd36f",
+    "#ffc409",
+    "#eb445a",
+  ];
+
+  const chartLabels: string[] = createChartData(
+    individualAccounts[0].transactions
+  )[1];
+
+  const transactionYears: string[] = createChartData(
+    selectedAccountTransactions
+  )[2];
+  const transactionTypes: string[] = createChartData(
+    selectedAccountTransactions
+  )[3];
 
   const data = {
     labels: chartLabels,
@@ -228,9 +251,6 @@ export default function useChartData(
       },
     },
   };
-
-  const transactionYears = createChartData(selectedAccountTransactions)[2];
-  const transactionTypes = createChartData(selectedAccountTransactions)[3];
 
   return {
     isSuccess: true,

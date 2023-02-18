@@ -96,14 +96,15 @@ export default function DashboardOverview() {
                   onIonChange={(e) => setSelectedAccountNumber(e.detail.value)}
                 >
                   <IonSelectOption value={0}>All</IonSelectOption>
-                  {accounts?.accounts.map((account: any) => (
-                    <IonSelectOption
-                      key={account.accountNumber}
-                      value={account.accountNumber}
-                    >
-                      {account.accountTitle}
-                    </IonSelectOption>
-                  ))}
+                  {accounts &&
+                    accounts?.accounts.map((account: any) => (
+                      <IonSelectOption
+                        key={account.accountNumber}
+                        value={account.accountNumber}
+                      >
+                        {account.accountTitle}
+                      </IonSelectOption>
+                    ))}
                 </IonSelect>
               </IonItem>
 
@@ -113,11 +114,12 @@ export default function DashboardOverview() {
                   onIonChange={(e) => setSelectedYear(e.detail.value)}
                 >
                   <IonSelectOption value={0}>All</IonSelectOption>
-                  {Array.from(transactionYears).map((year) => (
-                    <IonSelectOption key={year} value={year}>
-                      {year}
-                    </IonSelectOption>
-                  ))}
+                  {transactionYears &&
+                    Array.from(transactionYears).map((year) => (
+                      <IonSelectOption key={year} value={year}>
+                        {year}
+                      </IonSelectOption>
+                    ))}
                 </IonSelect>
               </IonItem>
 
@@ -129,14 +131,15 @@ export default function DashboardOverview() {
                   }
                 >
                   <IonSelectOption value="all">All</IonSelectOption>
-                  {Array.from(transactionTypes).map((transactionType) => (
-                    <IonSelectOption
-                      key={transactionType}
-                      value={transactionType}
-                    >
-                      {transactionTypeMap[transactionType]}
-                    </IonSelectOption>
-                  ))}
+                  {transactionTypes &&
+                    Array.from(transactionTypes).map((transactionType) => (
+                      <IonSelectOption
+                        key={transactionType}
+                        value={transactionType}
+                      >
+                        {transactionTypeMap[transactionType]}
+                      </IonSelectOption>
+                    ))}
                 </IonSelect>
               </IonItem>
             </IonList>
