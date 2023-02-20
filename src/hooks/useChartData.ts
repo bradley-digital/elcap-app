@@ -70,8 +70,8 @@ export default function useChartData(
     : transactions;
 
   function createChartData(accountTransactions: Transaction[]) {
-    const chartLabels: Array<string> = [];
     const transactionData: Array<any> = [];
+    const balanceData: Array<any> = [];
 
     accountTransactions.sort(
       (a, b) =>
@@ -141,35 +141,7 @@ export default function useChartData(
       }
     );
 
-    transactionsWithBalanceByYear.forEach(
-      ({ transactionAmount, transactionType, postingDate }) => {
-        const filterMap: StringMap = {
-          C: "C",
-          D: "D",
-          F: "F",
-          M: "M",
-          X: "X",
-        };
-
-        if (
-          filterMap[selectedTransactionType] !== transactionType &&
-          selectedTransactionType !== "all"
-        ) {
-          return;
-        }
-
-        const date = new Date(postingDate);
-        const shortDate = date.toLocaleDateString("en-US", dateOptions);
-
-        transactionData.push({
-          x: shortDate,
-          y: transactionAmount,
-        });
-        chartLabels.push(shortDate);
-      }
-    );
-
-    const balanceData = transactionsWithBalanceByYear.map((balance) => {
+    transactionsWithBalanceByYear.forEach((balance) => {
       const date = new Date(balance.postingDate);
       const shortDate = date.toLocaleDateString("en-US", dateOptions);
       const day = shortDate.split(" ")[1].replace(",", "");
@@ -177,42 +149,64 @@ export default function useChartData(
 
       if (Number(day) < 15) {
         week = week + " first half";
-        // } else if (Number(day) >= 7 && Number(day) < 14) {
-        //   week = week + " week 2";
+        // } else if (Number(day) >= 15 && Number(day) < 20) {
+        // week = week + " week 2";
         // } else if (Number(day) >= 14 && Number(day) < 21) {
         //   week = week + " week 3";
       } else if (Number(day) >= 15) {
         week = week + " second half";
       }
 
-      const allAccountTransactions = {
-        x: week,
-        y: balance.balanceAtTimeOfTransaction,
-      };
-      const singleAccountTransactions = {
+      const singleAccountBalances = {
         x: shortDate,
         y: balance.balanceAtTimeOfTransaction,
       };
 
-      return isSingleAccountSelected
-        ? singleAccountTransactions
-        : allAccountTransactions;
+      const allAccountBalances = {
+        x: week,
+        y: balance.balanceAtTimeOfTransaction,
+      };
+
+      isSingleAccountSelected
+        ? balanceData.push(singleAccountBalances)
+        : balanceData.push(allAccountBalances);
+
+      const filterMap: StringMap = {
+        C: "C",
+        D: "D",
+        F: "F",
+        M: "M",
+        X: "X",
+      };
+
+      if (
+        filterMap[selectedTransactionType] !== balance.transactionType &&
+        selectedTransactionType !== "all"
+      ) {
+        return;
+      }
+
+      const singleAccountTransactions = {
+        x: shortDate,
+        y: balance.transactionAmount,
+      };
+
+      const allAccountTransactions = {
+        x: week,
+        y: balance.transactionAmount,
+      };
+
+      isSingleAccountSelected
+        ? transactionData.push(singleAccountTransactions)
+        : transactionData.push(allAccountTransactions);
     });
 
-    const chartData =
-      selectedTransactionType === "all" ? balanceData : transactionData;
-
-    chartLabels.sort(
-      (a, b) => new Date(a).getFullYear() - new Date(b).getFullYear()
-    );
-
-    return [
-      chartData,
-      chartLabels,
-      transactionYears,
-      transactionTypes,
-      transactionData,
-    ];
+    return {
+      balanceData: balanceData,
+      transactionYears: transactionYears,
+      transactionTypes: transactionTypes,
+      transactionData: transactionData,
+    };
   }
 
   const colorArray = [
@@ -224,17 +218,16 @@ export default function useChartData(
     "#eb445a",
   ];
 
-  const transactionYears = createChartData(selectedAccountTransactions)[2];
-  const transactionTypes = createChartData(selectedAccountTransactions)[3];
+  const { transactionYears } = createChartData(selectedAccountTransactions);
+  const { transactionTypes } = createChartData(selectedAccountTransactions);
 
   const data = {
     datasets: selectedAccounts.map((account: any, index: number) => {
+      const { balanceData } = createChartData(account.transactions);
+      const { transactionData } = createChartData(account.transactions);
       return {
         label: account.accountTitle,
-        data:
-          selectedTransactionType === "all"
-            ? createChartData(account.transactions)[0]
-            : createChartData(account.transactions)[4],
+        data: selectedTransactionType === "all" ? balanceData : transactionData,
         // borderColor: "green",
         borderColor: colorArray[index],
         // backgroundColor: "rgba(102, 204, 153, 0.5)",
