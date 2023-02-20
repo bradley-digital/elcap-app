@@ -149,13 +149,19 @@ export default function useChartData(
 
       if (Number(day) < 15) {
         week = week + " first half";
-        // } else if (Number(day) >= 15 && Number(day) < 20) {
-        // week = week + " week 2";
-        // } else if (Number(day) >= 14 && Number(day) < 21) {
-        //   week = week + " week 3";
       } else if (Number(day) >= 15) {
         week = week + " second half";
       }
+
+      // if (Number(day) < 7) {
+      //   week = week + " week 1";
+      // } else if (Number(day) >= 7 && Number(day) < 15) {
+      //   week = week + " week 2";
+      // } else if (Number(day) >= 15 && Number(day) < 21) {
+      //   week = week + " week 3";
+      // } else if (Number(day) >= 21) {
+      //   week = week + " week 4";
+      // }
 
       const singleAccountBalances = {
         x: shortDate,
