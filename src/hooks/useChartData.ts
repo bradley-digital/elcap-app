@@ -145,22 +145,22 @@ export default function useChartData(
       const date = new Date(balance.postingDate);
       const shortDate = date.toLocaleDateString("en-US", dateOptions);
       const day = shortDate.split(" ")[1].replace(",", "");
-      let week = shortDate.split(" ")[0] + " " + shortDate.split(" ")[2];
+      let labelDate = shortDate.split(" ")[0] + " " + shortDate.split(" ")[2];
 
       if (Number(day) < 15) {
-        week = week + " first half";
+        labelDate = labelDate + " first half";
       } else if (Number(day) >= 15) {
-        week = week + " second half";
+        labelDate = labelDate + " second half";
       }
 
       // if (Number(day) < 7) {
-      //   week = week + " week 1";
+      //   labelDate = labelDate + " week 1";
       // } else if (Number(day) >= 7 && Number(day) < 15) {
-      //   week = week + " week 2";
+      //   labelDate = labelDate + " week 2";
       // } else if (Number(day) >= 15 && Number(day) < 21) {
-      //   week = week + " week 3";
+      //   labelDate = labelDate + " week 3";
       // } else if (Number(day) >= 21) {
-      //   week = week + " week 4";
+      //   labelDate = labelDate + " week 4";
       // }
 
       const singleAccountBalances = {
@@ -169,7 +169,7 @@ export default function useChartData(
       };
 
       const allAccountBalances = {
-        x: week,
+        x: labelDate,
         y: balance.balanceAtTimeOfTransaction,
       };
 
@@ -198,7 +198,7 @@ export default function useChartData(
       };
 
       const allAccountTransactions = {
-        x: week,
+        x: labelDate,
         y: balance.transactionAmount,
       };
 
