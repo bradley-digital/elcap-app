@@ -36,12 +36,6 @@ export default function useChartData(
     X: "Reversed",
   };
 
-  const dateOptions: Intl.DateTimeFormatOptions = {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  };
-
   const isSingleAccountSelected = selectedAccountNumber !== 0;
 
   const filteredAccountTransactions = (accountNumber: string | number) => {
@@ -143,7 +137,12 @@ export default function useChartData(
 
     transactionsWithBalanceByYear.forEach((balance) => {
       const date = new Date(balance.postingDate);
-      const shortDate = date.toLocaleDateString("en-US", dateOptions);
+      const options: Intl.DateTimeFormatOptions = {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      };
+      const shortDate = date.toLocaleDateString("en-US", options);
       const day = shortDate.split(" ")[1].replace(",", "");
       let labelDate = shortDate.split(" ")[0] + " " + shortDate.split(" ")[2];
 
