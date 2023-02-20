@@ -1,14 +1,8 @@
 import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
+import { Transaction } from "./useWesternAllianceAccount";
 
 type StringMap = {
   [key: string]: string;
-};
-
-type transactionMap = {
-  transactionAmount: number;
-  transactionType: string;
-  postingDate: string;
-  balanceAtTimeOfTransaction: number;
 };
 
 export default function useChartData(
@@ -42,6 +36,14 @@ export default function useChartData(
     X: "Reversed",
   };
 
+  const dateOptions: Intl.DateTimeFormatOptions = {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  };
+
+  const isSingleAccountSelected = selectedAccountNumber !== 0;
+
   const filteredAccountTransactions = (accountNumber: string | number) => {
     return transactions?.filter(
       (transaction) => transaction.accountNumber === accountNumber
@@ -57,21 +59,19 @@ export default function useChartData(
     });
   });
 
-  const selectedIndividualAccount =
-    selectedAccountNumber !== 0
-      ? individualAccounts.filter(
-          (account: any) => account.accountNumber === selectedAccountNumber
-        )
-      : individualAccounts;
+  const selectedAccounts = isSingleAccountSelected
+    ? individualAccounts.filter(
+        (account: any) => account.accountNumber === selectedAccountNumber
+      )
+    : individualAccounts;
 
-  const selectedAccountTransactions =
-    selectedAccountNumber !== 0
-      ? filteredAccountTransactions(selectedAccountNumber)
-      : transactions;
+  const selectedAccountTransactions = isSingleAccountSelected
+    ? filteredAccountTransactions(selectedAccountNumber)
+    : transactions;
 
-  function createChartData(accountTransactions) {
+  function createChartData(accountTransactions: Transaction[]) {
     const chartLabels: Array<string> = [];
-    const transactionData: Array<number> = [];
+    const transactionData: Array<any> = [];
 
     accountTransactions.sort(
       (a, b) =>
@@ -131,7 +131,7 @@ export default function useChartData(
       .reverse();
 
     const transactionsWithBalanceByYear = transactionsWithBalance.filter(
-      (transaction: transactionMap) => {
+      (transaction) => {
         const date = new Date(transaction.postingDate);
         if (year === 0) {
           return date.getFullYear();
@@ -159,20 +159,45 @@ export default function useChartData(
         }
 
         const date = new Date(postingDate);
-        const options: any = {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        };
-        const shortDate = date.toLocaleDateString("en-US", options);
+        const shortDate = date.toLocaleDateString("en-US", dateOptions);
 
-        transactionData.push(transactionAmount);
+        transactionData.push({
+          x: shortDate,
+          y: transactionAmount,
+        });
         chartLabels.push(shortDate);
       }
     );
-    const balanceData = transactionsWithBalanceByYear.map(
-      (x) => x.balanceAtTimeOfTransaction
-    );
+
+    const balanceData = transactionsWithBalanceByYear.map((balance) => {
+      const date = new Date(balance.postingDate);
+      const shortDate = date.toLocaleDateString("en-US", dateOptions);
+      const day = shortDate.split(" ")[1].replace(",", "");
+      let week = shortDate.split(" ")[0] + " " + shortDate.split(" ")[2];
+
+      if (Number(day) < 15) {
+        week = week + " first half";
+        // } else if (Number(day) >= 7 && Number(day) < 14) {
+        //   week = week + " week 2";
+        // } else if (Number(day) >= 14 && Number(day) < 21) {
+        //   week = week + " week 3";
+      } else if (Number(day) >= 15) {
+        week = week + " second half";
+      }
+
+      const allAccountTransactions = {
+        x: week,
+        y: balance.balanceAtTimeOfTransaction,
+      };
+      const singleAccountTransactions = {
+        x: shortDate,
+        y: balance.balanceAtTimeOfTransaction,
+      };
+
+      return isSingleAccountSelected
+        ? singleAccountTransactions
+        : allAccountTransactions;
+    });
 
     const chartData =
       selectedTransactionType === "all" ? balanceData : transactionData;
@@ -199,27 +224,11 @@ export default function useChartData(
     "#eb445a",
   ];
 
-  const chartData: string[] = createChartData(
-    individualAccounts[0].transactions
-  )[0];
-
-  const chartLabels: string[] = createChartData(selectedAccountTransactions)[1];
-
-  const transactionYears: string[] = createChartData(
-    selectedAccountTransactions
-  )[2];
-
-  const transactionTypes: string[] = createChartData(
-    selectedAccountTransactions
-  )[3];
-
-  const transactionData: string[] = createChartData(
-    selectedAccountTransactions
-  )[4];
+  const transactionYears = createChartData(selectedAccountTransactions)[2];
+  const transactionTypes = createChartData(selectedAccountTransactions)[3];
 
   const data = {
-    labels: chartLabels,
-    datasets: selectedIndividualAccount.map((account: any, index: number) => {
+    datasets: selectedAccounts.map((account: any, index: number) => {
       return {
         label: account.accountTitle,
         data:
@@ -255,7 +264,7 @@ export default function useChartData(
         offset: true,
         title: {
           display: true,
-          text: "Weeks",
+          text: "Time",
         },
       },
       y: {
