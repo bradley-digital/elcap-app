@@ -145,19 +145,12 @@ export default function useChartData(
       };
       const shortDate = date.toLocaleDateString("en-US", options);
 
-      const singleAccountBalances = {
+      const balanceCoordinates = {
         x: Date.parse(shortDate),
         y: balance.balanceAtTimeOfTransaction,
       };
 
-      const allAccountBalances = {
-        x: Date.parse(shortDate),
-        y: balance.balanceAtTimeOfTransaction,
-      };
-
-      isSingleAccountSelected
-        ? balanceData.push(singleAccountBalances)
-        : balanceData.push(allAccountBalances);
+      balanceData.push(balanceCoordinates);
 
       const filterMap: StringMap = {
         C: "C",
@@ -174,19 +167,12 @@ export default function useChartData(
         return;
       }
 
-      const singleAccountTransactions = {
+      const transactionCoordinates = {
         x: Date.parse(shortDate),
         y: balance.transactionAmount,
       };
 
-      const allAccountTransactions = {
-        x: Date.parse(shortDate),
-        y: balance.transactionAmount,
-      };
-
-      isSingleAccountSelected
-        ? transactionData.push(singleAccountTransactions)
-        : transactionData.push(allAccountTransactions);
+      transactionData.push(transactionCoordinates);
     });
 
     return {
@@ -218,9 +204,7 @@ export default function useChartData(
         label: account.accountTitle,
         showLine: true,
         data: selectedTransactionType === "all" ? balanceData : transactionData,
-        // borderColor: "green",
         borderColor: colorArray[index],
-        // backgroundColor: "rgba(102, 204, 153, 0.5)",
         backgroundColor: colorArray[index],
         borderWidth: 1,
       };
