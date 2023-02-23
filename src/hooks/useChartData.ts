@@ -237,7 +237,6 @@ export default function useChartData(
       tooltip: {
         callbacks: {
           label: function (context: any) {
-            console.log("context:", context);
             let label = context.dataset.label || "";
 
             if (label) {
@@ -281,9 +280,9 @@ export default function useChartData(
       x: {
         type: "time",
         time: {
-          unit: "week",
+          unit: "month",
           displayFormats: {
-            week: "ll",
+            week: "MMM YYYY",
           },
         },
         offset: true,
