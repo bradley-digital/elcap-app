@@ -1,3 +1,4 @@
+import "chartjs-adapter-moment";
 import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
 import { Transaction } from "./useWesternAllianceAccount";
 
@@ -143,32 +144,14 @@ export default function useChartData(
         year: "numeric",
       };
       const shortDate = date.toLocaleDateString("en-US", options);
-      const day = shortDate.split(" ")[1].replace(",", "");
-      let labelDate = shortDate.split(" ")[0] + " " + shortDate.split(" ")[2];
-
-      if (Number(day) < 15) {
-        labelDate = labelDate + " first half";
-      } else if (Number(day) >= 15) {
-        labelDate = labelDate + " second half";
-      }
-
-      // if (Number(day) < 7) {
-      //   labelDate = labelDate + " week 1";
-      // } else if (Number(day) >= 7 && Number(day) < 15) {
-      //   labelDate = labelDate + " week 2";
-      // } else if (Number(day) >= 15 && Number(day) < 21) {
-      //   labelDate = labelDate + " week 3";
-      // } else if (Number(day) >= 21) {
-      //   labelDate = labelDate + " week 4";
-      // }
 
       const singleAccountBalances = {
-        x: shortDate,
+        x: Date.parse(shortDate),
         y: balance.balanceAtTimeOfTransaction,
       };
 
       const allAccountBalances = {
-        x: labelDate,
+        x: Date.parse(shortDate),
         y: balance.balanceAtTimeOfTransaction,
       };
 
@@ -192,12 +175,12 @@ export default function useChartData(
       }
 
       const singleAccountTransactions = {
-        x: shortDate,
+        x: Date.parse(shortDate),
         y: balance.transactionAmount,
       };
 
       const allAccountTransactions = {
-        x: labelDate,
+        x: Date.parse(shortDate),
         y: balance.transactionAmount,
       };
 
@@ -230,8 +213,10 @@ export default function useChartData(
     datasets: selectedAccounts.map((account: any, index: number) => {
       const { balanceData } = createChartData(account.transactions);
       const { transactionData } = createChartData(account.transactions);
+
       return {
         label: account.accountTitle,
+        showLine: true,
         data: selectedTransactionType === "all" ? balanceData : transactionData,
         // borderColor: "green",
         borderColor: colorArray[index],
@@ -245,7 +230,42 @@ export default function useChartData(
   const options = {
     responsive: true,
     maintainAspectRatio: false,
+    ticks: {
+      autoSkip: false,
+    },
     plugins: {
+      tooltip: {
+        callbacks: {
+          label: function (context: any) {
+            console.log("context:", context);
+            let label = context.dataset.label || "";
+
+            if (label) {
+              label += ": ";
+            }
+
+            if (context.parsed.x !== null) {
+              const date = new Date(context.parsed.x);
+              const options: Intl.DateTimeFormatOptions = {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              };
+              const shortDate = date.toLocaleDateString("en-US", options);
+              label += shortDate + " - ";
+            }
+
+            if (context.parsed.y !== null) {
+              label += new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD",
+              }).format(context.parsed.y);
+            }
+            return label;
+          },
+        },
+      },
+
       legend: {
         position: "top" as const,
       },
@@ -259,6 +279,13 @@ export default function useChartData(
     },
     scales: {
       x: {
+        type: "time",
+        time: {
+          unit: "week",
+          displayFormats: {
+            week: "ll",
+          },
+        },
         offset: true,
         title: {
           display: true,

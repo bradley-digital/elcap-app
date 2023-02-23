@@ -1,8 +1,8 @@
 import { useState } from "react";
+import "chart.js/auto";
 
 // components
-import "chart.js/auto";
-import { Line } from "react-chartjs-2";
+import { Scatter } from "react-chartjs-2";
 import {
   IonItem,
   IonList,
@@ -146,7 +146,7 @@ export default function DashboardOverview() {
           </IonCol>
           <IonCol className="DashboardOverview__content">
             {isChartVisible ? (
-              <Line data={data} options={options} height={500} />
+              <Scatter data={data} options={options} height={500} />
             ) : (
               <IonSpinner color="success" />
             )}
