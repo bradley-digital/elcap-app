@@ -29,6 +29,10 @@ export default function FormSelect(props: Props) {
   const [field, meta] = useField(props);
   const { label, icon, options, ...rest } = props;
 
+  const selectedOption =
+    options.find((option) => option.value === field.value)
+    || { value: "", label: "" };
+
   return (
     <IonItem
       className={cn("FormSelect", {
@@ -41,11 +45,10 @@ export default function FormSelect(props: Props) {
 
       <IonSelect
         {...rest}
-        selectedText={field.value}
+        selectedText={selectedOption.label}
         onIonBlur={field.onBlur}
         onIonChange={(event) => field.onChange(event)}
       >
-        {/* loop options  */}
         {options.map((option, i) => (
           <IonSelectOption key={i} value={option.value}>
             {option.label}

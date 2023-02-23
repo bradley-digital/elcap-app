@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useQuery } from "react-query";
 
 // hooks
 import useAuth from "hooks/useAuth";
@@ -7,7 +7,6 @@ const queryKey = "docfox";
 
 export function useTemplates() {
   const { authApi } = useAuth();
-  const queryClient = useQueryClient();
 
   const {
     isSuccess: templatesIsSuccess,
@@ -26,12 +25,7 @@ export function useTemplates() {
 }
 
 export function useTemplate(templateId: string) {
-  if (!templateId) {
-    return {
-      templateIsSuccess: false,
-      template: undefined,
-    };
-  }
+  const { authApi } = useAuth();
 
   const {
     isSuccess: templateIsSuccess,
@@ -42,6 +36,7 @@ export function useTemplate(templateId: string) {
   );
 
   async function getEntityTemplate(id: string) {
+    if (!id) return;
     const { data } = await authApi.get(`/docfox/entity-template?templateId=${id}`);
     return data;
   }

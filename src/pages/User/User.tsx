@@ -6,7 +6,9 @@ import {
   useIonRouter,
 } from "@ionic/react";
 import PageTemplate from "components/PageTemplate/PageTemplate";
-import FormUserManagement from "components/FormUserManagement/FormUserManagement";
+import FormUserAccount from "components/FormUserAccount/FormUserAccount";
+import FormUserWesternAllianceAccounts from "components/FormUserWesternAllianceAccounts/FormUserWesternAllianceAccounts";
+import FormUserDocfox from "components/FormUserDocfox/FormUserDocfox";
 
 // hooks
 import useUserManagement from "hooks/useUserManagement";
@@ -28,7 +30,9 @@ export default function UserManagement() {
         <IonGrid>
           <IonRow className="ion-justify-content-center">
             <IonCol size-md="8" size-lg="6">
-              <FormUserManagement profile={user} />
+              <FormUserAccount profile={user} />
+              <FormUserWesternAllianceAccounts profile={user} />
+              <FormUserDocfox profile={user} />
             </IonCol>
           </IonRow>
         </IonGrid>

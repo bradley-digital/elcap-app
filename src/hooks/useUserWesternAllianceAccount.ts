@@ -1,5 +1,5 @@
 import type { Account, Transaction } from "./useWesternAllianceAccount";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useQuery } from "react-query";
 
 const queryKey = "userAccount";
 

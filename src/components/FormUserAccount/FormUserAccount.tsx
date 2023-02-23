@@ -1,3 +1,4 @@
+import type { Profile } from "hooks/useUser";
 import * as Yup from "yup";
 
 // lib
@@ -14,18 +15,14 @@ import {
 } from "lib/formValidation";
 
 // icons
-import { pencil } from "ionicons/icons";
+import { lockClosed, pencil } from "ionicons/icons";
 
 // components
 import { Form, Formik } from "formik";
-import { IonList } from "@ionic/react";
+import { IonList, IonListHeader } from "@ionic/react";
 import FormInput from "components/FormInput/FormInput";
 import FormSelect from "components/FormSelect/FormSelect";
 import SubmitButton from "components/SubmitButton/SubmitButton";
-
-//atoms
-import { useAtom } from "jotai";
-import { isOpenAtom } from "atoms/userListModal";
 
 // hooks
 import useUserManagement from "hooks/useUserManagement";
@@ -45,12 +42,39 @@ const roleOptions = [
   },
 ];
 
-export default function FormCreateUser() {
-  const { create } = useUserManagement();
-  const [, setIsOpen] = useAtom(isOpenAtom);
+type Props = {
+  profile: Profile;
+};
+
+export default function FormUserAccount({ profile }: Props) {
+  const { update } = useUserManagement();
+
+  const {
+    id,
+    firstName,
+    lastName,
+    email,
+    phone,
+    addressLine1,
+    addressLine2,
+    country,
+    state,
+    role: origRole,
+  } = profile;
 
   return (
     <Formik
+      initialValues={{
+        firstName,
+        lastName,
+        email,
+        phone,
+        addressLine1,
+        addressLine2,
+        country,
+        state,
+        role: origRole,
+      }}
       validationSchema={Yup.object({
         firstName: firstNameValidation,
         lastName: lastNameValidation,
@@ -63,12 +87,15 @@ export default function FormCreateUser() {
         role: roleValidation,
       })}
       onSubmit={(values) => {
-        create(values);
-        setIsOpen(false);
+        update({ id, ...values });
       }}
     >
       <Form>
         <IonList>
+          <IonListHeader>
+            Account Details
+          </IonListHeader>
+
           <FormInput
             label="First Name"
             name="firstName"
@@ -87,7 +114,8 @@ export default function FormCreateUser() {
             label="Email"
             name="email"
             type="email"
-            icon={pencil}
+            icon={lockClosed}
+            readonly={true}
           />
 
           <FormInput label="Phone" name="phone" type="text" icon={pencil} />
@@ -116,7 +144,7 @@ export default function FormCreateUser() {
             options={roleOptions}
           />
 
-          <SubmitButton>Create New User</SubmitButton>
+          <SubmitButton>Update</SubmitButton>
         </IonList>
       </Form>
     </Formik>
