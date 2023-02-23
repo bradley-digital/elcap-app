@@ -19,18 +19,19 @@ import { lockClosed, pencil } from "ionicons/icons";
 
 // components
 import { Form, Formik, FieldArray } from "formik";
-import { IonButton, IonList } from "@ionic/react";
+import { IonButton, IonList, IonListHeader } from "@ionic/react";
 import FormInput from "components/FormInput/FormInput";
+import FormSelect from "components/FormSelect/FormSelect";
 import SubmitButton from "components/SubmitButton/SubmitButton";
 
-//atoms
+// atoms
 import { useAtom } from "jotai";
 import { isOpenAtom } from "atoms/userListModal";
 
 // hooks
 import useUserManagement from "hooks/useUserManagement";
 import useWesternAllianceAccount from "hooks/useWesternAllianceAccount";
-import FormSelect from "components/FormSelect/FormSelect";
+import { useTemplates } from "hooks/useDocfox";
 
 const roleOptions = [
   {
@@ -53,7 +54,8 @@ type Props = {
 
 export default function FormUserManagement({ profile }: Props) {
   const { accounts, accountsIsSuccess } = useWesternAllianceAccount();
-  const { create, update } = useUserManagement();
+  const { update } = useUserManagement();
+  const { templates, templatesIsSuccess } = useTemplates();
   const [, setIsOpen] = useAtom(isOpenAtom);
 
   const {
@@ -70,7 +72,6 @@ export default function FormUserManagement({ profile }: Props) {
     accounts: profileAccounts,
   } = profile;
 
-
   const accountNumbers = profileAccounts ? profileAccounts.map(account => account.accountNumber) : [];
 
   const accountOptions = accounts ? accounts.map(account => {
@@ -79,9 +80,6 @@ export default function FormUserManagement({ profile }: Props) {
       label: account.accountNumber,
     };
   }) : [];
-
-  // This is brittle, what's a better way?
-  const isNewUser = email === "";
 
   return (
     <Formik
@@ -109,16 +107,17 @@ export default function FormUserManagement({ profile }: Props) {
         role: roleValidation,
       })}
       onSubmit={(values) => {
-        if (isNewUser) {
-          create(values);
-        } else {
-          update({ id, ...values });
-        }
+        update({ id, ...values });
         setIsOpen(false);
       }}
-      render={({ values }) => (
+    >
+      {({ values }) => (
         <Form>
           <IonList>
+            <IonListHeader>
+              Account Details
+            </IonListHeader>
+
             <FormInput
               label="First Name"
               name="firstName"
@@ -137,8 +136,8 @@ export default function FormUserManagement({ profile }: Props) {
               label="Email"
               name="email"
               type="email"
-              icon={isNewUser ? pencil : lockClosed}
-              readonly={isNewUser ? false : true}
+              icon={lockClosed}
+              readonly={true}
             />
 
             <FormInput label="Phone" name="phone" type="text" icon={pencil} />
@@ -164,45 +163,52 @@ export default function FormUserManagement({ profile }: Props) {
             <FormSelect
               label="Role"
               name="role"
-              icon={pencil}
               options={roleOptions}
             />
 
             {values.role === "PORTAL" && (
-              <FieldArray
-                name="accounts"
-                render={arrayHelpers => (
-                  <>
-                    {values.accounts.map((account, index) => (
-                      <div key={index}>
-                        {accountsIsSuccess && (
-                          <FormSelect
-                            label="Account"
-                            name={`accounts.${index}`}
-                            options={accountOptions}
-                          />
-                        )}
-                        <IonButton onClick={() => arrayHelpers.remove(index)}>
-                          -
-                        </IonButton>
-                      </div>
-                    ))}
-                    <IonButton onClick={() => arrayHelpers.push("")}>
-                      Add account
-                    </IonButton>
-                  </>
-                )}
-              />
+              <>
+                <IonListHeader>
+                  Western Alliance Accounts
+                </IonListHeader>
+                <FieldArray
+                  name="accounts"
+                  render={arrayHelpers => (
+                    <>
+                      {values.accounts.map((account, index) => (
+                        <div key={index}>
+                          {accountsIsSuccess && (
+                            <FormSelect
+                              label="Account"
+                              name={`accounts.${index}`}
+                              options={accountOptions}
+                            />
+                          )}
+                          <IonButton onClick={() => arrayHelpers.remove(index)}>
+                            -
+                          </IonButton>
+                        </div>
+                      ))}
+                      <IonButton onClick={() => arrayHelpers.push("")}>
+                        Add account
+                      </IonButton>
+                    </>
+                  )}
+                />
+
+                <IonListHeader>
+                  DocFox KYC
+                </IonListHeader>
+
+                {/*templatesIsSuccess && typeof templates !== "undefined" && (
+                )*/}
+              </>
             )}
 
-            {isNewUser ? (
-              <SubmitButton>Create New User</SubmitButton>
-            ) : (
-              <SubmitButton>Update</SubmitButton>
-            )}
+            <SubmitButton>Update</SubmitButton>
           </IonList>
         </Form>
       )}
-    />
+    </Formik>
   );
 }

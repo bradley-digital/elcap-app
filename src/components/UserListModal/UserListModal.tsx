@@ -8,13 +8,12 @@ import {
   IonTitle,
 } from "@ionic/react";
 import { useAtom } from "jotai";
-import { userAtom, isOpenAtom } from "atoms/userListModal";
+import { isOpenAtom } from "atoms/userListModal";
 
-import FormUserManagement from "components/FormUserManagement/FormUserManagement";
+import FormCreateUser from "components/FormCreateUser/FormCreateUser";
 
 export default function UserListModal() {
   const [isOpen, setIsOpen] = useAtom(isOpenAtom);
-  const [user] = useAtom(userAtom);
 
   function closeModal() {
     setIsOpen(false);
@@ -31,7 +30,7 @@ export default function UserListModal() {
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
-        <FormUserManagement profile={user} />
+        <FormCreateUser />
       </IonContent>
     </IonModal>
   );
