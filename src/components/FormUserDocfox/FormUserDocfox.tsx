@@ -1,6 +1,9 @@
 import type { Profile } from "hooks/useUser";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import * as Yup from "yup";
+
+// lib
+import { buildSchema, buildValidation } from "lib/docfoxSchema";
 
 // components
 import { Form, Formik } from "formik";
@@ -23,6 +26,14 @@ export default function FormUserDocfox({ profile }: Props) {
   const { templates } = useTemplates();
   const { template } = useTemplate(templateId);
   const { update } = useUserManagement();
+  const { schema, required } = useMemo(
+    () => buildSchema(template?.data?.attributes?.profile_schema),
+    [template]
+  );
+  const validationObject = useMemo(
+    () => buildValidation(schema, required),
+    [schema, required],
+  );
 
   const { id } = profile;
 
@@ -41,22 +52,12 @@ export default function FormUserDocfox({ profile }: Props) {
     }
   }
 
-  //let schema = {};
-  if (template) {
-    for (const propertyKey in template.data?.attributes?.profile_schema?.properties) {
-      if (propertyKey === "kyc_entity_template_id") continue;
-      const property = template.data.attributes.profile_schema.properties[propertyKey];
-
-      if (property.type === "object") {
-      }
-    }
-  }
-
   return (
     <Formik
       initialValues={{
         entityTemplate: "",
       }}
+      validationSchema={Yup.object(validationObject)}
       onSubmit={(values) => {
         console.log(values);
         //update({ id, ...values });

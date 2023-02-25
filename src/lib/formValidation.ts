@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 
-const phoneRegExp =
+export const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
 export const firstNameValidation = Yup.string().required("First Name required");
@@ -26,7 +26,7 @@ export const emailValidation = Yup.string()
   .required("Email required");
 
 export const phoneValidation = Yup.string()
-  .matches(phoneRegExp, "Phone number is not valid")
+  .matches(phoneRegExp, "Phone number must be valid")
   .required("Phone number required");
 
 export const passwordValidation = Yup.string()
