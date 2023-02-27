@@ -1,4 +1,6 @@
+import "chartjs-adapter-moment";
 import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
+import { Transaction } from "./useWesternAllianceAccount";
 
 type StringMap = {
   [key: string]: string;
@@ -6,12 +8,10 @@ type StringMap = {
 
 export default function useChartData(
   year: number,
-  selectedTransactionType: string
+  selectedTransactionType: string,
+  selectedAccountNumber: number
 ) {
-  const {
-    accounts,
-    transactions,
-  } = useUserWesternAllianceAccount();
+  const { accounts, transactions } = useUserWesternAllianceAccount();
 
   if (!transactions) {
     return {
@@ -27,8 +27,6 @@ export default function useChartData(
 
   // Still need to add this data to the accounts endpoint
   const currentBalance = 1479702.78;
-  const transactionData: Array<number> = [];
-  const chartLabels: Array<string> = [];
   const dataLabel =
     selectedTransactionType === "all" ? "Balance" : "Transactions";
   const transactionTypeMap: StringMap = {
@@ -39,72 +37,121 @@ export default function useChartData(
     X: "Reversed",
   };
 
-  transactions.sort(
-    (a, b) =>
-      new Date(a.postingDate).getTime() - new Date(b.postingDate).getTime()
-  );
+  const isSingleAccountSelected = selectedAccountNumber !== 0;
 
-  const transactionYears = new Set(
-    transactions.map(({ postingDate }) => new Date(postingDate).getFullYear())
-  );
+  const filteredAccountTransactions = (accountNumber: string | number) => {
+    return transactions?.filter(
+      (transaction) => transaction.accountNumber === accountNumber
+    );
+  };
 
-  const transactionTypes = new Set(
-    transactions.map(({ transactionType }) => transactionType)
-  );
+  const individualAccounts: any = [];
+  accounts?.accounts.forEach((account: any) => {
+    individualAccounts.push({
+      accountTitle: account.accountTitle,
+      accountNumber: account.accountNumber,
+      transactions: filteredAccountTransactions(account.accountNumber),
+    });
+  });
 
-  let balanceAtTimeOfTransaction = currentBalance;
+  const selectedAccounts = isSingleAccountSelected
+    ? individualAccounts.filter(
+        (account: any) => account.accountNumber === selectedAccountNumber
+      )
+    : individualAccounts;
 
-  const transactionsWithBalance = transactions.reverse().map(
-    ({ transactionType, transactionAmount, postingDate }) => {
-      const convertedTransactionAmount = Number(transactionAmount);
+  const selectedAccountTransactions = isSingleAccountSelected
+    ? filteredAccountTransactions(selectedAccountNumber)
+    : transactions;
 
-      // Round to avoid float precision errors
-      const roundedBalance = Math.round(balanceAtTimeOfTransaction * 100) / 100;
+  function createChartData(accountTransactions: Transaction[]) {
+    const transactionData: Array<any> = [];
+    const balanceData: Array<any> = [];
 
-      const transaction = {
-        transactionAmount: convertedTransactionAmount,
-        transactionType,
-        postingDate,
-        balanceAtTimeOfTransaction: roundedBalance,
+    accountTransactions.sort(
+      (a, b) =>
+        new Date(a.postingDate).getTime() - new Date(b.postingDate).getTime()
+    );
+
+    const transactionYears = new Set(
+      accountTransactions.map(({ postingDate }) =>
+        new Date(postingDate).getFullYear()
+      )
+    );
+
+    const transactionTypes = new Set(
+      accountTransactions.map(({ transactionType }) => transactionType)
+    );
+
+    let balanceAtTimeOfTransaction = currentBalance;
+
+    const transactionsWithBalance = accountTransactions
+      .reverse()
+      .map(({ transactionType, transactionAmount, postingDate }) => {
+        const convertedTransactionAmount = Number(transactionAmount);
+
+        // Round to avoid float precision errors
+        const roundedBalance =
+          Math.round(balanceAtTimeOfTransaction * 100) / 100;
+
+        const transaction = {
+          transactionAmount: convertedTransactionAmount,
+          transactionType,
+          postingDate,
+          balanceAtTimeOfTransaction: roundedBalance,
+        };
+
+        switch (transactionType) {
+          case "C":
+            balanceAtTimeOfTransaction -= convertedTransactionAmount;
+            break;
+          case "D":
+            balanceAtTimeOfTransaction += convertedTransactionAmount;
+            break;
+          case "F":
+            balanceAtTimeOfTransaction -= convertedTransactionAmount;
+            break;
+          case "M":
+            balanceAtTimeOfTransaction += convertedTransactionAmount;
+            break;
+          case "X":
+            balanceAtTimeOfTransaction -= convertedTransactionAmount;
+            break;
+          default:
+            break;
+        }
+
+        return transaction;
+      })
+      .reverse();
+
+    const transactionsWithBalanceByYear = transactionsWithBalance.filter(
+      (transaction) => {
+        const date = new Date(transaction.postingDate);
+        if (year === 0) {
+          return date.getFullYear();
+        } else {
+          return date.getFullYear() === year;
+        }
+      }
+    );
+
+    transactionsWithBalanceByYear.forEach((balance) => {
+      const date = new Date(balance.postingDate);
+      const options: Intl.DateTimeFormatOptions = {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      };
+      const shortDate = date.toLocaleDateString("en-US", options);
+
+      const balanceCoordinates = {
+        x: Date.parse(shortDate),
+        y: balance.balanceAtTimeOfTransaction,
       };
 
-      switch (transactionType) {
-        case "C":
-          balanceAtTimeOfTransaction -= convertedTransactionAmount;
-          break;
-        case "D":
-          balanceAtTimeOfTransaction += convertedTransactionAmount;
-          break;
-        case "F":
-          balanceAtTimeOfTransaction -= convertedTransactionAmount;
-          break;
-        case "M":
-          balanceAtTimeOfTransaction += convertedTransactionAmount;
-          break;
-        case "X":
-          balanceAtTimeOfTransaction -= convertedTransactionAmount;
-          break;
-        default:
-          break;
-      }
+      balanceData.push(balanceCoordinates);
 
-      return transaction;
-    }
-  ).reverse();
-
-  const transactionsWithBalanceByYear = transactionsWithBalance.filter(
-    (transaction) => {
-      const date = new Date(transaction.postingDate);
-      if (year === 0) {
-        return date.getFullYear();
-      } else {
-        return date.getFullYear() === year;
-      }
-    }
-  );
-
-  transactionsWithBalanceByYear.forEach(
-    ({ transactionAmount, transactionType, postingDate }) => {
       const filterMap: StringMap = {
         C: "C",
         D: "D",
@@ -114,49 +161,94 @@ export default function useChartData(
       };
 
       if (
-        filterMap[selectedTransactionType] !== transactionType &&
+        filterMap[selectedTransactionType] !== balance.transactionType &&
         selectedTransactionType !== "all"
       ) {
         return;
       }
 
-      const date = new Date(postingDate);
-      const options: any = { month: "short", day: "numeric", year: "numeric" };
-      const shortDate = date.toLocaleDateString("en-US", options);
+      const transactionCoordinates = {
+        x: Date.parse(shortDate),
+        y: balance.transactionAmount,
+      };
 
-      transactionData.push(transactionAmount);
-      chartLabels.push(shortDate);
-    }
-  );
+      transactionData.push(transactionCoordinates);
+    });
 
-  const balanceData = transactionsWithBalanceByYear.map(
-    (x) => x.balanceAtTimeOfTransaction
-  );
+    return {
+      balanceData: balanceData,
+      transactionYears: transactionYears,
+      transactionTypes: transactionTypes,
+      transactionData: transactionData,
+    };
+  }
 
-  const chartData =
-    selectedTransactionType === "all" ? balanceData : transactionData;
+  const colorArray = [
+    "#007854",
+    "#3dc2ff",
+    "#5260ff",
+    "#2dd36f",
+    "#ffc409",
+    "#eb445a",
+  ];
 
-  chartLabels.sort(
-    (a, b) => new Date(a).getFullYear() - new Date(b).getFullYear()
-  );
+  const { transactionYears } = createChartData(selectedAccountTransactions);
+  const { transactionTypes } = createChartData(selectedAccountTransactions);
 
   const data = {
-    labels: chartLabels,
-    datasets: [
-      {
-        label: `${dataLabel}`,
-        data: chartData,
-        borderColor: "green",
-        backgroundColor: "rgba(102, 204, 153, 0.5)",
+    datasets: selectedAccounts.map((account: any, index: number) => {
+      const { balanceData } = createChartData(account.transactions);
+      const { transactionData } = createChartData(account.transactions);
+
+      return {
+        label: account.accountTitle,
+        showLine: true,
+        data: selectedTransactionType === "all" ? balanceData : transactionData,
+        borderColor: colorArray[index],
+        backgroundColor: colorArray[index],
         borderWidth: 1,
-      },
-    ],
+      };
+    }),
   };
 
   const options = {
     responsive: true,
     maintainAspectRatio: false,
+    ticks: {
+      autoSkip: false,
+    },
     plugins: {
+      tooltip: {
+        callbacks: {
+          label: function (context: any) {
+            let label = context.dataset.label || "";
+
+            if (label) {
+              label += ": ";
+            }
+
+            if (context.parsed.x !== null) {
+              const date = new Date(context.parsed.x);
+              const options: Intl.DateTimeFormatOptions = {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              };
+              const shortDate = date.toLocaleDateString("en-US", options);
+              label += shortDate + " - ";
+            }
+
+            if (context.parsed.y !== null) {
+              label += new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD",
+              }).format(context.parsed.y);
+            }
+            return label;
+          },
+        },
+      },
+
       legend: {
         position: "top" as const,
       },
@@ -170,9 +262,17 @@ export default function useChartData(
     },
     scales: {
       x: {
+        type: "time",
+        time: {
+          unit: "month",
+          displayFormats: {
+            week: "MMM YYYY",
+          },
+        },
+        offset: true,
         title: {
           display: true,
-          text: "Weeks",
+          text: "Time",
         },
       },
       y: {
@@ -187,6 +287,7 @@ export default function useChartData(
   return {
     isSuccess: true,
     data,
+    accounts,
     options,
     currentBalance,
     transactionYears,

@@ -1,8 +1,8 @@
 import { useState } from "react";
+import "chart.js/auto";
 
 // components
-import "chart.js/auto";
-import { Line } from "react-chartjs-2";
+import { Scatter } from "react-chartjs-2";
 import {
   IonItem,
   IonList,
@@ -24,30 +24,37 @@ import "./DashboardOverview.scss";
 
 export default function DashboardOverview() {
   const [isChartVisible, setIsChartVisible] = useState(false);
+  const [selectedAccountNumber, setSelectedAccountNumber] = useState(0);
   const [selectedYear, setSelectedYear] = useState(0);
   const [selectedTransactionType, setSelectedTransactionType] = useState("all");
   const {
     isSuccess,
     data,
+    accounts,
     options,
     currentBalance,
     transactionYears,
     transactionTypes,
     transactionTypeMap,
-  } = useChartData(selectedYear, selectedTransactionType);
+  } = useChartData(
+    selectedYear,
+    selectedTransactionType,
+    selectedAccountNumber
+  );
 
   useIonViewWillEnter(() => {
     setIsChartVisible(true);
   });
 
   if (
-    !isSuccess
-    || typeof data === "undefined"
-    || typeof options === "undefined"
-    || typeof currentBalance === "undefined"
-    || typeof transactionYears === "undefined"
-    || typeof transactionTypes === "undefined"
-    || typeof transactionTypeMap === "undefined"
+    !isSuccess ||
+    typeof data === "undefined" ||
+    typeof accounts === "undefined" ||
+    typeof options === "undefined" ||
+    typeof currentBalance === "undefined" ||
+    typeof transactionYears === "undefined" ||
+    typeof transactionTypes === "undefined" ||
+    typeof transactionTypeMap === "undefined"
   ) {
     return null;
   }
@@ -85,15 +92,34 @@ export default function DashboardOverview() {
             <IonList>
               <IonItem>
                 <IonSelect
+                  placeholder="Select Account"
+                  onIonChange={(e) => setSelectedAccountNumber(e.detail.value)}
+                >
+                  <IonSelectOption value={0}>All</IonSelectOption>
+                  {accounts &&
+                    accounts?.accounts.map((account: any) => (
+                      <IonSelectOption
+                        key={account.accountNumber}
+                        value={account.accountNumber}
+                      >
+                        {account.accountTitle}
+                      </IonSelectOption>
+                    ))}
+                </IonSelect>
+              </IonItem>
+
+              <IonItem>
+                <IonSelect
                   placeholder="Select Year"
                   onIonChange={(e) => setSelectedYear(e.detail.value)}
                 >
                   <IonSelectOption value={0}>All</IonSelectOption>
-                  {Array.from(transactionYears).map((year) => (
-                    <IonSelectOption key={year} value={year}>
-                      {year}
-                    </IonSelectOption>
-                  ))}
+                  {transactionYears &&
+                    Array.from(transactionYears).map((year) => (
+                      <IonSelectOption key={year} value={year}>
+                        {year}
+                      </IonSelectOption>
+                    ))}
                 </IonSelect>
               </IonItem>
 
@@ -105,21 +131,22 @@ export default function DashboardOverview() {
                   }
                 >
                   <IonSelectOption value="all">All</IonSelectOption>
-                  {Array.from(transactionTypes).map((transactionType) => (
-                    <IonSelectOption
-                      key={transactionType}
-                      value={transactionType}
-                    >
-                      {transactionTypeMap[transactionType]}
-                    </IonSelectOption>
-                  ))}
+                  {transactionTypes &&
+                    Array.from(transactionTypes).map((transactionType) => (
+                      <IonSelectOption
+                        key={transactionType}
+                        value={transactionType}
+                      >
+                        {transactionTypeMap[transactionType]}
+                      </IonSelectOption>
+                    ))}
                 </IonSelect>
               </IonItem>
             </IonList>
           </IonCol>
           <IonCol className="DashboardOverview__content">
             {isChartVisible ? (
-              <Line data={data} options={options} height={500} />
+              <Scatter data={data} options={options} height={500} />
             ) : (
               <IonSpinner color="success" />
             )}
