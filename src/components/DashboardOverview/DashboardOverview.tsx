@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "chart.js/auto";
+import hash from "object-hash";
 
 // components
 import { Scatter } from "react-chartjs-2";
@@ -32,7 +33,7 @@ export default function DashboardOverview() {
     data,
     accounts,
     options,
-    currentBalance,
+    accountsCurrentBalanceTotal,
     transactionYears,
     transactionTypes,
     transactionTypeMap,
@@ -51,7 +52,7 @@ export default function DashboardOverview() {
     typeof data === "undefined" ||
     typeof accounts === "undefined" ||
     typeof options === "undefined" ||
-    typeof currentBalance === "undefined" ||
+    typeof accountsCurrentBalanceTotal === "undefined" ||
     typeof transactionYears === "undefined" ||
     typeof transactionTypes === "undefined" ||
     typeof transactionTypeMap === "undefined"
@@ -64,7 +65,7 @@ export default function DashboardOverview() {
     currency: "USD",
   });
 
-  const currentBalanceUSD = USD.format(currentBalance);
+  const currentBalanceUSD = USD.format(accountsCurrentBalanceTotal);
 
   return (
     <div className="DashboardOverview">
@@ -78,8 +79,18 @@ export default function DashboardOverview() {
             className="DashboardOverview__header"
           >
             <IonText>
-              <h1>Account Balance</h1>
+              <h1>Total Portfolio Balance</h1>
               <p>{currentBalanceUSD}</p>
+              <h1>Subtotal Balances</h1>
+              {accounts.accounts.map((account: any) => {
+                return (
+                  <p key={hash(account)}>
+                    {account.accountTitle +
+                      ": " +
+                      USD.format(account.accountBalance)}
+                  </p>
+                );
+              })}
             </IonText>
           </IonCol>
           <IonCol

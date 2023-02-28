@@ -25,8 +25,11 @@ export default function useChartData(
     };
   }
 
-  // Still need to add this data to the accounts endpoint
-  const currentBalance = 1479702.78;
+  const accountsCurrentBalanceTotal = accounts?.accounts.reduce(
+    (acc: number, account: any) => acc + Number(account.accountBalance),
+    0
+  );
+
   const dataLabel =
     selectedTransactionType === "all" ? "Balance" : "Transactions";
   const transactionTypeMap: StringMap = {
@@ -51,6 +54,7 @@ export default function useChartData(
       accountTitle: account.accountTitle,
       accountNumber: account.accountNumber,
       transactions: filteredAccountTransactions(account.accountNumber),
+      currentBalance: account.accountBalance,
     });
   });
 
@@ -64,23 +68,16 @@ export default function useChartData(
     ? filteredAccountTransactions(selectedAccountNumber)
     : transactions;
 
-  function createChartData(accountTransactions: Transaction[]) {
+  function createChartData(
+    accountTransactions: Transaction[],
+    currentBalance: number
+  ) {
     const transactionData: Array<any> = [];
     const balanceData: Array<any> = [];
 
     accountTransactions.sort(
       (a, b) =>
         new Date(a.postingDate).getTime() - new Date(b.postingDate).getTime()
-    );
-
-    const transactionYears = new Set(
-      accountTransactions.map(({ postingDate }) =>
-        new Date(postingDate).getFullYear()
-      )
-    );
-
-    const transactionTypes = new Set(
-      accountTransactions.map(({ transactionType }) => transactionType)
     );
 
     let balanceAtTimeOfTransaction = currentBalance;
@@ -177,8 +174,6 @@ export default function useChartData(
 
     return {
       balanceData: balanceData,
-      transactionYears: transactionYears,
-      transactionTypes: transactionTypes,
       transactionData: transactionData,
     };
   }
@@ -192,13 +187,27 @@ export default function useChartData(
     "#eb445a",
   ];
 
-  const { transactionYears } = createChartData(selectedAccountTransactions);
-  const { transactionTypes } = createChartData(selectedAccountTransactions);
+  const transactionYears = new Set(
+    selectedAccountTransactions.map(({ postingDate }) =>
+      new Date(postingDate).getFullYear()
+    )
+  );
+
+  const transactionTypes = new Set(
+    selectedAccountTransactions.map(({ transactionType }) => transactionType)
+  );
 
   const data = {
     datasets: selectedAccounts.map((account: any, index: number) => {
-      const { balanceData } = createChartData(account.transactions);
-      const { transactionData } = createChartData(account.transactions);
+      const currentBalance = Number(account.currentBalance);
+      const { balanceData } = createChartData(
+        account.transactions,
+        currentBalance
+      );
+      const { transactionData } = createChartData(
+        account.transactions,
+        currentBalance
+      );
 
       return {
         label: account.accountTitle,
@@ -235,7 +244,7 @@ export default function useChartData(
                 year: "numeric",
               };
               const shortDate = date.toLocaleDateString("en-US", options);
-              label += shortDate + " - ";
+              label += shortDate + " | ";
             }
 
             if (context.parsed.y !== null) {
@@ -248,7 +257,6 @@ export default function useChartData(
           },
         },
       },
-
       legend: {
         position: "top" as const,
       },
@@ -289,7 +297,7 @@ export default function useChartData(
     data,
     accounts,
     options,
-    currentBalance,
+    accountsCurrentBalanceTotal,
     transactionYears,
     transactionTypes,
     transactionTypeMap,
