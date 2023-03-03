@@ -10,6 +10,9 @@ import SubmitButton from "components/SubmitButton/SubmitButton";
 import useUserManagement from "hooks/useUserManagement";
 import useWesternAllianceAccount from "hooks/useWesternAllianceAccount";
 
+// styles
+import "./FormUserWesternAllianceAccounts.scss";
+
 type Props = {
   profile: Profile;
 };
@@ -26,11 +29,13 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
   const accountNumbers = profileAccounts ? profileAccounts.map(account => account.accountNumber) : [];
 
   const accountOptions = accounts ? accounts.map(account => {
+    const truncatedAccountNumber = account.accountNumber.slice(-4);
+    const label = `${account.accountTitle} (...${truncatedAccountNumber})`;
     return {
       value: account.accountNumber,
-      label: account.accountNumber,
+      label,
     };
-  }) : [];
+  }).sort((a, b) => a.label.localeCompare(b.label)) : [];
 
   return (
     <Formik
@@ -42,7 +47,7 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
       }}
     >
       {({ values }) => (
-        <Form>
+        <Form className="FormUserWesternAllianceAccounts">
           <IonList>
             <IonListHeader>
               Western Alliance Accounts
@@ -55,6 +60,7 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
                     <div key={index}>
                       {accountsIsSuccess && (
                         <FormSelect
+                          className="FormAccountSelect"
                           label="Account"
                           name={`accounts.${index}`}
                           options={accountOptions}
@@ -66,7 +72,7 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
                     </div>
                   ))}
                   <IonButton onClick={() => arrayHelpers.push("")}>
-                    Add account
+                    Connect account
                   </IonButton>
                 </>
               )}

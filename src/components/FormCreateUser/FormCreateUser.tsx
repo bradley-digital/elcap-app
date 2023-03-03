@@ -51,6 +51,17 @@ export default function FormCreateUser() {
 
   return (
     <Formik
+      initialValues={{
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        addressLine1: "",
+        addressLine2: "",
+        country: "",
+        state: "",
+        role: "",
+      }}
       validationSchema={Yup.object({
         firstName: firstNameValidation,
         lastName: lastNameValidation,

@@ -70,13 +70,14 @@ export function buildSchema(object = {}, options) {
     }
 
     if (property.type === "string") {
-      schema[finalKey] = JSON.parse(JSON.stringify(property));
-      if (schema[finalKey].title) {
-        schema[finalKey].title = `${titlePrefix}${schema[finalKey].title}`;
+      const finalProperty = JSON.parse(JSON.stringify(property))
+      if (finalProperty.title) {
+        finalProperty.title = `${titlePrefix}${finalProperty.title}`;
       }
       if (isRequired(finalKey, required)) {
-        schema[finalKey].required = true;
+        finalProperty.required = true;
       }
+      schema[finalKey] = finalProperty;
     } else if (property.type === "object" && property.properties) {
       buildSchema(property, {
         schema,
@@ -97,27 +98,83 @@ export function buildValidation(schema, requiredKeys) {
     const value = schema[key];
     validation[key] = Yup.string();
     if (value.minLength) {
-      validation[key].min(value.minLength, `Must be at least ${value.minLength} characters long`);
+      validation[key] = validation[key].min(value.minLength, `Must be at least ${value.minLength} characters long`);
     }
     if (value.maxLength) {
-      validation[key].max(value.maxLength, `Must be less than ${value.maxLength} characters long`);
+      validation[key] = validation[key].max(value.maxLength, `Must be less than ${value.maxLength} characters long`);
     }
     if (value.format === "email") {
-      validation[key].email("Email must be valid");
+      validation[key] = validation[key].email("Email must be valid");
     }
     if (value.format === "phone") {
-      validation[key].matches(phoneRegExp, "Phone number must be valid");
+      validation[key] = validation[key].matches(phoneRegExp, "Phone number must be valid");
     }
     if (value.pattern) {
       let message = `Must match format ${value.pattern}`;
       if (value.message.pattern) {
         message = value.message.pattern;
       }
-      validation[key].matches(new RegExp(value.pattern), message);
+      validation[key] = validation[key].matches(new RegExp(value.pattern), message);
     }
     if (value.required) {
-      validation[key].required("Required");
+      validation[key] = validation[key].required("Required");
     }
   }
   return validation;
+}
+
+function buildFormSectionsHelper(section, titleParts, value) {
+  const title = titleParts.shift();
+  if (titleParts.length === 0) {
+    section[title] = value;
+  } else if (section[title]) {
+    buildFormSectionsHelper(section[title], titleParts, value);
+  } else {
+    section[title] = {};
+    buildFormSectionsHelper(section[title], titleParts, value);
+  }
+}
+
+export function buildFormSections(schema) {
+  const formSections = {
+    hiddenFields: [],
+  };
+  for (const key in schema) {
+    const value = schema[key];
+    value.name = key;
+    if (value.title) {
+      const titleParts = value.title.split(": ");
+      buildFormSectionsHelper(formSections, titleParts, value);
+    } else {
+      formSections.hiddenFields.push(value);
+    }
+  }
+  return formSections;
+}
+
+function buildPostDataHelper(data, keyParts, value) {
+  const currentKey = keyParts.shift();
+  if (keyParts.length === 0) {
+    data[currentKey] = value;
+  } else {
+    if (typeof data[currentKey] === "undefined") {
+      data[currentKey] = {};
+    }
+    buildPostDataHelper(data[currentKey], keyParts, value);
+  }
+}
+
+export function buildPostData(formData) {
+  const postData = {};
+  for (const key in formData) {
+    const value = formData[key];
+    const keyParts = key.split(".");
+    buildPostDataHelper(postData, keyParts, value);
+  }
+  return {
+    data: {
+      type: "kyc_application",
+      attributes: postData,
+    },
+  };
 }
