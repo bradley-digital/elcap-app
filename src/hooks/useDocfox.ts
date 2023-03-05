@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 
 // hooks
 import useAuth from "hooks/useAuth";
@@ -49,16 +49,17 @@ export function useTemplate(templateId: string) {
 
 export function useApplication() {
   const { authApi } = useAuth();
+  const queryClient = useQueryClient();
+  const applicationsQueryKey = `${queryKey}Applications`;
 
   const {
     isSuccess: applicationsIsSuccess,
     data: applications,
-  } = useQuery(`${queryKey}Applications`, getApplications);
+  } = useQuery(applicationsQueryKey, getApplications);
 
   const { mutate: postApplication } = useMutation(postApplicationMutation, {
-    onSuccess: () => {
-      // refetch list after update
-      queryClient.invalidateQueries({ queryKey: `${queryKey}Applications` });
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: applicationsQueryKey });
     },
   });
 
@@ -68,7 +69,7 @@ export function useApplication() {
   }
 
   async function postApplicationMutation(body: any) {
-    const { data } = await authApi.post("/docfox/application");
+    const { data } = await authApi.post("/docfox/application", body);
     return data;
   }
 

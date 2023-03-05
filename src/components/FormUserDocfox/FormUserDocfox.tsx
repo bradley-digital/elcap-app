@@ -138,22 +138,6 @@ export default function FormUserDocfox({ profile }: Props) {
     }
   }
 
-  const testData = buildPostData({
-    "kyc_entity_template_id": "174ece78-6e7b-4221-b911-6016848bdd89",
-    "names.registered_name": "Josh Bradley Digital",
-    "names.dba_name": "JBD",
-    "numbers.ein.value": "098765432",
-    "numbers.ein.issued_by": "us",
-    "addresses.registered_address.country": "United States",
-    "addresses.registered_address.address_line_one": "25 Leslie Dr",
-    "additional_details.type_of_institution": "institution_other",
-    "contact_informations.primary_point_of_contact.first_names": "Joshua",
-    "contact_informations.primary_point_of_contact.last_names": "Bradley",
-    "contact_informations.primary_point_of_contact.mobile_number": "6617069625",
-    "contact_informations.primary_point_of_contact.email": "joshbradleydigital@gmail.com"
-  });
-  console.log(testData);
-
   return (
     <Formik
       initialValues={{
