@@ -147,6 +147,7 @@ export default function FormUserDocfox({ profile }: Props) {
       validationSchema={Yup.object(validationObject)}
       onSubmit={(values) => {
         const postData = buildPostData(values);
+        postData.userId = id;
         postApplication(postData);
       }}
     >
