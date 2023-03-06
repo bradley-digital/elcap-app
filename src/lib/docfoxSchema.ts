@@ -178,3 +178,33 @@ export function buildPostData(formData) {
     },
   };
 }
+
+const pluralMap = {
+  "additional_detail": "additional_details",
+  "address": "addresses",
+  "contact": "contact_informations",
+  "name": "names",
+  "number": "numbers",
+};
+
+export function buildInitialValues(templateId = "", application = {}, schema = {}) {
+  const applicationCopy = JSON.parse(JSON.stringify(application));
+  const included = applicationCopy.included || [];
+  const initialValues = {
+    kyc_entity_template_id: templateId,
+  };
+  for (const data of included) {
+    const key = `${pluralMap[data.type]}.${data.attributes.slug}`;
+    if (schema[key] && data.attributes.value) {
+      initialValues[key] = data.attributes.value;
+    } else {
+      for (const attribute in data.attributes) {
+        const attributeKey = `${key}.${attribute}`;
+        if (schema[attributeKey]) {
+          initialValues[attributeKey] = data.attributes[attribute];
+        }
+      }
+    }
+  }
+  return initialValues;
+}

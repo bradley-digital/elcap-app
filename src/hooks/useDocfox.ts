@@ -1,7 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
 // hooks
+import { queryKey as userQueryKey } from "hooks/useUserManagement";
 import useAuth from "hooks/useAuth";
+
+export type DocfoxApplication = {
+  id: string;
+  applicationId: string;
+  templateId: string;
+};
 
 const queryKey = "docfox";
 
@@ -26,18 +33,19 @@ export function useTemplates() {
 
 export function useTemplate(templateId: string) {
   const { authApi } = useAuth();
+  const templateQueryKey = `${queryKey}Template`;
 
   const {
     isSuccess: templateIsSuccess,
     data: template,
   } = useQuery(
-    [`${queryKey}Template`, templateId],
+    [templateQueryKey, templateId],
     () => getEntityTemplate(templateId)
   );
 
-  async function getEntityTemplate(id: string) {
-    if (!id) return;
-    const { data } = await authApi.get(`/docfox/entity-template?templateId=${id}`);
+  async function getEntityTemplate(templateId: string) {
+    if (!templateId) return;
+    const { data } = await authApi.get(`/docfox/entity-template?templateId=${templateId}`);
     return data;
   }
 
@@ -47,7 +55,7 @@ export function useTemplate(templateId: string) {
   };
 }
 
-export function useApplication() {
+export function useApplications() {
   const { authApi } = useAuth();
   const queryClient = useQueryClient();
   const applicationsQueryKey = `${queryKey}Applications`;
@@ -57,14 +65,40 @@ export function useApplication() {
     data: applications,
   } = useQuery(applicationsQueryKey, getApplications);
 
+  async function getApplications() {
+    const { data } = await authApi.get("/docfox/applications");
+    return data;
+  }
+
+  return {
+    applicationsIsSuccess,
+    applications,
+  };
+}
+
+export function useApplication(applicationId: string) {
+  const { authApi } = useAuth();
+  const queryClient = useQueryClient();
+  const applicationQueryKey = `${queryKey}Application`;
+
+  const {
+    isSuccess: applicationIsSuccess,
+    data: application,
+  } = useQuery(
+    [applicationQueryKey, applicationId],
+    () => getApplication(applicationId)
+  );
+
   const { mutate: postApplication } = useMutation(postApplicationMutation, {
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: applicationsQueryKey });
+      queryClient.invalidateQueries(userQueryKey);
+      queryClient.invalidateQueries(applicationQueryKey);
     },
   });
 
-  async function getApplications() {
-    const { data } = await authApi.get("/docfox/applications");
+  async function getApplication(applicationId: string) {
+    if (!applicationId) return;
+    const { data } = await authApi.get(`/docfox/application?applicationId=${applicationId}`);
     return data;
   }
 
@@ -74,8 +108,8 @@ export function useApplication() {
   }
 
   return {
-    applicationsIsSuccess,
-    applications,
+    applicationIsSuccess,
+    application,
     postApplication,
   };
 }

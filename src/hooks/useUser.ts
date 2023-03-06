@@ -1,10 +1,11 @@
-import type { Account } from "./useWesternAllianceAccount";
+import type { Account } from "hooks/useWesternAllianceAccount";
+import type { DocfoxApplication } from "hooks/useDocfox";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
 // hooks
 import useAuth from "hooks/useAuth";
 
-type ProfileAccount = Pick<Account, "accountNumber">
+type ProfileAccount = Pick<Account, "accountNumber", "accountTitle">
 
 export type Profile = {
   id: string;
@@ -19,6 +20,7 @@ export type Profile = {
   role: string;
   createdAt: string;
   accounts?: ProfileAccount[];
+  docfoxApplication: DocfoxApplication;
 };
 
 

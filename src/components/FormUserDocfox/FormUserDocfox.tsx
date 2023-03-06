@@ -8,6 +8,7 @@ import {
   buildPostData,
   buildSchema,
   buildValidation,
+  buildInitialValues,
 } from "lib/docfoxSchema";
 
 // components
@@ -99,14 +100,22 @@ function buildFormInputs(formSections) {
 }
 
 export default function FormUserDocfox({ profile }: Props) {
-  const [templateId, setTemplateId] = useState("");
+  const { id } = profile;
+  const applicationId = profile?.docfoxApplication?.applicationId || "";
+  const initialTemplateId = profile?.docfoxApplication?.templateId || "";
+  const [templateId, setTemplateId] = useState(initialTemplateId);
+  const { update } = useUserManagement();
   const { templates } = useTemplates();
   const { template } = useTemplate(templateId);
-  const { postApplication } = useApplication();
-  const { update } = useUserManagement();
+  const { application, postApplication } = useApplication(applicationId);
+
   const { schema, required } = useMemo(
     () => buildSchema(template?.data?.attributes?.profile_schema),
     [template]
+  );
+  const initialValues = useMemo(
+    () => buildInitialValues(templateId, application, schema),
+    [templateId, application, schema]
   );
   const validationObject = useMemo(
     () => buildValidation(schema, required),
@@ -120,8 +129,6 @@ export default function FormUserDocfox({ profile }: Props) {
     () => buildFormInputs(formSections),
     [formSections]
   );
-
-  const { id } = profile;
 
   const entityTemplateOptions = templates?.data?.map((template) => {
     const value = template?.id;
@@ -140,15 +147,15 @@ export default function FormUserDocfox({ profile }: Props) {
 
   return (
     <Formik
-      initialValues={{
-        kyc_entity_template_id: templateId,
-      }}
+      initialValues={initialValues}
       enableReinitialize={true}
       validationSchema={Yup.object(validationObject)}
       onSubmit={(values) => {
-        const postData = buildPostData(values);
-        postData.userId = id;
-        postApplication(postData);
+        if (!applicationId) {
+          const postData = buildPostData(values);
+          postData.userId = id;
+          postApplication(postData);
+        }
       }}
     >
       <Form className="FormUserDocfox">

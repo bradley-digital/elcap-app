@@ -13,6 +13,7 @@ type ProfileUpdateByIdInput = {
   addressLine2?: string;
   role?: string;
   accounts?: string[];
+  applicationId?: string;
 };
 
 type ProfileCreateInput = {
@@ -24,7 +25,7 @@ type ProfileCreateInput = {
   accounts?: string[];
 };
 
-const queryKey = "userList";
+export const queryKey = "userList";
 
 export default function useUser() {
   const { authApi } = useAuth();
@@ -35,14 +36,14 @@ export default function useUser() {
   const { mutate: update } = useMutation(updateUser, {
     onSuccess: () => {
       // refetch list after update
-      queryClient.invalidateQueries({ queryKey: queryKey });
+      queryClient.invalidateQueries(queryKey);
     },
   });
 
   const { mutate: create } = useMutation(createUser, {
     onSuccess: () => {
       // refetch list after update
-      queryClient.invalidateQueries({ queryKey: queryKey });
+      queryClient.invalidateQueries(queryKey);
     },
   });
 
