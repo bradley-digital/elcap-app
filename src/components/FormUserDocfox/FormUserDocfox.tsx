@@ -27,77 +27,15 @@ import {
   useTemplate
 } from "hooks/useDocfox";
 
+// helpers
+import { buildFormInputs } from "./helpers";
+
 // styles
 import "./FormUserDocfox.scss";
 
 type Props = {
   profile: Profile;
 };
-
-function buildFormInputsHelper(children, section) {
-  for (const sectionTitle in section) {
-    const nextSection = section[sectionTitle];
-    if (nextSection.name) {
-      let label = sectionTitle;
-      if (nextSection.required) {
-        label += " *";
-      }
-      if (nextSection.select_options) {
-        children.push(
-          <FormSelect
-            key={nextSection.name}
-            label={label}
-            name={`['${nextSection.name}']`}
-            placeholder={nextSection.placeholder}
-            options={nextSection.select_options}
-          />
-        );
-      } else if (nextSection.format === "email") {
-        children.push(
-          <FormInput
-            key={nextSection.name}
-            label={label}
-            name={`['${nextSection.name}']`}
-            placeholder={nextSection.placeholder}
-            type="email"
-          />
-        );
-      } else if (nextSection.format === "phone") {
-        children.push(
-          <FormInput
-            key={nextSection.name}
-            label={label}
-            name={`['${nextSection.name}']`}
-            placeholder={nextSection.placeholder}
-            type="tel"
-          />
-        );
-      } else {
-        children.push(
-          <FormInput
-            key={nextSection.name}
-            label={label}
-            name={`['${nextSection.name}']`}
-            placeholder={nextSection.placeholder}
-            type="string"
-          />
-        );
-      }
-    } else if (nextSection) {
-      children.push(<IonListHeader key={sectionTitle}>{sectionTitle}</IonListHeader>);
-      buildFormInputsHelper(children, nextSection);
-    }
-  }
-}
-
-
-function buildFormInputs(formSections) {
-  const children = [];
-  const sections = JSON.parse(JSON.stringify(formSections));
-  delete sections.hiddenFields;
-  buildFormInputsHelper(children, sections);
-  return children;
-}
 
 export default function FormUserDocfox({ profile }: Props) {
   const { id } = profile;

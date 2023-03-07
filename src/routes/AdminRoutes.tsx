@@ -17,14 +17,15 @@ import {
 
 import { personCircle, settings } from "ionicons/icons";
 
-export default function PortalRoutes() {
+export default function AdminRoutes() {
   return (
     <IonTabs>
       <IonRouterOutlet>
         <Switch>
           <Route exact path="/account" component={Account} />
           <Route exact path="/user-management" component={UserManagement} />
-          <Route exact path="/user-management/:userId" component={User} />
+          {/* Paths with nested routes must not have "exact" */}
+          <Route path="/user-management/:userId" component={User} />
           {/* Fallback route */}
           <Route render={() => <Redirect to="/user-management" />} />
         </Switch>

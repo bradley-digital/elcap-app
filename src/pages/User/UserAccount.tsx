@@ -1,0 +1,29 @@
+import type { Profile } from "hooks/useUser";
+import { useParams } from "react-router-dom";
+import {
+  IonCol,
+  IonGrid,
+  IonRow,
+} from "@ionic/react";
+
+// components
+import PageTemplate from "components/PageTemplate/PageTemplate";
+import FormUserAccount from "components/FormUserAccount/FormUserAccount";
+
+type Props = {
+  profile: Profile;
+}
+
+export default function UserAccount({ profile }: Props) {
+  return (
+    <PageTemplate title="Account" menuId="user">
+      <IonGrid>
+        <IonRow className="ion-justify-content-center">
+          <IonCol size-md="8" size-lg="6">
+            <FormUserAccount profile={profile} />
+          </IonCol>
+        </IonRow>
+      </IonGrid>
+    </PageTemplate>
+  );
+}

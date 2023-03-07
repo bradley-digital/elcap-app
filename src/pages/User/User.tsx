@@ -1,45 +1,44 @@
-import { useParams } from "react-router-dom";
-import {
-  IonCol,
-  IonGrid,
-  IonRow,
-  useIonRouter,
-} from "@ionic/react";
-import PageTemplate from "components/PageTemplate/PageTemplate";
-import FormUserAccount from "components/FormUserAccount/FormUserAccount";
-import FormUserWesternAllianceAccounts from "components/FormUserWesternAllianceAccounts/FormUserWesternAllianceAccounts";
-import FormUserDocfox from "components/FormUserDocfox/FormUserDocfox";
+import type { RouteComponentProps } from "react-router-dom";
+import type { MenuLink } from "components/MenuLinks/MenuLinks";
+import { arrowBack, business, document as documentIcon, personCircle, } from "ionicons/icons";
 
-// hooks
-import useUserManagement from "hooks/useUserManagement";
+// components
+import SplitPaneTemplate from "components/SplitPaneTemplate/SplitPaneTemplate";
+import UserRoutes from "routes/UserRoutes";
 
-export default function UserManagement() {
-  const { isSuccess, data } = useUserManagement();
-  const { userId } = useParams<{ userId: string }>();
-  const router = useIonRouter();
+export default function User(routeProps: RouteComponentProps) {
+  const { match } = routeProps;
 
-  if (isSuccess && typeof data !== "undefined") {
-    const user = data.find(user => user.id === userId);
+  const menuLinks: MenuLink[] = [
+    {
+      id: 1,
+      icon: arrowBack,
+      href: "/user-management",
+      label: "User list",
+    },
+    {
+      id: 2,
+      icon: personCircle,
+      href: `${match.url}/account`,
+      label: "Account",
+    },
+    {
+      id: 3,
+      icon: business,
+      href: `${match.url}/western-alliance`,
+      label: "Western Alliance",
+    },
+    {
+      id: 4,
+      icon: documentIcon,
+      href: `${match.url}/docfox`,
+      label: "DocFox",
+    },
+  ];
 
-    if (!user) {
-      router.push("/user-management");
-    }
-
-    return (
-      <PageTemplate title={`${user.firstName} ${user.lastName}`}>
-        <IonGrid>
-          <IonRow className="ion-justify-content-center">
-            <IonCol size-md="8" size-lg="6">
-              <FormUserAccount profile={user} />
-              <FormUserWesternAllianceAccounts profile={user} />
-              <FormUserDocfox profile={user} />
-            </IonCol>
-          </IonRow>
-        </IonGrid>
-      </PageTemplate>
-    );
-  }
-
-  // Need better error state
-  return null;
+  return (
+    <SplitPaneTemplate title="User management" menuId="user" menuLinks={menuLinks}>
+      <UserRoutes {...routeProps} />
+    </SplitPaneTemplate>
+  );
 }
