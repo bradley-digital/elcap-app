@@ -4,23 +4,22 @@ import * as Yup from "yup";
 
 // lib
 import {
+  buildInitialValues,
   buildFormSections,
   buildPostData,
   buildSchema,
   buildValidation,
-  buildInitialValues,
+  buildUpdateData,
 } from "lib/docfoxSchema";
 
 // components
 import { Form, Formik } from "formik";
 import { IonList, IonListHeader } from "@ionic/react";
 import FormObserver from "components/FormObserver/FormObserver";
-import FormInput from "components/FormInput/FormInput";
 import FormSelect from "components/FormSelect/FormSelect";
 import SubmitButton from "components/SubmitButton/SubmitButton";
 
 // hooks
-import useUserManagement from "hooks/useUserManagement";
 import {
   useApplication,
   useTemplates,
@@ -42,12 +41,11 @@ export default function FormUserDocfox({ profile }: Props) {
   const applicationId = profile?.docfoxApplication?.applicationId || "";
   const initialTemplateId = profile?.docfoxApplication?.templateId || "";
   const [templateId, setTemplateId] = useState(initialTemplateId);
-  const { update } = useUserManagement();
   const { templates } = useTemplates();
   const { template } = useTemplate(templateId);
   const { application, postApplication } = useApplication(applicationId);
 
-  const { schema, required } = useMemo(
+  const schema = useMemo(
     () => buildSchema(template?.data?.attributes?.profile_schema),
     [template]
   );
@@ -56,8 +54,8 @@ export default function FormUserDocfox({ profile }: Props) {
     [templateId, application, schema]
   );
   const validationObject = useMemo(
-    () => buildValidation(schema, required),
-    [schema, required],
+    () => buildValidation(schema),
+    [schema],
   );
   const formSections = useMemo(
     () => buildFormSections(schema),
@@ -89,10 +87,13 @@ export default function FormUserDocfox({ profile }: Props) {
       enableReinitialize={true}
       validationSchema={Yup.object(validationObject)}
       onSubmit={(values) => {
-        if (!applicationId) {
+        if (!applicationId || templateId !== initialTemplateId) {
           const postData = buildPostData(values);
           postData.userId = id;
           postApplication(postData);
+        } else if (application) {
+          const updateData = buildUpdateData(application, values);
+          console.log(updateData);
         }
       }}
     >
@@ -100,7 +101,7 @@ export default function FormUserDocfox({ profile }: Props) {
         <FormObserver onChange={handleChange} />
         <IonList>
           <IonListHeader>
-            Docfox KYC
+            DocFox KYC
           </IonListHeader>
           <FormSelect
             label="Entity Template"

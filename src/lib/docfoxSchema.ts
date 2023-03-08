@@ -1,6 +1,22 @@
 import * as Yup from "yup";
 import { phoneRegExp } from "lib/formValidation";
 
+const typeMap = {
+  "address": "addresses",
+  "additional_detail": "additional_details",
+  "contact": "contact_informations",
+  "name": "names",
+  "number": "numbers",
+};
+
+const inverseTypeMap = {
+  "addresses": "address",
+  "additional_details": "additional_detail",
+  "contact_informations": "contact",
+  "names": "name",
+  "numbers": "number",
+};
+
 function isRequired(key, requiredKeys) {
   if (!requiredKeys.includes(key)) {
     return false;
@@ -89,10 +105,10 @@ export function buildSchema(object = {}, options) {
     }
   }
 
-  return { schema, required };
+  return schema;
 }
 
-export function buildValidation(schema, requiredKeys) {
+export function buildValidation(schema) {
   const validation = {};
   for (const key in schema) {
     const value = schema[key];
@@ -179,22 +195,65 @@ export function buildPostData(formData) {
   };
 }
 
-const pluralMap = {
-  "additional_detail": "additional_details",
-  "address": "addresses",
-  "contact": "contact_informations",
-  "name": "names",
-  "number": "numbers",
-};
+function buildAttributes(type, slug, formData) {
+  const attributes = {
+    slug,
+  };
+  const shortKey = `${type}.${slug}`;
+  if (formData[shortKey]) {
+    attributes.value = formData[shortKey];
+  } else {
+    for (const key in formData) {
+      if (key.startsWith(shortKey)) {
+        const valueKey = key.split(".").pop();
+        attributes[valueKey] = formData[key];
+      }
+    }
+  }
+  return attributes;
+}
+
+export function buildUpdateData(application, formData) {
+  const included = application.included || [];
+  const updateData = [];
+  for (const key in formData) {
+    if (key === "kyc_entity_template_id") continue;
+    const keyParts = key.split(".");
+    const initialType = keyParts[0];
+    const type = inverseTypeMap[initialType]
+    const slug = keyParts[1];
+    if (!type || !slug) continue;
+    const existingData = updateData.find(update => (
+      update?.data?.type === type &&
+      update?.data?.attributes?.slug === slug
+    ));
+    if (existingData) continue;
+    const applicationData = included.find(includedData => (
+      includedData?.type === type &&
+      includedData?.attributes?.slug === slug
+    ));
+    const id = applicationData?.id;
+    if (!id) continue;
+    const attributes = buildAttributes(initialType, slug, formData);
+    const data = {
+      data: {
+        id,
+        type,
+        attributes,
+      },
+    };
+    updateData.push(data);
+  }
+  return updateData;
+}
 
 export function buildInitialValues(templateId = "", application = {}, schema = {}) {
-  const applicationCopy = JSON.parse(JSON.stringify(application));
-  const included = applicationCopy.included || [];
+  const included = application.included || [];
   const initialValues = {
     kyc_entity_template_id: templateId,
   };
   for (const data of included) {
-    const key = `${pluralMap[data.type]}.${data.attributes.slug}`;
+    const key = `${typeMap[data.type]}.${data.attributes.slug}`;
     if (schema[key] && data.attributes.value) {
       initialValues[key] = data.attributes.value;
     } else {

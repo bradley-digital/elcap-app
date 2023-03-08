@@ -144,7 +144,7 @@ export default function FormUserAccount({ profile }: Props) {
             options={roleOptions}
           />
 
-          <SubmitButton>Update</SubmitButton>
+          <SubmitButton>Submit</SubmitButton>
         </IonList>
       </Form>
     </Formik>

@@ -11,6 +11,10 @@ export type DocfoxApplication = {
 };
 
 const queryKey = "docfox";
+const templateQueryKey = `${queryKey}Template`;
+const templatesQueryKey = `${queryKey}Templates`;
+const applicationQueryKey = `${queryKey}Application`;
+const applicationsQueryKey = `${queryKey}Applications`;
 
 export function useTemplates() {
   const { authApi } = useAuth();
@@ -18,7 +22,7 @@ export function useTemplates() {
   const {
     isSuccess: templatesIsSuccess,
     data: templates,
-  } = useQuery(`${queryKey}Templates`, getEntityTemplates);
+  } = useQuery(templatesQueryKey, getEntityTemplates);
 
   async function getEntityTemplates() {
     const { data } = await authApi.get("/docfox/entity-templates");
@@ -33,7 +37,6 @@ export function useTemplates() {
 
 export function useTemplate(templateId: string) {
   const { authApi } = useAuth();
-  const templateQueryKey = `${queryKey}Template`;
 
   const {
     isSuccess: templateIsSuccess,
@@ -57,8 +60,6 @@ export function useTemplate(templateId: string) {
 
 export function useApplications() {
   const { authApi } = useAuth();
-  const queryClient = useQueryClient();
-  const applicationsQueryKey = `${queryKey}Applications`;
 
   const {
     isSuccess: applicationsIsSuccess,
@@ -79,7 +80,6 @@ export function useApplications() {
 export function useApplication(applicationId: string) {
   const { authApi } = useAuth();
   const queryClient = useQueryClient();
-  const applicationQueryKey = `${queryKey}Application`;
 
   const {
     isSuccess: applicationIsSuccess,
@@ -90,7 +90,7 @@ export function useApplication(applicationId: string) {
   );
 
   const { mutate: postApplication } = useMutation(postApplicationMutation, {
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries(userQueryKey);
       queryClient.invalidateQueries(applicationQueryKey);
     },

@@ -67,17 +67,17 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
                         />
                       )}
                       <IonButton onClick={() => arrayHelpers.remove(index)}>
-                        -
+                        Remove account
                       </IonButton>
                     </div>
                   ))}
                   <IonButton onClick={() => arrayHelpers.push("")}>
-                    Connect account
+                    Add account
                   </IonButton>
                 </>
               )}
             />
-            <SubmitButton>Update</SubmitButton>
+            <SubmitButton>Submit</SubmitButton>
           </IonList>
         </Form>
       )}
