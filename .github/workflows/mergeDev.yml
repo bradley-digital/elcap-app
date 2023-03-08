@@ -20,5 +20,5 @@ jobs:
         run: make btp ENV=dev
       - name: Save DigitalOcean kubeconfig (short creds)
         run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 dev-k8s-sfo3
-      - name: Rollout Restart API (pulls latest)
-        run: kubectl rollout restart deployment api
+      - name: Rollout Restart WEBAPP (pulls latest)
+        run: kubectl rollout restart deployment webapp
