@@ -96,6 +96,18 @@ export function useApplication(applicationId: string) {
     },
   });
 
+  const { mutate: postProfileData } = useMutation(postProfileDataMutation, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(applicationQueryKey);
+    },
+  });
+
+  const { mutate: patchProfileData } = useMutation(patchProfileDataMutation, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(applicationQueryKey);
+    },
+  });
+
   async function getApplication(applicationId: string) {
     if (!applicationId) return;
     const { data } = await authApi.get(`/docfox/application?applicationId=${applicationId}`);
@@ -107,9 +119,23 @@ export function useApplication(applicationId: string) {
     return data;
   }
 
+  async function postProfileDataMutation(body: any) {
+    const { data } = await authApi.post("/docfox/profile/data", body);
+    console.log(data);
+    return data;
+  }
+
+  async function patchProfileDataMutation(body: any) {
+    const { data } = await authApi.patch("/docfox/profile/data", body);
+    console.log(data);
+    return data;
+  }
+
   return {
     applicationIsSuccess,
     application,
     postApplication,
+    postProfileData,
+    patchProfileData,
   };
 }

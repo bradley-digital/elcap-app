@@ -213,6 +213,15 @@ function buildAttributes(type, slug, formData) {
   return attributes;
 }
 
+function removeDuplicateAttributes(attributes, applicationAttributes) {
+  for (const key in attributes) {
+    if (key === "slug") continue;
+    if (attributes[key] === applicationAttributes[key]) {
+      delete attributes[key];
+    }
+  }
+}
+
 export function buildUpdateData(application, formData) {
   const included = application.included || [];
   const postData = [];
@@ -237,9 +246,11 @@ export function buildUpdateData(application, formData) {
       includedData?.attributes?.slug === slug
     ));
     const attributes = buildAttributes(initialType, slug, formData);
-    if (applicationData) {
+    if (applicationData && typeof applicationData.attributes === "object") {
       const id = applicationData?.id;
       if (!id) continue;
+      removeDuplicateAttributes(attributes, applicationData.attributes);
+      if (Object.keys(attributes).length < 2) continue;
       const data = {
         data: {
           id,
@@ -251,7 +262,6 @@ export function buildUpdateData(application, formData) {
     } else {
       const data = {
         data: {
-          id,
           type,
           attributes,
         },

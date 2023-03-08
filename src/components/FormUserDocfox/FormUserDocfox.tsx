@@ -43,7 +43,12 @@ export default function FormUserDocfox({ profile }: Props) {
   const [templateId, setTemplateId] = useState(initialTemplateId);
   const { templates } = useTemplates();
   const { template } = useTemplate(templateId);
-  const { application, postApplication } = useApplication(applicationId);
+  const {
+    application,
+    postApplication,
+    postProfileData,
+    patchProfileData,
+  } = useApplication(applicationId);
 
   const schema = useMemo(
     () => buildSchema(template?.data?.attributes?.profile_schema),
@@ -92,8 +97,13 @@ export default function FormUserDocfox({ profile }: Props) {
           postData.userId = id;
           postApplication(postData);
         } else if (application) {
-          const updateData = buildUpdateData(application, values);
-          console.log(updateData);
+          const { postData, patchData } = buildUpdateData(application, values);
+          for (const data of postData) {
+            postProfileData(data);
+          }
+          for (const data of patchData) {
+            patchProfileData(data);
+          }
         }
       }}
     >
