@@ -215,7 +215,8 @@ function buildAttributes(type, slug, formData) {
 
 export function buildUpdateData(application, formData) {
   const included = application.included || [];
-  const updateData = [];
+  const postData = [];
+  const patchData = [];
   for (const key in formData) {
     if (key === "kyc_entity_template_id") continue;
     const keyParts = key.split(".");
@@ -223,28 +224,42 @@ export function buildUpdateData(application, formData) {
     const type = inverseTypeMap[initialType]
     const slug = keyParts[1];
     if (!type || !slug) continue;
-    const existingData = updateData.find(update => (
-      update?.data?.type === type &&
-      update?.data?.attributes?.slug === slug
+    const existingData = postData.find(data => (
+      data?.data?.type === type &&
+      data?.data?.attributes?.slug === slug
+    )) || patchData.find(data => (
+      data?.data?.type === type &&
+      data?.data?.attributes?.slug === slug
     ));
     if (existingData) continue;
     const applicationData = included.find(includedData => (
       includedData?.type === type &&
       includedData?.attributes?.slug === slug
     ));
-    const id = applicationData?.id;
-    if (!id) continue;
     const attributes = buildAttributes(initialType, slug, formData);
-    const data = {
-      data: {
-        id,
-        type,
-        attributes,
-      },
-    };
-    updateData.push(data);
+    if (applicationData) {
+      const id = applicationData?.id;
+      if (!id) continue;
+      const data = {
+        data: {
+          id,
+          type,
+          attributes,
+        },
+      };
+      patchData.push(data);
+    } else {
+      const data = {
+        data: {
+          id,
+          type,
+          attributes,
+        },
+      };
+      postData.push(data);
+    }
   }
-  return updateData;
+  return { postData, patchData };
 }
 
 export function buildInitialValues(templateId = "", application = {}, schema = {}) {

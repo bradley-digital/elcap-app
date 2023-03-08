@@ -1,5 +1,4 @@
 import type { Profile } from "hooks/useUser";
-import { useParams } from "react-router-dom";
 import {
   IonCol,
   IonGrid,
