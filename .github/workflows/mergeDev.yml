@@ -1,0 +1,24 @@
+name: Deploy Dev Image
+run-name: ${{ github.actor }} Deploying Dev 🚀
+on:
+  push:
+    branches:
+      - "dev"
+jobs:
+  BuildAndPushImage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_API_TOKEN }}
+      - name: Login to the registry (short creds)
+        run: doctl registry login --expiry-seconds 600
+      - name: Build, Tag, and Push the image to Digitalocean
+        run: make btp ENV=dev
+      - name: Save DigitalOcean kubeconfig (short creds)
+        run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 dev-k8s-sfo3
+      - name: Rollout Restart API (pulls latest)
+        run: kubectl rollout restart deployment api
