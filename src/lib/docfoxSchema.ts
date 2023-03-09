@@ -112,7 +112,7 @@ export function buildValidation(schema) {
   const validation = {};
   for (const key in schema) {
     const value = schema[key];
-    validation[key] = Yup.string();
+    validation[key] = Yup.string().nullable();
     if (value.minLength) {
       validation[key] = validation[key].min(value.minLength, `Must be at least ${value.minLength} characters long`);
     }
@@ -195,6 +195,8 @@ export function buildPostData(formData) {
   };
 }
 
+/* Need to check if there is new data to be posted, or if the item should simply be deleted
+ */
 function buildAttributes(type, slug, formData) {
   const attributes = {
     slug,
@@ -213,63 +215,107 @@ function buildAttributes(type, slug, formData) {
   return attributes;
 }
 
-function removeDuplicateAttributes(attributes, applicationAttributes) {
+function compareAttributes(postAttributes, applicationAttributes) {
+  for (const key in postAttributes) {
+    if (postAttributes[key] !== applicationAttributes[key]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function attributesHasData(attributes) {
   for (const key in attributes) {
     if (key === "slug") continue;
-    if (attributes[key] === applicationAttributes[key]) {
+    if (attributes[key]) return true;
+  }
+  return false;
+}
+
+function removeNullAttributes(attributes) {
+  for (const key in attributes) {
+    if (attributes[key] === "") {
+      attributes[key] = "-";
+    }
+    if (attributes[key] === null) {
       delete attributes[key];
     }
   }
+  return attributes;
+}
+
+function removeBlankAttributes(attributes) {
+  for (const key in attributes) {
+    if (!attributes[key]) {
+      delete attributes[key];
+    }
+  }
+  return attributes;
 }
 
 export function buildUpdateData(application, formData) {
-  const included = application.included || [];
-  const postData = [];
+  const included = application?.included || [];
+  const deleteData = [];
   const patchData = [];
+  const postData = [];
+  const profileId = application?.data?.relationships?.profile?.data?.id;
+  if (!profileId) return { deleteData, postData };
   for (const key in formData) {
     if (key === "kyc_entity_template_id") continue;
+
     const keyParts = key.split(".");
     const initialType = keyParts[0];
     const type = inverseTypeMap[initialType]
     const slug = keyParts[1];
     if (!type || !slug) continue;
-    const existingData = postData.find(data => (
-      data?.data?.type === type &&
-      data?.data?.attributes?.slug === slug
-    )) || patchData.find(data => (
+
+    const allData = [...postData, ...patchData];
+    const existingData = allData.find(data => (
       data?.data?.type === type &&
       data?.data?.attributes?.slug === slug
     ));
     if (existingData) continue;
+
     const applicationData = included.find(includedData => (
       includedData?.type === type &&
       includedData?.attributes?.slug === slug
     ));
+
     const attributes = buildAttributes(initialType, slug, formData);
+
     if (applicationData && typeof applicationData.attributes === "object") {
       const id = applicationData?.id;
       if (!id) continue;
-      removeDuplicateAttributes(attributes, applicationData.attributes);
-      if (Object.keys(attributes).length < 2) continue;
-      const data = {
-        data: {
-          id,
-          type,
-          attributes,
-        },
-      };
-      patchData.push(data);
+      const isSame = compareAttributes(attributes, applicationData.attributes);
+      if (isSame) continue;
+      const hasData = attributesHasData(attributes);
+      if (hasData) {
+        patchData.push({
+          data: {
+            id,
+            type,
+            attributes: removeNullAttributes(attributes),
+          },
+        });
+      } else {
+        const existingDeleteData = deleteData.find(data => (
+          data.id === id &&
+          data.type === type
+        ));
+        if (existingDeleteData) continue;
+        deleteData.push({ id, type });
+      }
     } else {
-      const data = {
+      postData.push({
+        profileId,
         data: {
           type,
-          attributes,
+          attributes: removeBlankAttributes(attributes),
         },
-      };
-      postData.push(data);
+      });
     }
   }
-  return { postData, patchData };
+  return { deleteData, patchData, postData };
 }
 
 export function buildInitialValues(templateId = "", application = {}, schema = {}) {

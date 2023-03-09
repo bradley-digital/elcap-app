@@ -37,7 +37,7 @@ type Props = {
 };
 
 export default function FormUserDocfox({ profile }: Props) {
-  const { id } = profile;
+  const { id: userId } = profile;
   const applicationId = profile?.docfoxApplication?.applicationId || "";
   const initialTemplateId = profile?.docfoxApplication?.templateId || "";
   const [templateId, setTemplateId] = useState(initialTemplateId);
@@ -45,9 +45,10 @@ export default function FormUserDocfox({ profile }: Props) {
   const { template } = useTemplate(templateId);
   const {
     application,
+    deleteProfileData,
+    patchProfileData,
     postApplication,
     postProfileData,
-    patchProfileData,
   } = useApplication(applicationId);
 
   const schema = useMemo(
@@ -92,18 +93,24 @@ export default function FormUserDocfox({ profile }: Props) {
       enableReinitialize={true}
       validationSchema={Yup.object(validationObject)}
       onSubmit={(values) => {
+        async function updateApplication() {
+          const { deleteData, patchData, postData } = buildUpdateData(application, values);
+          for (const data of patchData) {
+            await patchProfileData(data);
+          }
+          for (const data of deleteData) {
+            await deleteProfileData(data);
+          }
+          for (const data of postData) {
+            await postProfileData(data);
+          }
+        }
         if (!applicationId || templateId !== initialTemplateId) {
           const postData = buildPostData(values);
-          postData.userId = id;
+          postData.userId = userId;
           postApplication(postData);
         } else if (application) {
-          const { postData, patchData } = buildUpdateData(application, values);
-          for (const data of postData) {
-            postProfileData(data);
-          }
-          for (const data of patchData) {
-            patchProfileData(data);
-          }
+          updateApplication();
         }
       }}
     >
@@ -111,7 +118,7 @@ export default function FormUserDocfox({ profile }: Props) {
         <FormObserver onChange={handleChange} />
         <IonList>
           <IonListHeader>
-            DocFox KYC
+            DocFox Application
           </IonListHeader>
           <FormSelect
             label="Entity Template"

@@ -96,13 +96,19 @@ export function useApplication(applicationId: string) {
     },
   });
 
-  const { mutate: postProfileData } = useMutation(postProfileDataMutation, {
+  const { mutateAsync: deleteProfileData } = useMutation(deleteProfileDataMutation, {
     onSuccess: () => {
       queryClient.invalidateQueries(applicationQueryKey);
     },
   });
 
-  const { mutate: patchProfileData } = useMutation(patchProfileDataMutation, {
+  const { mutateAsync: postProfileData } = useMutation(postProfileDataMutation, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(applicationQueryKey);
+    },
+  });
+
+  const { mutateAsync: patchProfileData } = useMutation(patchProfileDataMutation, {
     onSuccess: () => {
       queryClient.invalidateQueries(applicationQueryKey);
     },
@@ -114,6 +120,11 @@ export function useApplication(applicationId: string) {
     return data;
   }
 
+  async function deleteProfileDataMutation({ id, type }: { id: string; type: string; }) {
+    const { data } = await authApi.delete(`/docfox/profile/data?id=${id}&type=${type}`);
+    return data;
+  }
+
   async function postApplicationMutation(body: any) {
     const { data } = await authApi.post("/docfox/application", body);
     return data;
@@ -121,19 +132,18 @@ export function useApplication(applicationId: string) {
 
   async function postProfileDataMutation(body: any) {
     const { data } = await authApi.post("/docfox/profile/data", body);
-    console.log(data);
     return data;
   }
 
   async function patchProfileDataMutation(body: any) {
     const { data } = await authApi.patch("/docfox/profile/data", body);
-    console.log(data);
     return data;
   }
 
   return {
     applicationIsSuccess,
     application,
+    deleteProfileData,
     postApplication,
     postProfileData,
     patchProfileData,
