@@ -108,7 +108,7 @@ export function buildSchema(object = {}, options) {
   return schema;
 }
 
-export function buildValidation(schema) {
+export function buildValidation(schema = {}) {
   const validation = {};
   for (const key in schema) {
     const value = schema[key];
@@ -151,7 +151,7 @@ function buildFormSectionsHelper(section, titleParts, value) {
   }
 }
 
-export function buildFormSections(schema) {
+export function buildFormSections(schema = {}) {
   const formSections = {
     hiddenFields: [],
   };
@@ -318,11 +318,12 @@ export function buildUpdateData(application, formData) {
   return { deleteData, patchData, postData };
 }
 
-export function buildInitialValues(templateId = "", application = {}, schema = {}) {
+export function buildInitialValues(application = {}, schema = {}, templateId = "") {
   const included = application.included || [];
-  const initialValues = {
-    kyc_entity_template_id: templateId,
-  };
+  const initialValues = {};
+  if (templateId) {
+    initialValues.kyc_entity_template_id = templateId;
+  }
   for (const data of included) {
     const key = `${typeMap[data.type]}.${data.attributes.slug}`;
     if (schema[key] && data.attributes.value) {

@@ -34,7 +34,7 @@ type ProfileUpdateInput = {
   state?: string;
 };
 
-const queryKey = "userAccount";
+export const queryKey = "userAccount";
 
 export default function useUser() {
   const { authApi } = useAuth();

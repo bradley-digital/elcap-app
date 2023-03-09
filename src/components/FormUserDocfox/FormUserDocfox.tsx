@@ -29,9 +29,6 @@ import {
 // helpers
 import { buildFormInputs } from "./helpers";
 
-// styles
-import "./FormUserDocfox.scss";
-
 type Props = {
   profile: Profile;
 };
@@ -56,7 +53,7 @@ export default function FormUserDocfox({ profile }: Props) {
     [template]
   );
   const initialValues = useMemo(
-    () => buildInitialValues(templateId, application, schema),
+    () => buildInitialValues(application, schema, templateId),
     [templateId, application, schema]
   );
   const validationObject = useMemo(

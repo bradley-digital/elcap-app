@@ -4,6 +4,7 @@ import FormSelect from "components/FormSelect/FormSelect";
 
 function buildFormInputsHelper(children, section) {
   for (const sectionTitle in section) {
+    if (sectionTitle === "hiddenFields") continue;
     const nextSection = section[sectionTitle];
     if (nextSection.name) {
       let label = sectionTitle;
@@ -58,10 +59,8 @@ function buildFormInputsHelper(children, section) {
   }
 }
 
-export function buildFormInputs(formSections) {
+export function buildFormInputs(formSections = {}) {
   const children = [];
-  const sections = JSON.parse(JSON.stringify(formSections));
-  delete sections.hiddenFields;
-  buildFormInputsHelper(children, sections);
+  buildFormInputsHelper(children, formSections);
   return children;
 }

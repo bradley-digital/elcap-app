@@ -22,10 +22,10 @@ export default function AdminRoutes() {
     <IonTabs>
       <IonRouterOutlet>
         <Switch>
-          <Route exact path="/account" component={Account} />
-          <Route exact path="/user-management" component={UserManagement} />
           {/* Paths with nested routes must not have "exact" */}
           <Route path="/user-management/:userId" component={User} />
+          <Route exact path="/account" component={Account} />
+          <Route exact path="/user-management" component={UserManagement} />
           {/* Fallback route */}
           <Route render={() => <Redirect to="/user-management" />} />
         </Switch>
