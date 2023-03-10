@@ -10,11 +10,17 @@ export type DocfoxApplication = {
   templateId: string;
 };
 
+export type DocfoxProfileDeleteInput = {
+  id: string;
+  type: string;
+};
+
 const queryKey = "docfox";
-const templateQueryKey = `${queryKey}Template`;
-const templatesQueryKey = `${queryKey}Templates`;
 const applicationQueryKey = `${queryKey}Application`;
 const applicationsQueryKey = `${queryKey}Applications`;
+const invitationLinkQueryKey = `${queryKey}InvitationToken`;
+const templateQueryKey = `${queryKey}Template`;
+const templatesQueryKey = `${queryKey}Templates`;
 
 export function useTemplates() {
   const { authApi } = useAuth();
@@ -25,7 +31,9 @@ export function useTemplates() {
   } = useQuery(templatesQueryKey, getEntityTemplates);
 
   async function getEntityTemplates() {
-    const { data } = await authApi.get("/docfox/entity-templates");
+    const { data } = await authApi.get(
+      "/docfox/entity-templates"
+    );
     return data;
   }
 
@@ -48,7 +56,9 @@ export function useTemplate(templateId: string) {
 
   async function getEntityTemplate(templateId: string) {
     if (!templateId) return;
-    const { data } = await authApi.get(`/docfox/entity-template?templateId=${templateId}`);
+    const { data } = await authApi.get(
+      `/docfox/entity-template?templateId=${templateId}`
+    );
     return data;
   }
 
@@ -67,13 +77,52 @@ export function useApplications() {
   } = useQuery(applicationsQueryKey, getApplications);
 
   async function getApplications() {
-    const { data } = await authApi.get("/docfox/applications");
+    const { data } = await authApi.get(
+      "/docfox/applications"
+    );
     return data;
   }
 
   return {
     applicationsIsSuccess,
     applications,
+  };
+}
+
+export function useInvitationLink(contactId: string) {
+  const { authApi } = useAuth();
+
+  const {
+    isSuccess: invitationLinkIsSuccess,
+    data: invitationLink
+  } = useQuery(
+    [invitationLinkQueryKey, contactId],
+    () => getInvitationToken(contactId)
+  );
+
+  async function getInvitationToken(contactId: string) {
+    if (!contactId) return;
+    const { data: tokens } = await authApi.get(
+      `/docfox/invitation-tokens?contactId=${contactId}`
+    );
+    if (Array.isArray(tokens.data)) {
+      const token = tokens.data.find(token => (
+        token?.attributes?.valid_to &&
+        new Date(token?.attributes?.valid_to) > Date.now()
+      ));
+      if (token?.attributes?.accept_invitation_url)
+        return token.attributes.accept_invitation_url;
+    }
+    const { data } = await authApi.post(
+      "/docfox/invitation-token",
+      { contactId }
+    );
+    return data?.data?.attributes?.accept_invitation_url || "";
+  }
+
+  return {
+    invitationLink,
+    invitationLinkIsSuccess,
   };
 }
 
@@ -102,13 +151,13 @@ export function useApplication(applicationId: string) {
     },
   });
 
-  const { mutateAsync: postProfileData } = useMutation(postProfileDataMutation, {
+  const { mutateAsync: patchProfileData } = useMutation(patchProfileDataMutation, {
     onSuccess: () => {
       queryClient.invalidateQueries(applicationQueryKey);
     },
   });
 
-  const { mutateAsync: patchProfileData } = useMutation(patchProfileDataMutation, {
+  const { mutateAsync: postProfileData } = useMutation(postProfileDataMutation, {
     onSuccess: () => {
       queryClient.invalidateQueries(applicationQueryKey);
     },
@@ -116,27 +165,40 @@ export function useApplication(applicationId: string) {
 
   async function getApplication(applicationId: string) {
     if (!applicationId) return;
-    const { data } = await authApi.get(`/docfox/application?applicationId=${applicationId}`);
+    const { data } = await authApi.get(
+      `/docfox/application?applicationId=${applicationId}`
+    );
     return data;
   }
 
-  async function deleteProfileDataMutation({ id, type }: { id: string; type: string; }) {
-    const { data } = await authApi.delete(`/docfox/profile/data?id=${id}&type=${type}`);
-    return data;
-  }
-
-  async function postApplicationMutation(body: any) {
-    const { data } = await authApi.post("/docfox/application", body);
-    return data;
-  }
-
-  async function postProfileDataMutation(body: any) {
-    const { data } = await authApi.post("/docfox/profile/data", body);
+  async function deleteProfileDataMutation({ id, type }: DocfoxProfileDeleteInput) {
+    const { data } = await authApi.delete(
+      `/docfox/profile/data?id=${id}&type=${type}`
+    );
     return data;
   }
 
   async function patchProfileDataMutation(body: any) {
-    const { data } = await authApi.patch("/docfox/profile/data", body);
+    const { data } = await authApi.patch(
+      "/docfox/profile/data",
+      body
+    );
+    return data;
+  }
+
+  async function postApplicationMutation(body: any) {
+    const { data } = await authApi.post(
+      "/docfox/application",
+      body
+    );
+    return data;
+  }
+
+  async function postProfileDataMutation(body: any) {
+    const { data } = await authApi.post(
+      "/docfox/profile/data",
+      body
+    );
     return data;
   }
 
@@ -144,8 +206,8 @@ export function useApplication(applicationId: string) {
     applicationIsSuccess,
     application,
     deleteProfileData,
+    patchProfileData,
     postApplication,
     postProfileData,
-    patchProfileData,
   };
 }

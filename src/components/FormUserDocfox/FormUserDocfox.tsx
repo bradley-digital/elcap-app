@@ -14,7 +14,7 @@ import {
 
 // components
 import { Form, Formik } from "formik";
-import { IonList, IonListHeader } from "@ionic/react";
+import { IonButton, IonList, IonListHeader } from "@ionic/react";
 import FormObserver from "components/FormObserver/FormObserver";
 import FormSelect from "components/FormSelect/FormSelect";
 import SubmitButton from "components/SubmitButton/SubmitButton";
@@ -22,8 +22,9 @@ import SubmitButton from "components/SubmitButton/SubmitButton";
 // hooks
 import {
   useApplication,
+  useInvitationLink,
+  useTemplate,
   useTemplates,
-  useTemplate
 } from "hooks/useDocfox";
 
 // helpers
@@ -38,6 +39,7 @@ export default function FormUserDocfox({ profile }: Props) {
   const applicationId = profile?.docfoxApplication?.applicationId || "";
   const initialTemplateId = profile?.docfoxApplication?.templateId || "";
   const [templateId, setTemplateId] = useState(initialTemplateId);
+  const [contactId, setContactId] = useState("");
   const { templates } = useTemplates();
   const { template } = useTemplate(templateId);
   const {
@@ -47,6 +49,17 @@ export default function FormUserDocfox({ profile }: Props) {
     postApplication,
     postProfileData,
   } = useApplication(applicationId);
+  const { invitationLink } = useInvitationLink(contactId);
+
+  const included = application?.included || [];
+  const contact = included?.find(data => (
+    data?.type === "contact" &&
+    data?.attributes?.slug === "primary_point_of_contact"
+  ));
+
+  if (!contactId && contact?.id) {
+    setContactId(contact.id);
+  }
 
   const schema = useMemo(
     () => buildSchema(template?.data?.attributes?.profile_schema),
@@ -85,47 +98,56 @@ export default function FormUserDocfox({ profile }: Props) {
   }
 
   return (
-    <Formik
-      initialValues={initialValues}
-      enableReinitialize={true}
-      validationSchema={Yup.object(validationObject)}
-      onSubmit={(values) => {
-        async function updateApplication() {
-          const { deleteData, patchData, postData } = buildUpdateData(application, values);
-          for (const data of patchData) {
-            await patchProfileData(data);
+    <>
+      {!!invitationLink && (
+        <div>
+          <h3>Upload documents</h3>
+          <IonButton href={invitationLink} expand="block" target="_blank">Open link</IonButton>
+          <hr />
+        </div>
+      )}
+      <Formik
+        initialValues={initialValues}
+        enableReinitialize={true}
+        validationSchema={Yup.object(validationObject)}
+        onSubmit={(values) => {
+          async function updateApplication() {
+            const { deleteData, patchData, postData } = buildUpdateData(application, values);
+            for (const data of patchData) {
+              await patchProfileData(data);
+            }
+            for (const data of deleteData) {
+              await deleteProfileData(data);
+            }
+            for (const data of postData) {
+              await postProfileData(data);
+            }
           }
-          for (const data of deleteData) {
-            await deleteProfileData(data);
+          if (!applicationId || templateId !== initialTemplateId) {
+            const postData = buildPostData(values);
+            postData.userId = userId;
+            postApplication(postData);
+          } else if (application) {
+            updateApplication();
           }
-          for (const data of postData) {
-            await postProfileData(data);
-          }
-        }
-        if (!applicationId || templateId !== initialTemplateId) {
-          const postData = buildPostData(values);
-          postData.userId = userId;
-          postApplication(postData);
-        } else if (application) {
-          updateApplication();
-        }
-      }}
-    >
-      <Form className="FormUserDocfox">
-        <FormObserver onChange={handleChange} />
-        <IonList>
-          <IonListHeader>
-            DocFox Application
-          </IonListHeader>
-          <FormSelect
-            label="Entity Template"
-            name="kyc_entity_template_id"
-            options={entityTemplateOptions}
-          />
-          {formInputs}
-          <SubmitButton>Submit</SubmitButton>
-        </IonList>
-      </Form>
-    </Formik>
+        }}
+      >
+        <Form className="FormUserDocfox">
+          <FormObserver onChange={handleChange} />
+          <IonList>
+            <IonListHeader>
+              DocFox Application
+            </IonListHeader>
+            <FormSelect
+              label="Entity Template"
+              name="kyc_entity_template_id"
+              options={entityTemplateOptions}
+            />
+            {formInputs}
+            <SubmitButton>Submit</SubmitButton>
+          </IonList>
+        </Form>
+      </Formik>
+    </>
   );
 }

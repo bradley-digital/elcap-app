@@ -25,8 +25,13 @@ import { buildFormInputs } from "components/FormUserDocfox/helpers";
 import "./FormDocfox.scss";
 
 export default function FormDocfox() {
-  const { application, template } = useUserDocfox();
-
+  const {
+    application,
+    template,
+    deleteProfileData,
+    patchProfileData,
+    postProfileData,
+  } = useUserDocfox();
   const templateId = template?.data?.id || "";
 
   const schema = useMemo(
@@ -57,26 +62,19 @@ export default function FormDocfox() {
         enableReinitialize={true}
         validationSchema={Yup.object(validationObject)}
         onSubmit={(values) => {
-          console.log(values);
-          //async function updateApplication() {
-          //  const { deleteData, patchData, postData } = buildUpdateData(application, values);
-          //  for (const data of patchData) {
-          //    await patchProfileData(data);
-          //  }
-          //  for (const data of deleteData) {
-          //    await deleteProfileData(data);
-          //  }
-          //  for (const data of postData) {
-          //    await postProfileData(data);
-          //  }
-          //}
-          //if (!applicationId || templateId !== initialTemplateId) {
-          //  const postData = buildPostData(values);
-          //  postData.userId = userId;
-          //  postApplication(postData);
-          //} else if (application) {
-          //  updateApplication();
-          //}
+          async function updateApplication() {
+            const { deleteData, patchData, postData } = buildUpdateData(application, values);
+            for (const data of patchData) {
+              await patchProfileData(data);
+            }
+            for (const data of deleteData) {
+              await deleteProfileData(data);
+            }
+            for (const data of postData) {
+              await postProfileData(data);
+            }
+          }
+          updateApplication();
         }}
       >
         <Form className="FormDocfox">
