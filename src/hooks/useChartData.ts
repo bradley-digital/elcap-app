@@ -270,9 +270,9 @@ export default function useChartData(
     },
     scales: {
       x: {
-        type: "time",
+        type: "time" as const,
         time: {
-          unit: "month",
+          unit: "month" as const,
           displayFormats: {
             week: "MMM YYYY",
           },
