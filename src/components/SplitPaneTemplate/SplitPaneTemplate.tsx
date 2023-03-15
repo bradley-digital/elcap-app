@@ -38,7 +38,7 @@ export default function SplitPaneTemplate({
             </IonToolbar>
           </IonHeader>
           <IonContent>
-            <MenuLinks menuLinks={menuLinks} />
+            <MenuLinks menuId={menuId} menuLinks={menuLinks} />
           </IonContent>
         </IonMenu>
         <IonContent id={menuId}>{children}</IonContent>

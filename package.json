@@ -35,7 +35,7 @@
     "chart.js": "^4.2.1",
     "chartjs-adapter-moment": "^1.0.1",
     "classnames": "^2.3.1",
-    "eslint": "^8.28.0",
+    "eslint": "^8.34.0",
     "eslint-plugin-react": "^7.31.11",
     "events": "^3.3.0",
     "formik": "^2.2.9",
@@ -97,6 +97,7 @@
     "url": "git+https://github.com/josh-bradley-digital/elcap-app.git"
   },
   "devDependencies": {
-    "eslint-plugin-react": "^7.31.11"
+    "eslint-plugin-react": "^7.31.11",
+    "vite-plugin-eslint": "^1.8.1"
   }
 }

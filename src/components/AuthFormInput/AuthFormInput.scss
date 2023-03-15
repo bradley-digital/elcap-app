@@ -39,7 +39,7 @@
     &:focus {
       padding-bottom: 7px;
       border-width: 3px;
-      border-image: linear-gradient(to right, $primary, $sucess);
+      border-image: linear-gradient(to right, $primary, $success);
       border-image-slice: 1;
 
       ~ label {

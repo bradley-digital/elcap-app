@@ -10,6 +10,11 @@ type AuthResponse = {
   reauthorize_required_in?: number | undefined;
 };
 
+type LoginResponse = {
+  status: string;
+  authResponse: AuthResponse;
+};
+
 type FacebookLogin = {
   onSuccess: (authResponse: AuthResponse) => void;
   onError: (message: string) => void;
@@ -25,7 +30,7 @@ export default function useFacebookLogin({
     if (!scriptInitialized) return;
 
     window.FB.login(
-      function (response) {
+      function (response: LoginResponse) {
         if (response.status === "connected") {
           onSuccess(response.authResponse);
         } else {

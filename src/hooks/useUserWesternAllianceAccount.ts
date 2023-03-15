@@ -2,17 +2,21 @@ import type { Account, Transaction } from "./useWesternAllianceAccount";
 import { useQuery } from "react-query";
 import useAuth from "hooks/useAuth";
 
-const queryKey = "userAccount";
+import { queryKey } from "hooks/useUser";
 
-export default function useUser() {
+const westernAllianceAccountsQueryKey = `${queryKey}WesternAllianceAccounts`;
+const westernAllianceTransactionsQueryKey = `${queryKey}WesternAllianceTransactions`;
+
+export default function useUserWesternAlliance() {
   const { authApi } = useAuth();
+
   const { isSuccess: accountsIsSuccess, data: accounts } = useQuery(
-    `${queryKey}WesternAllianceAccounts`,
+    westernAllianceAccountsQueryKey,
     getWesternAllianceAccounts
   );
 
   const { isSuccess: transactionsIsSuccess, data: transactions } = useQuery(
-    `${queryKey}WesternAllianceTransactions`,
+    westernAllianceTransactionsQueryKey,
     getWesternAllianceTransactions
   );
 
@@ -25,15 +29,15 @@ export default function useUser() {
 
   async function getWesternAllianceTransactions() {
     const { data } = await authApi.get<Transaction[]>(
-      "/users/western-alliance-transactions"
+      "/users/western-alliance/transactions"
     );
     return data;
   }
 
   return {
-    accountsIsSuccess,
     accounts,
-    transactionsIsSuccess,
+    accountsIsSuccess,
     transactions,
+    transactionsIsSuccess,
   };
 }
