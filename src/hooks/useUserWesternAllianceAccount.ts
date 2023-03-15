@@ -21,8 +21,8 @@ export default function useUserWesternAlliance() {
   );
 
   async function getWesternAllianceAccounts() {
-    const { data } = await authApi.get<Account[]>(
-      "/users/western-alliance/accounts"
+    const { data } = await authApi.get<{ accounts: Account[] }>(
+      "/users/western-alliance-accounts"
     );
     return data;
   }
