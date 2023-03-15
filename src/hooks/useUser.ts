@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 // hooks
 import useAuth from "hooks/useAuth";
 
-type ProfileAccount = Pick<Account, "accountNumber" | "accountTitle">
+type ProfileAccount = Pick<Account, "accountNumber" | "accountTitle">;
 
 export type Profile = {
   id: string;
@@ -22,7 +22,6 @@ export type Profile = {
   accounts?: ProfileAccount[];
   docfoxApplication: DocfoxApplication;
 };
-
 
 type ProfileUpdateInput = {
   firstName?: string;

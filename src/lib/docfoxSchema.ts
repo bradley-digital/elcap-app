@@ -20,19 +20,19 @@ type TypeMap = {
 };
 
 const typeMap: TypeMap = {
-  "address": "addresses",
-  "additional_detail": "additional_details",
-  "contact": "contact_informations",
-  "name": "names",
-  "number": "numbers",
+  address: "addresses",
+  additional_detail: "additional_details",
+  contact: "contact_informations",
+  name: "names",
+  number: "numbers",
 };
 
 const inverseTypeMap: TypeMap = {
-  "addresses": "address",
-  "additional_details": "additional_detail",
-  "contact_informations": "contact",
-  "names": "name",
-  "numbers": "number",
+  addresses: "address",
+  additional_details: "additional_detail",
+  contact_informations: "contact",
+  names: "name",
+  numbers: "number",
 };
 
 function isRequired(key: string, requiredKeys: any) {
@@ -55,24 +55,20 @@ function isRequired(key: string, requiredKeys: any) {
 }
 
 export function buildSchema(object: any, options: any = {}) {
-  const finalOptions = Object.assign({
-    schema: {},
-    definitions: {},
-    required: [],
-    prefix: "",
-    titlePrefix: "",
-  }, options);
+  const finalOptions = Object.assign(
+    {
+      schema: {},
+      definitions: {},
+      required: [],
+      prefix: "",
+      titlePrefix: "",
+    },
+    options
+  );
 
-  const {
-    schema,
-    definitions,
-    required,
-    prefix,
-  } = finalOptions;
+  const { schema, definitions, required, prefix } = finalOptions;
 
-  let {
-    titlePrefix,
-  } = finalOptions;
+  let { titlePrefix } = finalOptions;
 
   if (object?.definitions) {
     for (const key in object.definitions) {
@@ -82,9 +78,11 @@ export function buildSchema(object: any, options: any = {}) {
   }
 
   if (object.required) {
-    required.push(...object.required.map((name: string) => {
-      return prefix ? `${prefix}.${name}` : name;
-    }));
+    required.push(
+      ...object.required.map((name: string) => {
+        return prefix ? `${prefix}.${name}` : name;
+      })
+    );
   }
 
   if (object.title && prefix) {
@@ -104,7 +102,7 @@ export function buildSchema(object: any, options: any = {}) {
     }
 
     if (property.type === "string") {
-      const finalProperty = JSON.parse(JSON.stringify(property))
+      const finalProperty = JSON.parse(JSON.stringify(property));
       if (finalProperty.title) {
         finalProperty.title = `${titlePrefix}${finalProperty.title}`;
       }
@@ -132,23 +130,35 @@ export function buildValidation(schema: any) {
     const value = schema[key];
     validation[key] = Yup.string().nullable();
     if (value.minLength) {
-      validation[key] = validation[key].min(value.minLength, `Must be at least ${value.minLength} characters long`);
+      validation[key] = validation[key].min(
+        value.minLength,
+        `Must be at least ${value.minLength} characters long`
+      );
     }
     if (value.maxLength) {
-      validation[key] = validation[key].max(value.maxLength, `Must be less than ${value.maxLength} characters long`);
+      validation[key] = validation[key].max(
+        value.maxLength,
+        `Must be less than ${value.maxLength} characters long`
+      );
     }
     if (value.format === "email") {
       validation[key] = validation[key].email("Email must be valid");
     }
     if (value.format === "phone") {
-      validation[key] = validation[key].matches(phoneRegExp, "Phone number must be valid");
+      validation[key] = validation[key].matches(
+        phoneRegExp,
+        "Phone number must be valid"
+      );
     }
     if (value.pattern) {
       let message = `Must match format ${value.pattern}`;
       if (value.message.pattern) {
         message = value.message.pattern;
       }
-      validation[key] = validation[key].matches(new RegExp(value.pattern), message);
+      validation[key] = validation[key].matches(
+        new RegExp(value.pattern),
+        message
+      );
     }
     if (value.required) {
       validation[key] = validation[key].required("Required");
@@ -157,7 +167,11 @@ export function buildValidation(schema: any) {
   return validation;
 }
 
-function buildFormSectionsHelper(section: any, titleParts: string[], value: string) {
+function buildFormSectionsHelper(
+  section: any,
+  titleParts: string[],
+  value: string
+) {
   const title = titleParts.shift();
   if (typeof title === "undefined") return;
   if (titleParts.length === 0) {
@@ -285,21 +299,21 @@ export function buildUpdateData(application: any, formData: any) {
 
     const keyParts = key.split(".");
     const initialType = keyParts[0];
-    const type = inverseTypeMap[initialType]
+    const type = inverseTypeMap[initialType];
     const slug = keyParts[1];
     if (!type || !slug) continue;
 
     const allData = [...postData, ...patchData];
-    const existingData = allData.find(data => (
-      data?.data?.type === type &&
-      data?.data?.attributes?.slug === slug
-    ));
+    const existingData = allData.find(
+      (data) =>
+        data?.data?.type === type && data?.data?.attributes?.slug === slug
+    );
     if (existingData) continue;
 
-    const applicationData = included.find((includedData: any) => (
-      includedData?.type === type &&
-      includedData?.attributes?.slug === slug
-    ));
+    const applicationData = included.find(
+      (includedData: any) =>
+        includedData?.type === type && includedData?.attributes?.slug === slug
+    );
 
     const attributes = buildAttributes(initialType, slug, formData);
 
@@ -318,10 +332,9 @@ export function buildUpdateData(application: any, formData: any) {
           },
         });
       } else {
-        const existingDeleteData = deleteData.find(data => (
-          data.id === id &&
-          data.type === type
-        ));
+        const existingDeleteData = deleteData.find(
+          (data) => data.id === id && data.type === type
+        );
         if (existingDeleteData) continue;
         deleteData.push({ id, type });
       }
@@ -338,7 +351,11 @@ export function buildUpdateData(application: any, formData: any) {
   return { deleteData, patchData, postData };
 }
 
-export function buildInitialValues(application: any, schema: any, templateId: string) {
+export function buildInitialValues(
+  application: any,
+  schema: any,
+  templateId: string
+) {
   const included = application.included || [];
   const initialValues: InitialValues = {};
   if (templateId) {

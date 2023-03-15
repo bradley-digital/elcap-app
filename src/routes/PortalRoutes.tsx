@@ -15,11 +15,7 @@ import {
   IonTabs,
 } from "@ionic/react";
 
-import {
-  document as documentIcon,
-  grid,
-  personCircle,
-} from "ionicons/icons";
+import { document as documentIcon, grid, personCircle } from "ionicons/icons";
 
 export default function PortalRoutes() {
   return (

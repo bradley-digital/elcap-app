@@ -1,9 +1,6 @@
 import type { RouteComponentProps } from "react-router-dom";
 import { Redirect, Route, Switch, useParams } from "react-router-dom";
-import {
-  IonRouterOutlet,
-  useIonRouter,
-} from "@ionic/react";
+import { IonRouterOutlet, useIonRouter } from "@ionic/react";
 
 // components
 import Account from "pages/User/UserAccount";
@@ -19,7 +16,7 @@ export default function UserRoutes({ match }: RouteComponentProps) {
   const router = useIonRouter();
 
   if (isSuccess && typeof data !== "undefined") {
-    const user = data.find(user => user.id === userId);
+    const user = data.find((user) => user.id === userId);
 
     if (typeof user === "undefined") {
       router.push("/user-management");
