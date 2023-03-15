@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
 // hooks
+import type { Profile } from "hooks/useUser";
 import useAuth from "hooks/useAuth";
-import { Profile } from "hooks/useUser";
 
 type ProfileUpdateByIdInput = {
   id: string;
@@ -12,6 +12,7 @@ type ProfileUpdateByIdInput = {
   addressLine1?: string;
   addressLine2?: string;
   role?: string;
+  accounts?: string[];
 };
 
 type ProfileCreateInput = {
@@ -20,6 +21,7 @@ type ProfileCreateInput = {
   email: string;
   phone: string;
   role: string;
+  accounts?: string[];
 };
 
 const queryKey = "userList";
@@ -50,7 +52,6 @@ export default function useUser() {
   }
 
   async function updateUser(body: ProfileUpdateByIdInput) {
-    console.log(body);
     const { data } = await authApi.post<Profile>("/users/update-by-id", body);
     return data;
   }

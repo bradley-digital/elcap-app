@@ -1,7 +1,10 @@
+import type { Account } from "./useWesternAllianceAccount";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
 // hooks
 import useAuth from "hooks/useAuth";
+
+type ProfileAccount = Pick<Account, "accountNumber">
 
 export type Profile = {
   id: string;
@@ -15,7 +18,9 @@ export type Profile = {
   state?: string;
   role: string;
   createdAt: string;
+  accounts?: ProfileAccount[];
 };
+
 
 type ProfileUpdateInput = {
   firstName?: string;
