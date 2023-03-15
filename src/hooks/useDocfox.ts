@@ -159,14 +159,6 @@ export function useApplication(applicationId: string) {
     return data;
   }
 
-  async function getDataRequirements(applicationId: string) {
-    if (!applicationId) return;
-    const { data } = await authApi.get(
-      `/docfox/application/data-requirements?applicationId=${applicationId}`
-    );
-    return data;
-  }
-
   async function deleteProfileDataMutation({ id, type }: DocfoxProfileDeleteInput) {
     const { data } = await authApi.delete(
       `/docfox/profile/data?id=${id}&type=${type}`

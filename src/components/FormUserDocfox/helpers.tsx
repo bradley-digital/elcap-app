@@ -1,8 +1,10 @@
+import type { ReactNode } from "react";
 import { IonListHeader } from "@ionic/react";
 import FormInput from "components/FormInput/FormInput";
 import FormSelect from "components/FormSelect/FormSelect";
 
-function buildFormInputsHelper(children, section) {
+// eslint-disable-next-line  @typescript-eslint/no-explicit-any
+function buildFormInputsHelper(children: any = [], section: any = {}) {
   for (const sectionTitle in section) {
     if (sectionTitle === "hiddenFields") continue;
     const nextSection = section[sectionTitle];
@@ -48,7 +50,6 @@ function buildFormInputsHelper(children, section) {
             label={label}
             name={`['${nextSection.name}']`}
             placeholder={nextSection.placeholder}
-            type="string"
           />
         );
       }
@@ -59,8 +60,9 @@ function buildFormInputsHelper(children, section) {
   }
 }
 
-export function buildFormInputs(formSections = {}) {
-  const children = [];
+// eslint-disable-next-line  @typescript-eslint/no-explicit-any
+export function buildFormInputs(formSections: any = {}) {
+  const children: ReactNode[] = [];
   buildFormInputsHelper(children, formSections);
   return children;
 }

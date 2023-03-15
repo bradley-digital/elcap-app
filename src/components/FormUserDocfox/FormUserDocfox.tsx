@@ -65,7 +65,9 @@ export default function FormUserDocfox({ profile }: Props) {
   const { invitationLink } = useInvitationLink(contactId);
 
   const included = application?.included || [];
-  const contact = included?.find(data => (
+
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+  const contact = included?.find((data: any) => (
     data?.type === "contact" &&
     data?.attributes?.slug === "primary_point_of_contact"
   ));
@@ -95,7 +97,8 @@ export default function FormUserDocfox({ profile }: Props) {
     [formSections]
   );
 
-  const entityTemplateOptions = templates?.data?.map((template) => {
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+  const entityTemplateOptions = templates?.data?.map((template: any) => {
     const value = template?.id;
     const label = template?.attributes?.kyc_entity_type_name;
     return {
@@ -104,7 +107,8 @@ export default function FormUserDocfox({ profile }: Props) {
     };
   }) || [];
 
-  function handleChange(values) {
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+  function handleChange(values: any) {
     if (values.kyc_entity_template_id) {
       setTemplateId(values.kyc_entity_template_id);
     }
@@ -160,12 +164,15 @@ export default function FormUserDocfox({ profile }: Props) {
         onSubmit={(values) => {
           async function updateApplication() {
             const { deleteData, patchData, postData } = buildUpdateData(application, values);
+            if (!Array.isArray(patchData)) return;
             for (const data of patchData) {
               await patchProfileData(data);
             }
+            if (!Array.isArray(deleteData)) return;
             for (const data of deleteData) {
               await deleteProfileData(data);
             }
+            if (!Array.isArray(postData)) return;
             for (const data of postData) {
               await postProfileData(data);
             }

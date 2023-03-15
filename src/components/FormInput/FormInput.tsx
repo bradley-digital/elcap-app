@@ -9,7 +9,7 @@ import { IonIcon, IonItem, IonInput, IonLabel, IonNote } from "@ionic/react";
 import "./FormInput.scss";
 
 type Props = {
-  label: string;
+  label?: string;
   icon?: string;
   className?: string;
 } & ComponentProps<typeof IonInput> &
@@ -27,15 +27,15 @@ export default function FormInput(props: Props) {
         "ion-touched": meta.touched,
       })}
     >
-      <IonLabel position="stacked">{label}</IonLabel>
-      {icon && <IonIcon icon={icon} className="FormInput__icon" />}
+      {!!label && <IonLabel position="stacked">{label}</IonLabel>}
+      {!!icon && <IonIcon icon={icon} className="FormInput__icon" />}
       <IonInput
         {...field}
         {...rest}
         onIonBlur={field.onBlur}
         onIonChange={field.onChange}
       />
-      {meta.error && <IonNote slot="error">{meta.error}</IonNote>}
+      {!!meta.error && <IonNote slot="error">{meta.error}</IonNote>}
     </IonItem>
   );
 }

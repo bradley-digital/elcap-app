@@ -1,7 +1,25 @@
+// eslint-disable  @typescript-eslint/no-explicit-any
 import * as Yup from "yup";
 import { phoneRegExp } from "lib/formValidation";
 
-const typeMap = {
+type Attributes = {
+  [key: string]: any;
+};
+
+type FormSections = {
+  hiddenFields: string[];
+  [key: string]: any;
+};
+
+type InitialValues = {
+  [key: string]: string;
+};
+
+type TypeMap = {
+  [key: string]: string;
+};
+
+const typeMap: TypeMap = {
   "address": "addresses",
   "additional_detail": "additional_details",
   "contact": "contact_informations",
@@ -9,7 +27,7 @@ const typeMap = {
   "number": "numbers",
 };
 
-const inverseTypeMap = {
+const inverseTypeMap: TypeMap = {
   "addresses": "address",
   "additional_details": "additional_detail",
   "contact_informations": "contact",
@@ -17,7 +35,7 @@ const inverseTypeMap = {
   "numbers": "number",
 };
 
-function isRequired(key, requiredKeys) {
+function isRequired(key: string, requiredKeys: any) {
   if (!requiredKeys.includes(key)) {
     return false;
   }
@@ -36,7 +54,7 @@ function isRequired(key, requiredKeys) {
   return false;
 }
 
-export function buildSchema(object = {}, options) {
+export function buildSchema(object: any, options: any = {}) {
   const finalOptions = Object.assign({
     schema: {},
     definitions: {},
@@ -56,7 +74,7 @@ export function buildSchema(object = {}, options) {
     titlePrefix,
   } = finalOptions;
 
-  if (object.definitions) {
+  if (object?.definitions) {
     for (const key in object.definitions) {
       const definition = object.definitions[key];
       definitions[key] = definition;
@@ -64,7 +82,7 @@ export function buildSchema(object = {}, options) {
   }
 
   if (object.required) {
-    required.push(...object.required.map((name) => {
+    required.push(...object.required.map((name: string) => {
       return prefix ? `${prefix}.${name}` : name;
     }));
   }
@@ -108,8 +126,8 @@ export function buildSchema(object = {}, options) {
   return schema;
 }
 
-export function buildValidation(schema = {}) {
-  const validation = {};
+export function buildValidation(schema: any) {
+  const validation = {} as any;
   for (const key in schema) {
     const value = schema[key];
     validation[key] = Yup.string().nullable();
@@ -139,8 +157,9 @@ export function buildValidation(schema = {}) {
   return validation;
 }
 
-function buildFormSectionsHelper(section, titleParts, value) {
+function buildFormSectionsHelper(section: any, titleParts: string[], value: string) {
   const title = titleParts.shift();
+  if (typeof title === "undefined") return;
   if (titleParts.length === 0) {
     section[title] = value;
   } else if (section[title]) {
@@ -151,8 +170,8 @@ function buildFormSectionsHelper(section, titleParts, value) {
   }
 }
 
-export function buildFormSections(schema = {}) {
-  const formSections = {
+export function buildFormSections(schema: any) {
+  const formSections: FormSections = {
     hiddenFields: [],
   };
   for (const key in schema) {
@@ -168,8 +187,9 @@ export function buildFormSections(schema = {}) {
   return formSections;
 }
 
-function buildPostDataHelper(data, keyParts, value) {
+function buildPostDataHelper(data: any, keyParts: string[], value: string) {
   const currentKey = keyParts.shift();
+  if (typeof currentKey === "undefined") return;
   if (keyParts.length === 0) {
     data[currentKey] = value;
   } else {
@@ -180,7 +200,7 @@ function buildPostDataHelper(data, keyParts, value) {
   }
 }
 
-export function buildPostData(formData) {
+export function buildPostData(formData: any) {
   const postData = {};
   for (const key in formData) {
     const value = formData[key];
@@ -192,13 +212,12 @@ export function buildPostData(formData) {
       type: "kyc_application",
       attributes: postData,
     },
+    userId: "",
   };
 }
 
-/* Need to check if there is new data to be posted, or if the item should simply be deleted
- */
-function buildAttributes(type, slug, formData) {
-  const attributes = {
+function buildAttributes(type: string, slug: string, formData: any) {
+  const attributes: Attributes = {
     slug,
   };
   const shortKey = `${type}.${slug}`;
@@ -208,6 +227,7 @@ function buildAttributes(type, slug, formData) {
     for (const key in formData) {
       if (key.startsWith(shortKey)) {
         const valueKey = key.split(".").pop();
+        if (typeof valueKey === "undefined") continue;
         attributes[valueKey] = formData[key];
       }
     }
@@ -215,7 +235,7 @@ function buildAttributes(type, slug, formData) {
   return attributes;
 }
 
-function compareAttributes(postAttributes, applicationAttributes) {
+function compareAttributes(postAttributes: any, applicationAttributes: any) {
   for (const key in postAttributes) {
     if (postAttributes[key] !== applicationAttributes[key]) {
       return false;
@@ -224,7 +244,7 @@ function compareAttributes(postAttributes, applicationAttributes) {
   return true;
 }
 
-function attributesHasData(attributes) {
+function attributesHasData(attributes: any) {
   for (const key in attributes) {
     if (key === "slug") continue;
     if (attributes[key]) return true;
@@ -232,7 +252,7 @@ function attributesHasData(attributes) {
   return false;
 }
 
-function removeNullAttributes(attributes) {
+function removeNullAttributes(attributes: any) {
   for (const key in attributes) {
     if (attributes[key] === "") {
       attributes[key] = "-";
@@ -244,7 +264,7 @@ function removeNullAttributes(attributes) {
   return attributes;
 }
 
-function removeBlankAttributes(attributes) {
+function removeBlankAttributes(attributes: any) {
   for (const key in attributes) {
     if (!attributes[key]) {
       delete attributes[key];
@@ -253,11 +273,11 @@ function removeBlankAttributes(attributes) {
   return attributes;
 }
 
-export function buildUpdateData(application, formData) {
+export function buildUpdateData(application: any, formData: any) {
   const included = application?.included || [];
-  const deleteData = [];
-  const patchData = [];
-  const postData = [];
+  const deleteData: any[] = [];
+  const patchData: any[] = [];
+  const postData: any[] = [];
   const profileId = application?.data?.relationships?.profile?.data?.id;
   if (!profileId) return { deleteData, postData };
   for (const key in formData) {
@@ -276,7 +296,7 @@ export function buildUpdateData(application, formData) {
     ));
     if (existingData) continue;
 
-    const applicationData = included.find(includedData => (
+    const applicationData = included.find((includedData: any) => (
       includedData?.type === type &&
       includedData?.attributes?.slug === slug
     ));
@@ -318,9 +338,9 @@ export function buildUpdateData(application, formData) {
   return { deleteData, patchData, postData };
 }
 
-export function buildInitialValues(application = {}, schema = {}, templateId = "") {
+export function buildInitialValues(application: any, schema: any, templateId: string) {
   const included = application.included || [];
-  const initialValues = {};
+  const initialValues: InitialValues = {};
   if (templateId) {
     initialValues.kyc_entity_template_id = templateId;
   }

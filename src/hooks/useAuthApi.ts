@@ -1,4 +1,8 @@
-import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import type {
+  AxiosError,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from "axios";
 import { useEffect, useRef } from "react";
 import axios from "axios";
 import EventEmitter from "events";
@@ -99,8 +103,8 @@ export default function useAuthApi() {
   }
 
   async function requestInterceptor(
-    config: AxiosRequestConfig
-  ): Promise<AxiosRequestConfig> {
+    config: InternalAxiosRequestConfig
+  ): Promise<InternalAxiosRequestConfig> {
     await waitForRefresh();
     if (config.headers && accessTokenRef.current) {
       config.headers.Authorization = `Bearer ${accessTokenRef.current}`;

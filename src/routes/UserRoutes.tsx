@@ -21,8 +21,9 @@ export default function UserRoutes({ match }: RouteComponentProps) {
   if (isSuccess && typeof data !== "undefined") {
     const user = data.find(user => user.id === userId);
 
-    if (!user) {
+    if (typeof user === "undefined") {
       router.push("/user-management");
+      return null;
     }
 
     return (

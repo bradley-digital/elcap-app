@@ -117,12 +117,15 @@ export default function FormDocfox() {
           onSubmit={(values) => {
             async function updateApplication() {
               const { deleteData, patchData, postData } = buildUpdateData(application, values);
+              if (!Array.isArray(patchData)) return;
               for (const data of patchData) {
                 await patchProfileData(data);
               }
+              if (!Array.isArray(deleteData)) return;
               for (const data of deleteData) {
                 await deleteProfileData(data);
               }
+              if (!Array.isArray(postData)) return;
               for (const data of postData) {
                 await postProfileData(data);
               }
