@@ -12,7 +12,7 @@ test-report
 playwright/screenshots
 
 # production
-build
+dist
 
 # secrets
 .env
