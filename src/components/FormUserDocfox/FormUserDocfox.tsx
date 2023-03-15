@@ -14,7 +14,17 @@ import {
 
 // components
 import { Form, Formik } from "formik";
-import { IonButton, IonList, IonListHeader } from "@ionic/react";
+import {
+  IonButton,
+  IonIcon,
+  IonList,
+  IonListHeader,
+} from "@ionic/react";
+import {
+  alertCircle,
+  checkmarkCircle,
+  closeCircle,
+} from "ionicons/icons";
 import FormObserver from "components/FormObserver/FormObserver";
 import FormSelect from "components/FormSelect/FormSelect";
 import SubmitButton from "components/SubmitButton/SubmitButton";
@@ -29,6 +39,9 @@ import {
 
 // helpers
 import { buildFormInputs } from "./helpers";
+
+// styles
+import "./FormUserDocfox.scss";
 
 type Props = {
   profile: Profile;
@@ -97,12 +110,46 @@ export default function FormUserDocfox({ profile }: Props) {
     }
   }
 
+  let statusElement = null;
+  const status = application?.data?.attributes?.status?.status;
+  const statusDescription = application?.data?.attributes?.status?.status_description;
+
+  if (status === "in_progress") {
+    statusElement = (
+      <div className="FormUserDocfox__status warning">
+        <IonIcon icon={alertCircle} />
+        {statusDescription && <p>{statusDescription}</p>}
+      </div>
+    );
+  } else if (status === "approved") {
+    statusElement = (
+      <div className="FormUserDocfox__status success">
+        <IonIcon icon={checkmarkCircle} />
+        {statusDescription && <p>{statusDescription}</p>}
+      </div>
+    );
+  } else {
+    statusElement = (
+      <div className="FormUserDocfox__status danger">
+        <IonIcon icon={closeCircle} />
+        <p>The application has not been started.</p>
+      </div>
+    );
+  }
+
   return (
-    <>
+    <div className="FormUserDocfox">
+      {!!statusElement && (
+        <div>
+          {statusElement}
+          <hr />
+        </div>
+      )}
       {!!invitationLink && (
         <div>
           <h3>Upload documents</h3>
-          <IonButton href={invitationLink} expand="block" target="_blank">Open link</IonButton>
+          <p>Use this portal to upload the documents required for your application.</p>
+          <IonButton href={invitationLink} expand="block" target="_blank">Open portal</IonButton>
           <hr />
         </div>
       )}
@@ -132,7 +179,7 @@ export default function FormUserDocfox({ profile }: Props) {
           }
         }}
       >
-        <Form className="FormUserDocfox">
+        <Form>
           <FormObserver onChange={handleChange} />
           <IonList>
             <IonListHeader>
@@ -148,6 +195,6 @@ export default function FormUserDocfox({ profile }: Props) {
           </IonList>
         </Form>
       </Formik>
-    </>
+    </div>
   );
 }

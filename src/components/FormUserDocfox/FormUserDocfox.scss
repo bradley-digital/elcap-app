@@ -1,6 +1,6 @@
 @import "@/theme/variables.scss";
 
-.FormDocfox {
+.FormUserDocfox {
   &__status {
     ion-icon {
       height: 4.8em;
@@ -24,9 +24,5 @@
         color: $danger;
       }
     }
-  }
-
-  .FormInputHidden {
-    display: none;
   }
 }

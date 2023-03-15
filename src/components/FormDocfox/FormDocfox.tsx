@@ -12,7 +12,17 @@ import {
 
 // components
 import { Form, Formik } from "formik";
-import { IonList, IonListHeader } from "@ionic/react";
+import {
+  IonButton,
+  IonIcon,
+  IonList,
+  IonListHeader,
+} from "@ionic/react";
+import {
+  alertCircle,
+  checkmarkCircle,
+  closeCircle,
+} from "ionicons/icons";
 import FormInput from "components/FormInput/FormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
 
@@ -29,6 +39,7 @@ export default function FormDocfox() {
     application,
     template,
     deleteProfileData,
+    invitationLink,
     patchProfileData,
     postProfileData,
   } = useUserDocfox();
@@ -56,41 +67,84 @@ export default function FormDocfox() {
   );
 
   if (typeof application !== "undefined" && typeof template !== "undefined") {
+    let statusElement = null;
+    const status = application?.data?.attributes?.status?.status;
+    const statusDescription = application?.data?.attributes?.status?.status_description;
+
+    if (status === "in_progress") {
+      statusElement = (
+        <div className="FormUserDocfox__status warning">
+          <IonIcon icon={alertCircle} />
+          {statusDescription && <p>{statusDescription}</p>}
+        </div>
+      );
+    } else if (status === "approved") {
+      statusElement = (
+        <div className="FormUserDocfox__status success">
+          <IonIcon icon={checkmarkCircle} />
+          {statusDescription && <p>{statusDescription}</p>}
+        </div>
+      );
+    } else {
+      statusElement = (
+        <div className="FormUserDocfox__status danger">
+          <IonIcon icon={closeCircle} />
+          <p>The application has not been started.</p>
+        </div>
+      );
+    }
+
     return (
-      <Formik
-        initialValues={initialValues}
-        enableReinitialize={true}
-        validationSchema={Yup.object(validationObject)}
-        onSubmit={(values) => {
-          async function updateApplication() {
-            const { deleteData, patchData, postData } = buildUpdateData(application, values);
-            for (const data of patchData) {
-              await patchProfileData(data);
+      <div className="FormDocfox">
+        {!!statusElement && (
+          <div>
+            {statusElement}
+            <hr />
+          </div>
+        )}
+        {!!invitationLink && (
+          <div>
+            <h3>Upload documents</h3>
+            <p>Use this portal to upload the documents required for your application.</p>
+            <IonButton href={invitationLink} expand="block" target="_blank">Open portal</IonButton>
+            <hr />
+          </div>
+        )}
+        <Formik
+          initialValues={initialValues}
+          enableReinitialize={true}
+          validationSchema={Yup.object(validationObject)}
+          onSubmit={(values) => {
+            async function updateApplication() {
+              const { deleteData, patchData, postData } = buildUpdateData(application, values);
+              for (const data of patchData) {
+                await patchProfileData(data);
+              }
+              for (const data of deleteData) {
+                await deleteProfileData(data);
+              }
+              for (const data of postData) {
+                await postProfileData(data);
+              }
             }
-            for (const data of deleteData) {
-              await deleteProfileData(data);
-            }
-            for (const data of postData) {
-              await postProfileData(data);
-            }
-          }
-          updateApplication();
-        }}
-      >
-        <Form className="FormDocfox">
-          <IonList>
-            <IonListHeader>
-              DocFox Application
-            </IonListHeader>
-            <FormInput
-              className="FormInputHidden"
-              name="kyc_entity_template_id"
-            />
-            {formInputs}
-            <SubmitButton>Submit</SubmitButton>
-          </IonList>
-        </Form>
-      </Formik>
+            updateApplication();
+          }}
+        >
+          <Form>
+            <IonList>
+              <IonListHeader>
+                DocFox Application
+              </IonListHeader>
+              <FormInput
+                className="FormInputHidden"
+                name="kyc_entity_template_id"
+              />
+              {formInputs}
+              <SubmitButton>Submit</SubmitButton>
+            </IonList>
+          </Form>
+        </Formik>
+      </div>
     );
   }
 

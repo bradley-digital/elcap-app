@@ -5,6 +5,7 @@ import useAuth from "hooks/useAuth";
 import { queryKey } from "hooks/useUser";
 
 const docfoxApplicationQueryKey = `${queryKey}DocfoxApplication`;
+const docfoxInvitationLinkQueryKey = `${queryKey}DocfoxInvitationLink`;
 const docfoxTemplateQueryKey = `${queryKey}DocfoxTemplate`;
 
 export default function useUserDocfox() {
@@ -14,6 +15,11 @@ export default function useUserDocfox() {
   const { isSuccess: applicationIsSuccess, data: application } = useQuery(
     docfoxApplicationQueryKey,
     getDocfoxApplication
+  );
+
+  const { isSuccess: invitationLinkIsSuccess, data: invitationLink } = useQuery(
+    docfoxInvitationLinkQueryKey,
+    getDocfoxInvitationLink
   );
 
   const { isSuccess: templateIsSuccess, data: template } = useQuery(
@@ -46,6 +52,13 @@ export default function useUserDocfox() {
     return data;
   }
 
+  async function getDocfoxInvitationLink() {
+    const { data } = await authApi.get(
+      "/users/docfox/invitation-link"
+    );
+    return data?.invitationLink || "";
+  }
+
   async function getDocfoxTemplate() {
     const { data } = await authApi.get(
       "/users/docfox/template"
@@ -57,7 +70,6 @@ export default function useUserDocfox() {
     const { data } = await authApi.delete(
       `/users/docfox/profile/data?id=${id}&type=${type}`
     );
-    console.log(data);
     return data;
   }
 
@@ -66,7 +78,6 @@ export default function useUserDocfox() {
       "/users/docfox/profile/data",
       body
     );
-    console.log(data);
     return data;
   }
 
@@ -75,7 +86,6 @@ export default function useUserDocfox() {
       "/users/docfox/profile/data",
       body
     );
-    console.log(data);
     return data;
   }
 
@@ -83,6 +93,8 @@ export default function useUserDocfox() {
     application,
     applicationIsSuccess,
     deleteProfileData,
+    invitationLink,
+    invitationLinkIsSuccess,
     patchProfileData,
     postProfileData,
     template,

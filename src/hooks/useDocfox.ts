@@ -97,27 +97,15 @@ export function useInvitationLink(contactId: string) {
     data: invitationLink
   } = useQuery(
     [invitationLinkQueryKey, contactId],
-    () => getInvitationToken(contactId)
+    () => getInvitationLink(contactId)
   );
 
-  async function getInvitationToken(contactId: string) {
-    if (!contactId) return;
-    const { data: tokens } = await authApi.get(
-      `/docfox/invitation-tokens?contactId=${contactId}`
+  async function getInvitationLink(contactId: string) {
+    if (!contactId) return "";
+    const { data } = await authApi.get(
+      `/docfox/invitation-link?contactId=${contactId}`
     );
-    if (Array.isArray(tokens.data)) {
-      const token = tokens.data.find(token => (
-        token?.attributes?.valid_to &&
-        new Date(token?.attributes?.valid_to) > Date.now()
-      ));
-      if (token?.attributes?.accept_invitation_url)
-        return token.attributes.accept_invitation_url;
-    }
-    const { data } = await authApi.post(
-      "/docfox/invitation-token",
-      { contactId }
-    );
-    return data?.data?.attributes?.accept_invitation_url || "";
+    return data?.invitationLink || "";
   }
 
   return {
@@ -171,6 +159,14 @@ export function useApplication(applicationId: string) {
     return data;
   }
 
+  async function getDataRequirements(applicationId: string) {
+    if (!applicationId) return;
+    const { data } = await authApi.get(
+      `/docfox/application/data-requirements?applicationId=${applicationId}`
+    );
+    return data;
+  }
+
   async function deleteProfileDataMutation({ id, type }: DocfoxProfileDeleteInput) {
     const { data } = await authApi.delete(
       `/docfox/profile/data?id=${id}&type=${type}`
@@ -203,8 +199,8 @@ export function useApplication(applicationId: string) {
   }
 
   return {
-    applicationIsSuccess,
     application,
+    applicationIsSuccess,
     deleteProfileData,
     patchProfileData,
     postApplication,
