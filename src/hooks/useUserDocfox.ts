@@ -14,17 +14,17 @@ export default function useUserDocfox() {
 
   const { isSuccess: applicationIsSuccess, data: application } = useQuery(
     docfoxApplicationQueryKey,
-    getDocfoxApplication
+    getDocfoxApplication,
   );
 
   const { isSuccess: invitationLinkIsSuccess, data: invitationLink } = useQuery(
     docfoxInvitationLinkQueryKey,
-    getDocfoxInvitationLink
+    getDocfoxInvitationLink,
   );
 
   const { isSuccess: templateIsSuccess, data: template } = useQuery(
     docfoxTemplateQueryKey,
-    getDocfoxTemplate
+    getDocfoxTemplate,
   );
 
   const { mutateAsync: deleteProfileData } = useMutation(

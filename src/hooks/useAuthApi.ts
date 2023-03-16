@@ -129,7 +129,10 @@ export default function useAuthApi() {
       return authApi(originalRequest);
     }
 
-    handleRemoveTokens();
+    // Removing refresh tokens logs the user out on any error...
+    // Did not work for intended errors, such as no Docfox application found
+    // Either need to rework intended errors, or keep this uncommented
+    //handleRemoveTokens();
     finishRefresh();
 
     if (errorData?.status === "fail") {

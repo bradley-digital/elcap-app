@@ -54,7 +54,8 @@ function isRequired(key: string, requiredKeys: any) {
   return false;
 }
 
-export function buildSchema(object: any, options: any = {}) {
+export function buildSchema(profileSchema: any, options: any = {}) {
+  if (typeof profileSchema === "undefined") return;
   const finalOptions = Object.assign(
     {
       schema: {},
@@ -70,28 +71,28 @@ export function buildSchema(object: any, options: any = {}) {
 
   let { titlePrefix } = finalOptions;
 
-  if (object?.definitions) {
-    for (const key in object.definitions) {
-      const definition = object.definitions[key];
+  if (profileSchema?.definitions) {
+    for (const key in profileSchema.definitions) {
+      const definition = profileSchema.definitions[key];
       definitions[key] = definition;
     }
   }
 
-  if (object.required) {
+  if (profileSchema.required) {
     required.push(
-      ...object.required.map((name: string) => {
+      ...profileSchema.required.map((name: string) => {
         return prefix ? `${prefix}.${name}` : name;
       })
     );
   }
 
-  if (object.title && prefix) {
-    titlePrefix += `${object.title}: `;
+  if (profileSchema.title && prefix) {
+    titlePrefix += `${profileSchema.title}: `;
   }
 
-  for (const key in object.properties) {
+  for (const key in profileSchema.properties) {
     const finalKey = prefix ? `${prefix}.${key}` : key;
-    let property = object.properties[key];
+    let property = profileSchema.properties[key];
 
     if (property.$ref) {
       const refParts = property.$ref.split("/");
@@ -356,20 +357,20 @@ export function buildInitialValues(
   schema: any,
   templateId: string
 ) {
-  const included = application.included || [];
+  const included = application?.included || [];
   const initialValues: InitialValues = {};
   if (templateId) {
     initialValues.kyc_entity_template_id = templateId;
   }
   for (const data of included) {
-    const key = `${typeMap[data.type]}.${data.attributes.slug}`;
-    if (schema[key] && data.attributes.value) {
-      initialValues[key] = data.attributes.value;
+    const key = `${typeMap[data.type]}.${data?.attributes?.slug}`;
+    if (schema[key] && data?.attributes?.value) {
+      initialValues[key] = data?.attributes?.value;
     } else {
-      for (const attribute in data.attributes) {
+      for (const attribute in data?.attributes) {
         const attributeKey = `${key}.${attribute}`;
         if (schema[attributeKey]) {
-          initialValues[attributeKey] = data.attributes[attribute];
+          initialValues[attributeKey] = data?.attributes[attribute];
         }
       }
     }
