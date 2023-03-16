@@ -36,8 +36,8 @@ export function useTemplates() {
   }
 
   return {
-    templatesIsSuccess,
     templates,
+    templatesIsSuccess,
   };
 }
 
@@ -58,8 +58,8 @@ export function useTemplate(templateId: string) {
   }
 
   return {
-    templateIsSuccess,
     template,
+    templateIsSuccess,
   };
 }
 
@@ -77,8 +77,8 @@ export function useApplications() {
   }
 
   return {
-    applicationsIsSuccess,
     applications,
+    applicationsIsSuccess,
   };
 }
 

@@ -66,8 +66,14 @@ export default function FormDocfox() {
     [formSections]
   );
 
+  let statusElement = (
+    <div className="FormUserDocfox__status danger">
+      <IonIcon icon={closeCircle} />
+      <p>The application has not been started. If this is urgent please contact your El Capitan admin.</p>
+    </div>
+  );
+
   if (typeof application !== "undefined" && typeof template !== "undefined") {
-    let statusElement = null;
     const status = application?.data?.attributes?.status?.status;
     const statusDescription = application?.data?.attributes?.status?.status_description;
 
@@ -85,23 +91,14 @@ export default function FormDocfox() {
           {statusDescription && <p>{statusDescription}</p>}
         </div>
       );
-    } else {
-      statusElement = (
-        <div className="FormUserDocfox__status danger">
-          <IonIcon icon={closeCircle} />
-          <p>The application has not been started.</p>
-        </div>
-      );
     }
 
     return (
       <div className="FormDocfox">
-        {!!statusElement && (
-          <div>
-            {statusElement}
-            <hr />
-          </div>
-        )}
+        <div>
+          {statusElement}
+          <hr />
+        </div>
         {!!invitationLink && (
           <div>
             <h3>Upload documents</h3>
@@ -151,5 +148,9 @@ export default function FormDocfox() {
     );
   }
 
-  return null;
+  return (
+    <div className="FormDocfox">
+      {statusElement}
+    </div>
+  );
 }

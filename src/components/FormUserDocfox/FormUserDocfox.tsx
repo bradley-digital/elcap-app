@@ -109,7 +109,7 @@ export default function FormUserDocfox({ profile }: Props) {
 
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   function handleChange(values: any) {
-    if (values.kyc_entity_template_id) {
+    if (values?.kyc_entity_template_id && templateId !== values.kyc_entity_template_id) {
       setTemplateId(values.kyc_entity_template_id);
     }
   }
