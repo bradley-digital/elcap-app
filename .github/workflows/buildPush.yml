@@ -12,8 +12,11 @@ on:
       deployment:
         required: true
         type: string
+      approval:
+        required: true
+        type: boolean
 jobs:
-  reuseable_build_push:
+  build-and-push:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
@@ -26,7 +29,21 @@ jobs:
         run: doctl registry login --expiry-seconds 600
       - name: Build, Tag, and Push the image to Digitalocean
         run: make btp ENV=${{ inputs.env }}
+  deploy-k8s:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    steps:
       - name: Save DigitalOcean kubeconfig (short creds)
         run: doctl kubernetes cluster kubeconfig save ${{ inputs.k8s-cluster }} --expiry-seconds 600
+      - name: Manual Approval
+        if: ${{ approval }}
+        uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: joshuabradley012
+          minimum-approvals: 1
+          issue-title: "API Production Deployment Approcal"
+          issue-body: "Please approve or deny the deployment api to production"
+          exclude-workflow-initiator-as-approver: false
       - name: Rollout Restart ${{ inputs.deployment }} (pulls latest)
         run: kubectl rollout restart deployment ${{ inputs.deployment }}
