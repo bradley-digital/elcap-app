@@ -6,9 +6,10 @@ on:
       - "main"
 jobs:
   call-reuseable-build-push:
-    uses: josh-bradley-digital/elcap-app/.github/workflows/buildPush.yml@dev
+    uses: josh-bradley-digital/elcap-app/.github/workflows/buildPush.yml@main
     with:
       env: prod
       k8s-cluster: prod-k8s-sfo3
       deployment: webapp
+      approval: true # requires manual approval
     secrets: inherit
