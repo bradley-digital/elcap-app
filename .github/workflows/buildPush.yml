@@ -36,7 +36,7 @@ jobs:
       - name: Save DigitalOcean kubeconfig (short creds)
         run: doctl kubernetes cluster kubeconfig save ${{ inputs.k8s-cluster }} --expiry-seconds 600
       - name: Manual Approval
-        if: ${{ approval }}
+        if: ${{ inputs.approval }}
         uses: trstringer/manual-approval@v1
         with:
           secret: ${{ github.TOKEN }}
