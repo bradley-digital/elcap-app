@@ -5,29 +5,10 @@ on:
     branches:
       - "main"
 jobs:
-  BuildAndPushImage:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v3
-      - name: Install doctl
-        uses: digitalocean/action-doctl@v2
-        with:
-          token: ${{ secrets.DIGITALOCEAN_API_TOKEN }}
-      - name: Login to the registry (short creds)
-        run: doctl registry login --expiry-seconds 600
-      - name: Build, Tag, and Push the image to Digitalocean
-        run: make btp ENV=prod
-      - name: Manual Approval
-        uses: trstringer/manual-approval@v1
-        with:
-          secret: ${{ github.TOKEN }}
-          approvers: joshuabradley012
-          minimum-approvals: 1
-          issue-title: "APP Production Deployment Approcal"
-          issue-body: "Please approve or deny the deployment app to production"
-          exclude-workflow-initiator-as-approver: false
-      - name: Save DigitalOcean kubeconfig (short creds)
-        run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 prod-k8s-sfo3
-      - name: Rollout Restart WEBAPP (pulls latest)
-        run: kubectl rollout restart deployment webapp
+  call-reuseable-build-push:
+    uses: josh-bradley-digital/elcap-app/.github/workflows/buildPush.yml@main
+    with:
+      env: prod
+      k8s-cluster: prod-k8s-sfo3
+      deployment: webapp
+    secrets: inherit

@@ -3,22 +3,12 @@ run-name: ${{ github.actor }} Deploying Dev 🚀
 on:
   push:
     branches:
-      - "dev"
+      - "add-env-files-fix-deploy"
 jobs:
-  BuildAndPushImage:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v3
-      - name: Install doctl
-        uses: digitalocean/action-doctl@v2
-        with:
-          token: ${{ secrets.DIGITALOCEAN_API_TOKEN }}
-      - name: Login to the registry (short creds)
-        run: doctl registry login --expiry-seconds 600
-      - name: Build, Tag, and Push the image to Digitalocean
-        run: make btp ENV=dev
-      - name: Save DigitalOcean kubeconfig (short creds)
-        run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 dev-k8s-sfo3
-      - name: Rollout Restart WEBAPP (pulls latest)
-        run: kubectl rollout restart deployment webapp
+  call-reuseable-build-push:
+    uses: josh-bradley-digital/elcap-app/.github/workflows/buildPush.yml@add-env-files-fix-deploy
+    with:
+      env: dev
+      k8s-cluster: dev-k8s-sfo3
+      deployment: webapp
+    secrets: inherit
