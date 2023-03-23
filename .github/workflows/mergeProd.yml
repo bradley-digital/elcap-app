@@ -6,7 +6,7 @@ on:
       - "main"
 jobs:
   call-reuseable-build-push:
-    uses: josh-bradley-digital/elcap-app/.github/workflows/buildPush.yml@main
+    uses: josh-bradley-digital/elcap-app/.github/workflows/buildPush.yml@dev
     with:
       env: prod
       k8s-cluster: prod-k8s-sfo3
