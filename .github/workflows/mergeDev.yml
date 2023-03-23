@@ -11,5 +11,5 @@ jobs:
       env: dev
       k8s-cluster: dev-k8s-sfo3
       deployment: webapp
-      approval: true
+      approval: false
     secrets: inherit
