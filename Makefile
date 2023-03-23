@@ -1,5 +1,5 @@
 build-image:
-	docker build --platform linux/amd64 -f Dockerfile.k8s.$(ENV) -t app:k8s.$(ENV) .
+	docker build --platform linux/amd64 -f Dockerfile.$(ENV).k8s -t app:k8s.$(ENV) .
 
 tag-image:
 	docker tag app:k8s.$(ENV) registry.digitalocean.com/elcap-cr/app:$(ENV)-latest
