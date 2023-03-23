@@ -44,7 +44,7 @@ jobs:
         uses: trstringer/manual-approval@v1
         with:
           secret: ${{ github.TOKEN }}
-          approvers: joshuabradley012
+          approvers: joshuabradley012, noahschumacher
           minimum-approvals: 1
           issue-title: "API Production Deployment Approcal"
           issue-body: "Please approve or deny the deployment api to production"
