@@ -27,8 +27,8 @@ jobs:
           token: ${{ secrets.DIGITALOCEAN_API_TOKEN }}
       - name: Login to the registry (short creds)
         run: doctl registry login --expiry-seconds 600
-      # - name: Build, Tag, and Push the image to Digitalocean
-      #   run: make btp ENV=${{ inputs.env }}
+      - name: Build, Tag, and Push the image to Digitalocean
+        run: make btp ENV=${{ inputs.env }}
   deploy-k8s:
     runs-on: ubuntu-latest
     needs: build-and-push
