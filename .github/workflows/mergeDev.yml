@@ -3,10 +3,10 @@ run-name: ${{ github.actor }} Deploying Dev 🚀
 on:
   push:
     branches:
-      - "dev"
+      - "add-env-files-fix-deploy"
 jobs:
   call-reuseable-build-push:
-    uses: josh-bradley-digital/elcap-app/.github/workflows/buildPush.yml@dev
+    uses: josh-bradley-digital/elcap-app/.github/workflows/buildPush.yml@add-env-files-fix-deploy
     with:
       env: dev
       k8s-cluster: dev-k8s-sfo3
