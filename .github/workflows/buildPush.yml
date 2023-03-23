@@ -25,8 +25,8 @@ jobs:
       - name: Login to the registry (short creds)
         run: doctl registry login --expiry-seconds 600
       - name: Build, Tag, and Push the image to Digitalocean
-        run: make btp ENV=$${{inputs.env}}
+        run: make btp ENV=${{ inputs.env }}
       - name: Save DigitalOcean kubeconfig (short creds)
-        run: doctl kubernetes cluster kubeconfig save ${{inputs.k8s-cluster}} --expiry-seconds 600
-      - name: Rollout Restart ${{inputs.deployment}} (pulls latest)
-        run: kubectl rollout restart deployment ${{inputs.deployment}}
+        run: doctl kubernetes cluster kubeconfig save ${{ inputs.k8s-cluster }} --expiry-seconds 600
+      - name: Rollout Restart ${{ inputs.deployment }} (pulls latest)
+        run: kubectl rollout restart deployment ${{ inputs.deployment }}
