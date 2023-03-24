@@ -178,13 +178,22 @@ export default function useChartData(
     };
   }
 
-  const colorArray = [
+  const solidColorArray = [
     "#007854",
     "#3dc2ff",
     "#5260ff",
     "#2dd36f",
     "#ffc409",
     "#eb445a",
+  ];
+
+  const transparentColorArray = [
+    "rgb(0, 120, 84, 0.2)",
+    "rgb(61, 194, 255, 0.2)",
+    "rgb(82, 96, 255, 0.2)",
+    "rgb(45, 211, 111, 0.2)",
+    "rgb(255, 196, 9, 0.2)",
+    "rgb(235, 68, 90, 0.2)",
   ];
 
   const transactionYears = new Set(
@@ -211,10 +220,13 @@ export default function useChartData(
 
       return {
         label: account.accountTitle,
+        fill: "start",
         showLine: true,
         data: selectedTransactionType === "all" ? balanceData : transactionData,
-        borderColor: colorArray[index],
-        backgroundColor: colorArray[index],
+        borderColor: solidColorArray[index],
+        backgroundColor: transparentColorArray[index],
+        pointBorderColor: solidColorArray[index],
+        pointBackgroundColor: solidColorArray[index],
         borderWidth: 1,
       };
     }),
