@@ -7,7 +7,7 @@ type StringMap = {
 };
 
 export default function useChartData(
-  year: number,
+  selectedTimeRange: string,
   selectedTransactionType: string,
   selectedAccountNumber: number
 ) {
@@ -19,7 +19,6 @@ export default function useChartData(
       data: undefined,
       options: undefined,
       currentBalance: undefined,
-      transactionYears: undefined,
       transactionTypes: undefined,
       transactionTypeMap: undefined,
     };
@@ -125,10 +124,31 @@ export default function useChartData(
     const transactionsWithBalanceByYear = transactionsWithBalance.filter(
       (transaction) => {
         const date = new Date(transaction.postingDate);
-        if (year === 0) {
-          return date.getFullYear();
-        } else {
-          return date.getFullYear() === year;
+        const currentDate = new Date();
+        const timeDiff = Math.abs(currentDate.getTime() - date.getTime());
+        const diffYears = timeDiff / (1000 * 3600 * 24 * 365);
+        const diffMonths = diffYears * 12;
+
+        switch (selectedTimeRange) {
+          case "YTD":
+            return date.getFullYear() === currentDate.getFullYear();
+          case "MTD":
+            return (
+              date.getFullYear() === currentDate.getFullYear() &&
+              date.getMonth() === currentDate.getMonth()
+            );
+          case "3M":
+            return diffMonths <= 3;
+          case "1Y":
+            return diffYears <= 1;
+          case "3Y":
+            return diffYears <= 3;
+          case "5Y":
+            return diffYears <= 5;
+          case "Max":
+            return true;
+          default:
+            return true;
         }
       }
     );
@@ -195,12 +215,6 @@ export default function useChartData(
     "rgb(255, 196, 9, 0.2)",
     "rgb(235, 68, 90, 0.2)",
   ];
-
-  const transactionYears = new Set(
-    selectedAccountTransactions.map(({ postingDate }) =>
-      new Date(postingDate).getFullYear()
-    )
-  );
 
   const transactionTypes = new Set(
     selectedAccountTransactions.map(({ transactionType }) => transactionType)
@@ -310,7 +324,6 @@ export default function useChartData(
     accounts,
     options,
     accountsCurrentBalanceTotal,
-    transactionYears,
     transactionTypes,
     transactionTypeMap,
   };

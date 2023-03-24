@@ -26,7 +26,7 @@ import "./DashboardOverview.scss";
 export default function DashboardOverview() {
   const [isChartVisible, setIsChartVisible] = useState(false);
   const [selectedAccountNumber, setSelectedAccountNumber] = useState(0);
-  const [selectedYear, setSelectedYear] = useState(0);
+  const [selectedTimeRange, setSelectedTimeRange] = useState("Max");
   const [selectedTransactionType, setSelectedTransactionType] = useState("all");
   const {
     isSuccess,
@@ -34,11 +34,10 @@ export default function DashboardOverview() {
     accounts,
     options,
     accountsCurrentBalanceTotal,
-    transactionYears,
     transactionTypes,
     transactionTypeMap,
   } = useChartData(
-    selectedYear,
+    selectedTimeRange,
     selectedTransactionType,
     selectedAccountNumber
   );
@@ -53,7 +52,6 @@ export default function DashboardOverview() {
     typeof accounts === "undefined" ||
     typeof options === "undefined" ||
     typeof accountsCurrentBalanceTotal === "undefined" ||
-    typeof transactionYears === "undefined" ||
     typeof transactionTypes === "undefined" ||
     typeof transactionTypeMap === "undefined"
   ) {
@@ -66,6 +64,8 @@ export default function DashboardOverview() {
   });
 
   const currentBalanceUSD = USD.format(accountsCurrentBalanceTotal);
+
+  const timeRange = ["YTD", "MTD", "3M", "1Y", "3Y", "5Y", "Max"];
 
   return (
     <div className="DashboardOverview">
@@ -121,16 +121,14 @@ export default function DashboardOverview() {
 
               <IonItem>
                 <IonSelect
-                  placeholder="Select Year"
-                  onIonChange={(e) => setSelectedYear(e.detail.value)}
+                  placeholder="Select Time Range"
+                  onIonChange={(e) => setSelectedTimeRange(e.detail.value)}
                 >
-                  <IonSelectOption value={0}>All</IonSelectOption>
-                  {transactionYears &&
-                    Array.from(transactionYears).map((year) => (
-                      <IonSelectOption key={year} value={year}>
-                        {year}
-                      </IonSelectOption>
-                    ))}
+                  {timeRange.map((range) => (
+                    <IonSelectOption key={range} value={range}>
+                      {range}
+                    </IonSelectOption>
+                  ))}
                 </IonSelect>
               </IonItem>
 
