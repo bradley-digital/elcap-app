@@ -47,8 +47,8 @@ jobs:
           # list github users who can approve prod deploy
           approvers: joshuabradley012, noahschumacher
           minimum-approvals: 1
-          issue-title: "API Production Deployment Approcal"
-          issue-body: "Please approve or deny the deployment api to production"
+          issue-title: "APP Production Deployment Approval"
+          issue-body: "Please approve or deny the deployment `app` to production"
           exclude-workflow-initiator-as-approver: false
       - name: Rollout Restart ${{ inputs.deployment }} (pulls latest)
         run: kubectl rollout restart deployment ${{ inputs.deployment }}
