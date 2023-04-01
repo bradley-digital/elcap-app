@@ -1,7 +1,7 @@
 name: PR Opened
 on:
   pull_request:
-    types: 
+    types:
       - opened
 
 jobs:
@@ -20,7 +20,7 @@ jobs:
           git config user.name "josh-bradley-digital-bot"
           git config user.email "<>"
       - name: Prettify code
-        uses: creyD/prettier_action@v4.2
+        uses: creyD/prettier_action@v4.3
         with:
           prettier_options: --write **/*.{ts,tsx}
           only_changed: True
