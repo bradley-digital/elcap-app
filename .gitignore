@@ -12,12 +12,10 @@ test-report
 playwright/screenshots
 
 # production
-build
+dist
 
 # secrets
 .env
-.env.development
-.env.production
 
 # misc
 .DS_Store

@@ -24,6 +24,7 @@ export default function PaymentsRoutes() {
     <IonTabs>
       <IonRouterOutlet>
         <Switch>
+          {/* Paths with nested routes must not have "exact" */}
           <Route path="/pay" component={Pay} />
           <Route exact path="/account" component={Account} />
           <Route exact path="/shop" component={Shop} />

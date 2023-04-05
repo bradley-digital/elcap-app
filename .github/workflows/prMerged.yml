@@ -1,7 +1,7 @@
 name: PR Merged
 on:
   pull_request:
-    branches: [develop, main]
+    branches: [dev, main]
     types:
       - closed
 
@@ -22,7 +22,7 @@ jobs:
           git config user.name "josh-bradley-digital-bot"
           git config user.email "<>"
       - name: Prettify code
-        uses: creyD/prettier_action@v4.2
+        uses: creyD/prettier_action@v4.3
         with:
           prettier_options: --write **/*.{ts,tsx}
           only_changed: True

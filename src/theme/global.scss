@@ -15,8 +15,8 @@
 @import "@ionic/react/css/display.css";
 
 /* Theme variables */
-@import "theme/variables.scss";
-@import "theme/ionic-variables.scss";
+@import "@/theme/variables.scss";
+@import "@/theme/ionic-variables.scss";
 
 html {
   -webkit-text-size-adjust: 100%;
@@ -53,10 +53,19 @@ ion-menu {
   }
 }
 
+ion-select {
+  width: 100%;
+}
+
 .native-input {
   &.sc-ion-input-md {
     &:-webkit-autofill {
       transition: background-color 9999999s ease-out 0s;
     }
   }
+}
+
+.alert-radio-label.sc-ion-alert-md {
+  white-space: normal;
+  font-size: 14px;
 }

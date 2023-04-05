@@ -1,0 +1,28 @@
+@import "@/theme/variables.scss";
+
+.FormUserDocfox {
+  &__status {
+    ion-icon {
+      height: 4.8em;
+      width: 4.8em;
+    }
+
+    &.success {
+      ion-icon {
+        color: $success;
+      }
+    }
+
+    &.warning {
+      ion-icon {
+        color: $warning;
+      }
+    }
+
+    &.danger {
+      ion-icon {
+        color: $danger;
+      }
+    }
+  }
+}
