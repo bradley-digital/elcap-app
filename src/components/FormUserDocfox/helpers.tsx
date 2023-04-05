@@ -54,7 +54,9 @@ function buildFormInputsHelper(children: any = [], section: any = {}) {
         );
       }
     } else if (nextSection) {
-      children.push(<IonListHeader key={sectionTitle}>{sectionTitle}</IonListHeader>);
+      children.push(
+        <IonListHeader key={sectionTitle}>{sectionTitle}</IonListHeader>
+      );
       buildFormInputsHelper(children, nextSection);
     }
   }

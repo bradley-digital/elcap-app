@@ -1,9 +1,5 @@
 import type { Profile } from "hooks/useUser";
-import {
-  IonCol,
-  IonGrid,
-  IonRow,
-} from "@ionic/react";
+import { IonCol, IonGrid, IonRow } from "@ionic/react";
 
 // components
 import PageTemplate from "components/PageTemplate/PageTemplate";
@@ -11,7 +7,7 @@ import FormUserAccount from "components/FormUserAccount/FormUserAccount";
 
 type Props = {
   profile: Profile;
-}
+};
 
 export default function UserAccount({ profile }: Props) {
   return (

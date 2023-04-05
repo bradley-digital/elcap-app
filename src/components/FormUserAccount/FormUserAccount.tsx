@@ -92,9 +92,7 @@ export default function FormUserAccount({ profile }: Props) {
     >
       <Form>
         <IonList>
-          <IonListHeader>
-            Account Details
-          </IonListHeader>
+          <IonListHeader>Account Details</IonListHeader>
 
           <FormInput
             label="First Name"
@@ -138,11 +136,7 @@ export default function FormUserAccount({ profile }: Props) {
 
           <FormInput label="State" name="state" type="text" icon={pencil} />
 
-          <FormSelect
-            label="Role"
-            name="role"
-            options={roleOptions}
-          />
+          <FormSelect label="Role" name="role" options={roleOptions} />
 
           <SubmitButton>Submit</SubmitButton>
         </IonList>

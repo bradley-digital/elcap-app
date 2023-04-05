@@ -12,17 +12,8 @@ import {
 
 // components
 import { Form, Formik } from "formik";
-import {
-  IonButton,
-  IonIcon,
-  IonList,
-  IonListHeader,
-} from "@ionic/react";
-import {
-  alertCircle,
-  checkmarkCircle,
-  closeCircle,
-} from "ionicons/icons";
+import { IonButton, IonIcon, IonList, IonListHeader } from "@ionic/react";
+import { alertCircle, checkmarkCircle, closeCircle } from "ionicons/icons";
 import FormInput from "components/FormInput/FormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
 
@@ -53,14 +44,8 @@ export default function FormDocfox() {
     () => buildInitialValues(application, schema, templateId),
     [application, schema]
   );
-  const validationObject = useMemo(
-    () => buildValidation(schema),
-    [schema],
-  );
-  const formSections = useMemo(
-    () => buildFormSections(schema),
-    [schema]
-  );
+  const validationObject = useMemo(() => buildValidation(schema), [schema]);
+  const formSections = useMemo(() => buildFormSections(schema), [schema]);
   const formInputs = useMemo(
     () => buildFormInputs(formSections),
     [formSections]
@@ -69,13 +54,17 @@ export default function FormDocfox() {
   let statusElement = (
     <div className="FormUserDocfox__status danger">
       <IonIcon icon={closeCircle} />
-      <p>The application has not been started. If this is urgent please contact your El Capitan admin.</p>
+      <p>
+        The application has not been started. If this is urgent please contact
+        your El Capitan admin.
+      </p>
     </div>
   );
 
   if (typeof application !== "undefined" && typeof template !== "undefined") {
     const status = application?.data?.attributes?.status?.status;
-    const statusDescription = application?.data?.attributes?.status?.status_description;
+    const statusDescription =
+      application?.data?.attributes?.status?.status_description;
 
     if (status === "in_progress") {
       statusElement = (
@@ -102,8 +91,13 @@ export default function FormDocfox() {
         {!!invitationLink && (
           <div>
             <h3>Upload documents</h3>
-            <p>Use this portal to upload the documents required for your application.</p>
-            <IonButton href={invitationLink} expand="block" target="_blank">Open portal</IonButton>
+            <p>
+              Use this portal to upload the documents required for your
+              application.
+            </p>
+            <IonButton href={invitationLink} expand="block" target="_blank">
+              Open portal
+            </IonButton>
             <hr />
           </div>
         )}
@@ -113,7 +107,10 @@ export default function FormDocfox() {
           validationSchema={Yup.object(validationObject)}
           onSubmit={(values) => {
             async function updateApplication() {
-              const { deleteData, patchData, postData } = buildUpdateData(application, values);
+              const { deleteData, patchData, postData } = buildUpdateData(
+                application,
+                values
+              );
               if (!Array.isArray(patchData)) return;
               for (const data of patchData) {
                 await patchProfileData(data);
@@ -132,9 +129,7 @@ export default function FormDocfox() {
         >
           <Form>
             <IonList>
-              <IonListHeader>
-                DocFox Application
-              </IonListHeader>
+              <IonListHeader>DocFox Application</IonListHeader>
               <FormInput
                 className="FormInputHidden"
                 name="kyc_entity_template_id"
@@ -148,9 +143,5 @@ export default function FormDocfox() {
     );
   }
 
-  return (
-    <div className="FormDocfox">
-      {statusElement}
-    </div>
-  );
+  return <div className="FormDocfox">{statusElement}</div>;
 }

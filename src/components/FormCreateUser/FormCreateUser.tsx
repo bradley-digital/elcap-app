@@ -94,12 +94,7 @@ export default function FormCreateUser() {
             icon={pencil}
           />
 
-          <FormInput
-            label="Email"
-            name="email"
-            type="email"
-            icon={pencil}
-          />
+          <FormInput label="Email" name="email" type="email" icon={pencil} />
 
           <FormInput label="Phone" name="phone" type="text" icon={pencil} />
 
@@ -121,11 +116,7 @@ export default function FormCreateUser() {
 
           <FormInput label="State" name="state" type="text" icon={pencil} />
 
-          <FormSelect
-            label="Role"
-            name="role"
-            options={roleOptions}
-          />
+          <FormSelect label="Role" name="role" options={roleOptions} />
 
           <SubmitButton>Create New User</SubmitButton>
         </IonList>
