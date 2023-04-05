@@ -1,4 +1,8 @@
-import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import type {
+  AxiosError,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from "axios";
 import { useEffect, useRef } from "react";
 import axios from "axios";
 import EventEmitter from "events";
@@ -11,8 +15,7 @@ type APIError = {
   message: string;
 };
 
-const host =
-  import.meta.env.VITE_REACT_APP_BACKEND_HOST || "http://localhost:3020";
+const host = import.meta.env.VITE_BACKEND_HOST || "http://localhost:3020";
 const apiVersion = "/api";
 
 const config = {
@@ -99,8 +102,8 @@ export default function useAuthApi() {
   }
 
   async function requestInterceptor(
-    config: AxiosRequestConfig
-  ): Promise<AxiosRequestConfig> {
+    config: InternalAxiosRequestConfig
+  ): Promise<InternalAxiosRequestConfig> {
     await waitForRefresh();
     if (config.headers && accessTokenRef.current) {
       config.headers.Authorization = `Bearer ${accessTokenRef.current}`;
@@ -125,7 +128,10 @@ export default function useAuthApi() {
       return authApi(originalRequest);
     }
 
-    handleRemoveTokens();
+    // Removing refresh tokens logs the user out on any error...
+    // Did not work for intended errors, such as no Docfox application found
+    // Either need to rework intended errors, or keep this uncommented
+    //handleRemoveTokens();
     finishRefresh();
 
     if (errorData?.status === "fail") {

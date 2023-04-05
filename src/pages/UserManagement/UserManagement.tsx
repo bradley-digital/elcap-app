@@ -7,7 +7,7 @@ import {
   IonRow,
 } from "@ionic/react";
 import { useAtom } from "jotai";
-import { defaultUser, isOpenAtom, userAtom } from "atoms/userListModal";
+import { isOpenAtom } from "atoms/userListModal";
 import PageTemplate from "components/PageTemplate/PageTemplate";
 import UserList from "components/UserList/UserList";
 
@@ -19,11 +19,9 @@ import { add } from "ionicons/icons";
 
 export default function UserManagement() {
   const { isSuccess, data } = useUserManagement();
-  const [, setUser] = useAtom(userAtom);
   const [, setIsOpen] = useAtom(isOpenAtom);
 
   function openModal() {
-    setUser(defaultUser);
     setIsOpen(true);
   }
 

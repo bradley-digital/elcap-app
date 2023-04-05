@@ -22,16 +22,25 @@ type Props = {
     label: string;
   }[];
   icon?: string;
+  className?: string;
 } & ComponentProps<typeof IonSelect> &
   FieldHookConfig<string>;
 
 export default function FormSelect(props: Props) {
   const [field, meta] = useField(props);
-  const { label, icon, options, ...rest } = props;
+  const { label, icon, options, className, ...rest } = props;
+
+  const selectedOption = options.find(
+    (option) => option.value === field.value
+  ) || { value: "", label: "" };
+
+  const interfaceOptions = {
+    cssClass: className || "",
+  };
 
   return (
     <IonItem
-      className={cn("FormSelect", {
+      className={cn("FormSelect", className, {
         "ion-invalid": !!meta.error,
         "ion-touched": meta.touched,
       })}
@@ -41,11 +50,11 @@ export default function FormSelect(props: Props) {
 
       <IonSelect
         {...rest}
-        selectedText={field.value}
+        interfaceOptions={interfaceOptions}
+        selectedText={selectedOption.label}
         onIonBlur={field.onBlur}
-        onIonChange={(event) => field.onChange(event)}
+        onIonChange={field.onChange}
       >
-        {/* loop options  */}
         {options.map((option, i) => (
           <IonSelectOption key={i} value={option.value}>
             {option.label}
@@ -53,7 +62,7 @@ export default function FormSelect(props: Props) {
         ))}
       </IonSelect>
 
-      <IonNote slot="error">{meta.error}</IonNote>
+      {meta.error && <IonNote slot="error">{meta.error}</IonNote>}
     </IonItem>
   );
 }

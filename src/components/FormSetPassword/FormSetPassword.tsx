@@ -1,5 +1,4 @@
 import { Form, Formik } from "formik";
-import { useParams } from "react-router-dom";
 import * as Yup from "yup";
 
 // lib
@@ -15,9 +14,12 @@ import useAuth from "hooks/useAuth";
 import FormInput from "components/AuthFormInput/AuthFormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
 
-export default function FormSetPassword() {
+type Props = {
+  registerToken: string;
+};
+
+export default function FormSetPassword({ registerToken }: Props) {
   const { setPassword } = useAuth();
-  const { registerToken } = useParams<{ registerToken: string }>();
 
   return (
     <Formik

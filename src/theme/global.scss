@@ -53,10 +53,19 @@ ion-menu {
   }
 }
 
+ion-select {
+  width: 100%;
+}
+
 .native-input {
   &.sc-ion-input-md {
     &:-webkit-autofill {
       transition: background-color 9999999s ease-out 0s;
     }
   }
+}
+
+.alert-radio-label.sc-ion-alert-md {
+  white-space: normal;
+  font-size: 14px;
 }

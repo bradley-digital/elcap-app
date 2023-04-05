@@ -1,4 +1,3 @@
-import type { Profile } from "hooks/useUser";
 import * as Yup from "yup";
 
 // lib
@@ -15,12 +14,13 @@ import {
 } from "lib/formValidation";
 
 // icons
-import { lockClosed, pencil } from "ionicons/icons";
+import { pencil } from "ionicons/icons";
 
 // components
 import { Form, Formik } from "formik";
 import { IonList } from "@ionic/react";
 import FormInput from "components/FormInput/FormInput";
+import FormSelect from "components/FormSelect/FormSelect";
 import SubmitButton from "components/SubmitButton/SubmitButton";
 
 //atoms
@@ -29,59 +29,38 @@ import { isOpenAtom } from "atoms/userListModal";
 
 // hooks
 import useUserManagement from "hooks/useUserManagement";
-import FormSelect from "components/FormSelect/FormSelect";
 
 const roleOptions = [
   {
-    value: "PORTAL",
-    label: "PORTAL",
+    value: "ADMIN",
+    label: "ADMIN",
   },
   {
     value: "PAYMENTS",
     label: "PAYMENTS",
   },
   {
-    value: "ADMIN",
-    label: "ADMIN",
+    value: "PORTAL",
+    label: "PORTAL",
   },
 ];
 
-type Props = {
-  profile: Profile;
-};
-
-export default function FormUserManagement({ profile }: Props) {
-  const { create, update } = useUserManagement();
+export default function FormCreateUser() {
+  const { create } = useUserManagement();
   const [, setIsOpen] = useAtom(isOpenAtom);
-
-  const {
-    id,
-    firstName,
-    lastName,
-    email,
-    phone,
-    addressLine1,
-    addressLine2,
-    country,
-    state,
-    role,
-  } = profile;
-
-  // This is brittle, what's a better way?
-  const isNewUser = email === "";
 
   return (
     <Formik
       initialValues={{
-        firstName,
-        lastName,
-        email,
-        phone,
-        addressLine1,
-        addressLine2,
-        country,
-        state,
-        role,
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        addressLine1: "",
+        addressLine2: "",
+        country: "",
+        state: "",
+        role: "",
       }}
       validationSchema={Yup.object({
         firstName: firstNameValidation,
@@ -95,11 +74,7 @@ export default function FormUserManagement({ profile }: Props) {
         role: roleValidation,
       })}
       onSubmit={(values) => {
-        if (isNewUser) {
-          create(values);
-        } else {
-          update({ id, ...values });
-        }
+        create(values);
         setIsOpen(false);
       }}
     >
@@ -119,13 +94,7 @@ export default function FormUserManagement({ profile }: Props) {
             icon={pencil}
           />
 
-          <FormInput
-            label="Email"
-            name="email"
-            type="email"
-            icon={isNewUser ? pencil : lockClosed}
-            readonly={isNewUser ? false : true}
-          />
+          <FormInput label="Email" name="email" type="email" icon={pencil} />
 
           <FormInput label="Phone" name="phone" type="text" icon={pencil} />
 
@@ -147,18 +116,9 @@ export default function FormUserManagement({ profile }: Props) {
 
           <FormInput label="State" name="state" type="text" icon={pencil} />
 
-          <FormSelect
-            label="Role"
-            name="role"
-            icon={pencil}
-            options={roleOptions}
-          />
+          <FormSelect label="Role" name="role" options={roleOptions} />
 
-          {isNewUser ? (
-            <SubmitButton>Create New User</SubmitButton>
-          ) : (
-            <SubmitButton>Update</SubmitButton>
-          )}
+          <SubmitButton>Create New User</SubmitButton>
         </IonList>
       </Form>
     </Formik>
