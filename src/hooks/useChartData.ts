@@ -9,7 +9,7 @@ type StringMap = {
 export default function useChartData(
   selectedTimeRange: string,
   selectedTransactionType: string,
-  selectedAccountNumber: number
+  selectedAccountNumbers: string[]
 ) {
   const { accounts, transactions } = useUserWesternAllianceAccount();
 
@@ -39,7 +39,7 @@ export default function useChartData(
     X: "Reversed",
   };
 
-  const isSingleAccountSelected = selectedAccountNumber !== 0;
+  const isSingleAccountSelected = selectedAccountNumbers.length < 2;
 
   const filteredAccountTransactions = (accountNumber: string | number) => {
     return transactions?.filter(
@@ -59,12 +59,12 @@ export default function useChartData(
 
   const selectedAccounts = isSingleAccountSelected
     ? individualAccounts.filter(
-        (account: any) => account.accountNumber === selectedAccountNumber
+        (account: any) => account.accountNumber === selectedAccountNumbers[0]
       )
     : individualAccounts;
 
   const selectedAccountTransactions = isSingleAccountSelected
-    ? filteredAccountTransactions(selectedAccountNumber)
+    ? filteredAccountTransactions(selectedAccountNumbers[0])
     : transactions;
 
   function createChartData(

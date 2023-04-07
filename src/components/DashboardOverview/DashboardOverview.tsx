@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "chart.js/auto";
 import hash from "object-hash";
 
@@ -25,7 +25,7 @@ import "./DashboardOverview.scss";
 
 export default function DashboardOverview() {
   const [isChartVisible, setIsChartVisible] = useState(false);
-  const [selectedAccountNumber, setSelectedAccountNumber] = useState(0);
+  const [selectedAccountNumbers, setSelectedAccountNumbers] = useState([""]);
   const [selectedTimeRange, setSelectedTimeRange] = useState("Max");
   const [selectedTransactionType, setSelectedTransactionType] = useState("all");
   const {
@@ -39,8 +39,15 @@ export default function DashboardOverview() {
   } = useChartData(
     selectedTimeRange,
     selectedTransactionType,
-    selectedAccountNumber
+    selectedAccountNumbers
   );
+
+  useEffect(() => {
+    accounts &&
+      setSelectedAccountNumbers(
+        accounts?.accounts.map((account: any) => account?.accountNumber)
+      );
+  }, [accounts]);
 
   useIonViewWillEnter(() => {
     setIsChartVisible(true);
@@ -104,9 +111,10 @@ export default function DashboardOverview() {
               <IonItem>
                 <IonSelect
                   placeholder="Select Account"
-                  onIonChange={(e) => setSelectedAccountNumber(e.detail.value)}
+                  onIonChange={(e) => setSelectedAccountNumbers(e.detail.value)}
+                  multiple={true}
+                  value={selectedAccountNumbers}
                 >
-                  <IonSelectOption value={0}>All</IonSelectOption>
                   {accounts &&
                     accounts?.accounts.map((account: any) => (
                       <IonSelectOption
