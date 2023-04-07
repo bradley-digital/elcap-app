@@ -73,13 +73,15 @@ const queryKey = "westernAllianceAccount";
 export default function useWesternAllianceAccount() {
   const { authApi } = useAuth();
 
-  const { isSuccess: accountsIsSuccess, data: accounts } = useQuery(
-    queryKey,
-    getAccounts
-  );
+  const { isSuccess: accountsIsSuccess, data: accounts } = useQuery(queryKey, getAccounts);
 
   async function getAccounts() {
     const { data } = await authApi.get<Account[]>("/western-alliance/accounts");
+    return data;
+  }
+
+  async function createAccount(body: Account) {
+    const { data } = await authApi.post<Account>("/users/create", body);
     return data;
   }
 
@@ -87,5 +89,6 @@ export default function useWesternAllianceAccount() {
     queryKey,
     accountsIsSuccess,
     accounts,
+    createAccount,
   };
 }
