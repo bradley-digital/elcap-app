@@ -28,11 +28,11 @@ export default function WesternAllianceList({ accounts }: Props) {
       <IonSearchbar debounce={400} onIonChange={handleSearch}></IonSearchbar>
       <div className="WesternAllianceList">
         <IonList>
-          {filteredAccounts.map((account: Account) => (
+          {filteredAccounts.map((account: Account, index: number) => (
             <IonItem
-              key={account.id}
+              key={index}
               className="WesternAllianceList__item"
-              href={`/western-alliance-management/${account.id}`}
+              // href={`/western-alliance-management/${account.id}`}
             >
               {account.accountTitle} {account.accountNumber}
             </IonItem>

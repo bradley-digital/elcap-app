@@ -4,9 +4,8 @@ import { useQuery } from "react-query";
 import useAuth from "hooks/useAuth";
 
 export type Account = {
-  id: string;
   accountNumber: string;
-  accountBalance: string;
+  accountBalance: number;
   accountTitle: string;
   client: string;
 };
@@ -81,7 +80,7 @@ export default function useWesternAllianceAccount() {
   }
 
   async function createAccount(body: Account) {
-    const { data } = await authApi.post<Account>("/users/create", body);
+    const { data } = await authApi.post<Account>("/western-alliance/account", body);
     return data;
   }
 

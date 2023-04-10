@@ -22,10 +22,10 @@ import { useAtom } from "jotai";
 import { isOpenAtom } from "atoms/westernAllianceModal";
 
 // hooks
-// import useUserManagement from "hooks/useUserManagement";
+import useWesternAllianceAccount from "hooks/useWesternAllianceAccount";
 
 export default function FormCreateWesternAlliance() {
-  // const { create } = useUserManagement();
+  const { createAccount } = useWesternAllianceAccount();
   const [, setIsOpen] = useAtom(isOpenAtom);
 
   return (
@@ -43,7 +43,7 @@ export default function FormCreateWesternAlliance() {
         client: clientValidation,
       })}
       onSubmit={(values) => {
-        // create(values);
+        createAccount(values);
         setIsOpen(false);
       }}
     >
