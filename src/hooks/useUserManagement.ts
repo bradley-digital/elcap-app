@@ -9,8 +9,11 @@ type ProfileUpdateByIdInput = {
   firstName?: string;
   lastName?: string;
   phone?: string;
-  addressLine1?: string;
+  companyName?: string;
+  addressLine1: string;
   addressLine2?: string;
+  country: string;
+  state?: string;
   role?: string;
   accounts?: string[];
   applicationId?: string;
@@ -21,6 +24,11 @@ type ProfileCreateInput = {
   lastName: string;
   email: string;
   phone: string;
+  companyName?: string;
+  addressLine1: string;
+  addressLine2?: string;
+  country: string;
+  state?: string;
   role: string;
   accounts?: string[];
 };

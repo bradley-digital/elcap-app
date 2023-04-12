@@ -13,6 +13,8 @@ export const addressLine2Validation = Yup.string();
 
 export const countryValidation = Yup.string().required("Country required");
 
+export const companyNameValidation = Yup.string();
+
 export const roleValidation = Yup.string().required("Role required");
 
 export const stateValidation = Yup.string().when("country", {
