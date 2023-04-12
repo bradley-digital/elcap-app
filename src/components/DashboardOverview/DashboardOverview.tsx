@@ -140,25 +140,6 @@ export default function DashboardOverview() {
                 </IonSelect>
               </IonItem>
 
-              <IonItem>
-                <IonSelect
-                  placeholder="Select Transaction Type"
-                  onIonChange={(e) =>
-                    setSelectedTransactionType(e.detail.value)
-                  }
-                >
-                  <IonSelectOption value="all">All</IonSelectOption>
-                  {transactionTypes &&
-                    Array.from(transactionTypes).map((transactionType) => (
-                      <IonSelectOption
-                        key={transactionType}
-                        value={transactionType}
-                      >
-                        {transactionTypeMap[transactionType]}
-                      </IonSelectOption>
-                    ))}
-                </IonSelect>
-              </IonItem>
             </IonList>
           </IonCol>
           <IonCol className="DashboardOverview__content">

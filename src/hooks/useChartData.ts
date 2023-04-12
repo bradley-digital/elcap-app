@@ -19,7 +19,7 @@ export default function useChartData(
       data: undefined,
       options: undefined,
       currentBalance: undefined,
-      transactionTypes: undefined, 
+      transactionTypes: undefined,
       transactionTypeMap: undefined,
     };
   }
@@ -42,9 +42,25 @@ export default function useChartData(
   const isSingleAccountSelected = selectedAccountNumbers.length < 2;
 
   const filteredAccountTransactions = (accountNumber: string | number) => {
-    return transactions?.filter(
+    const accountsByAccountNumber = transactions?.filter(
       (transaction) => transaction.accountNumber === accountNumber
     );
+
+    const filteredTransactions = accountsByAccountNumber.map(
+      (transaction: Transaction) => {
+        return {
+          id: transaction.id,
+          accountNumber: transaction.accountNumber,
+          postingDate: transaction.postingDate,
+          transactionAmount: transaction.transactionAmount,
+          transactionCode: transaction.transactionCode,
+          transactionIsReversed: transaction.transactionIsReversed,
+          transactionType: transaction.transactionType,
+        };
+      }
+    );
+
+    return filteredTransactions;
   };
 
   const individualAccounts: any = [];
@@ -65,8 +81,8 @@ export default function useChartData(
 
 
   const selectedAccountTransactions = isSingleAccountSelected
-  ? filteredAccountTransactions(selectedAccountNumbers[0])
-  : transactions;
+    ? filteredAccountTransactions(selectedAccountNumbers[0])
+    : transactions;
 
   function createChartData(
     accountTransactions: Transaction[],
@@ -311,6 +327,7 @@ export default function useChartData(
         },
       },
       y: {
+        stacked: true,
         title: {
           display: true,
           text: `${dataLabel}`,
