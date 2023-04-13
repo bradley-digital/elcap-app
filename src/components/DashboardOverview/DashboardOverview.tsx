@@ -29,7 +29,6 @@ export default function DashboardOverview() {
   const [isChartVisible, setIsChartVisible] = useState(false);
   const [selectedAccountNumbers, setSelectedAccountNumbers] = useState([""]);
   const [selectedTimeRange, setSelectedTimeRange] = useState("Max");
-  const [selectedTransactionType, setSelectedTransactionType] = useState("all");
   const { isSuccess: userIsSuccess, data: userData } = useUser();
   const {
     isSuccess,
@@ -41,7 +40,6 @@ export default function DashboardOverview() {
     transactionTypeMap,
   } = useChartData(
     selectedTimeRange,
-    selectedTransactionType,
     selectedAccountNumbers
   );
 
