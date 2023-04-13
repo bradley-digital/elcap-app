@@ -6,6 +6,7 @@ import hash from "object-hash";
 import { Scatter } from "react-chartjs-2";
 import {
   IonItem,
+  IonLabel,
   IonList,
   IonSelect,
   IonSelectOption,
@@ -19,6 +20,7 @@ import {
 
 // hooks
 import useChartData from "hooks/useChartData";
+import useUser from "hooks/useUser";
 
 // styles
 import "./DashboardOverview.scss";
@@ -28,6 +30,7 @@ export default function DashboardOverview() {
   const [selectedAccountNumbers, setSelectedAccountNumbers] = useState([""]);
   const [selectedTimeRange, setSelectedTimeRange] = useState("Max");
   const [selectedTransactionType, setSelectedTransactionType] = useState("all");
+  const { isSuccess: userIsSuccess, data: userData } = useUser();
   const {
     isSuccess,
     data,
@@ -80,15 +83,24 @@ export default function DashboardOverview() {
         <IonRow className="ion-justify-content-center">
           <IonCol
             size-xs="12"
+            size-sm="12"
+            size-md="12"
+            size-lg="12"
+            className="DashboardOverview__header"
+          >
+            <h1>{userIsSuccess && userData && userData.companyName}</h1>
+          </IonCol>
+          <IonCol
+            size-xs="12"
             size-sm="6"
             size-md="8"
             size-lg="9"
-            className="DashboardOverview__header"
+            className="DashboardOverview__details"
           >
             <IonText>
-              <h1>Total Portfolio Balance</h1>
+              <h2>Total Portfolio Balance</h2>
               <p>{currentBalanceUSD}</p>
-              <h1>Subtotal Balances</h1>
+              <h2>Account Balances</h2>
               {accounts.accounts.map((account: any) => {
                 return (
                   <p key={hash(account)}>
@@ -109,6 +121,7 @@ export default function DashboardOverview() {
           >
             <IonList>
               <IonItem>
+                <IonLabel position="floating">Accounts</IonLabel>
                 <IonSelect
                   placeholder="Select Account"
                   onIonChange={(e) => setSelectedAccountNumbers(e.detail.value)}
@@ -128,9 +141,11 @@ export default function DashboardOverview() {
               </IonItem>
 
               <IonItem>
+                <IonLabel position="floating">Date Range</IonLabel>
                 <IonSelect
-                  placeholder="Select Time Range"
+                  placeholder="Select Date Range"
                   onIonChange={(e) => setSelectedTimeRange(e.detail.value)}
+                  value={selectedTimeRange}
                 >
                   {timeRange.map((range) => (
                     <IonSelectOption key={range} value={range}>
@@ -142,9 +157,9 @@ export default function DashboardOverview() {
 
             </IonList>
           </IonCol>
-          <IonCol className="DashboardOverview__content">
+          <IonCol className="DashboardOverview__content--chart">
             {isChartVisible ? (
-              <Scatter data={data} options={options} height={500} />
+              <Scatter data={data} options={options} />
             ) : (
               <IonSpinner color="success" />
             )}

@@ -323,7 +323,7 @@ export default function useChartData(
         offset: true,
         title: {
           display: true,
-          text: "Time",
+          text: "Date Range",
         },
       },
       y: {

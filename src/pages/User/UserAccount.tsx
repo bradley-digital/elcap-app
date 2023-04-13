@@ -15,7 +15,7 @@ type Props = {
 
 export default function UserAccount({ profile }: Props) {
   return (
-    <PageTemplate title="Account" menuId="user">
+    <PageTemplate title="Profile" menuId="user">
       <IonGrid>
         <IonRow className="ion-justify-content-center">
           <IonCol size-md="8" size-lg="6">
