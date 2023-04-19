@@ -97,7 +97,7 @@ export default function FormUserAccount({ profile }: Props) {
       <Form>
         <IonList>
           <IonListHeader>
-            Account Details
+            Profile information
           </IonListHeader>
 
           <FormInput

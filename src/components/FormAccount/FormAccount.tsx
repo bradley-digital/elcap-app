@@ -86,7 +86,7 @@ export default function FormAccount({ profile }: Props) {
       <Form>
         <FormObserver onChange={handleChange} />
         <IonList>
-          <IonListHeader>Account information</IonListHeader>
+          <IonListHeader>Profile information</IonListHeader>
 
           <FormInput
             label="First Name"

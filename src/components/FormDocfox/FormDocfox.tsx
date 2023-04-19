@@ -133,7 +133,7 @@ export default function FormDocfox() {
           <Form>
             <IonList>
               <IonListHeader>
-                DocFox Application
+                Business information
               </IonListHeader>
               <FormInput
                 className="FormInputHidden"

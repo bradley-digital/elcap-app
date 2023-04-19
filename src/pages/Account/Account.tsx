@@ -13,7 +13,7 @@ export default function Account() {
 
   if (isSuccess && typeof data !== "undefined") {
     return (
-      <PageTemplate title="Account">
+      <PageTemplate title="Profile">
         <IonGrid>
           <IonRow className="ion-justify-content-center">
             <IonCol size-md="8" size-lg="6">

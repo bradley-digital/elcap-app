@@ -362,6 +362,9 @@ export function buildInitialValues(
   if (templateId) {
     initialValues.kyc_entity_template_id = templateId;
   }
+  if (typeof schema === "undefined") {
+    return initialValues;
+  }
   for (const data of included) {
     const key = `${typeMap[data.type]}.${data?.attributes?.slug}`;
     if (schema[key] && data?.attributes?.value) {

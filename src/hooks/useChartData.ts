@@ -9,7 +9,6 @@ type StringMap = {
 
 export default function useChartData(
   selectedTimeRange: string,
-  selectedTransactionType: string,
   selectedAccountNumbers: string[]
 ) {
   const { accounts, transactions } = useUserWesternAllianceAccount();
@@ -30,8 +29,6 @@ export default function useChartData(
     0
   );
 
-  const dataLabel =
-    selectedTransactionType === "all" ? "Balance" : "Transactions";
   const transactionTypeMap: StringMap = {
     C: "Credit",
     D: "Debit",
@@ -157,7 +154,6 @@ export default function useChartData(
     accountTransactions: Transaction[],
     currentBalance: number
   ) {
-    const transactionData: Array<any> = [];
     const balanceData: Array<any> = [];
 
     accountTransactions.sort(
@@ -254,33 +250,10 @@ export default function useChartData(
       };
 
       balanceData.push(balanceCoordinates);
-
-      const filterMap: StringMap = {
-        C: "C",
-        D: "D",
-        F: "F",
-        M: "M",
-        X: "X",
-      };
-
-      if (
-        filterMap[selectedTransactionType] !== balance.transactionType &&
-        selectedTransactionType !== "all"
-      ) {
-        return;
-      }
-
-      const transactionCoordinates = {
-        x: Date.parse(shortDate),
-        y: balance.transactionAmount,
-      };
-
-      transactionData.push(transactionCoordinates);
     });
 
     return {
-      balanceData: balanceData,
-      transactionData: transactionData,
+      balanceData,
     };
   }
 
@@ -313,16 +286,12 @@ export default function useChartData(
         account.transactions,
         currentBalance
       );
-      const { transactionData } = createChartData(
-        account.transactions,
-        currentBalance
-      );
 
       return {
         label: account.accountTitle,
         fill: "start",
         showLine: true,
-        data: selectedTransactionType === "all" ? balanceData : transactionData,
+        data: balanceData,
         borderColor: solidColorArray[index],
         backgroundColor: transparentColorArray[index],
         pointBorderColor: solidColorArray[index],
@@ -392,14 +361,14 @@ export default function useChartData(
         offset: true,
         title: {
           display: true,
-          text: "Time",
+          text: "Date Range",
         },
       },
       y: {
         stacked: true,
         title: {
           display: true,
-          text: `${dataLabel}`,
+          text: "Balance",
         },
       },
     },
