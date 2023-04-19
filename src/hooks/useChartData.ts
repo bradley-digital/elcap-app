@@ -1,4 +1,5 @@
 import "chartjs-adapter-moment";
+import { v4 as uuidv4 } from "uuid";
 import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
 import { Transaction } from "./useWesternAllianceAccount";
 
@@ -73,12 +74,80 @@ export default function useChartData(
     });
   });
 
+  // account smoothing
+  individualAccounts.forEach((account: any) => {
+    // if transactions happen on the same day, combine them
+    account.transactions = account.transactions.reduce(
+      (acc: any, curr: any) => {
+        const existingTransaction = acc.find(
+          (t: any) => t.postingDate === curr.postingDate
+        );
+
+        curr.transactionAmount = Number(curr.transactionAmount);
+
+        if (existingTransaction) {
+          existingTransaction.transactionAmount += curr.transactionAmount;
+        } else {
+          acc.push(curr);
+        }
+
+        return acc;
+      },
+      []
+    );
+
+    // loop through accounts from within each account
+    individualAccounts.forEach((indvAccount: any) => {
+      // exclude self
+      if (account.accountNumber === indvAccount.accountNumber) {
+        return;
+      }
+
+      const accountPostingDates = account.transactions.map((t: any) => {
+        return t.postingDate;
+      });
+
+      //  get the postingDates that are not in indvAccount
+      const postingDatesNotInIndvAccount = accountPostingDates.filter(
+        (postingDate: any) => {
+          return !indvAccount.transactions.some(
+            (t: any) => t.postingDate === postingDate
+          );
+        }
+      );
+
+      // add a new transaction to indvAccount with the postingDates not in IndvAccount
+      postingDatesNotInIndvAccount.forEach((postingDate: any) => {
+        // find the previous transaction with the date closest to the postingDate
+        const previousTransaction = indvAccount.transactions.reduce(
+          (prev: any, curr: any) => {
+            return Math.abs(
+              Number(new Date(curr.postingDate)) - Number(new Date(postingDate))
+            ) <
+              Math.abs(
+                Number(new Date(prev.postingDate)) -
+                  Number(new Date(postingDate))
+              )
+              ? curr
+              : prev;
+          }
+        );
+
+        indvAccount.transactions.push({
+          postingDate,
+          id: uuidv4(),
+          accountNumber: indvAccount.accountNumber,
+          transactionAmount: previousTransaction.transactionAmount,
+        });
+      });
+    });
+  });
+
   const selectedAccounts = isSingleAccountSelected
     ? individualAccounts.filter(
         (account: any) => account.accountNumber === selectedAccountNumbers[0]
       )
     : individualAccounts;
-
 
   const selectedAccountTransactions = isSingleAccountSelected
     ? filteredAccountTransactions(selectedAccountNumbers[0])
