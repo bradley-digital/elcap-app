@@ -10,9 +10,9 @@ type ProfileUpdateByIdInput = {
   lastName?: string;
   phone?: string;
   companyName?: string;
-  addressLine1: string;
+  addressLine1?: string;
   addressLine2?: string;
-  country: string;
+  country?: string;
   state?: string;
   role?: string;
   accounts?: string[];
