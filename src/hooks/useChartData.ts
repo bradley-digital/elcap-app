@@ -13,6 +13,13 @@ export default function useChartData(
 ) {
   const { accounts, transactions } = useUserWesternAllianceAccount();
 
+  const transactionsSortedByFirst = transactions
+    ? transactions?.sort(
+        (a, b) =>
+          Number(new Date(a.postingDate)) - Number(new Date(b.postingDate))
+      )
+    : [];
+
   if (!transactions) {
     return {
       isSuccess: false,
@@ -95,6 +102,43 @@ export default function useChartData(
 
     // loop through accounts from within each account
     individualAccounts.forEach((indvAccount: any) => {
+      // start logic to add transactions for every day
+      const firstPostingDate = new Date(
+        transactionsSortedByFirst[0].postingDate
+      ).getTime();
+
+      const transactionsSortedByLast = indvAccount.transactions.sort(
+        (a: any, b: any) =>
+          Number(new Date(b.postingDate)) - Number(new Date(a.postingDate))
+      );
+      const lastPostingDate = new Date(
+        transactionsSortedByLast[0].postingDate
+      ).getTime();
+
+      const daysBetween = Math.floor(
+        (lastPostingDate - firstPostingDate) / (1000 * 60 * 60 * 24)
+      );
+
+      for (let i = 0; i < daysBetween; i++) {
+        const postingDate = new Date(
+          firstPostingDate + i * 24 * 60 * 60 * 1000
+        );
+
+        const existingTransaction = indvAccount.transactions.find(
+          (t: any) => t.postingDate === postingDate.toISOString()
+        );
+
+        if (!existingTransaction) {
+          indvAccount.transactions.push({
+            postingDate: postingDate.toISOString(),
+            id: uuidv4(),
+            accountNumber: indvAccount.accountNumber,
+            transactionAmount: "0",
+          });
+        }
+      }
+      // end logic to add transactions for every day
+
       // exclude self
       if (account.accountNumber === indvAccount.accountNumber) {
         return;
