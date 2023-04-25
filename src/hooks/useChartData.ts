@@ -351,8 +351,14 @@ export default function useChartData(
     ticks: {
       autoSkip: false,
     },
+    elements: {
+      point: {
+        pointStyle: false,
+      },
+    },
     plugins: {
       tooltip: {
+        enabled: true,
         callbacks: {
           label: function (context: any) {
             let label = context.dataset.label || "";
@@ -389,9 +395,6 @@ export default function useChartData(
         display: true,
         text: "Account Balance Timeline",
       },
-    },
-    tooltips: {
-      enabled: true,
     },
     scales: {
       x: {
