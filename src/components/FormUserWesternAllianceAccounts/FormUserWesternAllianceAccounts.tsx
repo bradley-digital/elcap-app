@@ -21,21 +21,24 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
   const { accounts, accountsIsSuccess } = useWesternAllianceAccount();
   const { update } = useUserManagement();
 
-  const {
-    id,
-    accounts: profileAccounts,
-  } = profile;
+  const { id, accounts: profileAccounts } = profile;
 
-  const accountNumbers = profileAccounts ? profileAccounts.map(account => account.accountNumber) : [];
+  const accountNumbers = profileAccounts
+    ? profileAccounts.map((account) => account.accountNumber)
+    : [];
 
-  const accountOptions = accounts ? accounts.map(account => {
-    const truncatedAccountNumber = account.accountNumber.slice(-4);
-    const label = `${account.accountTitle} (...${truncatedAccountNumber})`;
-    return {
-      value: account.accountNumber,
-      label,
-    };
-  }).sort((a, b) => a.label.localeCompare(b.label)) : [];
+  const accountOptions = accounts
+    ? accounts
+        .map((account) => {
+          const truncatedAccountNumber = account.accountNumber.slice(-4);
+          const label = `${account.accountTitle} (...${truncatedAccountNumber})`;
+          return {
+            value: account.accountNumber,
+            label,
+          };
+        })
+        .sort((a, b) => a.label.localeCompare(b.label))
+    : [];
 
   return (
     <Formik
@@ -49,12 +52,10 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
       {({ values }) => (
         <Form className="FormUserWesternAllianceAccounts">
           <IonList>
-            <IonListHeader>
-              Western Alliance Accounts
-            </IonListHeader>
+            <IonListHeader>Western Alliance Accounts</IonListHeader>
             <FieldArray
               name="accounts"
-              render={arrayHelpers => (
+              render={(arrayHelpers) => (
                 <>
                   {values.accounts.map((account, index) => (
                     <div key={index}>

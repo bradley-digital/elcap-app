@@ -1,15 +1,11 @@
 import type { Profile } from "hooks/useUser";
-import {
-  IonCol,
-  IonGrid,
-  IonRow,
-} from "@ionic/react";
+import { IonCol, IonGrid, IonRow } from "@ionic/react";
 import PageTemplate from "components/PageTemplate/PageTemplate";
 import FormUserWesternAllianceAccounts from "components/FormUserWesternAllianceAccounts/FormUserWesternAllianceAccounts";
 
 type Props = {
   profile: Profile;
-}
+};
 
 export default function UserWesternAlliance({ profile }: Props) {
   return (

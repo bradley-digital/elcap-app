@@ -1,6 +1,6 @@
 import type { RouteComponentProps } from "react-router-dom";
 import type { MenuLink } from "components/MenuLinks/MenuLinks";
-import { arrowBack, business, create, personCircle, } from "ionicons/icons";
+import { arrowBack, business, create, personCircle } from "ionicons/icons";
 
 // components
 import SplitPaneTemplate from "components/SplitPaneTemplate/SplitPaneTemplate";
@@ -37,7 +37,11 @@ export default function User(routeProps: RouteComponentProps) {
   ];
 
   return (
-    <SplitPaneTemplate title="User management" menuId="user" menuLinks={menuLinks}>
+    <SplitPaneTemplate
+      title="User management"
+      menuId="user"
+      menuLinks={menuLinks}
+    >
       <UserRoutes {...routeProps} />
     </SplitPaneTemplate>
   );

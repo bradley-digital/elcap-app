@@ -16,10 +16,6 @@ dist
 
 # secrets
 .env
-.env.development
-.env.production
-dev.env
-prod.env
 
 # misc
 .DS_Store

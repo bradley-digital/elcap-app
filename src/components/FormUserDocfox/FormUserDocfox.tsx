@@ -14,17 +14,8 @@ import {
 
 // components
 import { Form, Formik } from "formik";
-import {
-  IonButton,
-  IonIcon,
-  IonList,
-  IonListHeader,
-} from "@ionic/react";
-import {
-  alertCircle,
-  checkmarkCircle,
-  closeCircle,
-} from "ionicons/icons";
+import { IonButton, IonIcon, IonList, IonListHeader } from "@ionic/react";
+import { alertCircle, checkmarkCircle, closeCircle } from "ionicons/icons";
 import FormObserver from "components/FormObserver/FormObserver";
 import FormSelect from "components/FormSelect/FormSelect";
 import SubmitButton from "components/SubmitButton/SubmitButton";
@@ -67,10 +58,11 @@ export default function FormUserDocfox({ profile }: Props) {
   const included = application?.included || [];
 
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-  const contact = included?.find((data: any) => (
-    data?.type === "contact" &&
-    data?.attributes?.slug === "primary_point_of_contact"
-  ));
+  const contact = included?.find(
+    (data: any) =>
+      data?.type === "contact" &&
+      data?.attributes?.slug === "primary_point_of_contact"
+  );
 
   if (!contactId && contact?.id) {
     setContactId(contact.id);
@@ -84,39 +76,38 @@ export default function FormUserDocfox({ profile }: Props) {
     () => buildInitialValues(application, schema, templateId),
     [templateId, application, schema]
   );
-  const validationObject = useMemo(
-    () => buildValidation(schema),
-    [schema],
-  );
-  const formSections = useMemo(
-    () => buildFormSections(schema),
-    [schema]
-  );
+  const validationObject = useMemo(() => buildValidation(schema), [schema]);
+  const formSections = useMemo(() => buildFormSections(schema), [schema]);
   const formInputs = useMemo(
     () => buildFormInputs(formSections),
     [formSections]
   );
 
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-  const entityTemplateOptions = templates?.data?.map((template: any) => {
-    const value = template?.id;
-    const label = template?.attributes?.kyc_entity_type_name;
-    return {
-      value,
-      label,
-    };
-  }) || [];
+  const entityTemplateOptions =
+    templates?.data?.map((template: any) => {
+      const value = template?.id;
+      const label = template?.attributes?.kyc_entity_type_name;
+      return {
+        value,
+        label,
+      };
+    }) || [];
 
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   function handleChange(values: any) {
-    if (values?.kyc_entity_template_id && templateId !== values.kyc_entity_template_id) {
+    if (
+      values?.kyc_entity_template_id &&
+      templateId !== values.kyc_entity_template_id
+    ) {
       setTemplateId(values.kyc_entity_template_id);
     }
   }
 
   let statusElement = null;
   const status = application?.data?.attributes?.status?.status;
-  const statusDescription = application?.data?.attributes?.status?.status_description;
+  const statusDescription =
+    application?.data?.attributes?.status?.status_description;
 
   if (status === "in_progress") {
     statusElement = (
@@ -152,8 +143,13 @@ export default function FormUserDocfox({ profile }: Props) {
       {!!invitationLink && (
         <div>
           <h3>Upload documents</h3>
-          <p>Use this portal to upload the documents required for your application.</p>
-          <IonButton href={invitationLink} expand="block" target="_blank">Open portal</IonButton>
+          <p>
+            Use this portal to upload the documents required for your
+            application.
+          </p>
+          <IonButton href={invitationLink} expand="block" target="_blank">
+            Open portal
+          </IonButton>
           <hr />
         </div>
       )}
@@ -163,7 +159,10 @@ export default function FormUserDocfox({ profile }: Props) {
         validationSchema={Yup.object(validationObject)}
         onSubmit={(values) => {
           async function updateApplication() {
-            const { deleteData, patchData, postData } = buildUpdateData(application, values);
+            const { deleteData, patchData, postData } = buildUpdateData(
+              application,
+              values
+            );
             if (!Array.isArray(patchData)) return;
             for (const data of patchData) {
               await patchProfileData(data);
@@ -189,9 +188,7 @@ export default function FormUserDocfox({ profile }: Props) {
         <Form>
           <FormObserver onChange={handleChange} />
           <IonList>
-            <IonListHeader>
-              DocFox Application
-            </IonListHeader>
+            <IonListHeader>DocFox Application</IonListHeader>
             <FormSelect
               label="Entity Template"
               name="kyc_entity_template_id"
