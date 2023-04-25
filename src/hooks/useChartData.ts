@@ -353,7 +353,7 @@ export default function useChartData(
     },
     elements: {
       point: {
-        pointStyle: false,
+        pointStyle: false as const,
       },
     },
     plugins: {
