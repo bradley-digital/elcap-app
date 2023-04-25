@@ -15,8 +15,7 @@ type APIError = {
   message: string;
 };
 
-const host =
-  import.meta.env.VITE_REACT_APP_BACKEND_HOST || "http://localhost:3020";
+const host = import.meta.env.VITE_BACKEND_HOST || "http://localhost:3020";
 const apiVersion = "/api";
 
 const config = {

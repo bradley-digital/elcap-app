@@ -30,9 +30,9 @@ export default function FormSelect(props: Props) {
   const [field, meta] = useField(props);
   const { label, icon, options, className, ...rest } = props;
 
-  const selectedOption =
-    options.find((option) => option.value === field.value)
-    || { value: "", label: "" };
+  const selectedOption = options.find(
+    (option) => option.value === field.value
+  ) || { value: "", label: "" };
 
   const interfaceOptions = {
     cssClass: className || "",

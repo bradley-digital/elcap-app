@@ -1,7 +1,7 @@
 import type { PlaywrightTestConfig } from "@playwright/test";
 
 export const baseURL =
-  process.env.VITE_REACT_APP_FRONTEND_HOST || "http://localhost:3021/";
+  process.env.VITE_FRONTEND_HOST || "http://localhost:3021/";
 
 /**
  * See https://playwright.dev/docs/test-configuration.
