@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "chart.js/auto";
 import hash from "object-hash";
 
@@ -6,6 +6,7 @@ import hash from "object-hash";
 import { Scatter } from "react-chartjs-2";
 import {
   IonItem,
+  IonLabel,
   IonList,
   IonSelect,
   IonSelectOption,
@@ -19,29 +20,32 @@ import {
 
 // hooks
 import useChartData from "hooks/useChartData";
+import useUser from "hooks/useUser";
 
 // styles
 import "./DashboardOverview.scss";
 
 export default function DashboardOverview() {
   const [isChartVisible, setIsChartVisible] = useState(false);
-  const [selectedAccountNumber, setSelectedAccountNumber] = useState(0);
-  const [selectedYear, setSelectedYear] = useState(0);
-  const [selectedTransactionType, setSelectedTransactionType] = useState("all");
+  const [selectedAccountNumbers, setSelectedAccountNumbers] = useState([""]);
+  const [selectedTimeRange, setSelectedTimeRange] = useState("Max");
+  const { isSuccess: userIsSuccess, data: userData } = useUser();
   const {
     isSuccess,
     data,
     accounts,
     options,
     accountsCurrentBalanceTotal,
-    transactionYears,
     transactionTypes,
     transactionTypeMap,
-  } = useChartData(
-    selectedYear,
-    selectedTransactionType,
-    selectedAccountNumber
-  );
+  } = useChartData(selectedTimeRange, selectedAccountNumbers);
+
+  useEffect(() => {
+    accounts &&
+      setSelectedAccountNumbers(
+        accounts?.accounts.map((account: any) => account?.accountNumber)
+      );
+  }, [accounts]);
 
   useIonViewWillEnter(() => {
     setIsChartVisible(true);
@@ -53,7 +57,6 @@ export default function DashboardOverview() {
     typeof accounts === "undefined" ||
     typeof options === "undefined" ||
     typeof accountsCurrentBalanceTotal === "undefined" ||
-    typeof transactionYears === "undefined" ||
     typeof transactionTypes === "undefined" ||
     typeof transactionTypeMap === "undefined"
   ) {
@@ -67,21 +70,32 @@ export default function DashboardOverview() {
 
   const currentBalanceUSD = USD.format(accountsCurrentBalanceTotal);
 
+  const timeRange = ["YTD", "MTD", "3M", "1Y", "3Y", "5Y", "Max"];
+
   return (
     <div className="DashboardOverview">
       <IonGrid>
         <IonRow className="ion-justify-content-center">
           <IonCol
             size-xs="12"
+            size-sm="12"
+            size-md="12"
+            size-lg="12"
+            className="DashboardOverview__header"
+          >
+            <h1>{userIsSuccess && userData && userData.companyName}</h1>
+          </IonCol>
+          <IonCol
+            size-xs="12"
             size-sm="6"
             size-md="8"
             size-lg="9"
-            className="DashboardOverview__header"
+            className="DashboardOverview__details"
           >
             <IonText>
-              <h1>Total Portfolio Balance</h1>
+              <h2>Total Portfolio Balance</h2>
               <p>{currentBalanceUSD}</p>
-              <h1>Subtotal Balances</h1>
+              <h2>Account Balances</h2>
               {accounts.accounts.map((account: any) => {
                 return (
                   <p key={hash(account)}>
@@ -102,11 +116,13 @@ export default function DashboardOverview() {
           >
             <IonList>
               <IonItem>
+                <IonLabel position="floating">Accounts</IonLabel>
                 <IonSelect
                   placeholder="Select Account"
-                  onIonChange={(e) => setSelectedAccountNumber(e.detail.value)}
+                  onIonChange={(e) => setSelectedAccountNumbers(e.detail.value)}
+                  multiple={true}
+                  value={selectedAccountNumbers}
                 >
-                  <IonSelectOption value={0}>All</IonSelectOption>
                   {accounts &&
                     accounts?.accounts.map((account: any) => (
                       <IonSelectOption
@@ -120,44 +136,24 @@ export default function DashboardOverview() {
               </IonItem>
 
               <IonItem>
+                <IonLabel position="floating">Date Range</IonLabel>
                 <IonSelect
-                  placeholder="Select Year"
-                  onIonChange={(e) => setSelectedYear(e.detail.value)}
+                  placeholder="Select Date Range"
+                  onIonChange={(e) => setSelectedTimeRange(e.detail.value)}
+                  value={selectedTimeRange}
                 >
-                  <IonSelectOption value={0}>All</IonSelectOption>
-                  {transactionYears &&
-                    Array.from(transactionYears).map((year) => (
-                      <IonSelectOption key={year} value={year}>
-                        {year}
-                      </IonSelectOption>
-                    ))}
-                </IonSelect>
-              </IonItem>
-
-              <IonItem>
-                <IonSelect
-                  placeholder="Select Transaction Type"
-                  onIonChange={(e) =>
-                    setSelectedTransactionType(e.detail.value)
-                  }
-                >
-                  <IonSelectOption value="all">All</IonSelectOption>
-                  {transactionTypes &&
-                    Array.from(transactionTypes).map((transactionType) => (
-                      <IonSelectOption
-                        key={transactionType}
-                        value={transactionType}
-                      >
-                        {transactionTypeMap[transactionType]}
-                      </IonSelectOption>
-                    ))}
+                  {timeRange.map((range) => (
+                    <IonSelectOption key={range} value={range}>
+                      {range}
+                    </IonSelectOption>
+                  ))}
                 </IonSelect>
               </IonItem>
             </IonList>
           </IonCol>
-          <IonCol className="DashboardOverview__content">
+          <IonCol className="DashboardOverview__content--chart">
             {isChartVisible ? (
-              <Scatter data={data} options={options} height={500} />
+              <Scatter data={data} options={options} />
             ) : (
               <IonSpinner color="success" />
             )}

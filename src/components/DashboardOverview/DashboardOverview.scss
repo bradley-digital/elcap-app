@@ -1,8 +1,14 @@
 .DashboardOverview {
-  margin-top: 100px;
-
   .spinner-circular {
     margin: 0 auto;
     display: block;
+  }
+
+  &__header {
+    text-align: center;
+  }
+
+  &__content--chart {
+    height: 600px;
   }
 }

@@ -1,4 +1,5 @@
 import "chartjs-adapter-moment";
+import { v4 as uuidv4 } from "uuid";
 import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
 import { Transaction } from "./useWesternAllianceAccount";
 
@@ -7,11 +8,17 @@ type StringMap = {
 };
 
 export default function useChartData(
-  year: number,
-  selectedTransactionType: string,
-  selectedAccountNumber: number
+  selectedTimeRange: string,
+  selectedAccountNumbers: string[]
 ) {
   const { accounts, transactions } = useUserWesternAllianceAccount();
+
+  const transactionsSortedByFirst = transactions
+    ? transactions?.sort(
+        (a, b) =>
+          Number(new Date(a.postingDate)) - Number(new Date(b.postingDate))
+      )
+    : [];
 
   if (!transactions) {
     return {
@@ -19,7 +26,6 @@ export default function useChartData(
       data: undefined,
       options: undefined,
       currentBalance: undefined,
-      transactionYears: undefined,
       transactionTypes: undefined,
       transactionTypeMap: undefined,
     };
@@ -30,8 +36,6 @@ export default function useChartData(
     0
   );
 
-  const dataLabel =
-    selectedTransactionType === "all" ? "Balance" : "Transactions";
   const transactionTypeMap: StringMap = {
     C: "Credit",
     D: "Debit",
@@ -40,12 +44,28 @@ export default function useChartData(
     X: "Reversed",
   };
 
-  const isSingleAccountSelected = selectedAccountNumber !== 0;
+  const isSingleAccountSelected = selectedAccountNumbers.length < 2;
 
   const filteredAccountTransactions = (accountNumber: string | number) => {
-    return transactions?.filter(
+    const accountsByAccountNumber = transactions?.filter(
       (transaction) => transaction.accountNumber === accountNumber
     );
+
+    const filteredTransactions = accountsByAccountNumber.map(
+      (transaction: Transaction) => {
+        return {
+          id: transaction.id,
+          accountNumber: transaction.accountNumber,
+          postingDate: transaction.postingDate,
+          transactionAmount: transaction.transactionAmount,
+          transactionCode: transaction.transactionCode,
+          transactionIsReversed: transaction.transactionIsReversed,
+          transactionType: transaction.transactionType,
+        };
+      }
+    );
+
+    return filteredTransactions;
   };
 
   const individualAccounts: any = [];
@@ -58,21 +78,126 @@ export default function useChartData(
     });
   });
 
+  // account smoothing
+  individualAccounts.forEach((account: any) => {
+    // if transactions happen on the same day, combine them
+    account.transactions = account.transactions.reduce(
+      (acc: any, curr: any) => {
+        const existingTransaction = acc.find(
+          (t: any) => t.postingDate === curr.postingDate
+        );
+
+        curr.transactionAmount = Number(curr.transactionAmount);
+
+        if (existingTransaction) {
+          existingTransaction.transactionAmount += curr.transactionAmount;
+        } else {
+          acc.push(curr);
+        }
+
+        return acc;
+      },
+      []
+    );
+
+    // loop through accounts from within each account
+    individualAccounts.forEach((indvAccount: any) => {
+      // start logic to add transactions for every day
+      const firstPostingDate = new Date(
+        transactionsSortedByFirst[0].postingDate
+      ).getTime();
+
+      const transactionsSortedByLast = indvAccount.transactions.sort(
+        (a: any, b: any) =>
+          Number(new Date(b.postingDate)) - Number(new Date(a.postingDate))
+      );
+      const lastPostingDate = new Date(
+        transactionsSortedByLast[0].postingDate
+      ).getTime();
+
+      const daysBetween = Math.floor(
+        (lastPostingDate - firstPostingDate) / (1000 * 60 * 60 * 24)
+      );
+
+      for (let i = 0; i < daysBetween; i++) {
+        const postingDate = new Date(
+          firstPostingDate + i * 24 * 60 * 60 * 1000
+        );
+
+        const existingTransaction = indvAccount.transactions.find(
+          (t: any) => t.postingDate === postingDate.toISOString()
+        );
+
+        if (!existingTransaction) {
+          indvAccount.transactions.push({
+            postingDate: postingDate.toISOString(),
+            id: uuidv4(),
+            accountNumber: indvAccount.accountNumber,
+            transactionAmount: "0",
+          });
+        }
+      }
+      // end logic to add transactions for every day
+
+      // exclude self
+      if (account.accountNumber === indvAccount.accountNumber) {
+        return;
+      }
+
+      const accountPostingDates = account.transactions.map((t: any) => {
+        return t.postingDate;
+      });
+
+      //  get the postingDates that are not in indvAccount
+      const postingDatesNotInIndvAccount = accountPostingDates.filter(
+        (postingDate: any) => {
+          return !indvAccount.transactions.some(
+            (t: any) => t.postingDate === postingDate
+          );
+        }
+      );
+
+      // add a new transaction to indvAccount with the postingDates not in IndvAccount
+      postingDatesNotInIndvAccount.forEach((postingDate: any) => {
+        // find the previous transaction with the date closest to the postingDate
+        const previousTransaction = indvAccount.transactions.reduce(
+          (prev: any, curr: any) => {
+            return Math.abs(
+              Number(new Date(curr.postingDate)) - Number(new Date(postingDate))
+            ) <
+              Math.abs(
+                Number(new Date(prev.postingDate)) -
+                  Number(new Date(postingDate))
+              )
+              ? curr
+              : prev;
+          }
+        );
+
+        indvAccount.transactions.push({
+          postingDate,
+          id: uuidv4(),
+          accountNumber: indvAccount.accountNumber,
+          transactionAmount: previousTransaction.transactionAmount,
+        });
+      });
+    });
+  });
+
   const selectedAccounts = isSingleAccountSelected
     ? individualAccounts.filter(
-        (account: any) => account.accountNumber === selectedAccountNumber
+        (account: any) => account.accountNumber === selectedAccountNumbers[0]
       )
     : individualAccounts;
 
   const selectedAccountTransactions = isSingleAccountSelected
-    ? filteredAccountTransactions(selectedAccountNumber)
+    ? filteredAccountTransactions(selectedAccountNumbers[0])
     : transactions;
 
   function createChartData(
     accountTransactions: Transaction[],
     currentBalance: number
   ) {
-    const transactionData: Array<any> = [];
     const balanceData: Array<any> = [];
 
     accountTransactions.sort(
@@ -125,10 +250,31 @@ export default function useChartData(
     const transactionsWithBalanceByYear = transactionsWithBalance.filter(
       (transaction) => {
         const date = new Date(transaction.postingDate);
-        if (year === 0) {
-          return date.getFullYear();
-        } else {
-          return date.getFullYear() === year;
+        const currentDate = new Date();
+        const timeDiff = Math.abs(currentDate.getTime() - date.getTime());
+        const diffYears = timeDiff / (1000 * 3600 * 24 * 365);
+        const diffMonths = diffYears * 12;
+
+        switch (selectedTimeRange) {
+          case "YTD":
+            return date.getFullYear() === currentDate.getFullYear();
+          case "MTD":
+            return (
+              date.getFullYear() === currentDate.getFullYear() &&
+              date.getMonth() === currentDate.getMonth()
+            );
+          case "3M":
+            return diffMonths <= 3;
+          case "1Y":
+            return diffYears <= 1;
+          case "3Y":
+            return diffYears <= 3;
+          case "5Y":
+            return diffYears <= 5;
+          case "Max":
+            return true;
+          default:
+            return true;
         }
       }
     );
@@ -148,37 +294,14 @@ export default function useChartData(
       };
 
       balanceData.push(balanceCoordinates);
-
-      const filterMap: StringMap = {
-        C: "C",
-        D: "D",
-        F: "F",
-        M: "M",
-        X: "X",
-      };
-
-      if (
-        filterMap[selectedTransactionType] !== balance.transactionType &&
-        selectedTransactionType !== "all"
-      ) {
-        return;
-      }
-
-      const transactionCoordinates = {
-        x: Date.parse(shortDate),
-        y: balance.transactionAmount,
-      };
-
-      transactionData.push(transactionCoordinates);
     });
 
     return {
-      balanceData: balanceData,
-      transactionData: transactionData,
+      balanceData,
     };
   }
 
-  const colorArray = [
+  const solidColorArray = [
     "#007854",
     "#3dc2ff",
     "#5260ff",
@@ -187,11 +310,14 @@ export default function useChartData(
     "#eb445a",
   ];
 
-  const transactionYears = new Set(
-    selectedAccountTransactions.map(({ postingDate }) =>
-      new Date(postingDate).getFullYear()
-    )
-  );
+  const transparentColorArray = [
+    "rgb(0, 120, 84, 0.2)",
+    "rgb(61, 194, 255, 0.2)",
+    "rgb(82, 96, 255, 0.2)",
+    "rgb(45, 211, 111, 0.2)",
+    "rgb(255, 196, 9, 0.2)",
+    "rgb(235, 68, 90, 0.2)",
+  ];
 
   const transactionTypes = new Set(
     selectedAccountTransactions.map(({ transactionType }) => transactionType)
@@ -204,17 +330,16 @@ export default function useChartData(
         account.transactions,
         currentBalance
       );
-      const { transactionData } = createChartData(
-        account.transactions,
-        currentBalance
-      );
 
       return {
         label: account.accountTitle,
+        fill: "start",
         showLine: true,
-        data: selectedTransactionType === "all" ? balanceData : transactionData,
-        borderColor: colorArray[index],
-        backgroundColor: colorArray[index],
+        data: balanceData,
+        borderColor: solidColorArray[index],
+        backgroundColor: transparentColorArray[index],
+        pointBorderColor: solidColorArray[index],
+        pointBackgroundColor: solidColorArray[index],
         borderWidth: 1,
       };
     }),
@@ -226,8 +351,14 @@ export default function useChartData(
     ticks: {
       autoSkip: false,
     },
+    elements: {
+      point: {
+        pointStyle: false as const,
+      },
+    },
     plugins: {
       tooltip: {
+        enabled: true,
         callbacks: {
           label: function (context: any) {
             let label = context.dataset.label || "";
@@ -265,9 +396,6 @@ export default function useChartData(
         text: "Account Balance Timeline",
       },
     },
-    tooltips: {
-      enabled: true,
-    },
     scales: {
       x: {
         type: "time" as const,
@@ -280,13 +408,14 @@ export default function useChartData(
         offset: true,
         title: {
           display: true,
-          text: "Time",
+          text: "Date Range",
         },
       },
       y: {
+        stacked: true,
         title: {
           display: true,
-          text: `${dataLabel}`,
+          text: "Balance",
         },
       },
     },
@@ -298,7 +427,6 @@ export default function useChartData(
     accounts,
     options,
     accountsCurrentBalanceTotal,
-    transactionYears,
     transactionTypes,
     transactionTypeMap,
   };

@@ -129,7 +129,7 @@ export default function FormDocfox() {
         >
           <Form>
             <IonList>
-              <IonListHeader>DocFox Application</IonListHeader>
+              <IonListHeader>Business information</IonListHeader>
               <FormInput
                 className="FormInputHidden"
                 name="kyc_entity_template_id"

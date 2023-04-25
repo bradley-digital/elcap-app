@@ -13,6 +13,7 @@ export type Profile = {
   lastName: string;
   email: string;
   phone: string;
+  companyName?: string;
   addressLine1: string;
   addressLine2: string;
   country: string;
@@ -27,6 +28,7 @@ type ProfileUpdateInput = {
   firstName?: string;
   lastName?: string;
   phone?: string;
+  companyName?: string;
   addressLine1?: string;
   addressLine2?: string;
   country?: string;
