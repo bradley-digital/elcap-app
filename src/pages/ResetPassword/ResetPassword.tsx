@@ -3,15 +3,13 @@ import { Link } from "react-router-dom";
 import { IonText } from "@ionic/react";
 import AuthPageTemplate from "components/AuthPageTemplate/AuthPageTemplate";
 import FormResetPassword from "components/FormResetPassword/FormResetPassword";
+import PasswordRequirements from "components/PasswordRequirements/PasswordRequirements";
 
 export default function ResetPassword() {
   return (
     <AuthPageTemplate title="Reset password">
       <IonText>
-        <p>Your new password must:</p>
-        <ul>
-          <li>Contain 8-36 characters.</li>
-        </ul>
+        <PasswordRequirements />
       </IonText>
       <FormResetPassword />
       <IonText className="AuthPageTemplate__linkRow">

@@ -12,6 +12,7 @@ import {
   addressLine2Validation,
   countryValidation,
   stateValidation,
+  companyNameValidation,
 } from "lib/formValidation";
 
 // icons
@@ -45,6 +46,7 @@ export default function FormAccount({ profile }: Props) {
     lastName,
     email,
     phone,
+    companyName,
     addressLine1,
     addressLine2,
     country,
@@ -59,6 +61,7 @@ export default function FormAccount({ profile }: Props) {
         lastName,
         email,
         phone,
+        companyName,
         addressLine1,
         addressLine2,
         country,
@@ -69,6 +72,7 @@ export default function FormAccount({ profile }: Props) {
         lastName: lastNameValidation,
         email: emailValidation,
         phone: phoneValidation,
+        companyName: companyNameValidation,
         addressLine1: addressLine1Validation,
         addressLine2: addressLine2Validation,
         country: countryValidation,
@@ -82,7 +86,7 @@ export default function FormAccount({ profile }: Props) {
       <Form>
         <FormObserver onChange={handleChange} />
         <IonList>
-          <IonListHeader>Account information</IonListHeader>
+          <IonListHeader>Profile information</IonListHeader>
 
           <FormInput
             label="First Name"
@@ -107,6 +111,13 @@ export default function FormAccount({ profile }: Props) {
           />
 
           <FormInput label="Phone" name="phone" type="text" icon={pencil} />
+
+          <FormInput
+            label="Company Name"
+            name="companyName"
+            type="text"
+            icon={pencil}
+          />
 
           <FormInput
             label="Address line 1"

@@ -9,8 +9,11 @@ type ProfileUpdateByIdInput = {
   firstName?: string;
   lastName?: string;
   phone?: string;
+  companyName?: string;
   addressLine1?: string;
   addressLine2?: string;
+  country?: string;
+  state?: string;
   role?: string;
   accounts?: string[];
   applicationId?: string;
@@ -21,8 +24,17 @@ type ProfileCreateInput = {
   lastName: string;
   email: string;
   phone: string;
+  companyName?: string;
+  addressLine1: string;
+  addressLine2?: string;
+  country: string;
+  state?: string;
   role: string;
   accounts?: string[];
+};
+
+type ProfileInviteInput = {
+  id: string;
 };
 
 export const queryKey = "userList";
@@ -33,19 +45,44 @@ export default function useUser() {
 
   const { isSuccess, data } = useQuery(queryKey, getUserList);
 
-  const { mutate: update } = useMutation(updateUser, {
+  const { mutate: create } = useMutation(createUser, {
     onSuccess: () => {
-      // refetch list after update
       queryClient.invalidateQueries(queryKey);
     },
   });
 
-  const { mutate: create } = useMutation(createUser, {
+  const { mutate: deleteUser } = useMutation(deleteUserMutation, {
     onSuccess: () => {
-      // refetch list after update
       queryClient.invalidateQueries(queryKey);
     },
   });
+
+  const { mutate: invite } = useMutation(inviteUser, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(queryKey);
+    },
+  });
+
+  const { mutate: update } = useMutation(updateUser, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(queryKey);
+    },
+  });
+
+  async function createUser(body: ProfileCreateInput) {
+    const { data } = await authApi.post<Profile>("/users/create", body);
+    return data;
+  }
+
+  async function deleteUserMutation(id: string) {
+    const { data } = await authApi.delete<Profile>(`/users?id=${id}`);
+    return data;
+  }
+
+  async function inviteUser(body: ProfileInviteInput) {
+    const { data } = await authApi.post<Profile>("/users/invite", body);
+    return data;
+  }
 
   async function getUserList() {
     const { data } = await authApi.get<Profile[]>("/users/list");
@@ -57,16 +94,13 @@ export default function useUser() {
     return data;
   }
 
-  async function createUser(body: ProfileCreateInput) {
-    const { data } = await authApi.post<Profile>("/users/create", body);
-    return data;
-  }
-
   return {
-    queryKey,
-    isSuccess,
-    data,
-    update,
     create,
+    data,
+    deleteUser,
+    invite,
+    isSuccess,
+    queryKey,
+    update,
   };
 }

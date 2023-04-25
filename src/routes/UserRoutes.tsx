@@ -28,7 +28,7 @@ export default function UserRoutes({ match }: RouteComponentProps) {
         <Switch>
           <Route
             exact
-            path={`${match.url}/account`}
+            path={`${match.url}/profile`}
             render={() => <Account profile={user} />}
           />
           <Route
@@ -42,7 +42,7 @@ export default function UserRoutes({ match }: RouteComponentProps) {
             render={() => <Docfox profile={user} />}
           />
           {/* Fallback route */}
-          <Route render={() => <Redirect to={`${match.url}/account`} />} />
+          <Route render={() => <Redirect to={`${match.url}/profile`} />} />
         </Switch>
       </IonRouterOutlet>
     );
