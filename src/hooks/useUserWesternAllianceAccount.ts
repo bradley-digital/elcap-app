@@ -1,4 +1,4 @@
-import type { Account, Transaction } from "./useWesternAllianceAccount";
+import type { Account, Transaction } from "hooks/useWesternAllianceAccount";
 import { useQuery } from "react-query";
 import useAuth from "hooks/useAuth";
 

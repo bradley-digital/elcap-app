@@ -1,7 +1,7 @@
+import type { Transaction } from "hooks/useWesternAllianceAccount";
 import "chartjs-adapter-moment";
 import { v4 as uuidv4 } from "uuid";
 import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
-import { Transaction } from "./useWesternAllianceAccount";
 
 type StringMap = {
   [key: string]: string;
@@ -189,6 +189,7 @@ export default function useChartData(
         (account: any) => account.accountNumber === selectedAccountNumbers[0]
       )
     : individualAccounts;
+
 
   const selectedAccountTransactions = isSingleAccountSelected
     ? filteredAccountTransactions(selectedAccountNumbers[0])

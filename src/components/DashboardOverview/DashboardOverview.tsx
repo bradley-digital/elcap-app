@@ -47,6 +47,13 @@ export default function DashboardOverview() {
       );
   }, [accounts]);
 
+  useEffect(() => {
+    accounts &&
+      setSelectedAccountNumbers(
+        accounts?.accounts.map((account: any) => account?.accountNumber)
+      );
+  }, [accounts]);
+
   useIonViewWillEnter(() => {
     setIsChartVisible(true);
   });
