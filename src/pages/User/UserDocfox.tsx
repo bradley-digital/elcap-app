@@ -1,15 +1,11 @@
 import type { Profile } from "hooks/useUser";
-import {
-  IonCol,
-  IonGrid,
-  IonRow,
-} from "@ionic/react";
+import { IonCol, IonGrid, IonRow } from "@ionic/react";
 import PageTemplate from "components/PageTemplate/PageTemplate";
 import FormUserDocfox from "components/FormUserDocfox/FormUserDocfox";
 
 type Props = {
   profile: Profile;
-}
+};
 
 export default function UserDocfox({ profile }: Props) {
   return (
