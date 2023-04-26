@@ -3,10 +3,6 @@ import "chartjs-adapter-moment";
 import { v4 as uuidv4 } from "uuid";
 import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
 
-type StringMap = {
-  [key: string]: string;
-};
-
 export default function useChartData(
   selectedTimeRange: string,
   selectedAccountNumbers: string[]
@@ -27,22 +23,13 @@ export default function useChartData(
       options: undefined,
       currentBalance: undefined,
       transactionTypes: undefined,
-      transactionTypeMap: undefined,
     };
   }
 
-  const accountsCurrentBalanceTotal = accounts?.accounts.reduce(
+  const accountsCurrentBalanceTotal = accounts?.reduce(
     (acc: number, account: any) => acc + Number(account.accountBalance),
     0
   );
-
-  const transactionTypeMap: StringMap = {
-    C: "Credit",
-    D: "Debit",
-    F: "Float",
-    M: "Miscellaneous Service Charge",
-    X: "Reversed",
-  };
 
   const isSingleAccountSelected = selectedAccountNumbers.length < 2;
 
@@ -69,7 +56,7 @@ export default function useChartData(
   };
 
   const individualAccounts: any = [];
-  accounts?.accounts.forEach((account: any) => {
+  accounts?.forEach((account: any) => {
     individualAccounts.push({
       accountTitle: account.accountTitle,
       accountNumber: account.accountNumber,
@@ -148,7 +135,7 @@ export default function useChartData(
         return t.postingDate;
       });
 
-      //  get the postingDates that are not in indvAccount
+      // get the postingDates that are not in indvAccount
       const postingDatesNotInIndvAccount = accountPostingDates.filter(
         (postingDate: any) => {
           return !indvAccount.transactions.some(
@@ -429,6 +416,5 @@ export default function useChartData(
     options,
     accountsCurrentBalanceTotal,
     transactionTypes,
-    transactionTypeMap,
   };
 }

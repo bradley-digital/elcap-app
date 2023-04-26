@@ -37,21 +37,12 @@ export default function DashboardOverview() {
     options,
     accountsCurrentBalanceTotal,
     transactionTypes,
-    transactionTypeMap,
   } = useChartData(selectedTimeRange, selectedAccountNumbers);
 
   useEffect(() => {
-    accounts &&
-      setSelectedAccountNumbers(
-        accounts?.accounts.map((account: any) => account?.accountNumber)
-      );
-  }, [accounts]);
-
-  useEffect(() => {
-    accounts &&
-      setSelectedAccountNumbers(
-        accounts?.accounts.map((account: any) => account?.accountNumber)
-      );
+    setSelectedAccountNumbers(
+      accounts?.map((account) => account.accountNumber) || [""]
+    );
   }, [accounts]);
 
   useIonViewWillEnter(() => {
@@ -64,8 +55,7 @@ export default function DashboardOverview() {
     typeof accounts === "undefined" ||
     typeof options === "undefined" ||
     typeof accountsCurrentBalanceTotal === "undefined" ||
-    typeof transactionTypes === "undefined" ||
-    typeof transactionTypeMap === "undefined"
+    typeof transactionTypes === "undefined"
   ) {
     return null;
   }
@@ -74,9 +64,7 @@ export default function DashboardOverview() {
     style: "currency",
     currency: "USD",
   });
-
   const currentBalanceUSD = USD.format(accountsCurrentBalanceTotal);
-
   const timeRange = ["YTD", "MTD", "3M", "1Y", "3Y", "5Y", "Max"];
 
   return (
@@ -103,12 +91,10 @@ export default function DashboardOverview() {
               <h2>Total Portfolio Balance</h2>
               <p>{currentBalanceUSD}</p>
               <h2>Account Balances</h2>
-              {accounts.accounts.map((account: any) => {
+              {accounts?.map((account) => {
                 return (
                   <p key={hash(account)}>
-                    {account.accountTitle +
-                      ": " +
-                      USD.format(account.accountBalance)}
+                    {`${account.accountTitle}: ${USD.format(account.accountBalance)}`}
                   </p>
                 );
               })}
@@ -130,15 +116,14 @@ export default function DashboardOverview() {
                   multiple={true}
                   value={selectedAccountNumbers}
                 >
-                  {accounts &&
-                    accounts?.accounts.map((account: any) => (
-                      <IonSelectOption
-                        key={account.accountNumber}
-                        value={account.accountNumber}
-                      >
-                        {account.accountTitle}
-                      </IonSelectOption>
-                    ))}
+                  {accounts?.map((account) => (
+                    <IonSelectOption
+                      key={account.accountNumber}
+                      value={account.accountNumber}
+                    >
+                      {account.accountTitle}
+                    </IonSelectOption>
+                  ))}
                 </IonSelect>
               </IonItem>
 
