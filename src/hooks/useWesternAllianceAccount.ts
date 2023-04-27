@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 // hooks
 import useAuth from "hooks/useAuth";
 
-type StringMap = {
+export type StringMap = {
   [key: string]: string;
 };
 

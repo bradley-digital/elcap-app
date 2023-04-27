@@ -1,4 +1,4 @@
-import type { Transaction } from "hooks/useWesternAllianceAccount";
+import type { Transaction, StringMap } from "hooks/useWesternAllianceAccount";
 import { useEffect, useMemo, useState } from "react";
 import { chevronBack, chevronForward } from "ionicons/icons";
 
@@ -31,7 +31,7 @@ import {
 
 import "./TransactionsTable.scss";
 
-const transactionTypeMap = {};
+const transactionTypeMap: StringMap = {};
 const wantedTypes = ["C", "D", "X"];
 wantedTypes.forEach((k) => (
   transactionTypeMap[k] = originalTransactionTypeMap[k]
