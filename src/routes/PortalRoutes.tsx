@@ -22,15 +22,16 @@ export default function PortalRoutes() {
     <IonTabs>
       <IonRouterOutlet>
         <Switch>
+          {/* Paths with nested routes must not have "exact" */}
+          <Route path="/dashboard" component={Dashboard} />
           <Route exact path="/profile" component={Account} />
           <Route exact path="/onboarding" component={Docfox} />
-          <Route exact path="/dashboard/overview" component={Dashboard} />
           {/* Fallback route */}
-          <Route render={() => <Redirect to="/dashboard/overview" />} />
+          <Route render={() => <Redirect to="/dashboard" />} />
         </Switch>
       </IonRouterOutlet>
       <IonTabBar slot="bottom">
-        <IonTabButton tab="dashboard" href="/dashboard/overview">
+        <IonTabButton tab="dashboard" href="/dashboard">
           <IonIcon icon={grid} />
           <IonLabel>Dashboard</IonLabel>
         </IonTabButton>
