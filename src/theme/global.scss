@@ -65,7 +65,17 @@ ion-select {
   }
 }
 
-.alert-radio-label.sc-ion-alert-md {
-  white-space: normal;
-  font-size: 14px;
+.alert-radio-label,
+.alert-checkbox-label {
+  &.sc-ion-alert-md {
+    white-space: normal;
+    font-size: 14px;
+  }
+}
+
+.FormAccountSelect {
+  .alert-wrapper {
+    width: 450px;
+    max-width: 450px;
+  }
 }
