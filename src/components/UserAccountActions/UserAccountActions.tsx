@@ -30,9 +30,7 @@ export default function UserAccountActions({ profile }: Props) {
     <div>
       <IonListHeader>Profile actions</IonListHeader>
       <IonButton onClick={handleInvite}>Invite user</IonButton>
-      <IonButton color="danger" onClick={handleDelete}>
-        Delete user
-      </IonButton>
+      <IonButton color="danger" onClick={handleDelete}>Delete user</IonButton>
     </div>
   );
 }

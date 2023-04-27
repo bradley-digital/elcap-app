@@ -1,0 +1,80 @@
+@import "@/theme/variables.scss";
+
+.TransactionsTable {
+  table {
+    width: 100%;
+    margin-top: 32px;
+  }
+
+  th {
+    text-align: left;
+  }
+
+  th,
+  td {
+    padding: 16px;
+    border-bottom: 1px solid $border-color;
+    white-space: nowrap;
+  }
+
+  &__filters {
+    display: flex;
+
+    > ion-item {
+      flex: 0 0 33%;
+    }
+  }
+
+  &__wrapper {
+    @media screen and (max-width: 576px) {
+      overflow-y: scroll;
+    }
+  }
+
+  &__pagination {
+    align-items: center;
+    display: flex;
+    padding: 16px;
+
+    > * {
+      margin-right: 16px;
+    }
+
+    > :last-child {
+      margin-right: 0;
+    }
+  }
+
+  &__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    background-color: transparent;
+    border: 1px solid $border-color;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+  }
+
+  &__all-back,
+  &__forward {
+    margin-right: 4px;
+  }
+
+  &__all-back,
+  &__all-forward {
+    > :first-child {
+      margin-right: -8px;
+    }
+  }
+
+  &__select {
+    margin-left: auto;
+    background: transparent;
+    border: 1px solid $border-color;
+    padding: 6px;
+    width: auto;
+  }
+}

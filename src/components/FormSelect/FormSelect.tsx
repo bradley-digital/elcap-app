@@ -23,12 +23,13 @@ type Props = {
   }[];
   icon?: string;
   className?: string;
+  position?: "fixed" | "stacked" | "floating";
 } & ComponentProps<typeof IonSelect> &
   FieldHookConfig<string>;
 
 export default function FormSelect(props: Props) {
   const [field, meta] = useField(props);
-  const { label, icon, options, className, ...rest } = props;
+  const { label, icon, options, className, position, ...rest } = props;
 
   const selectedOption = options.find(
     (option) => option.value === field.value
@@ -45,15 +46,15 @@ export default function FormSelect(props: Props) {
         "ion-touched": meta.touched,
       })}
     >
-      <IonLabel position="stacked">{label}</IonLabel>
+      <IonLabel position={position || "stacked"}>{label}</IonLabel>
       {icon && <IonIcon icon={icon} className="FormSelect__icon" />}
 
       <IonSelect
-        {...rest}
         interfaceOptions={interfaceOptions}
         selectedText={selectedOption.label}
         onIonBlur={field.onBlur}
         onIonChange={field.onChange}
+        {...rest}
       >
         {options.map((option, i) => (
           <IonSelectOption key={i} value={option.value}>
