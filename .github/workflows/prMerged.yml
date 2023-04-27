@@ -31,6 +31,7 @@ jobs:
 
   eslint:
     if: github.event.pull_request.merged == true
+    needs: prettier
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

@@ -27,6 +27,7 @@ jobs:
           github_token: ${{ secrets.BOT_ACCESS_TOKEN }}
 
   eslint:
+    needs: prettier
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
