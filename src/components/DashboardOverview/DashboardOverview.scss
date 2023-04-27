@@ -19,11 +19,12 @@
     height: 600px;
   }
 
-  &__filters-wrapper {
+  &__filters--wrapper {
     display: flex;
+    flex-wrap: wrap;
 
     > ion-item {
-      flex: 0 0 50%;
+      flex: 1 0 auto;
     }
   }
 }

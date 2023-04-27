@@ -6,7 +6,7 @@ import { chevronBack, chevronForward } from "ionicons/icons";
 import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
 
 // hooks
-import { transactionTypeMap } from "hooks/useWesternAllianceAccount";
+import { transactionTypeMap as originalTransactionTypeMap } from "hooks/useWesternAllianceAccount";
 
 import {
   createColumnHelper,
@@ -31,6 +31,12 @@ import {
 
 import "./TransactionsTable.scss";
 
+const transactionTypeMap = {};
+const wantedTypes = ["C", "D", "X"];
+wantedTypes.forEach((k) => (
+  transactionTypeMap[k] = originalTransactionTypeMap[k]
+));
+
 const columnHelper = createColumnHelper<Transaction>();
 
 const USD = new Intl.NumberFormat("en-US", {
@@ -43,9 +49,9 @@ const columns = [
     header: () => "Date",
     cell: (info) => new Date(info.getValue()).toLocaleDateString("en-US"),
   }),
-  columnHelper.accessor("transactionName", {
+  columnHelper.accessor("fullTrailerRecord", {
     header: () => "Description",
-    cell: (info) => info.getValue(),
+    cell: (info) => <div className="TransactionsTable__description">{info.getValue()}</div>,
   }),
   columnHelper.accessor("transactionType", {
     header: () => "Type",
@@ -63,7 +69,7 @@ export default function TransactionsTable() {
   const [selectedAccountNumbers, setSelectedAccountNumbers] = useState<
     string[]
   >([]);
-  const [selectedTimeRange, setSelectedTimeRange] = useState("Max");
+  const [selectedTimeRange, setSelectedTimeRange] = useState("YTD");
   const [selectedTransactionTypes, setSelectedTransactionTypes] = useState<
     string[]
   >([]);
@@ -122,7 +128,17 @@ export default function TransactionsTable() {
   const filteredTransactions = useMemo(() => {
     return (
       transactions
-        ?.sort((t1, t2) => {
+        ?.map((transaction) => {
+          transaction.fullTrailerRecord =
+            transaction.trailerRecord1 + " " +
+            transaction.trailerRecord2 + " " +
+            transaction.trailerRecord3 + " " +
+            transaction.trailerRecord4 + " " +
+            transaction.trailerRecord5 + " " +
+            transaction.trailerRecord6;
+          return transaction;
+        })
+        .sort((t1, t2) => {
           const d1 = new Date(t1.postingDate);
           const d2 = new Date(t2.postingDate);
           return d2.getTime() - d1.getTime();
@@ -251,7 +267,7 @@ export default function TransactionsTable() {
           </div>
           <div className="TransactionsTable__pagination">
             <button
-              className="ion-activatable TransactionsTable__button TransactionsTable__all-back"
+              className="ion-activatable TransactionsTable__button TransactionsTable__back--all"
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage()}
             >
@@ -276,7 +292,7 @@ export default function TransactionsTable() {
               <IonRippleEffect />
             </button>
             <button
-              className="ion-activatable TransactionsTable__button TransactionsTable__all-forward"
+              className="ion-activatable TransactionsTable__button TransactionsTable__forward--all"
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}
               disabled={!table.getCanNextPage()}
             >

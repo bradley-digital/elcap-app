@@ -17,11 +17,17 @@
     white-space: nowrap;
   }
 
+  &__description {
+    min-width: 300px;
+    white-space: normal;
+  }
+
   &__filters {
     display: flex;
+    flex-wrap: wrap;
 
     > ion-item {
-      flex: 0 0 33%;
+      flex: 1 0 auto;
     }
   }
 
@@ -58,13 +64,13 @@
     height: 32px;
   }
 
-  &__all-back,
-  &__forward {
+  &__forward,
+  &__back--all {
     margin-right: 4px;
   }
 
-  &__all-back,
-  &__all-forward {
+  &__back--all,
+  &__forward--all {
     > :first-child {
       margin-right: -8px;
     }

@@ -44,6 +44,7 @@ export type Transaction = {
   floatDay11Amount: number;
   floatDay12: number;
   floatDay12Amount: number;
+  fullTrailerRecord?: string;
   hashId: string;
   individualId: string;
   internalTransactionCode: number;
@@ -75,8 +76,8 @@ export type Transaction = {
 const queryKey = "westernAllianceAccount";
 
 export const transactionTypeMap: StringMap = {
-  C: "Credit",
-  D: "Debit",
+  C: "Withdrawl",
+  D: "Deposit",
   F: "Float",
   M: "Miscellaneous Service Charge",
   X: "Reversed",

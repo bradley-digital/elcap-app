@@ -27,7 +27,7 @@ import "./DashboardOverview.scss";
 export default function DashboardOverview() {
   const [isChartVisible, setIsChartVisible] = useState(false);
   const [selectedAccountNumbers, setSelectedAccountNumbers] = useState([""]);
-  const [selectedTimeRange, setSelectedTimeRange] = useState("Max");
+  const [selectedTimeRange, setSelectedTimeRange] = useState("YTD");
   const {
     isSuccess,
     data,
@@ -114,13 +114,10 @@ export default function DashboardOverview() {
             </IonText>
           </IonCol>
           <IonCol
-            size-xs="12"
-            size-sm="12"
-            size-md="12"
-            size-lg="12"
+            size="12"
             className="DashboardOverview__filters"
           >
-            <IonList className="DashboardOverview__filters-wrapper">
+            <IonList className="DashboardOverview__filters--wrapper">
               <IonItem>
                 <IonLabel position="floating">Accounts</IonLabel>
                 <IonSelect
@@ -154,10 +151,7 @@ export default function DashboardOverview() {
             </IonList>
           </IonCol>
           <IonCol
-            size-xs="12"
-            size-sm="12"
-            size-md="12"
-            size-lg="12"
+            size="12"
             className="DashboardOverview__content--chart"
           >
             {isChartVisible ? (
