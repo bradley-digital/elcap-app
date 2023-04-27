@@ -23,22 +23,20 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
 
   const { id, accounts: profileAccounts } = profile;
 
-  const accountNumbers = profileAccounts
-    ? profileAccounts.map((account) => account.accountNumber)
-    : [];
+  const accountNumbers =
+    profileAccounts?.map((account) => account.accountNumber) || [];
 
-  const accountOptions = accounts
-    ? accounts
-        .map((account) => {
-          const truncatedAccountNumber = account.accountNumber.slice(-4);
-          const label = `${account.accountTitle} (...${truncatedAccountNumber})`;
-          return {
-            value: account.accountNumber,
-            label,
-          };
-        })
-        .sort((a, b) => a.label.localeCompare(b.label))
-    : [];
+  const accountOptions =
+    accounts
+      ?.map((account) => {
+        const truncatedAccountNumber = account.accountNumber.slice(-4);
+        const label = `${account.accountTitle} (...${truncatedAccountNumber})`;
+        return {
+          value: account.accountNumber,
+          label,
+        };
+      })
+      .sort((a, b) => a.label.localeCompare(b.label)) || [];
 
   return (
     <Formik

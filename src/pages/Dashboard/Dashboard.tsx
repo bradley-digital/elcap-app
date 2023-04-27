@@ -1,12 +1,36 @@
-import PageTemplate from "components/PageTemplate/PageTemplate";
-import DashboardOveriew from "components/DashboardOverview/DashboardOverview";
-import TransactionsTable from "components/TransactionsTable/TransactionsTable";
+import type { RouteComponentProps } from "react-router-dom";
+import type { MenuLink } from "components/MenuLinks/MenuLinks";
+import { analytics, receipt } from "ionicons/icons";
 
-export default function Dashboard() {
+// components
+import SplitPaneTemplate from "components/SplitPaneTemplate/SplitPaneTemplate";
+import DashboardRoutes from "routes/DashboardRoutes";
+
+export default function Dashboard(routeProps: RouteComponentProps) {
+  const { match } = routeProps;
+
+  const menuLinks: MenuLink[] = [
+    {
+      id: 1,
+      icon: analytics,
+      href: `${match.url}/overview`,
+      label: "Overview",
+    },
+    {
+      id: 2,
+      icon: receipt,
+      href: `${match.url}/transactions`,
+      label: "Transactions",
+    },
+  ];
+
   return (
-    <PageTemplate title="Dashboard" className="Dashboard">
-      <DashboardOveriew />
-      <TransactionsTable />
-    </PageTemplate>
+    <SplitPaneTemplate
+      title="Dashboard"
+      menuId="dashboard"
+      menuLinks={menuLinks}
+    >
+      <DashboardRoutes {...routeProps} />
+    </SplitPaneTemplate>
   );
 }

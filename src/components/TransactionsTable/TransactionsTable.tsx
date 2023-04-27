@@ -1,7 +1,12 @@
-import { useEffect, useMemo, useState } from "react";
 import type { Transaction } from "hooks/useWesternAllianceAccount";
-import { transactionTypeMap } from "hooks/useWesternAllianceAccount";
+import { useEffect, useMemo, useState } from "react";
+import { chevronBack, chevronForward } from "ionicons/icons";
+
+// components
 import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
+
+// hooks
+import { transactionTypeMap } from "hooks/useWesternAllianceAccount";
 
 import {
   createColumnHelper,
@@ -12,9 +17,14 @@ import {
 } from "@tanstack/react-table";
 
 import {
+  IonCol,
+  IonGrid,
+  IonIcon,
   IonItem,
   IonLabel,
   IonList,
+  IonRippleEffect,
+  IonRow,
   IonSelect,
   IonSelectOption,
 } from "@ionic/react";
@@ -31,30 +41,35 @@ const USD = new Intl.NumberFormat("en-US", {
 const columns = [
   columnHelper.accessor("postingDate", {
     header: () => "Date",
-    cell: info => new Date(info.getValue()).toLocaleDateString("en-US"),
+    cell: (info) => new Date(info.getValue()).toLocaleDateString("en-US"),
   }),
   columnHelper.accessor("transactionName", {
     header: () => "Description",
-    cell: info => info.getValue(),
+    cell: (info) => info.getValue(),
   }),
   columnHelper.accessor("transactionType", {
     header: () => "Type",
-    cell: info => transactionTypeMap[info.getValue()] || "Unknown",
+    cell: (info) => transactionTypeMap[info.getValue()] || "Unknown",
   }),
   columnHelper.accessor("transactionAmount", {
     header: () => "Amount",
-    cell: info => USD.format(info.getValue()),
+    cell: (info) => USD.format(Number(info.getValue())),
   }),
   // TODO: Account balance, not currently in dataset
 ];
 
 export default function TransactionsTable() {
   const { accounts, transactions } = useUserWesternAllianceAccount();
-  const [selectedAccountNumbers, setSelectedAccountNumbers] = useState([""]);
+  const [selectedAccountNumbers, setSelectedAccountNumbers] = useState<
+    string[]
+  >([]);
   const [selectedTimeRange, setSelectedTimeRange] = useState("Max");
-  const [selectedTransactionTypes, setSelectedTransactionTypes] = useState([""]);
+  const [selectedTransactionTypes, setSelectedTransactionTypes] = useState<
+    string[]
+  >([]);
 
-  const accountNumbers = accounts?.map((account) => account.accountNumber) || [""];
+  const accountNumbers =
+    accounts?.map((account) => account.accountNumber) || [];
   const timeRanges = ["YTD", "MTD", "3M", "1Y", "3Y", "5Y", "Max"];
 
   useEffect(() => {
@@ -105,15 +120,20 @@ export default function TransactionsTable() {
   }
 
   const filteredTransactions = useMemo(() => {
-    return transactions?.sort((t1, t2) => {
-      const d1 = new Date(t1.postingDate);
-      const d2 = new Date(t2.postingDate);
-      return d2.getTime() - d1.getTime();
-    }).filter((transaction) => (
-      isInDateRange(transaction) &&
-      isInTransactionType(transaction) &&
-      isInAccountNumbers(transaction)
-    )) || [];
+    return (
+      transactions
+        ?.sort((t1, t2) => {
+          const d1 = new Date(t1.postingDate);
+          const d2 = new Date(t2.postingDate);
+          return d2.getTime() - d1.getTime();
+        })
+        .filter(
+          (transaction) =>
+            isInDateRange(transaction) &&
+            isInTransactionType(transaction) &&
+            isInAccountNumbers(transaction)
+        ) || []
+    );
   }, [
     transactions,
     selectedAccountNumbers,
@@ -132,129 +152,161 @@ export default function TransactionsTable() {
     return null;
   }
 
+  const accountOptions =
+    accounts
+      ?.map((account) => {
+        const truncatedAccountNumber = account.accountNumber.slice(-4);
+        const label = `${account.accountTitle} (...${truncatedAccountNumber})`;
+        return {
+          value: account.accountNumber,
+          label,
+        };
+      })
+      .sort((a, b) => a.label.localeCompare(b.label)) || [];
+
   return (
-    <div className="TransactionsTable">
-      <IonList>
-        <IonItem>
-          <IonLabel>Accounts</IonLabel>
-          <IonSelect
-            placeholder="Select Account"
-            onIonChange={(e) => setSelectedAccountNumbers(e.detail.value)}
-            multiple={true}
-            value={selectedAccountNumbers}
-          >
-            {accounts?.map((account) => (
-              <IonSelectOption
-                key={account.accountNumber}
-                value={account.accountNumber}
+    <IonGrid className="TransactionsTable">
+      <IonRow className="ion-justify-content-center">
+        <IonCol>
+          <IonList className="TransactionsTable__filters">
+            <IonItem>
+              <IonLabel position="stacked">Accounts</IonLabel>
+              <IonSelect
+                interfaceOptions={{ cssClass: "FormAccountSelect" }}
+                placeholder="Select Account"
+                onIonChange={(e) => setSelectedAccountNumbers(e.detail.value)}
+                multiple={true}
+                value={selectedAccountNumbers}
               >
-                {account.accountTitle}
-              </IonSelectOption>
-            ))}
-          </IonSelect>
-        </IonItem>
-        <IonItem>
-          <IonLabel>Dates</IonLabel>
-          <IonSelect
-            placeholder="Select Date"
-            onIonChange={(e) => setSelectedTimeRange(e.detail.value)}
-            value={selectedTimeRange}
-          >
-            {timeRanges?.map((time) => (
-              <IonSelectOption key={time} value={time}>
-                {time}
-              </IonSelectOption>
-            ))}
-          </IonSelect>
-        </IonItem>
-        <IonItem>
-          <IonLabel>Transaction Type</IonLabel>
-          <IonSelect
-            placeholder="Select Transaction Types"
-            onIonChange={(e) => setSelectedTransactionTypes(e.detail.value)}
-            multiple={true}
-            value={selectedTransactionTypes}
-          >
-            {Object.entries(transactionTypeMap).map(([key, value]) => (
-              <IonSelectOption key={key} value={key}>
-                {value}
-              </IonSelectOption>
-            ))}
-          </IonSelect>
-        </IonItem>
-      </IonList>
-      <table>
-        <thead>
-          {table.getHeaderGroups().map(headerGroup => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map(header => (
-                <th key={header.id}>
-                  {header.isPlaceholder ? null : flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
-                </th>
+                {accountOptions?.map((option) => (
+                  <IonSelectOption key={option.value} value={option.value}>
+                    {option.label}
+                  </IonSelectOption>
+                ))}
+              </IonSelect>
+            </IonItem>
+            <IonItem>
+              <IonLabel position="stacked">Transaction Type</IonLabel>
+              <IonSelect
+                placeholder="Select Transaction Types"
+                onIonChange={(e) => setSelectedTransactionTypes(e.detail.value)}
+                multiple={true}
+                value={selectedTransactionTypes}
+              >
+                {Object.entries(transactionTypeMap).map(([key, value]) => (
+                  <IonSelectOption key={key} value={key}>
+                    {value}
+                  </IonSelectOption>
+                ))}
+              </IonSelect>
+            </IonItem>
+            <IonItem>
+              <IonLabel position="stacked">Dates</IonLabel>
+              <IonSelect
+                placeholder="Select Date"
+                onIonChange={(e) => setSelectedTimeRange(e.detail.value)}
+                value={selectedTimeRange}
+              >
+                {timeRanges?.map((time) => (
+                  <IonSelectOption key={time} value={time}>
+                    {time}
+                  </IonSelectOption>
+                ))}
+              </IonSelect>
+            </IonItem>
+          </IonList>
+          <div className="TransactionsTable__wrapper">
+            <table>
+              <thead>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <tr key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => (
+                      <th key={header.id}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </th>
+                    ))}
+                  </tr>
+                ))}
+              </thead>
+              <tbody>
+                {table.getRowModel().rows.map((row) => (
+                  <tr key={row.id}>
+                    {row.getVisibleCells().map((cell) => (
+                      <td key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="TransactionsTable__pagination">
+            <button
+              className="ion-activatable TransactionsTable__button TransactionsTable__all-back"
+              onClick={() => table.setPageIndex(0)}
+              disabled={!table.getCanPreviousPage()}
+            >
+              <IonIcon icon={chevronBack} />
+              <IonIcon icon={chevronBack} />
+              <IonRippleEffect />
+            </button>
+            <button
+              className="ion-activatable TransactionsTable__button TransactionsTable__back"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            >
+              <IonIcon icon={chevronBack} />
+              <IonRippleEffect />
+            </button>
+            <button
+              className="ion-activatable TransactionsTable__button TransactionsTable__forward"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
+              <IonIcon icon={chevronForward} />
+              <IonRippleEffect />
+            </button>
+            <button
+              className="ion-activatable TransactionsTable__button TransactionsTable__all-forward"
+              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+              disabled={!table.getCanNextPage()}
+            >
+              <IonIcon icon={chevronForward} />
+              <IonIcon icon={chevronForward} />
+              <IonRippleEffect />
+            </button>
+            <div>
+              <span>Page </span>
+              <strong>
+                {table.getState().pagination.pageIndex + 1} of{" "}
+                {table.getPageCount()}
+              </strong>
+            </div>
+            <IonSelect
+              className="TransactionsTable__select"
+              value={table.getState().pagination.pageSize}
+              onIonChange={(e) => {
+                table.setPageSize(Number(e.target.value));
+              }}
+            >
+              {[10, 20, 30, 40, 50].map((pageSize) => (
+                <IonSelectOption key={pageSize} value={pageSize}>
+                  Show {pageSize}
+                </IonSelectOption>
               ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.map(row => (
-            <tr key={row.id}>
-              {row.getVisibleCells().map(cell => (
-                <td key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div>
-        <button
-          onClick={() => table.setPageIndex(0)}
-          disabled={!table.getCanPreviousPage()}
-        >
-          {'<<'}
-        </button>
-        <button
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          {'<'}
-        </button>
-        <button
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          {'>'}
-        </button>
-        <button
-          onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-          disabled={!table.getCanNextPage()}
-        >
-          {'>>'}
-        </button>
-        <span>
-          <div>Page</div>
-          <strong>
-            {table.getState().pagination.pageIndex + 1} of{' '}
-            {table.getPageCount()}
-          </strong>
-        </span>
-        <select
-          value={table.getState().pagination.pageSize}
-          onChange={e => {
-            table.setPageSize(Number(e.target.value))
-          }}
-        >
-          {[10, 20, 30, 40, 50].map(pageSize => (
-            <option key={pageSize} value={pageSize}>
-              Show {pageSize}
-            </option>
-          ))}
-        </select>
-      </div>
-    </div>
+            </IonSelect>
+          </div>
+        </IonCol>
+      </IonRow>
+    </IonGrid>
   );
 }
