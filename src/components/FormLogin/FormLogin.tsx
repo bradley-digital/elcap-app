@@ -48,7 +48,7 @@ export default function FormLogin() {
           placeholder="Password"
         />
         <SubmitButton>
-          {isSubmitting ? <IonSpinner name="crescent"></IonSpinner> : "Login"}
+          {isSubmitting ? <IonSpinner name="crescent" /> : "Login"}
         </SubmitButton>
       </Form>
     </Formik>
