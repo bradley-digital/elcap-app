@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 
@@ -19,9 +20,11 @@ import useAuth from "hooks/useAuth";
 // components
 import FormInput from "components/AuthFormInput/AuthFormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
+import { IonSpinner } from "@ionic/react";
 
 export default function FormRegister() {
   const { register } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   return (
     <Formik
@@ -46,8 +49,10 @@ export default function FormRegister() {
         state: stateValidation,
       })}
       onSubmit={async (values, actions) => {
+        setIsSubmitting(true);
         actions.resetForm();
         await register(values);
+        setIsSubmitting(false);
       }}
     >
       <Form>
@@ -97,7 +102,9 @@ export default function FormRegister() {
 
         <FormInput label="State" name="state" type="text" placeholder="State" />
 
-        <SubmitButton>Register</SubmitButton>
+        <SubmitButton>
+          {isSubmitting ? <IonSpinner name="crescent" /> : "Register"}
+        </SubmitButton>
       </Form>
     </Formik>
   );

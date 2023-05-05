@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import * as Yup from "yup";
 
 // lib
@@ -12,7 +12,13 @@ import {
 
 // components
 import { Form, Formik } from "formik";
-import { IonButton, IonIcon, IonList, IonListHeader } from "@ionic/react";
+import {
+  IonButton,
+  IonIcon,
+  IonList,
+  IonListHeader,
+  IonSpinner,
+} from "@ionic/react";
 import { alertCircle, checkmarkCircle, closeCircle } from "ionicons/icons";
 import FormInput from "components/FormInput/FormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
@@ -26,6 +32,8 @@ import { buildFormInputs } from "components/FormUserDocfox/helpers";
 import "./FormDocfox.scss";
 
 export default function FormDocfox() {
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
   const {
     application,
     template,
@@ -106,6 +114,7 @@ export default function FormDocfox() {
           enableReinitialize={true}
           validationSchema={Yup.object(validationObject)}
           onSubmit={(values) => {
+            setIsSubmitting(true);
             async function updateApplication() {
               const { deleteData, patchData, postData } = buildUpdateData(
                 application,
@@ -125,6 +134,7 @@ export default function FormDocfox() {
               }
             }
             updateApplication();
+            setIsSubmitting(false);
           }}
         >
           <Form>
@@ -135,7 +145,9 @@ export default function FormDocfox() {
                 name="kyc_entity_template_id"
               />
               {formInputs}
-              <SubmitButton>Submit</SubmitButton>
+              <SubmitButton>
+                {isSubmitting ? <IonSpinner name="crescent" /> : "Submit"}
+              </SubmitButton>
             </IonList>
           </Form>
         </Formik>

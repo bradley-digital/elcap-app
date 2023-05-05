@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 
@@ -10,9 +11,11 @@ import useAuth from "hooks/useAuth";
 // components
 import FormInput from "components/AuthFormInput/AuthFormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
+import { IonSpinner } from "@ionic/react";
 
 export default function ForgotPasswordForm() {
   const { forgotPassword } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   return (
     <Formik
@@ -23,7 +26,9 @@ export default function ForgotPasswordForm() {
         email: emailValidation,
       })}
       onSubmit={async (values) => {
+        setIsSubmitting(true);
         await forgotPassword(values);
+        setIsSubmitting(false);
       }}
     >
       <Form>
@@ -33,7 +38,9 @@ export default function ForgotPasswordForm() {
           type="email"
           placeholder="Email"
         />
-        <SubmitButton>Submit</SubmitButton>
+        <SubmitButton>
+          {isSubmitting ? <IonSpinner name="crescent" /> : "Submit"}
+        </SubmitButton>
       </Form>
     </Formik>
   );

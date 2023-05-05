@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { Profile } from "hooks/useUser";
 import * as Yup from "yup";
 
@@ -20,7 +21,7 @@ import { lockClosed, pencil } from "ionicons/icons";
 
 // components
 import { Form, Formik } from "formik";
-import { IonList, IonListHeader } from "@ionic/react";
+import { IonList, IonListHeader, IonSpinner } from "@ionic/react";
 import FormInput from "components/FormInput/FormInput";
 import FormSelect from "components/FormSelect/FormSelect";
 import SubmitButton from "components/SubmitButton/SubmitButton";
@@ -49,6 +50,7 @@ type Props = {
 
 export default function FormUserAccount({ profile }: Props) {
   const { update } = useUserManagement();
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const {
     id,
@@ -91,7 +93,9 @@ export default function FormUserAccount({ profile }: Props) {
         role: roleValidation,
       })}
       onSubmit={(values) => {
+        setIsSubmitting(true);
         update({ id, ...values });
+        setIsSubmitting(false);
       }}
     >
       <Form>
@@ -149,7 +153,9 @@ export default function FormUserAccount({ profile }: Props) {
 
           <FormSelect label="Role" name="role" options={roleOptions} />
 
-          <SubmitButton>Submit</SubmitButton>
+          <SubmitButton>
+            {isSubmitting ? <IonSpinner name="crescent" /> : "Submit"}
+          </SubmitButton>
         </IonList>
       </Form>
     </Formik>

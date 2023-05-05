@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 
@@ -13,6 +14,7 @@ import useAuth from "hooks/useAuth";
 // components
 import FormInput from "components/AuthFormInput/AuthFormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
+import { IonSpinner } from "@ionic/react";
 
 type Props = {
   registerToken: string;
@@ -20,6 +22,7 @@ type Props = {
 
 export default function FormSetPassword({ registerToken }: Props) {
   const { setPassword } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   return (
     <Formik
@@ -32,10 +35,12 @@ export default function FormSetPassword({ registerToken }: Props) {
         confirmPassword: confirmPasswordValidation,
       })}
       onSubmit={async ({ password }) => {
+        setIsSubmitting(true);
         await setPassword({
           registerToken,
           password,
         });
+        setIsSubmitting(false);
       }}
     >
       <Form>
@@ -51,7 +56,9 @@ export default function FormSetPassword({ registerToken }: Props) {
           type="password"
           placeholder="Password"
         />
-        <SubmitButton>Set Password</SubmitButton>
+        <SubmitButton>
+          {isSubmitting ? <IonSpinner name="crescent" /> : "Set Password"}
+        </SubmitButton>
       </Form>
     </Formik>
   );

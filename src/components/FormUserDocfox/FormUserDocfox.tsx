@@ -14,7 +14,13 @@ import {
 
 // components
 import { Form, Formik } from "formik";
-import { IonButton, IonIcon, IonList, IonListHeader } from "@ionic/react";
+import {
+  IonButton,
+  IonIcon,
+  IonList,
+  IonListHeader,
+  IonSpinner,
+} from "@ionic/react";
 import { alertCircle, checkmarkCircle, closeCircle } from "ionicons/icons";
 import FormObserver from "components/FormObserver/FormObserver";
 import FormSelect from "components/FormSelect/FormSelect";
@@ -39,6 +45,7 @@ type Props = {
 };
 
 export default function FormUserDocfox({ profile }: Props) {
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const { id: userId } = profile;
   const applicationId = profile?.docfoxApplication?.applicationId || "";
   const initialTemplateId = profile?.docfoxApplication?.templateId || "";
@@ -158,6 +165,7 @@ export default function FormUserDocfox({ profile }: Props) {
         enableReinitialize={true}
         validationSchema={Yup.object(validationObject)}
         onSubmit={(values) => {
+          setIsSubmitting(true);
           async function updateApplication() {
             const { deleteData, patchData, postData } = buildUpdateData(
               application,
@@ -183,6 +191,7 @@ export default function FormUserDocfox({ profile }: Props) {
           } else if (application) {
             updateApplication();
           }
+          setIsSubmitting(false);
         }}
       >
         <Form>
@@ -195,7 +204,9 @@ export default function FormUserDocfox({ profile }: Props) {
               options={entityTemplateOptions}
             />
             {formInputs}
-            <SubmitButton>Submit</SubmitButton>
+            <SubmitButton>
+              {isSubmitting ? <IonSpinner name="crescent" /> : "Submit"}
+            </SubmitButton>
           </IonList>
         </Form>
       </Formik>

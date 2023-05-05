@@ -1,12 +1,13 @@
-import type { Profile } from "hooks/useUser";
+import { useState } from "react";
 
 // components
 import { Form, Formik, FieldArray } from "formik";
-import { IonButton, IonList, IonListHeader } from "@ionic/react";
+import { IonButton, IonList, IonListHeader, IonSpinner } from "@ionic/react";
 import FormSelect from "components/FormSelect/FormSelect";
 import SubmitButton from "components/SubmitButton/SubmitButton";
 
 // hooks
+import type { Profile } from "hooks/useUser";
 import useUserManagement from "hooks/useUserManagement";
 import useWesternAllianceAccount from "hooks/useWesternAllianceAccount";
 
@@ -18,6 +19,8 @@ type Props = {
 };
 
 export default function FormUserWesternAllianceAccounts({ profile }: Props) {
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
   const { accounts, accountsIsSuccess } = useWesternAllianceAccount();
   const { update } = useUserManagement();
 
@@ -44,7 +47,9 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
         accounts: accountNumbers,
       }}
       onSubmit={(values) => {
+        setIsSubmitting(true);
         update({ id, ...values });
+        setIsSubmitting(false);
       }}
     >
       {({ values }) => (
@@ -76,7 +81,9 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
                 </>
               )}
             />
-            <SubmitButton>Submit</SubmitButton>
+            <SubmitButton>
+              {isSubmitting ? <IonSpinner name="crescent" /> : "Submit"}
+            </SubmitButton>
           </IonList>
         </Form>
       )}
