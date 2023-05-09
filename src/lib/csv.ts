@@ -1,32 +1,11 @@
-import type { ColumnHelper } from "@tanstack/react-table";
-
-type Data = {
-  [key: string]: any;
-};
-
-function formatRows(rows: any[]) {
+export function createCSV(rows: any[]) {
   return rows.map((row) => row
     .map(String)
-    .map((v) => v.replaceAll('"', '""'))
-    .map((v) => v.trim())
-    .map((v) => `"${v}"`)
+    .map((v: string) => v.replaceAll('"', '""'))
+    .map((v: string) => v.trim())
+    .map((v: string) => `"${v}"`)
     .join(",")
   ).join("\r\n");
-}
-
-export function createCSV(data: Data[], columns: ColumnHelper[]) {
-  const headerRow = columns.map((c) => c.header());
-  const rows = data.map((d) => (
-    columns.map((c) => {
-      const key = c.accessorKey;
-      const value = d[key];
-      if (value) {
-        return value;
-      }
-    })
-  ));
-  rows.unshift(headerRow);
-  return formatRows(rows);
 }
 
 export function downloadBlob(

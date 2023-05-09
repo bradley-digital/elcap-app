@@ -1,4 +1,9 @@
 import type { Transaction, StringMap } from "hooks/useWesternAllianceAccount";
+import type { ColumnDef } from "@tanstack/react-table";
+
+type Header = [keyof Transaction, string];
+
+
 import { useEffect, useMemo, useState } from "react";
 import { chevronBack, chevronForward, download } from "ionicons/icons";
 
@@ -47,7 +52,7 @@ const USD = new Intl.NumberFormat("en-US", {
   currency: "USD",
 });
 
-const columns = [
+const columns: ColumnDef<Transaction, any>[] = [
   columnHelper.accessor("postingDate", {
     header: () => "Date",
     cell: (info) => new Date(info.getValue()).toLocaleDateString("en-US"),
@@ -191,7 +196,22 @@ export default function TransactionsTable() {
   }
 
   function exportCSV() {
-    const csv = createCSV(filteredTransactions, columns);
+    // I don't like repeating information available in `columns`
+    // but they typing for `columns` does not allow me to access the data easily
+    const headers: Header[] = [
+      ["postingDate", "Date"],
+      ["accountNumber", "Account"],
+      ["fullTrailerRecord", "Description"],
+      ["transactionType", "Type"],
+      ["transactionAmount", "Amount"],
+      ["accountBalance", "Balance"],
+    ];
+    const headerRow = headers.map((h) => h[1]);
+    const rows = filteredTransactions.map((t) => (
+      headers.map((h) => t[h[0]])
+    ));
+    rows.unshift(headerRow);
+    const csv = createCSV(rows);
     downloadCSV(csv, "export.csv");
   }
 
