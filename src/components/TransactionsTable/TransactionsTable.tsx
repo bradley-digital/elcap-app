@@ -41,9 +41,9 @@ import "./TransactionsTable.scss";
 
 const transactionTypeMap: StringMap = {};
 const wantedTypes = ["C", "D", "X"];
-wantedTypes.forEach((k) => (
-  transactionTypeMap[k] = originalTransactionTypeMap[k]
-));
+wantedTypes.forEach(
+  (k) => (transactionTypeMap[k] = originalTransactionTypeMap[k])
+);
 
 const columnHelper = createColumnHelper<Transaction>();
 
@@ -63,7 +63,9 @@ const columns: ColumnDef<Transaction, any>[] = [
   }),
   columnHelper.accessor("fullTrailerRecord", {
     header: () => "Description",
-    cell: (info) => <div className="TransactionsTable__description">{info.getValue()}</div>,
+    cell: (info) => (
+      <div className="TransactionsTable__description">{info.getValue()}</div>
+    ),
   }),
   columnHelper.accessor("transactionType", {
     header: () => "Type",
@@ -107,11 +109,16 @@ export default function TransactionsTable() {
       transactions
         ?.map((transaction) => {
           transaction.fullTrailerRecord =
-            transaction.trailerRecord1 + " " +
-            transaction.trailerRecord2 + " " +
-            transaction.trailerRecord3 + " " +
-            transaction.trailerRecord4 + " " +
-            transaction.trailerRecord5 + " " +
+            transaction.trailerRecord1 +
+            " " +
+            transaction.trailerRecord2 +
+            " " +
+            transaction.trailerRecord3 +
+            " " +
+            transaction.trailerRecord4 +
+            " " +
+            transaction.trailerRecord5 +
+            " " +
             transaction.trailerRecord6;
           return transaction;
         })
@@ -197,7 +204,7 @@ export default function TransactionsTable() {
 
   function exportCSV() {
     // I don't like repeating information available in `columns`
-    // but they typing for `columns` does not allow me to access the data easily
+    // but they typing for `columns` does not allow easy access to the data
     const headers: Header[] = [
       ["postingDate", "Date"],
       ["accountNumber", "Account"],
