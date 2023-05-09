@@ -18,6 +18,7 @@ export type Account = {
 export type Transaction = {
   id: string;
   accountNumber: string;
+  accountBalance: string;
   backdatedTransactionEffectiveDate: string;
   companyId: string;
   floatDay1: number;
