@@ -1,6 +1,14 @@
 import type { Transaction, StringMap } from "hooks/useWesternAllianceAccount";
+import type { ColumnDef } from "@tanstack/react-table";
+
+type Header = [keyof Transaction, string];
+
+
 import { useEffect, useMemo, useState } from "react";
-import { chevronBack, chevronForward } from "ionicons/icons";
+import { chevronBack, chevronForward, download } from "ionicons/icons";
+
+// lib
+import { createCSV, downloadCSV } from "lib/csv";
 
 // components
 import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
@@ -33,9 +41,9 @@ import "./TransactionsTable.scss";
 
 const transactionTypeMap: StringMap = {};
 const wantedTypes = ["C", "D", "X"];
-wantedTypes.forEach((k) => (
-  transactionTypeMap[k] = originalTransactionTypeMap[k]
-));
+wantedTypes.forEach(
+  (k) => (transactionTypeMap[k] = originalTransactionTypeMap[k])
+);
 
 const columnHelper = createColumnHelper<Transaction>();
 
@@ -44,14 +52,20 @@ const USD = new Intl.NumberFormat("en-US", {
   currency: "USD",
 });
 
-const columns = [
+const columns: ColumnDef<Transaction, any>[] = [
   columnHelper.accessor("postingDate", {
     header: () => "Date",
     cell: (info) => new Date(info.getValue()).toLocaleDateString("en-US"),
   }),
+  columnHelper.accessor("accountNumber", {
+    header: () => "Account",
+    cell: (info) => `...${info.getValue().slice(-4)}`,
+  }),
   columnHelper.accessor("fullTrailerRecord", {
     header: () => "Description",
-    cell: (info) => <div className="TransactionsTable__description">{info.getValue()}</div>,
+    cell: (info) => (
+      <div className="TransactionsTable__description">{info.getValue()}</div>
+    ),
   }),
   columnHelper.accessor("transactionType", {
     header: () => "Type",
@@ -61,7 +75,10 @@ const columns = [
     header: () => "Amount",
     cell: (info) => USD.format(Number(info.getValue())),
   }),
-  // TODO: Account balance, not currently in dataset
+  columnHelper.accessor("accountBalance", {
+    header: () => "Balance",
+    cell: (info) => USD.format(Number(info.getValue())),
+  }),
 ];
 
 export default function TransactionsTable() {
@@ -87,54 +104,21 @@ export default function TransactionsTable() {
     setSelectedAccountNumbers(accountNumbers);
   }, [accounts]);
 
-  function isInDateRange(transaction: Transaction): boolean {
-    const date = new Date(transaction.postingDate);
-    const currentDate = new Date();
-    const timeDiff = Math.abs(currentDate.getTime() - date.getTime());
-    const diffYears = timeDiff / (1000 * 3600 * 24 * 365);
-    const diffMonths = diffYears * 12;
-
-    switch (selectedTimeRange) {
-      case "YTD":
-        return date.getFullYear() === currentDate.getFullYear();
-      case "MTD":
-        return (
-          date.getFullYear() === currentDate.getFullYear() &&
-          date.getMonth() === currentDate.getMonth()
-        );
-      case "3M":
-        return diffMonths <= 3;
-      case "1Y":
-        return diffYears <= 1;
-      case "3Y":
-        return diffYears <= 3;
-      case "5Y":
-        return diffYears <= 5;
-      case "Max":
-        return true;
-      default:
-        return true;
-    }
-  }
-
-  function isInTransactionType(transaction: Transaction): boolean {
-    return selectedTransactionTypes.includes(transaction.transactionType);
-  }
-
-  function isInAccountNumbers(transaction: Transaction): boolean {
-    return selectedAccountNumbers.includes(transaction.accountNumber);
-  }
-
   const filteredTransactions = useMemo(() => {
     return (
       transactions
         ?.map((transaction) => {
           transaction.fullTrailerRecord =
-            transaction.trailerRecord1 + " " +
-            transaction.trailerRecord2 + " " +
-            transaction.trailerRecord3 + " " +
-            transaction.trailerRecord4 + " " +
-            transaction.trailerRecord5 + " " +
+            transaction.trailerRecord1 +
+            " " +
+            transaction.trailerRecord2 +
+            " " +
+            transaction.trailerRecord3 +
+            " " +
+            transaction.trailerRecord4 +
+            " " +
+            transaction.trailerRecord5 +
+            " " +
             transaction.trailerRecord6;
           return transaction;
         })
@@ -179,6 +163,64 @@ export default function TransactionsTable() {
         };
       })
       .sort((a, b) => a.label.localeCompare(b.label)) || [];
+
+  function isInDateRange(transaction: Transaction): boolean {
+    const date = new Date(transaction.postingDate);
+    const currentDate = new Date();
+    const timeDiff = Math.abs(currentDate.getTime() - date.getTime());
+    const diffYears = timeDiff / (1000 * 3600 * 24 * 365);
+    const diffMonths = diffYears * 12;
+
+    switch (selectedTimeRange) {
+      case "YTD":
+        return date.getFullYear() === currentDate.getFullYear();
+      case "MTD":
+        return (
+          date.getFullYear() === currentDate.getFullYear() &&
+          date.getMonth() === currentDate.getMonth()
+        );
+      case "3M":
+        return diffMonths <= 3;
+      case "1Y":
+        return diffYears <= 1;
+      case "3Y":
+        return diffYears <= 3;
+      case "5Y":
+        return diffYears <= 5;
+      case "Max":
+        return true;
+      default:
+        return true;
+    }
+  }
+
+  function isInTransactionType(transaction: Transaction): boolean {
+    return selectedTransactionTypes.includes(transaction.transactionType);
+  }
+
+  function isInAccountNumbers(transaction: Transaction): boolean {
+    return selectedAccountNumbers.includes(transaction.accountNumber);
+  }
+
+  function exportCSV() {
+    // I don't like repeating information available in `columns`
+    // but they typing for `columns` does not allow easy access to the data
+    const headers: Header[] = [
+      ["postingDate", "Date"],
+      ["accountNumber", "Account"],
+      ["fullTrailerRecord", "Description"],
+      ["transactionType", "Type"],
+      ["transactionAmount", "Amount"],
+      ["accountBalance", "Balance"],
+    ];
+    const headerRow = headers.map((h) => h[1]);
+    const rows = filteredTransactions.map((t) => (
+      headers.map((h) => t[h[0]])
+    ));
+    rows.unshift(headerRow);
+    const csv = createCSV(rows);
+    downloadCSV(csv, "export.csv");
+  }
 
   return (
     <IonGrid className="TransactionsTable">
@@ -231,39 +273,49 @@ export default function TransactionsTable() {
               </IonSelect>
             </IonItem>
           </IonList>
-          <div className="TransactionsTable__wrapper">
-            <table>
-              <thead>
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <tr key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => (
-                      <th key={header.id}>
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                      </th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
-              <tbody>
-                {table.getRowModel().rows.map((row) => (
-                  <tr key={row.id}>
-                    {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="TransactionsTable__toolbar">
+            <button
+              className="ion-activatable TransactionsTable__button TransactionsTable__download"
+              onClick={exportCSV}
+            >
+              <IonIcon icon={download} /> Export
+            </button>
+          </div>
+          <div className="TransactionsTable__scroll--parent">
+            <div className="TransactionsTable__scroll--child">
+              <table>
+                <thead>
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <tr key={headerGroup.id}>
+                      {headerGroup.headers.map((header) => (
+                        <th key={header.id}>
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                        </th>
+                      ))}
+                    </tr>
+                  ))}
+                </thead>
+                <tbody>
+                  {table.getRowModel().rows.map((row) => (
+                    <tr key={row.id}>
+                      {row.getVisibleCells().map((cell) => (
+                        <td key={cell.id}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
           <div className="TransactionsTable__pagination">
             <button
