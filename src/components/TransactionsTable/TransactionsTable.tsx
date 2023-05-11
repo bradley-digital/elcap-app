@@ -1,8 +1,6 @@
 import type { Transaction, StringMap } from "hooks/useWesternAllianceAccount";
-import type { ColumnDef } from "@tanstack/react-table";
 
 type Header = [keyof Transaction, string];
-
 
 import { useEffect, useMemo, useState } from "react";
 import { chevronBack, chevronForward, download } from "ionicons/icons";
@@ -52,7 +50,7 @@ const USD = new Intl.NumberFormat("en-US", {
   currency: "USD",
 });
 
-const columns: ColumnDef<Transaction, any>[] = [
+const columns = [
   columnHelper.accessor("postingDate", {
     header: () => "Date",
     cell: (info) => new Date(info.getValue()).toLocaleDateString("en-US"),
@@ -214,12 +212,12 @@ export default function TransactionsTable() {
       ["accountBalance", "Balance"],
     ];
     const headerRow = headers.map((h) => h[1]);
-    const rows = filteredTransactions.map((t) => (
-      headers.map((h) => t[h[0]])
-    ));
+    const rows = filteredTransactions.map((t) => headers.map((h) => t[h[0]]));
     rows.unshift(headerRow);
     const csv = createCSV(rows);
-    downloadCSV(csv, "export.csv");
+    const date = new Date();
+    const iso = date.toISOString().replace(/:|\./g, "-");
+    downloadCSV(csv, `elcap-transactions-${iso}.csv`);
   }
 
   return (
