@@ -62,19 +62,16 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
   return (
     <IonList className="FormUserWesternAllianceAccounts">
       <IonListHeader>Western Alliance Accounts</IonListHeader>
-      {accountOptions.map(({ label, value }) => {
-        const isActive = activeAccounts.includes(value);
-        return (
-          <IonItem key={value}>
-            <IonCheckbox
-              className="FormUserWesternAllianceAccounts__checkbox"
-              checked={isActive}
-              onClick={() => handleCheckbox(value)}
-            />
-            <IonLabel>{label}</IonLabel>
-          </IonItem>
-        );
-      })}
+      {accountOptions.map(({ label, value }) => (
+        <IonItem key={value}>
+          <IonCheckbox
+            className="FormUserWesternAllianceAccounts__checkbox"
+            checked={activeAccounts.includes(value)}
+            onClick={() => handleCheckbox(value)}
+          />
+          <IonLabel>{label}</IonLabel>
+        </IonItem>
+      ))}
     </IonList>
   );
 }
