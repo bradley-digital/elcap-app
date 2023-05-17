@@ -14,7 +14,7 @@ import SubmitButton from "components/SubmitButton/SubmitButton";
 
 export default function ForgotPasswordForm() {
   const { forgotPassword } = useAuth();
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   return (
     <Formik
