@@ -20,7 +20,7 @@ import { lockClosed, pencil } from "ionicons/icons";
 
 // components
 import { Form, Formik } from "formik";
-import { IonList, IonListHeader, IonSpinner } from "@ionic/react";
+import { IonList, IonListHeader } from "@ionic/react";
 import FormObserver from "components/FormObserver/FormObserver";
 import FormInput from "components/FormInput/FormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
@@ -35,7 +35,7 @@ type Props = {
 export default function FormAccount({ profile }: Props) {
   const { mutate } = useUser();
   const [edited, setEdited] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   function handleChange() {
     if (edited) return;
@@ -82,8 +82,8 @@ export default function FormAccount({ profile }: Props) {
       onSubmit={(values) => {
         setIsSubmitting(true);
         mutate(values);
-        setIsSubmitting(false);
         setEdited(false);
+        setIsSubmitting(false);
       }}
     >
       <Form>
@@ -141,8 +141,8 @@ export default function FormAccount({ profile }: Props) {
           <FormInput label="State" name="state" type="text" icon={pencil} />
 
           {edited && (
-            <SubmitButton className="w-100">
-              {isSubmitting ? <IonSpinner name="crescent" /> : "Update"}
+            <SubmitButton className="w-100" isSubmitting={isSubmitting}>
+              Update
             </SubmitButton>
           )}
         </IonList>

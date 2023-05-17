@@ -9,13 +9,12 @@ import { emailValidation, passwordValidation } from "lib/formValidation";
 import useAuth from "hooks/useAuth";
 
 // components
-import { IonSpinner } from "@ionic/react";
 import FormInput from "components/AuthFormInput/AuthFormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
 
 export default function FormLogin() {
   const { login } = useAuth();
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   return (
     <Formik
@@ -47,8 +46,8 @@ export default function FormLogin() {
           type="password"
           placeholder="Password"
         />
-        <SubmitButton>
-          {isSubmitting ? <IonSpinner name="crescent" /> : "Login"}
+        <SubmitButton isSubmitting={isSubmitting}>
+          Login
         </SubmitButton>
       </Form>
     </Formik>

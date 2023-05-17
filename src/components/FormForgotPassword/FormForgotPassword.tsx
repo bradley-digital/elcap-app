@@ -11,7 +11,6 @@ import useAuth from "hooks/useAuth";
 // components
 import FormInput from "components/AuthFormInput/AuthFormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
-import { IonSpinner } from "@ionic/react";
 
 export default function ForgotPasswordForm() {
   const { forgotPassword } = useAuth();
@@ -38,8 +37,8 @@ export default function ForgotPasswordForm() {
           type="email"
           placeholder="Email"
         />
-        <SubmitButton>
-          {isSubmitting ? <IonSpinner name="crescent" /> : "Submit"}
+        <SubmitButton isSubmitting={isSubmitting}>
+          Submit
         </SubmitButton>
       </Form>
     </Formik>

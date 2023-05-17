@@ -20,7 +20,7 @@ import { pencil } from "ionicons/icons";
 
 // components
 import { Form, Formik } from "formik";
-import { IonList, IonSpinner } from "@ionic/react";
+import { IonList } from "@ionic/react";
 import FormInput from "components/FormInput/FormInput";
 import FormSelect from "components/FormSelect/FormSelect";
 import SubmitButton from "components/SubmitButton/SubmitButton";
@@ -50,7 +50,7 @@ const roleOptions = [
 export default function FormCreateUser() {
   const { create } = useUserManagement();
   const [, setIsOpen] = useAtom(isOpenAtom);
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   return (
     <Formik
@@ -81,8 +81,8 @@ export default function FormCreateUser() {
       onSubmit={(values) => {
         setIsSubmitting(true);
         create(values);
-        setIsSubmitting(false);
         setIsOpen(false);
+        setIsSubmitting(false);
       }}
     >
       <Form>
@@ -132,8 +132,8 @@ export default function FormCreateUser() {
 
           <FormSelect label="Role" name="role" options={roleOptions} />
 
-          <SubmitButton>
-            {isSubmitting ? <IonSpinner name="crescent" /> : "Create New User"}
+          <SubmitButton isSubmitting={isSubmitting}>
+            Create New User
           </SubmitButton>
         </IonList>
       </Form>

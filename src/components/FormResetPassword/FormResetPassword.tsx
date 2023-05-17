@@ -15,12 +15,11 @@ import useAuth from "hooks/useAuth";
 // components
 import FormInput from "components/AuthFormInput/AuthFormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
-import { IonSpinner } from "@ionic/react";
 
 export default function FormResetPassword() {
   const { resetPassword } = useAuth();
   const { resetToken } = useParams<{ resetToken: string }>();
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   return (
     <Formik
@@ -54,8 +53,8 @@ export default function FormResetPassword() {
           type="password"
           placeholder="Password"
         />
-        <SubmitButton>
-          {isSubmitting ? <IonSpinner name="crescent" /> : "Reset Password"}
+        <SubmitButton isSubmitting={isSubmitting}>
+          Reset Password
         </SubmitButton>
       </Form>
     </Formik>

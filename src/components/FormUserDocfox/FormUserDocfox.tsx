@@ -19,7 +19,6 @@ import {
   IonIcon,
   IonList,
   IonListHeader,
-  IonSpinner,
 } from "@ionic/react";
 import { alertCircle, checkmarkCircle, closeCircle } from "ionicons/icons";
 import FormObserver from "components/FormObserver/FormObserver";
@@ -45,7 +44,7 @@ type Props = {
 };
 
 export default function FormUserDocfox({ profile }: Props) {
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { id: userId } = profile;
   const applicationId = profile?.docfoxApplication?.applicationId || "";
   const initialTemplateId = profile?.docfoxApplication?.templateId || "";
@@ -204,8 +203,8 @@ export default function FormUserDocfox({ profile }: Props) {
               options={entityTemplateOptions}
             />
             {formInputs}
-            <SubmitButton>
-              {isSubmitting ? <IonSpinner name="crescent" /> : "Submit"}
+            <SubmitButton isSubmitting={isSubmitting}>
+              Submit
             </SubmitButton>
           </IonList>
         </Form>

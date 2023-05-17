@@ -17,7 +17,6 @@ import {
   IonIcon,
   IonList,
   IonListHeader,
-  IonSpinner,
 } from "@ionic/react";
 import { alertCircle, checkmarkCircle, closeCircle } from "ionicons/icons";
 import FormInput from "components/FormInput/FormInput";
@@ -32,7 +31,7 @@ import { buildFormInputs } from "components/FormUserDocfox/helpers";
 import "./FormDocfox.scss";
 
 export default function FormDocfox() {
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     application,
@@ -145,8 +144,8 @@ export default function FormDocfox() {
                 name="kyc_entity_template_id"
               />
               {formInputs}
-              <SubmitButton>
-                {isSubmitting ? <IonSpinner name="crescent" /> : "Submit"}
+              <SubmitButton isSubmitting={isSubmitting}>
+                Submit
               </SubmitButton>
             </IonList>
           </Form>

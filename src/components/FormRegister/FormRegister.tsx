@@ -20,11 +20,10 @@ import useAuth from "hooks/useAuth";
 // components
 import FormInput from "components/AuthFormInput/AuthFormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
-import { IonSpinner } from "@ionic/react";
 
 export default function FormRegister() {
   const { register } = useAuth();
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   return (
     <Formik
@@ -102,8 +101,8 @@ export default function FormRegister() {
 
         <FormInput label="State" name="state" type="text" placeholder="State" />
 
-        <SubmitButton>
-          {isSubmitting ? <IonSpinner name="crescent" /> : "Register"}
+        <SubmitButton isSubmitting={isSubmitting}>
+          Register
         </SubmitButton>
       </Form>
     </Formik>

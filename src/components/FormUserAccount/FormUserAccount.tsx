@@ -21,7 +21,7 @@ import { lockClosed, pencil } from "ionicons/icons";
 
 // components
 import { Form, Formik } from "formik";
-import { IonList, IonListHeader, IonSpinner } from "@ionic/react";
+import { IonList, IonListHeader } from "@ionic/react";
 import FormInput from "components/FormInput/FormInput";
 import FormSelect from "components/FormSelect/FormSelect";
 import SubmitButton from "components/SubmitButton/SubmitButton";
@@ -50,7 +50,7 @@ type Props = {
 
 export default function FormUserAccount({ profile }: Props) {
   const { update } = useUserManagement();
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     id,
@@ -153,8 +153,8 @@ export default function FormUserAccount({ profile }: Props) {
 
           <FormSelect label="Role" name="role" options={roleOptions} />
 
-          <SubmitButton>
-            {isSubmitting ? <IonSpinner name="crescent" /> : "Submit"}
+          <SubmitButton isSubmitting={isSubmitting}>
+            Submit
           </SubmitButton>
         </IonList>
       </Form>
