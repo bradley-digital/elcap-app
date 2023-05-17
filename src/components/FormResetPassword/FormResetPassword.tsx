@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Form, Formik } from "formik";
 import { useParams } from "react-router-dom";
 import * as Yup from "yup";
@@ -18,6 +19,7 @@ import SubmitButton from "components/SubmitButton/SubmitButton";
 export default function FormResetPassword() {
   const { resetPassword } = useAuth();
   const { resetToken } = useParams<{ resetToken: string }>();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   return (
     <Formik
@@ -30,10 +32,12 @@ export default function FormResetPassword() {
         confirmPassword: confirmPasswordValidation,
       })}
       onSubmit={async ({ password }) => {
+        setIsSubmitting(true);
         await resetPassword({
           resetToken,
           password,
         });
+        setIsSubmitting(false);
       }}
     >
       <Form>
@@ -49,7 +53,9 @@ export default function FormResetPassword() {
           type="password"
           placeholder="Password"
         />
-        <SubmitButton>Reset Password</SubmitButton>
+        <SubmitButton isSubmitting={isSubmitting}>
+          Reset Password
+        </SubmitButton>
       </Form>
     </Formik>
   );

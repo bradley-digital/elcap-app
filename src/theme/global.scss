@@ -37,7 +37,7 @@ img {
 
 hr {
   background-color: rgba(0, 0, 0, 0.13);
-  margin: 32px 0;
+  margin: 16px 0;
 }
 
 ion-menu {
@@ -65,7 +65,17 @@ ion-select {
   }
 }
 
-.alert-radio-label.sc-ion-alert-md {
-  white-space: normal;
-  font-size: 14px;
+.alert-radio-label,
+.alert-checkbox-label {
+  &.sc-ion-alert-md {
+    white-space: normal;
+    font-size: 14px;
+  }
+}
+
+.FormAccountSelect {
+  .alert-wrapper {
+    width: 450px;
+    max-width: 450px;
+  }
 }

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { Profile } from "hooks/useUser";
 import * as Yup from "yup";
 
@@ -11,6 +12,7 @@ import {
   addressLine2Validation,
   countryValidation,
   stateValidation,
+  companyNameValidation,
   roleValidation,
 } from "lib/formValidation";
 
@@ -48,6 +50,7 @@ type Props = {
 
 export default function FormUserAccount({ profile }: Props) {
   const { update } = useUserManagement();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     id,
@@ -55,6 +58,7 @@ export default function FormUserAccount({ profile }: Props) {
     lastName,
     email,
     phone,
+    companyName,
     addressLine1,
     addressLine2,
     country,
@@ -69,6 +73,7 @@ export default function FormUserAccount({ profile }: Props) {
         lastName,
         email,
         phone,
+        companyName,
         addressLine1,
         addressLine2,
         country,
@@ -80,6 +85,7 @@ export default function FormUserAccount({ profile }: Props) {
         lastName: lastNameValidation,
         email: emailValidation,
         phone: phoneValidation,
+        companyName: companyNameValidation,
         addressLine1: addressLine1Validation,
         addressLine2: addressLine2Validation,
         country: countryValidation,
@@ -87,12 +93,14 @@ export default function FormUserAccount({ profile }: Props) {
         role: roleValidation,
       })}
       onSubmit={(values) => {
+        setIsSubmitting(true);
         update({ id, ...values });
+        setIsSubmitting(false);
       }}
     >
       <Form>
         <IonList>
-          <IonListHeader>Account Details</IonListHeader>
+          <IonListHeader>Profile information</IonListHeader>
 
           <FormInput
             label="First Name"
@@ -119,6 +127,13 @@ export default function FormUserAccount({ profile }: Props) {
           <FormInput label="Phone" name="phone" type="text" icon={pencil} />
 
           <FormInput
+            label="Company Name"
+            name="companyName"
+            type="text"
+            icon={pencil}
+          />
+
+          <FormInput
             label="Address line 1"
             name="addressLine1"
             type="text"
@@ -138,7 +153,9 @@ export default function FormUserAccount({ profile }: Props) {
 
           <FormSelect label="Role" name="role" options={roleOptions} />
 
-          <SubmitButton>Submit</SubmitButton>
+          <SubmitButton isSubmitting={isSubmitting}>
+            Submit
+          </SubmitButton>
         </IonList>
       </Form>
     </Formik>

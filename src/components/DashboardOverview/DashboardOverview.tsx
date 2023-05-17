@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "chart.js/auto";
 import hash from "object-hash";
 
@@ -6,6 +6,7 @@ import hash from "object-hash";
 import { Scatter } from "react-chartjs-2";
 import {
   IonItem,
+  IonLabel,
   IonList,
   IonSelect,
   IonSelectOption,
@@ -25,23 +26,22 @@ import "./DashboardOverview.scss";
 
 export default function DashboardOverview() {
   const [isChartVisible, setIsChartVisible] = useState(false);
-  const [selectedAccountNumber, setSelectedAccountNumber] = useState(0);
-  const [selectedYear, setSelectedYear] = useState(0);
-  const [selectedTransactionType, setSelectedTransactionType] = useState("all");
+  const [selectedAccountNumbers, setSelectedAccountNumbers] = useState([""]);
+  const [selectedTimeRange, setSelectedTimeRange] = useState("YTD");
   const {
     isSuccess,
     data,
     accounts,
     options,
     accountsCurrentBalanceTotal,
-    transactionYears,
     transactionTypes,
-    transactionTypeMap,
-  } = useChartData(
-    selectedYear,
-    selectedTransactionType,
-    selectedAccountNumber
-  );
+  } = useChartData(selectedTimeRange, selectedAccountNumbers);
+
+  useEffect(() => {
+    setSelectedAccountNumbers(
+      accounts?.map((account) => account.accountNumber) || [""]
+    );
+  }, [accounts]);
 
   useIonViewWillEnter(() => {
     setIsChartVisible(true);
@@ -53,9 +53,7 @@ export default function DashboardOverview() {
     typeof accounts === "undefined" ||
     typeof options === "undefined" ||
     typeof accountsCurrentBalanceTotal === "undefined" ||
-    typeof transactionYears === "undefined" ||
-    typeof transactionTypes === "undefined" ||
-    typeof transactionTypeMap === "undefined"
+    typeof transactionTypes === "undefined"
   ) {
     return null;
   }
@@ -64,8 +62,20 @@ export default function DashboardOverview() {
     style: "currency",
     currency: "USD",
   });
-
   const currentBalanceUSD = USD.format(accountsCurrentBalanceTotal);
+  const timeRange = ["YTD", "MTD", "3M", "1Y", "3Y", "5Y", "Max"];
+
+  const accountOptions =
+    accounts
+      ?.map((account) => {
+        const truncatedAccountNumber = account.accountNumber.slice(-4);
+        const label = `${account.accountTitle} (...${truncatedAccountNumber})`;
+        return {
+          value: account.accountNumber,
+          label,
+        };
+      })
+      .sort((a, b) => a.label.localeCompare(b.label)) || [];
 
   return (
     <div className="DashboardOverview">
@@ -74,90 +84,78 @@ export default function DashboardOverview() {
           <IonCol
             size-xs="12"
             size-sm="6"
-            size-md="8"
-            size-lg="9"
-            className="DashboardOverview__header"
+            size-md="6"
+            size-lg="6"
+            className="DashboardOverview__details"
           >
             <IonText>
-              <h1>Total Portfolio Balance</h1>
+              <h3>Total Portfolio Balance</h3>
               <p>{currentBalanceUSD}</p>
-              <h1>Subtotal Balances</h1>
-              {accounts.accounts.map((account: any) => {
+            </IonText>
+          </IonCol>
+          <IonCol
+            size-xs="12"
+            size-sm="6"
+            size-md="6"
+            size-lg="6"
+            className="DashboardOverview__details"
+          >
+            <IonText>
+              <h3>Account Balances</h3>
+              {accounts?.map((account) => {
                 return (
                   <p key={hash(account)}>
-                    {account.accountTitle +
-                      ": " +
-                      USD.format(account.accountBalance)}
+                    {`${account.accountTitle}: ${USD.format(
+                      Number(account.accountBalance)
+                    )}`}
                   </p>
                 );
               })}
             </IonText>
           </IonCol>
           <IonCol
-            size-xs="12"
-            size-sm="6"
-            size-md="4"
-            size-lg="3"
-            className="DashboardOverview__content"
+            size="12"
+            className="DashboardOverview__filters"
           >
-            <IonList>
+            <IonList className="DashboardOverview__filters--wrapper">
               <IonItem>
+                <IonLabel position="floating">Accounts</IonLabel>
                 <IonSelect
+                  interfaceOptions={{ cssClass: "FormAccountSelect" }}
                   placeholder="Select Account"
-                  onIonChange={(e) => setSelectedAccountNumber(e.detail.value)}
+                  onIonChange={(e) => setSelectedAccountNumbers(e.detail.value)}
+                  multiple={true}
+                  value={selectedAccountNumbers}
                 >
-                  <IonSelectOption value={0}>All</IonSelectOption>
-                  {accounts &&
-                    accounts?.accounts.map((account: any) => (
-                      <IonSelectOption
-                        key={account.accountNumber}
-                        value={account.accountNumber}
-                      >
-                        {account.accountTitle}
-                      </IonSelectOption>
-                    ))}
+                  {accountOptions?.map((option) => (
+                    <IonSelectOption key={option.value} value={option.value}>
+                      {option.label}
+                    </IonSelectOption>
+                  ))}
                 </IonSelect>
               </IonItem>
-
               <IonItem>
+                <IonLabel position="floating">Date Range</IonLabel>
                 <IonSelect
-                  placeholder="Select Year"
-                  onIonChange={(e) => setSelectedYear(e.detail.value)}
+                  placeholder="Select Date Range"
+                  onIonChange={(e) => setSelectedTimeRange(e.detail.value)}
+                  value={selectedTimeRange}
                 >
-                  <IonSelectOption value={0}>All</IonSelectOption>
-                  {transactionYears &&
-                    Array.from(transactionYears).map((year) => (
-                      <IonSelectOption key={year} value={year}>
-                        {year}
-                      </IonSelectOption>
-                    ))}
-                </IonSelect>
-              </IonItem>
-
-              <IonItem>
-                <IonSelect
-                  placeholder="Select Transaction Type"
-                  onIonChange={(e) =>
-                    setSelectedTransactionType(e.detail.value)
-                  }
-                >
-                  <IonSelectOption value="all">All</IonSelectOption>
-                  {transactionTypes &&
-                    Array.from(transactionTypes).map((transactionType) => (
-                      <IonSelectOption
-                        key={transactionType}
-                        value={transactionType}
-                      >
-                        {transactionTypeMap[transactionType]}
-                      </IonSelectOption>
-                    ))}
+                  {timeRange.map((range) => (
+                    <IonSelectOption key={range} value={range}>
+                      {range}
+                    </IonSelectOption>
+                  ))}
                 </IonSelect>
               </IonItem>
             </IonList>
           </IonCol>
-          <IonCol className="DashboardOverview__content">
+          <IonCol
+            size="12"
+            className="DashboardOverview__content--chart"
+          >
             {isChartVisible ? (
-              <Scatter data={data} options={options} height={500} />
+              <Scatter data={data} options={options} />
             ) : (
               <IonSpinner color="success" />
             )}

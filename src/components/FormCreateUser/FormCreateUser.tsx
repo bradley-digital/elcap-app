@@ -1,4 +1,5 @@
 import * as Yup from "yup";
+import { useState } from "react";
 
 // lib
 import {
@@ -6,6 +7,7 @@ import {
   lastNameValidation,
   emailValidation,
   phoneValidation,
+  companyNameValidation,
   addressLine1Validation,
   addressLine2Validation,
   countryValidation,
@@ -48,6 +50,7 @@ const roleOptions = [
 export default function FormCreateUser() {
   const { create } = useUserManagement();
   const [, setIsOpen] = useAtom(isOpenAtom);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   return (
     <Formik
@@ -56,6 +59,7 @@ export default function FormCreateUser() {
         lastName: "",
         email: "",
         phone: "",
+        companyName: "",
         addressLine1: "",
         addressLine2: "",
         country: "",
@@ -67,6 +71,7 @@ export default function FormCreateUser() {
         lastName: lastNameValidation,
         email: emailValidation,
         phone: phoneValidation,
+        companyName: companyNameValidation,
         addressLine1: addressLine1Validation,
         addressLine2: addressLine2Validation,
         country: countryValidation,
@@ -74,8 +79,10 @@ export default function FormCreateUser() {
         role: roleValidation,
       })}
       onSubmit={(values) => {
+        setIsSubmitting(true);
         create(values);
         setIsOpen(false);
+        setIsSubmitting(false);
       }}
     >
       <Form>
@@ -99,6 +106,13 @@ export default function FormCreateUser() {
           <FormInput label="Phone" name="phone" type="text" icon={pencil} />
 
           <FormInput
+            label="Company Name"
+            name="companyName"
+            type="text"
+            icon={pencil}
+          />
+
+          <FormInput
             label="Address line 1"
             name="addressLine1"
             type="text"
@@ -118,7 +132,9 @@ export default function FormCreateUser() {
 
           <FormSelect label="Role" name="role" options={roleOptions} />
 
-          <SubmitButton>Create New User</SubmitButton>
+          <SubmitButton isSubmitting={isSubmitting}>
+            Create New User
+          </SubmitButton>
         </IonList>
       </Form>
     </Formik>

@@ -1,11 +1,6 @@
 import type { RouteComponentProps } from "react-router-dom";
 import type { MenuLink } from "components/MenuLinks/MenuLinks";
-import {
-  arrowBack,
-  business,
-  document as documentIcon,
-  personCircle,
-} from "ionicons/icons";
+import { arrowBack, business, create, personCircle } from "ionicons/icons";
 
 // components
 import SplitPaneTemplate from "components/SplitPaneTemplate/SplitPaneTemplate";
@@ -24,8 +19,8 @@ export default function User(routeProps: RouteComponentProps) {
     {
       id: 2,
       icon: personCircle,
-      href: `${match.url}/account`,
-      label: "Account",
+      href: `${match.url}/profile`,
+      label: "Profile",
     },
     {
       id: 3,
@@ -35,7 +30,7 @@ export default function User(routeProps: RouteComponentProps) {
     },
     {
       id: 4,
-      icon: documentIcon,
+      icon: create,
       href: `${match.url}/docfox`,
       label: "DocFox",
     },

@@ -1,8 +1,33 @@
 .DashboardOverview {
-  margin-top: 100px;
-
   .spinner-circular {
     margin: 0 auto;
     display: block;
+    width: 15%;
+    height: 15%;
+    top: 50%;
+  }
+
+  &__header {
+    text-align: center;
+  }
+
+  &__details {
+    ion-text {
+      display: block;
+      padding-inline-start: 16px;
+    }
+  }
+
+  &__content--chart {
+    height: 600px;
+  }
+
+  &__filters--wrapper {
+    display: flex;
+    flex-wrap: wrap;
+
+    > ion-item {
+      flex: 1 0 auto;
+    }
   }
 }

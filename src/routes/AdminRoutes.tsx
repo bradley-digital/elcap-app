@@ -18,7 +18,7 @@ export default function AdminRoutes() {
         <Switch>
           {/* Paths with nested routes must not have "exact" */}
           <Route path="/user-management/:userId" component={User} />
-          <Route exact path="/account" component={Account} />
+          <Route exact path="/profile" component={Account} />
           <Route exact path="/user-management" component={UserManagement} />
           <Route exact path="/western-alliance-management" component={WesternAllianceManagement} />
           {/* Fallback route */}
@@ -34,9 +34,9 @@ export default function AdminRoutes() {
           <IonIcon icon={settings} />
           <IonLabel>User management</IonLabel>
         </IonTabButton>
-        <IonTabButton tab="account" href="/account">
+        <IonTabButton tab="profile" href="/profile">
           <IonIcon icon={personCircle} />
-          <IonLabel>Account</IonLabel>
+          <IonLabel>Profile</IonLabel>
         </IonTabButton>
       </IonTabBar>
     </IonTabs>

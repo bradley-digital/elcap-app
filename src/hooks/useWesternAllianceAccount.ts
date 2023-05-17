@@ -3,6 +3,10 @@ import { useQuery } from "react-query";
 // hooks
 import useAuth from "hooks/useAuth";
 
+export type StringMap = {
+  [key: string]: string;
+};
+
 export type Account = {
   accountNumber: string;
   accountBalance: number;
@@ -13,6 +17,7 @@ export type Account = {
 export type Transaction = {
   id: string;
   accountNumber: string;
+  accountBalance: string;
   backdatedTransactionEffectiveDate: string;
   companyId: string;
   floatDay1: number;
@@ -39,6 +44,7 @@ export type Transaction = {
   floatDay11Amount: number;
   floatDay12: number;
   floatDay12Amount: number;
+  fullTrailerRecord?: string;
   hashId: string;
   individualId: string;
   internalTransactionCode: number;
@@ -68,6 +74,14 @@ export type Transaction = {
 };
 
 const queryKey = "westernAllianceAccount";
+
+export const transactionTypeMap: StringMap = {
+  C: "Deposit",
+  D: "Withdrawl",
+  F: "Float",
+  M: "Miscellaneous Service Charge",
+  X: "Reversed",
+};
 
 export default function useWesternAllianceAccount() {
   const { authApi } = useAuth();

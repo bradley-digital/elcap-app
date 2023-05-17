@@ -1,4 +1,4 @@
-import type { Account, Transaction } from "./useWesternAllianceAccount";
+import type { Account, Transaction } from "hooks/useWesternAllianceAccount";
 import { useQuery } from "react-query";
 import useAuth from "hooks/useAuth";
 
@@ -21,7 +21,7 @@ export default function useUserWesternAlliance() {
   );
 
   async function getWesternAllianceAccounts() {
-    const { data } = await authApi.get<{ accounts: Account[] }>(
+    const { data } = await authApi.get<Account[]>(
       "/users/western-alliance/accounts"
     );
     return data;
