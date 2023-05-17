@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 
@@ -13,6 +14,7 @@ import SubmitButton from "components/SubmitButton/SubmitButton";
 
 export default function FormLogin() {
   const { login } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   return (
     <Formik
@@ -25,8 +27,10 @@ export default function FormLogin() {
         password: passwordValidation,
       })}
       onSubmit={async (values, actions) => {
+        setIsSubmitting(true);
         actions.resetForm();
         await login(values);
+        setIsSubmitting(false);
       }}
     >
       <Form>
@@ -42,7 +46,9 @@ export default function FormLogin() {
           type="password"
           placeholder="Password"
         />
-        <SubmitButton>Login</SubmitButton>
+        <SubmitButton isSubmitting={isSubmitting}>
+          Login
+        </SubmitButton>
       </Form>
     </Formik>
   );

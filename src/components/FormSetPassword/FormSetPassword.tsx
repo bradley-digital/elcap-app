@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 
@@ -20,6 +21,7 @@ type Props = {
 
 export default function FormSetPassword({ registerToken }: Props) {
   const { setPassword } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   return (
     <Formik
@@ -32,10 +34,12 @@ export default function FormSetPassword({ registerToken }: Props) {
         confirmPassword: confirmPasswordValidation,
       })}
       onSubmit={async ({ password }) => {
+        setIsSubmitting(true);
         await setPassword({
           registerToken,
           password,
         });
+        setIsSubmitting(false);
       }}
     >
       <Form>
@@ -51,7 +55,9 @@ export default function FormSetPassword({ registerToken }: Props) {
           type="password"
           placeholder="Password"
         />
-        <SubmitButton>Set Password</SubmitButton>
+        <SubmitButton isSubmitting={isSubmitting}>
+          Set Password
+        </SubmitButton>
       </Form>
     </Formik>
   );

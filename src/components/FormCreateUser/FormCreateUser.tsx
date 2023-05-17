@@ -1,4 +1,5 @@
 import * as Yup from "yup";
+import { useState } from "react";
 
 // lib
 import {
@@ -49,6 +50,7 @@ const roleOptions = [
 export default function FormCreateUser() {
   const { create } = useUserManagement();
   const [, setIsOpen] = useAtom(isOpenAtom);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   return (
     <Formik
@@ -77,8 +79,10 @@ export default function FormCreateUser() {
         role: roleValidation,
       })}
       onSubmit={(values) => {
+        setIsSubmitting(true);
         create(values);
         setIsOpen(false);
+        setIsSubmitting(false);
       }}
     >
       <Form>
@@ -128,7 +132,9 @@ export default function FormCreateUser() {
 
           <FormSelect label="Role" name="role" options={roleOptions} />
 
-          <SubmitButton>Create New User</SubmitButton>
+          <SubmitButton isSubmitting={isSubmitting}>
+            Create New User
+          </SubmitButton>
         </IonList>
       </Form>
     </Formik>

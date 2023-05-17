@@ -35,6 +35,7 @@ type Props = {
 export default function FormAccount({ profile }: Props) {
   const { mutate } = useUser();
   const [edited, setEdited] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   function handleChange() {
     if (edited) return;
@@ -79,8 +80,10 @@ export default function FormAccount({ profile }: Props) {
         state: stateValidation,
       })}
       onSubmit={(values) => {
+        setIsSubmitting(true);
         mutate(values);
         setEdited(false);
+        setIsSubmitting(false);
       }}
     >
       <Form>
@@ -137,7 +140,11 @@ export default function FormAccount({ profile }: Props) {
 
           <FormInput label="State" name="state" type="text" icon={pencil} />
 
-          {edited && <SubmitButton className="w-100">Update</SubmitButton>}
+          {edited && (
+            <SubmitButton className="w-100" isSubmitting={isSubmitting}>
+              Update
+            </SubmitButton>
+          )}
         </IonList>
       </Form>
     </Formik>

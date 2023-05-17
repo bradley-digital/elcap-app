@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { Profile } from "hooks/useUser";
 import * as Yup from "yup";
 
@@ -49,6 +50,7 @@ type Props = {
 
 export default function FormUserAccount({ profile }: Props) {
   const { update } = useUserManagement();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     id,
@@ -91,7 +93,9 @@ export default function FormUserAccount({ profile }: Props) {
         role: roleValidation,
       })}
       onSubmit={(values) => {
+        setIsSubmitting(true);
         update({ id, ...values });
+        setIsSubmitting(false);
       }}
     >
       <Form>
@@ -149,7 +153,9 @@ export default function FormUserAccount({ profile }: Props) {
 
           <FormSelect label="Role" name="role" options={roleOptions} />
 
-          <SubmitButton>Submit</SubmitButton>
+          <SubmitButton isSubmitting={isSubmitting}>
+            Submit
+          </SubmitButton>
         </IonList>
       </Form>
     </Formik>

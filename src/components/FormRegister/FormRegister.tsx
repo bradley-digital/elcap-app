@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 
@@ -22,6 +23,7 @@ import SubmitButton from "components/SubmitButton/SubmitButton";
 
 export default function FormRegister() {
   const { register } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   return (
     <Formik
@@ -46,8 +48,10 @@ export default function FormRegister() {
         state: stateValidation,
       })}
       onSubmit={async (values, actions) => {
+        setIsSubmitting(true);
         actions.resetForm();
         await register(values);
+        setIsSubmitting(false);
       }}
     >
       <Form>
@@ -97,7 +101,9 @@ export default function FormRegister() {
 
         <FormInput label="State" name="state" type="text" placeholder="State" />
 
-        <SubmitButton>Register</SubmitButton>
+        <SubmitButton isSubmitting={isSubmitting}>
+          Register
+        </SubmitButton>
       </Form>
     </Formik>
   );
