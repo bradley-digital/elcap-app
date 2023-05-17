@@ -110,7 +110,13 @@ export default function TransactionsTable() {
   const filteredTransactions = useMemo(() => {
     return (
       transactions
-        ?.map((transaction) => {
+        ?.filter(
+          (transaction) =>
+            isInDateRange(transaction) &&
+            isInTransactionType(transaction) &&
+            isInAccountNumbers(transaction)
+        )
+        .map((transaction) => {
           transaction.fullTrailerRecord =
             transaction.trailerRecord1 +
             " " +
@@ -129,13 +135,7 @@ export default function TransactionsTable() {
           const d1 = new Date(t1.postingDate);
           const d2 = new Date(t2.postingDate);
           return d2.getTime() - d1.getTime();
-        })
-        .filter(
-          (transaction) =>
-            isInDateRange(transaction) &&
-            isInTransactionType(transaction) &&
-            isInAccountNumbers(transaction)
-        ) || []
+        }) || []
     );
   }, [
     transactions,
