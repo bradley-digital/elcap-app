@@ -16,7 +16,13 @@ import "theme/utilities.scss";
 
 const googleClientId = import.meta.env.VITE_REACT_APP_GOOGLE_CLIENT_ID || "";
 const facebookAppId = import.meta.env.VITE_REACT_APP_FACEBOOK_APP_ID || "";
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 setupIonicReact();
 

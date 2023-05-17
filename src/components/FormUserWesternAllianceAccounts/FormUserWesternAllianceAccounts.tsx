@@ -1,10 +1,14 @@
-import { useState } from "react";
+import type { Profile } from "hooks/useUser";
+import { useEffect, useState } from "react";
 
 // components
-import { Form, Formik, FieldArray } from "formik";
-import { IonButton, IonList, IonListHeader, IonSpinner } from "@ionic/react";
-import FormSelect from "components/FormSelect/FormSelect";
-import SubmitButton from "components/SubmitButton/SubmitButton";
+import {
+  IonCheckbox,
+  IonLabel,
+  IonList,
+  IonItem,
+  IonListHeader,
+} from "@ionic/react";
 
 // hooks
 import type { Profile } from "hooks/useUser";
@@ -19,15 +23,18 @@ type Props = {
 };
 
 export default function FormUserWesternAllianceAccounts({ profile }: Props) {
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [activeAccounts, setActiveAccounts] = useState<string[]>([]);
 
-  const { accounts, accountsIsSuccess } = useWesternAllianceAccount();
+  const { accounts } = useWesternAllianceAccount();
   const { update } = useUserManagement();
 
   const { id, accounts: profileAccounts } = profile;
 
-  const accountNumbers =
-    profileAccounts?.map((account) => account.accountNumber) || [];
+  useEffect(() => {
+    const accountNumbers =
+      profileAccounts?.map((account) => account.accountNumber) || [];
+    setActiveAccounts(accountNumbers);
+  }, [profileAccounts]);
 
   const accountOptions =
     accounts
@@ -41,52 +48,31 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
       })
       .sort((a, b) => a.label.localeCompare(b.label)) || [];
 
+  function handleCheckbox(value: string) {
+    const newActiveAccounts = [...activeAccounts];
+    const index = newActiveAccounts.indexOf(value);
+    if (index > -1) {
+      newActiveAccounts.splice(index, 1);
+    } else {
+      newActiveAccounts.push(value);
+    }
+    setActiveAccounts(newActiveAccounts);
+    update({ id, accounts: newActiveAccounts });
+  }
+
   return (
-    <Formik
-      initialValues={{
-        accounts: accountNumbers,
-      }}
-      onSubmit={(values) => {
-        setIsSubmitting(true);
-        update({ id, ...values });
-        setIsSubmitting(false);
-      }}
-    >
-      {({ values }) => (
-        <Form className="FormUserWesternAllianceAccounts">
-          <IonList>
-            <IonListHeader>Western Alliance Accounts</IonListHeader>
-            <FieldArray
-              name="accounts"
-              render={(arrayHelpers) => (
-                <>
-                  {values.accounts.map((account, index) => (
-                    <div key={index}>
-                      {accountsIsSuccess && (
-                        <FormSelect
-                          className="FormAccountSelect"
-                          label="Account"
-                          name={`accounts.${index}`}
-                          options={accountOptions}
-                        />
-                      )}
-                      <IonButton onClick={() => arrayHelpers.remove(index)}>
-                        Remove account
-                      </IonButton>
-                    </div>
-                  ))}
-                  <IonButton onClick={() => arrayHelpers.push("")}>
-                    Add account
-                  </IonButton>
-                </>
-              )}
-            />
-            <SubmitButton>
-              {isSubmitting ? <IonSpinner name="crescent" /> : "Submit"}
-            </SubmitButton>
-          </IonList>
-        </Form>
-      )}
-    </Formik>
+    <IonList className="FormUserWesternAllianceAccounts">
+      <IonListHeader>Western Alliance Accounts</IonListHeader>
+      {accountOptions.map(({ label, value }) => (
+        <IonItem key={value}>
+          <IonCheckbox
+            className="FormUserWesternAllianceAccounts__checkbox"
+            checked={activeAccounts.includes(value)}
+            onClick={() => handleCheckbox(value)}
+          />
+          <IonLabel>{label}</IonLabel>
+        </IonItem>
+      ))}
+    </IonList>
   );
 }

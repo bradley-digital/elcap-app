@@ -18,6 +18,7 @@ export type Account = {
 export type Transaction = {
   id: string;
   accountNumber: string;
+  accountBalance: string;
   backdatedTransactionEffectiveDate: string;
   companyId: string;
   floatDay1: number;
@@ -76,8 +77,8 @@ export type Transaction = {
 const queryKey = "westernAllianceAccount";
 
 export const transactionTypeMap: StringMap = {
-  C: "Withdrawl",
-  D: "Deposit",
+  C: "Deposit",
+  D: "Withdrawl",
   F: "Float",
   M: "Miscellaneous Service Charge",
   X: "Reversed",

@@ -1,2 +1,11 @@
 .FormUserWesternAllianceAccounts {
+  .item {
+    .sc-ion-label-md-h {
+      white-space: normal;
+    }
+  }
+
+  &__checkbox {
+    margin-right: 18px;
+  }
 }
