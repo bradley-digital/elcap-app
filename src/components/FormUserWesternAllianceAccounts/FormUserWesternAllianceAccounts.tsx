@@ -11,7 +11,6 @@ import {
 } from "@ionic/react";
 
 // hooks
-import type { Profile } from "hooks/useUser";
 import useUserManagement from "hooks/useUserManagement";
 import useWesternAllianceAccount from "hooks/useWesternAllianceAccount";
 
