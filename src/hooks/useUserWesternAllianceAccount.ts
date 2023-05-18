@@ -24,6 +24,7 @@ export default function useUserWesternAlliance() {
     const { data } = await authApi.get<Account[]>(
       "/users/western-alliance/accounts"
     );
+    data.sort((a, b) => a.accountTitle.localeCompare(b.accountTitle));
     return data;
   }
 
@@ -31,6 +32,11 @@ export default function useUserWesternAlliance() {
     const { data } = await authApi.get<Transaction[]>(
       "/users/western-alliance/transactions"
     );
+    data.sort((t1, t2) => {
+      const d1 = new Date(t1.postingDate);
+      const d2 = new Date(t2.postingDate);
+      return d2.getTime() - d1.getTime();
+    });
     return data;
   }
 

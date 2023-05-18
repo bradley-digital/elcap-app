@@ -55,7 +55,7 @@ export default function useUser() {
   }
 
   async function updateUser(body: ProfileUpdateInput) {
-    const { data } = await authApi.post<Profile>("/users/update", body);
+    const { data } = await authApi.patch<Profile>("/users/update", body);
     return data;
   }
 

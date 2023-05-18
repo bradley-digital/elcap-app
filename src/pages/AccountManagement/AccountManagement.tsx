@@ -1,8 +1,16 @@
-import { IonCol, IonFab, IonFabButton, IonGrid, IonIcon, IonRow } from "@ionic/react";
+import {
+  IonCol,
+  IonFab,
+  IonFabButton,
+  IonGrid,
+  IonIcon,
+  IonRow,
+} from "@ionic/react";
 import { useAtom } from "jotai";
 import { isOpenAtom } from "atoms/westernAllianceModal";
 import PageTemplate from "components/PageTemplate/PageTemplate";
 import WesternAllianceList from "components/WesternAllianceList/WesternAllianceList";
+import WesternAllianceListModal from "components/WesternAllianceListModal/WesternAllianceListModal";
 
 // hooks
 import useWesternAlliance from "hooks/useWesternAllianceAccount";
@@ -13,7 +21,6 @@ import { add } from "ionicons/icons";
 export default function WesternAllianceManagement() {
   const { accountsIsSuccess, accounts } = useWesternAlliance();
 
-  console.log("accountsIsSuccess", accounts);
   const [, setIsOpen] = useAtom(isOpenAtom);
 
   function openModal() {
@@ -22,16 +29,17 @@ export default function WesternAllianceManagement() {
 
   if (accountsIsSuccess && typeof accounts !== "undefined") {
     return (
-      <PageTemplate title="Western Alliance Management">
+      <PageTemplate title="Account management">
         <IonGrid>
           <IonRow className="ion-justify-content-center">
             <IonCol size-md="8" size-lg="6">
               <WesternAllianceList accounts={accounts} />
+              <WesternAllianceListModal />
             </IonCol>
           </IonRow>
         </IonGrid>
         <IonFab vertical="bottom" horizontal="end" slot="fixed">
-          <IonFabButton color={"secondary"} onClick={openModal}>
+          <IonFabButton onClick={openModal}>
             <IonIcon icon={add} />
           </IonFabButton>
         </IonFab>

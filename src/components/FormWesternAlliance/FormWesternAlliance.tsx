@@ -1,55 +1,61 @@
+import type { Account } from "hooks/useWesternAllianceAccount";
 import { useState } from "react";
 import * as Yup from "yup";
 
 // lib
 import {
+  accountBalanceValidation,
   accountNumberValidation,
   accountTitleValidation,
   clientValidation,
 } from "lib/formValidation";
 
 // icons
-import { pencil } from "ionicons/icons";
+import { lockClosed, pencil } from "ionicons/icons";
 
 // components
 import { Form, Formik } from "formik";
-import { IonList } from "@ionic/react";
+import { IonList, IonListHeader } from "@ionic/react";
 import FormInput from "components/FormInput/FormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
-
-//atoms
-import { useAtom } from "jotai";
-import { isOpenAtom } from "atoms/westernAllianceModal";
 
 // hooks
 import useWesternAllianceAccount from "hooks/useWesternAllianceAccount";
 
-export default function FormCreateWesternAlliance() {
-  const { createAccount } = useWesternAllianceAccount();
-  const [, setIsOpen] = useAtom(isOpenAtom);
+type Props = {
+  account: Account;
+};
+
+export default function FormWesternAlliance({ account }: Props) {
+  const { updateAccount } = useWesternAllianceAccount();
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { id, accountBalance, accountNumber, accountTitle, client } = account;
 
   return (
     <Formik
       initialValues={{
-        accountNumber: "",
-        accountTitle: "",
-        client: "",
+        accountBalance,
+        accountNumber,
+        accountTitle,
+        client,
       }}
       validationSchema={Yup.object({
+        accountBalance: accountBalanceValidation,
         accountNumber: accountNumberValidation,
         accountTitle: accountTitleValidation,
         client: clientValidation,
       })}
       onSubmit={(values) => {
         setIsSubmitting(true);
-        createAccount(values);
-        setIsOpen(false);
+        updateAccount({ id, ...values });
         setIsSubmitting(false);
       }}
     >
       <Form>
         <IonList>
+          <IonListHeader>Account information</IonListHeader>
+
           <FormInput label="Client" name="client" type="text" icon={pencil} />
 
           <FormInput
@@ -66,8 +72,16 @@ export default function FormCreateWesternAlliance() {
             icon={pencil}
           />
 
+          <FormInput
+            label="Account Balance"
+            name="accountBalance"
+            type="text"
+            icon={lockClosed}
+            readonly={true}
+          />
+
           <SubmitButton isSubmitting={isSubmitting}>
-            Create New Account
+            Update Account
           </SubmitButton>
         </IonList>
       </Form>

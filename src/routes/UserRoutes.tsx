@@ -2,8 +2,8 @@ import type { RouteComponentProps } from "react-router-dom";
 import { Redirect, Route, Switch, useParams } from "react-router-dom";
 import { IonRouterOutlet, useIonRouter } from "@ionic/react";
 
-// components
-import Account from "pages/User/UserAccount";
+// pages
+import Profile from "pages/User/UserProfile";
 import WesternAlliance from "pages/User/UserWesternAlliance";
 import Docfox from "pages/User/UserDocfox";
 
@@ -29,7 +29,7 @@ export default function UserRoutes({ match }: RouteComponentProps) {
           <Route
             exact
             path={`${match.url}/profile`}
-            render={() => <Account profile={user} />}
+            render={() => <Profile profile={user} />}
           />
           <Route
             exact

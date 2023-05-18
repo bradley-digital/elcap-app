@@ -26,7 +26,7 @@ export default function WesternAllianceListModal() {
           <IonButtons slot="start">
             <IonButton onClick={closeModal}>Cancel</IonButton>
           </IonButtons>
-          <IonTitle>Western alliance management</IonTitle>
+          <IonTitle>New account</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">

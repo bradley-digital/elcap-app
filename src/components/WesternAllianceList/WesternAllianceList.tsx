@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { IonItem, IonList, IonSearchbar } from "@ionic/react";
 import { Account } from "hooks/useWesternAllianceAccount";
-import WesternAllianceListModal from "components/WesternAllianceListModal/WesternAllianceListModal";
 import "./WesternAllianceList.scss";
 
 type Props = {
@@ -9,7 +8,7 @@ type Props = {
 };
 
 export default function WesternAllianceList({ accounts }: Props) {
-  const [search, setSearch] = useState<string>("");
+  const [search, setSearch] = useState("");
 
   function handleSearch(e: Event) {
     const target = e.target as HTMLIonSearchbarElement;
@@ -19,28 +18,27 @@ export default function WesternAllianceList({ accounts }: Props) {
   }
 
   const filteredAccounts = accounts.filter((account: Account) => {
-    const fullName = `${account.accountNumber} ${account.accountTitle}`.toLowerCase();
+    const fullName =
+      `${account.accountNumber} ${account.accountTitle}`.toLowerCase();
     return fullName.indexOf(search.toLowerCase()) > -1;
   });
 
   return (
-    <>
+    <div className="WesternAllianceList">
       <IonSearchbar debounce={400} onIonChange={handleSearch}></IonSearchbar>
-      <div className="WesternAllianceList">
-        <IonList>
-          {filteredAccounts.map((account: Account, index: number) => (
+      <IonList>
+        {filteredAccounts.map(
+          ({ id, accountNumber, accountTitle }: Account) => (
             <IonItem
-              key={index}
+              key={id}
               className="WesternAllianceList__item"
-              // href={`/western-alliance-management/${account.id}`}
+              href={`/account-management/${id}`}
             >
-              {account.accountTitle} {account.accountNumber}
+              {`${accountTitle} (...${accountNumber.slice(-4)})`}
             </IonItem>
-          ))}
-        </IonList>
-      </div>
-
-      <WesternAllianceListModal />
-    </>
+          )
+        )}
+      </IonList>
+    </div>
   );
 }

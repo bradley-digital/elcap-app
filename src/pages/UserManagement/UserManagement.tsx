@@ -10,6 +10,7 @@ import { useAtom } from "jotai";
 import { isOpenAtom } from "atoms/userListModal";
 import PageTemplate from "components/PageTemplate/PageTemplate";
 import UserList from "components/UserList/UserList";
+import UserListModal from "components/UserListModal/UserListModal";
 
 // hooks
 import useUserManagement from "hooks/useUserManagement";
@@ -32,6 +33,7 @@ export default function UserManagement() {
           <IonRow className="ion-justify-content-center">
             <IonCol size-md="8" size-lg="6">
               <UserList users={data} />
+              <UserListModal />
             </IonCol>
           </IonRow>
         </IonGrid>

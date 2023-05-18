@@ -14,7 +14,7 @@ export default function User(routeProps: RouteComponentProps) {
       id: 1,
       icon: arrowBack,
       href: "/user-management",
-      label: "User list",
+      label: "All users",
     },
     {
       id: 2,

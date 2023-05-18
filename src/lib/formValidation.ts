@@ -21,13 +21,23 @@ export const companyNameValidation = Yup.string().nullable();
 
 export const roleValidation = Yup.string().required("Role required");
 
+export const accountBalanceValidation = Yup.number().nullable();
+
+export const accountTitleValidation = Yup.string().required(
+  "Account Title required"
+);
+
+export const clientValidation = Yup.string().required("Client required");
+
+export const emailValidation = Yup.string()
+  .email("Email must be valid")
+  .required("Email required");
+
 export const stateValidation = Yup.string().when("country", {
   is: (val: string) => val === "United States",
   then: (schema) => schema.required("State required"),
   otherwise: (schema) => schema,
 });
-
-export const emailValidation = Yup.string().email("Email must be valid").required("Email required");
 
 export const phoneValidation = Yup.string()
   .matches(phoneRegExp, "Phone number must be valid")
@@ -48,10 +58,3 @@ export const accountNumberValidation = Yup.string()
   .min(8, "Must be at least 8 characters long")
   .max(36, "Must be less than 36 characters long")
   .required("Account Number required");
-
-export const accountBalanceValidation = Yup.string()
-  .min(1, "Must be at least 1 characters long")
-  .required("Account Number required");
-
-export const accountTitleValidation = Yup.string().required("Account Title required");
-export const clientValidation = Yup.string().required("Client required");

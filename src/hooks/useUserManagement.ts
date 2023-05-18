@@ -86,11 +86,16 @@ export default function useUser() {
 
   async function getUserList() {
     const { data } = await authApi.get<Profile[]>("/users/list");
+    data.sort((a, b) =>
+      `${a.firstName} ${a.lastName}`.localeCompare(
+        `${b.firstName} ${b.lastName}`
+      )
+    );
     return data;
   }
 
   async function updateUser(body: ProfileUpdateByIdInput) {
-    const { data } = await authApi.post<Profile>("/users/update-by-id", body);
+    const { data } = await authApi.patch<Profile>("/users/update-by-id", body);
     return data;
   }
 

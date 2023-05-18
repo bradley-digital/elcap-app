@@ -26,7 +26,7 @@ export default function UserListModal() {
           <IonButtons slot="start">
             <IonButton onClick={closeModal}>Cancel</IonButton>
           </IonButtons>
-          <IonTitle>User management</IonTitle>
+          <IonTitle>New user</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
