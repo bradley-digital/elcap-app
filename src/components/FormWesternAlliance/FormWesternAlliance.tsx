@@ -62,14 +62,16 @@ export default function FormWesternAlliance({ account }: Props) {
             label="Account Title"
             name="accountTitle"
             type="text"
-            icon={pencil}
+            icon={lockClosed}
+            readonly={true}
           />
 
           <FormInput
             label="Account Number"
             name="accountNumber"
             type="text"
-            icon={pencil}
+            icon={lockClosed}
+            readonly={true}
           />
 
           <FormInput

@@ -7,6 +7,7 @@ import { chevronBack, chevronForward, download } from "ionicons/icons";
 
 // lib
 import { createCSV, downloadCSV } from "lib/csv";
+import { currency } from "lib/formats";
 
 // components
 import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
@@ -45,11 +46,6 @@ wantedTypes.forEach(
 
 const columnHelper = createColumnHelper<Transaction>();
 
-const USD = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-});
-
 const columns = [
   columnHelper.accessor("postingDate", {
     header: () => "Date",
@@ -67,7 +63,9 @@ const columns = [
   columnHelper.accessor("fullTrailerRecord", {
     header: () => "Description",
     cell: (info) => (
-      <div className="TransactionsTable__description">{info.getValue()}</div>
+      <div className="TransactionsTable__description">
+        {info.getValue()?.trim() || "(No description)"}
+      </div>
     ),
   }),
   columnHelper.accessor("transactionType", {
@@ -76,11 +74,11 @@ const columns = [
   }),
   columnHelper.accessor("transactionAmount", {
     header: () => "Amount",
-    cell: (info) => USD.format(Number(info.getValue())),
+    cell: (info) => currency.format(Number(info.getValue())),
   }),
   columnHelper.accessor("accountBalance", {
     header: () => "Balance",
-    cell: (info) => USD.format(Number(info.getValue())),
+    cell: (info) => currency.format(Number(info.getValue())),
   }),
 ];
 
