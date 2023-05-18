@@ -63,7 +63,7 @@ const columns = [
   columnHelper.accessor("fullTrailerRecord", {
     header: () => "Description",
     cell: (info) => (
-      <div className="TransactionsTable__description">{info.getValue().trim() || "(No description)"}</div>
+      <div className="TransactionsTable__description">{info.getValue()?.trim() || "(No description)"}</div>
     ),
   }),
   columnHelper.accessor("transactionType", {
