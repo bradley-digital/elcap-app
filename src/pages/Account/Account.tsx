@@ -1,6 +1,9 @@
 import type { RouteComponentProps } from "react-router-dom";
 import type { MenuLink } from "components/MenuLinks/MenuLinks";
-import { arrowBack, business } from "ionicons/icons";
+import { arrowBack } from "ionicons/icons";
+
+// lib
+import { westernAlliance } from "lib/icons";
 
 // components
 import SplitPaneTemplate from "components/SplitPaneTemplate/SplitPaneTemplate";
@@ -18,7 +21,7 @@ export default function Account(routeProps: RouteComponentProps) {
     },
     {
       id: 2,
-      icon: business,
+      icon: westernAlliance,
       href: `${match.url}/western-alliance`,
       label: "Western Alliance",
     },
