@@ -112,10 +112,7 @@ export default function DashboardOverview() {
               })}
             </IonText>
           </IonCol>
-          <IonCol
-            size="12"
-            className="DashboardOverview__filters"
-          >
+          <IonCol size="12" className="DashboardOverview__filters">
             <IonList className="DashboardOverview__filters--wrapper">
               <IonItem>
                 <IonLabel position="floating">Accounts</IonLabel>
@@ -149,10 +146,7 @@ export default function DashboardOverview() {
               </IonItem>
             </IonList>
           </IonCol>
-          <IonCol
-            size="12"
-            className="DashboardOverview__content--chart"
-          >
+          <IonCol size="12" className="DashboardOverview__content--chart">
             {isChartVisible ? (
               <Scatter data={data} options={options} />
             ) : (
