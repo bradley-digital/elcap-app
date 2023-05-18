@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import "chart.js/auto";
 import hash from "object-hash";
 
+// lib
+import { currency } from "lib/formats";
+
 // components
 import { Scatter } from "react-chartjs-2";
 import {
@@ -58,11 +61,7 @@ export default function DashboardOverview() {
     return null;
   }
 
-  const USD = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  });
-  const currentBalanceUSD = USD.format(accountsCurrentBalanceTotal);
+  const currentBalance = currency.format(accountsCurrentBalanceTotal);
   const timeRange = ["YTD", "MTD", "3M", "1Y", "3Y", "5Y", "Max"];
 
   const accountOptions =
@@ -90,7 +89,7 @@ export default function DashboardOverview() {
           >
             <IonText>
               <h3>Total Portfolio Balance</h3>
-              <p>{currentBalanceUSD}</p>
+              <p>{currentBalance}</p>
             </IonText>
           </IonCol>
           <IonCol
@@ -105,7 +104,7 @@ export default function DashboardOverview() {
               {accounts?.map((account) => {
                 return (
                   <p key={hash(account)}>
-                    {`${account.accountTitle}: ${USD.format(
+                    {`${account.accountTitle}: ${currency.format(
                       Number(account.accountBalance)
                     )}`}
                   </p>
