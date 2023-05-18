@@ -14,9 +14,9 @@ import {
 } from "@ionic/react";
 
 // pages
-import Account from "pages/Account/Account";
 import Example from "pages/Example/Example";
 import Pay from "pages/Pay/Pay";
+import Profile from "pages/Profile/Profile";
 import Shop from "pages/Shop/Shop";
 
 export default function PaymentsRoutes() {
@@ -26,7 +26,7 @@ export default function PaymentsRoutes() {
         <Switch>
           {/* Paths with nested routes must not have "exact" */}
           <Route path="/pay" component={Pay} />
-          <Route exact path="/profile" component={Account} />
+          <Route exact path="/profile" component={Profile} />
           <Route exact path="/shop" component={Shop} />
           <Route exact path="/example" component={Example} />
           {/* Fallback route */}

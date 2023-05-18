@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 
 // hooks
 import useAuth from "hooks/useAuth";
@@ -9,10 +9,25 @@ export type StringMap = {
 
 export type Account = {
   id: string;
+  accountBalance: number;
   accountNumber: string;
-  accountBalance: string;
   accountTitle: string;
   client: string;
+};
+
+type AccountCreateInput = {
+  accountBalance?: number;
+  accountNumber: string;
+  accountTitle: string;
+  client: string;
+};
+
+type AccountUpdateInput = {
+  id: string;
+  accountBalance?: number;
+  accountNumber?: string;
+  accountTitle?: string;
+  client?: string;
 };
 
 export type Transaction = {
@@ -74,7 +89,7 @@ export type Transaction = {
   transactionType: string;
 };
 
-const queryKey = "westernAllianceAccount";
+const accountQueryKey = "westernAllianceAccount";
 
 export const transactionTypeMap: StringMap = {
   C: "Deposit",
@@ -86,20 +101,66 @@ export const transactionTypeMap: StringMap = {
 
 export default function useWesternAllianceAccount() {
   const { authApi } = useAuth();
+  const queryClient = useQueryClient();
 
   const { isSuccess: accountsIsSuccess, data: accounts } = useQuery(
-    queryKey,
+    accountQueryKey,
     getAccounts
   );
 
+  const { mutate: createAccount } = useMutation(createAccountMutation, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(accountQueryKey);
+    },
+  });
+
+  const { mutate: deleteAccount } = useMutation(deleteAccountMutation, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(accountQueryKey);
+    },
+  });
+
+  const { mutate: updateAccount } = useMutation(updateAccountMutation, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(accountQueryKey);
+    },
+  });
+
   async function getAccounts() {
     const { data } = await authApi.get<Account[]>("/western-alliance/accounts");
+    data.sort((a, b) => a.accountTitle.localeCompare(b.accountTitle));
+    return data;
+  }
+
+  async function createAccountMutation(body: AccountCreateInput) {
+    const { data } = await authApi.post<Account>(
+      "/western-alliance/account",
+      body
+    );
+    return data;
+  }
+
+  async function deleteAccountMutation(id: string) {
+    const { data } = await authApi.delete<Account>(
+      `/western-alliance/account?id=${id}`
+    );
+    return data;
+  }
+
+  async function updateAccountMutation(body: AccountUpdateInput) {
+    const { data } = await authApi.patch<Account>(
+      "/western-alliance/account",
+      body
+    );
     return data;
   }
 
   return {
-    queryKey,
+    accountQueryKey,
     accountsIsSuccess,
     accounts,
+    createAccount,
+    deleteAccount,
+    updateAccount,
   };
 }

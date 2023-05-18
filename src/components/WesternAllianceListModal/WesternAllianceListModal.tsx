@@ -8,11 +8,11 @@ import {
   IonTitle,
 } from "@ionic/react";
 import { useAtom } from "jotai";
-import { isOpenAtom } from "atoms/userListModal";
+import { isOpenAtom } from "atoms/westernAllianceModal";
 
-import FormCreateUser from "components/FormCreateUser/FormCreateUser";
+import FormCreateWesternAlliance from "components/FormCreateWesternAlliance/FormCreateWesternAlliance";
 
-export default function UserListModal() {
+export default function WesternAllianceListModal() {
   const [isOpen, setIsOpen] = useAtom(isOpenAtom);
 
   function closeModal() {
@@ -26,11 +26,11 @@ export default function UserListModal() {
           <IonButtons slot="start">
             <IonButton onClick={closeModal}>Cancel</IonButton>
           </IonButtons>
-          <IonTitle>New user</IonTitle>
+          <IonTitle>New account</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
-        <FormCreateUser />
+        <FormCreateWesternAlliance />
       </IonContent>
     </IonModal>
   );

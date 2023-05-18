@@ -36,16 +36,14 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
   }, [profileAccounts]);
 
   const accountOptions =
-    accounts
-      ?.map((account) => {
-        const truncatedAccountNumber = account.accountNumber.slice(-4);
-        const label = `${account.accountTitle} (...${truncatedAccountNumber})`;
-        return {
-          value: account.accountNumber,
-          label,
-        };
-      })
-      .sort((a, b) => a.label.localeCompare(b.label)) || [];
+    accounts?.map((account) => {
+      const truncatedAccountNumber = account.accountNumber.slice(-4);
+      const label = `${account.accountTitle} (...${truncatedAccountNumber})`;
+      return {
+        value: account.accountNumber,
+        label,
+      };
+    }) || [];
 
   function handleCheckbox(value: string) {
     const newActiveAccounts = [...activeAccounts];

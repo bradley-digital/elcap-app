@@ -130,11 +130,6 @@ export default function TransactionsTable() {
             " " +
             transaction.trailerRecord6;
           return transaction;
-        })
-        .sort((t1, t2) => {
-          const d1 = new Date(t1.postingDate);
-          const d2 = new Date(t2.postingDate);
-          return d2.getTime() - d1.getTime();
         }) || []
     );
   }, [

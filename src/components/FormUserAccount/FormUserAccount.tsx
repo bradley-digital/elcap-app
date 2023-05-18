@@ -153,9 +153,7 @@ export default function FormUserAccount({ profile }: Props) {
 
           <FormSelect label="Role" name="role" options={roleOptions} />
 
-          <SubmitButton isSubmitting={isSubmitting}>
-            Submit
-          </SubmitButton>
+          <SubmitButton isSubmitting={isSubmitting}>Update User</SubmitButton>
         </IonList>
       </Form>
     </Formik>

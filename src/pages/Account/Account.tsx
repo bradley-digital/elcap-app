@@ -1,32 +1,36 @@
+import type { RouteComponentProps } from "react-router-dom";
+import type { MenuLink } from "components/MenuLinks/MenuLinks";
+import { arrowBack, business } from "ionicons/icons";
+
 // components
-import { IonCol, IonGrid, IonRow } from "@ionic/react";
-import PageTemplate from "components/PageTemplate/PageTemplate";
-import ProfileCard from "components/ProfileCard/ProfileCard";
-import FormAccount from "components/FormAccount/FormAccount";
-import LogoutButton from "components/LogoutButton/LogoutButton";
+import SplitPaneTemplate from "components/SplitPaneTemplate/SplitPaneTemplate";
+import AccountRoutes from "routes/AccountRoutes";
 
-// hooks
-import useUser from "hooks/useUser";
+export default function Account(routeProps: RouteComponentProps) {
+  const { match } = routeProps;
 
-export default function Account() {
-  const { isSuccess, data } = useUser();
+  const menuLinks: MenuLink[] = [
+    {
+      id: 1,
+      icon: arrowBack,
+      href: "/account-management",
+      label: "All accounts",
+    },
+    {
+      id: 2,
+      icon: business,
+      href: `${match.url}/western-alliance`,
+      label: "Western Alliance",
+    },
+  ];
 
-  if (isSuccess && typeof data !== "undefined") {
-    return (
-      <PageTemplate title="Profile">
-        <IonGrid>
-          <IonRow className="ion-justify-content-center">
-            <IonCol size-md="8" size-lg="6">
-              <ProfileCard profile={data} />
-              <FormAccount profile={data} />
-              <LogoutButton className="w-100">Logout</LogoutButton>
-            </IonCol>
-          </IonRow>
-        </IonGrid>
-      </PageTemplate>
-    );
-  }
-
-  // Need better error state
-  return null;
+  return (
+    <SplitPaneTemplate
+      title="Account management"
+      menuId="account"
+      menuLinks={menuLinks}
+    >
+      <AccountRoutes {...routeProps} />
+    </SplitPaneTemplate>
+  );
 }

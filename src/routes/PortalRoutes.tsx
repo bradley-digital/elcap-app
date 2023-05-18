@@ -1,9 +1,9 @@
 import { Redirect, Route, Switch } from "react-router-dom";
 
 // pages
-import Account from "pages/Account/Account";
 import Dashboard from "pages/Dashboard/Dashboard";
 import Docfox from "pages/Docfox/Docfox";
+import Profile from "pages/Profile/Profile";
 
 // components
 import {
@@ -24,7 +24,7 @@ export default function PortalRoutes() {
         <Switch>
           {/* Paths with nested routes must not have "exact" */}
           <Route path="/dashboard" component={Dashboard} />
-          <Route exact path="/profile" component={Account} />
+          <Route exact path="/profile" component={Profile} />
           <Route exact path="/onboarding" component={Docfox} />
           {/* Fallback route */}
           <Route render={() => <Redirect to="/dashboard" />} />

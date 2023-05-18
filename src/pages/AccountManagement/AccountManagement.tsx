@@ -7,33 +7,34 @@ import {
   IonRow,
 } from "@ionic/react";
 import { useAtom } from "jotai";
-import { isOpenAtom } from "atoms/userListModal";
+import { isOpenAtom } from "atoms/westernAllianceModal";
 import PageTemplate from "components/PageTemplate/PageTemplate";
-import UserList from "components/UserList/UserList";
-import UserListModal from "components/UserListModal/UserListModal";
+import WesternAllianceList from "components/WesternAllianceList/WesternAllianceList";
+import WesternAllianceListModal from "components/WesternAllianceListModal/WesternAllianceListModal";
 
 // hooks
-import useUserManagement from "hooks/useUserManagement";
+import useWesternAlliance from "hooks/useWesternAllianceAccount";
 
 // icons
 import { add } from "ionicons/icons";
 
-export default function UserManagement() {
-  const { isSuccess, data } = useUserManagement();
+export default function WesternAllianceManagement() {
+  const { accountsIsSuccess, accounts } = useWesternAlliance();
+
   const [, setIsOpen] = useAtom(isOpenAtom);
 
   function openModal() {
     setIsOpen(true);
   }
 
-  if (isSuccess && typeof data !== "undefined") {
+  if (accountsIsSuccess && typeof accounts !== "undefined") {
     return (
-      <PageTemplate title="User management">
+      <PageTemplate title="Account management">
         <IonGrid>
           <IonRow className="ion-justify-content-center">
             <IonCol size-md="8" size-lg="6">
-              <UserList users={data} />
-              <UserListModal />
+              <WesternAllianceList accounts={accounts} />
+              <WesternAllianceListModal />
             </IonCol>
           </IonRow>
         </IonGrid>
