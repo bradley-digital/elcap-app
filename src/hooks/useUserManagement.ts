@@ -15,6 +15,7 @@ type ProfileUpdateByIdInput = {
   country?: string;
   state?: string;
   role?: string;
+  onboardingStage?: string;
   accounts?: string[];
   applicationId?: string;
 };

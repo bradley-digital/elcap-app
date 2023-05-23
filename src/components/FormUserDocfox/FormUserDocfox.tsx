@@ -150,7 +150,7 @@ export default function FormUserDocfox({ profile }: Props) {
         <div>
           <h3>Upload documents</h3>
           <p>
-            Use this portal to upload the documents required for your
+            Use this portal to upload the documents required for the
             application.
           </p>
           <IonButton href={invitationLink} expand="block" target="_blank">
@@ -170,17 +170,20 @@ export default function FormUserDocfox({ profile }: Props) {
               application,
               values
             );
-            if (!Array.isArray(patchData)) return;
-            for (const data of patchData) {
-              await patchProfileData(data);
+            if (Array.isArray(patchData)) {
+              for (const data of patchData) {
+                await patchProfileData(data);
+              }
             }
-            if (!Array.isArray(deleteData)) return;
-            for (const data of deleteData) {
-              await deleteProfileData(data);
+            if (Array.isArray(deleteData)) {
+              for (const data of deleteData) {
+                await deleteProfileData(data);
+              }
             }
-            if (!Array.isArray(postData)) return;
-            for (const data of postData) {
-              await postProfileData(data);
+            if (Array.isArray(postData)) {
+              for (const data of postData) {
+                await postProfileData(data);
+              }
             }
           }
           if (!applicationId || templateId !== initialTemplateId) {
@@ -196,7 +199,7 @@ export default function FormUserDocfox({ profile }: Props) {
         <Form>
           <FormObserver onChange={handleChange} />
           <IonList>
-            <IonListHeader>DocFox Application</IonListHeader>
+            <IonListHeader>DocFox application</IonListHeader>
             <FormSelect
               label="Entity Template"
               name="kyc_entity_template_id"

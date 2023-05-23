@@ -19,6 +19,7 @@ export type Profile = {
   country: string;
   state?: string;
   role: string;
+  onboardingStage: string;
   createdAt: string;
   accounts?: ProfileAccount[];
   docfoxApplication: DocfoxApplication;
@@ -33,6 +34,7 @@ type ProfileUpdateInput = {
   addressLine2?: string;
   country?: string;
   state?: string;
+  onboardingStage?: string;
 };
 
 export const queryKey = "userAccount";
@@ -41,9 +43,12 @@ export default function useUser() {
   const { authApi } = useAuth();
   const queryClient = useQueryClient();
 
-  const { isSuccess, data } = useQuery(queryKey, getUser);
+  const {
+    isSuccess: profileIsSuccess,
+    data: profile,
+  } = useQuery(queryKey, getUser);
 
-  const { mutate } = useMutation(updateUser, {
+  const { mutate: updateUser } = useMutation(updateUserMutation, {
     onSuccess: (data) => {
       queryClient.setQueryData(queryKey, data);
     },
@@ -54,15 +59,15 @@ export default function useUser() {
     return data;
   }
 
-  async function updateUser(body: ProfileUpdateInput) {
+  async function updateUserMutation(body: ProfileUpdateInput) {
     const { data } = await authApi.patch<Profile>("/users/update", body);
     return data;
   }
 
   return {
-    queryKey,
-    isSuccess,
-    data,
-    mutate,
+    userQueryKey: queryKey,
+    profileIsSuccess,
+    profile,
+    updateUser,
   };
 }

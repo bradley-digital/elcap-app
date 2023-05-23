@@ -33,7 +33,7 @@ type Props = {
 };
 
 export default function FormAccount({ profile }: Props) {
-  const { mutate } = useUser();
+  const { updateUser } = useUser();
   const [edited, setEdited] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -81,7 +81,7 @@ export default function FormAccount({ profile }: Props) {
       })}
       onSubmit={(values) => {
         setIsSubmitting(true);
-        mutate(values);
+        updateUser(values);
         setEdited(false);
         setIsSubmitting(false);
       }}

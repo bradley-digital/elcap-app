@@ -22,8 +22,6 @@ export default function AuthRouter() {
     if (isAuthenticated) {
       router.push(startPath.current);
     }
-    // Only run when isAuthenticated changes
-    /* eslint-disable-next-line */
   }, [isAuthenticated]);
 
   // do redirect base on roles. | ADMIN, PAYMENTS, PORTAL

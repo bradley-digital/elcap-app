@@ -119,17 +119,20 @@ export default function FormDocfox() {
                 application,
                 values
               );
-              if (!Array.isArray(patchData)) return;
-              for (const data of patchData) {
-                await patchProfileData(data);
+              if (Array.isArray(patchData)) {
+                for (const data of patchData) {
+                  await patchProfileData(data);
+                }
               }
-              if (!Array.isArray(deleteData)) return;
-              for (const data of deleteData) {
-                await deleteProfileData(data);
+              if (Array.isArray(deleteData)) {
+                for (const data of deleteData) {
+                  await deleteProfileData(data);
+                }
               }
-              if (!Array.isArray(postData)) return;
-              for (const data of postData) {
-                await postProfileData(data);
+              if (Array.isArray(postData)) {
+                for (const data of postData) {
+                  await postProfileData(data);
+                }
               }
             }
             updateApplication();

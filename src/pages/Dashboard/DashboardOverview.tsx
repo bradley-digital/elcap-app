@@ -6,11 +6,11 @@ import DashboardOveriew from "components/DashboardOverview/DashboardOverview";
 import useUser from "hooks/useUser";
 
 export default function DashboardOverview() {
-  const { data: userData } = useUser();
+  const { profile } = useUser();
 
   return (
     <PageTemplate
-      title={(userData && userData.companyName) || ""}
+      title={(profile && profile.companyName) || ""}
       menuId="dashboard"
     >
       <DashboardOveriew />
