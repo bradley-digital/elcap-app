@@ -13,6 +13,9 @@ import {
 import Logo from "components/Logo/Logo";
 import FormAccount from "components/FormAccount/FormAccount";
 
+// hooks
+import useUserDocfox from "hooks/useUserDocfox";
+
 import "./Onboarding.scss";
 
 type Props = {
@@ -21,6 +24,10 @@ type Props = {
 
 export default function Onboarding({ stage }: Props) {
   const { profile, updateUser } = useUser();
+  const {
+    dataRequirements,
+    invitationLink,
+  } = useUserDocfox();
 
   if (typeof profile === "undefined") return null;
 
@@ -51,6 +58,7 @@ export default function Onboarding({ stage }: Props) {
     content = (
       <div>
         <IonText className="t-center">
+          <p className="brow">Step 1</p>
           <h1>Confirm account holder details</h1>
         </IonText>
         <FormAccount profile={profile} />
@@ -58,8 +66,19 @@ export default function Onboarding({ stage }: Props) {
       </div>
     );
   } else if (stage === "KYC") {
+    let documentCount = 0;
+    if (typeof dataRequirements !== "undefined") {
+      documentCount = dataRequirements.data?.length || 0;
+    }
     content = (
-      <div>KYC</div>
+      <div className="t-center">
+        <IonText>
+          <p className="brow">Step 2</p>
+          <h1>New account documents</h1>
+          <p>{documentCount} documents required.</p>
+        </IonText>
+        <IonButton href={invitationLink} target="_blank">Upload documents</IonButton>
+      </div>
     );
   } else if (stage === "PENDING") {
     content = (
