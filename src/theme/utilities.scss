@@ -1,3 +1,5 @@
+@import "@/theme/variables.scss";
+
 .h-100 {
   height: 100%;
 }
@@ -30,4 +32,16 @@
 
 .t-center {
   text-align: center;
+}
+
+.c-primary {
+  color: $primary;
+}
+
+.c-warning {
+  color: $warning;
+}
+
+.c-danger {
+  color: $danger;
 }

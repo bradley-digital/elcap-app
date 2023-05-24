@@ -1,2 +1,18 @@
 .Onboarding {
+  &__document {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  &__documentStatus {
+    align-items: center;
+    display: flex;
+    font-size: 14px;
+
+    > :first-child {
+      font-size: 20px;
+      margin-right: 8px;
+    }
+  }
 }
