@@ -8,8 +8,6 @@ import {
   IonContent,
   IonGrid,
   IonIcon,
-  IonItem,
-  IonList,
   IonPage,
   IonRow,
   IonSpinner,
@@ -28,6 +26,15 @@ import useUserDocfox from "hooks/useUserDocfox";
 import useAuth from "hooks/useAuth";
 
 import "./Onboarding.scss";
+
+type Document = {
+  name: string;
+  status: "approved" | "pending_upload" | "rejected" | "uploaded";
+};
+
+type Props = {
+  stage: string;
+};
 
 const statusIcons = {
   "approved": <IonIcon icon={checkmarkCircle} />,
@@ -50,12 +57,8 @@ const statusColors = {
   "uploaded": "",
 };
 
-type Props = {
-  stage: string;
-};
-
 export default function Onboarding({ stage }: Props) {
-  const [documents, setDocuments] = useState<unkown[]>([]);
+  const [documents, setDocuments] = useState<Document[]>([]);
   const [documentCount, setDocumentCount] = useState(0);
   const { authApi } = useAuth();
   const { profile, updateUser } = useUser();
