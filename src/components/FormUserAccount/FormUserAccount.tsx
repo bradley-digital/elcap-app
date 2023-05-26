@@ -32,15 +32,15 @@ import useUserManagement from "hooks/useUserManagement";
 const roleOptions = [
   {
     value: "ADMIN",
-    label: "ADMIN",
+    label: "Admin",
   },
   {
     value: "PAYMENTS",
-    label: "PAYMENTS",
+    label: "Payments",
   },
   {
     value: "PORTAL",
-    label: "PORTAL",
+    label: "Portal",
   },
 ];
 
