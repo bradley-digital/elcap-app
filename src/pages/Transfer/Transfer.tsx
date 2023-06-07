@@ -1,10 +1,10 @@
 import type { RouteComponentProps } from "react-router-dom";
 import type { MenuLink } from "components/MenuLinks/MenuLinks";
-import { create, personCircle } from "ionicons/icons";
+import { exit, receipt, swapHorizontal } from "ionicons/icons";
 
 // components
 import SplitPaneTemplate from "components/SplitPaneTemplate/SplitPaneTemplate";
-import ProfileRoutes from "routes/ProfileRoutes";
+import TransferRoutes from "routes/TransferRoutes";
 
 export default function Profile(routeProps: RouteComponentProps) {
   const { match } = routeProps;
@@ -12,15 +12,21 @@ export default function Profile(routeProps: RouteComponentProps) {
   const menuLinks: MenuLink[] = [
     {
       id: 1,
-      icon: personCircle,
+      icon: receipt,
       href: `${match.url}/overview`,
       label: "Overview",
     },
     {
       id: 2,
-      icon: create,
-      href: `${match.url}/onboarding`,
-      label: "Onboarding",
+      icon: swapHorizontal,
+      href: `${match.url}/account`,
+      label: "Account transfer",
+    },
+    {
+      id: 3,
+      icon: exit,
+      href: `${match.url}/wire`,
+      label: "Wire transfer",
     },
   ];
 
@@ -30,7 +36,7 @@ export default function Profile(routeProps: RouteComponentProps) {
       menuId="profile"
       menuLinks={menuLinks}
     >
-      <ProfileRoutes {...routeProps} />
+      <TransferRoutes {...routeProps} />
     </SplitPaneTemplate>
   );
 }

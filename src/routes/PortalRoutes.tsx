@@ -5,9 +5,9 @@ import useUser from "hooks/useUser";
 
 // pages
 import Dashboard from "pages/Dashboard/Dashboard";
-import Docfox from "pages/Docfox/Docfox";
 import Onboarding from "pages/Onboarding/Onboarding";
 import Profile from "pages/Profile/Profile";
+import Transfer from "pages/Transfer/Transfer";
 
 // components
 import {
@@ -19,7 +19,7 @@ import {
   IonTabs,
 } from "@ionic/react";
 
-import { create, grid, personCircle } from "ionicons/icons";
+import { card, grid, personCircle } from "ionicons/icons";
 
 export default function PortalRoutes() {
   const { profile } = useUser();
@@ -35,8 +35,8 @@ export default function PortalRoutes() {
           <Switch>
             {/* Paths with nested routes must not have "exact" */}
             <Route path="/dashboard" component={Dashboard} />
-            <Route exact path="/profile" component={Profile} />
-            <Route exact path="/onboarding" component={Docfox} />
+            <Route path="/profile" component={Profile} />
+            <Route path="/transfer" component={Transfer} />
             {/* Fallback route */}
             <Route render={() => <Redirect to="/dashboard" />} />
           </Switch>
@@ -46,9 +46,9 @@ export default function PortalRoutes() {
             <IonIcon icon={grid} />
             <IonLabel>Dashboard</IonLabel>
           </IonTabButton>
-          <IonTabButton tab="onboarding" href="/onboarding">
-            <IonIcon icon={create} />
-            <IonLabel>Onboarding</IonLabel>
+          <IonTabButton tab="transfer" href="/transfer">
+            <IonIcon icon={card} />
+            <IonLabel>Pay & transfer</IonLabel>
           </IonTabButton>
           <IonTabButton tab="profile" href="/profile">
             <IonIcon icon={personCircle} />
@@ -58,6 +58,14 @@ export default function PortalRoutes() {
       </IonTabs>
     );
   } else {
-    return <Onboarding stage={onboardingStage} />;
+    return (
+      <IonRouterOutlet>
+        <Switch>
+          <Route exact path="/onboarding" component={Onboarding} />
+          {/* Fallback route */}
+          <Route render={() => <Redirect to="/onboarding" />} />
+        </Switch>
+      </IonRouterOutlet>
+    );
   }
 }

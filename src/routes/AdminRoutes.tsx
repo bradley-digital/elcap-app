@@ -3,7 +3,7 @@ import { Redirect, Route, Switch } from "react-router-dom";
 // pages
 import Account from "pages/Account/Account";
 import AccountManagement from "pages/AccountManagement/AccountManagement";
-import Profile from "pages/Profile/Profile";
+import Profile from "pages/Profile/ProfileOverview";
 import UserManagement from "pages/UserManagement/UserManagement";
 import User from "pages/User/User";
 

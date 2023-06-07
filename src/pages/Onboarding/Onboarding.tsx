@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import useUser from "hooks/useUser";
 
 // components
 import {
@@ -22,6 +21,7 @@ import Logo from "components/Logo/Logo";
 import FormAccount from "components/FormAccount/FormAccount";
 
 // hooks
+import useUser from "hooks/useUser";
 import useUserDocfox from "hooks/useUserDocfox";
 import useAuth from "hooks/useAuth";
 
@@ -29,35 +29,61 @@ import "./Onboarding.scss";
 
 type Document = {
   name: string;
-  status: "approved" | "pending_upload" | "rejected" | "uploaded";
+  status:
+    | "pending_upload"
+    | "data_call_pending"
+    | "data_call_complete"
+    | "being_processed"
+    | "pending_review"
+    | "accepted"
+    | "rejected"
+    | "invalidated";
 };
 
-type Props = {
-  stage: string;
+const statuses = {
+  "pending_upload": {
+    icon: <IonIcon icon={closeCircle} />,
+    message: "Not submitted",
+    color: "c-danger",
+  },
+  "data_call_pending": {
+    icon: <IonIcon icon={ellipsisHorizontalCircle} />,
+    message: "External data loading",
+    color: "",
+  },
+  "data_call_complete": {
+    icon: <IonIcon icon={ellipsisHorizontalCircle} />,
+    message: "External data loaded",
+    color: "",
+  },
+  "being_processed": {
+    icon: <IonIcon icon={ellipsisHorizontalCircle} />,
+    message: "Processing image",
+    color: "",
+  },
+  "pending_review": {
+    icon: <IonIcon icon={ellipsisHorizontalCircle} />,
+    message: "Under review",
+    color: "",
+  },
+  "accepted": {
+    icon: <IonIcon icon={checkmarkCircle} />,
+    message: "Approved",
+    color: "c-primary",
+  },
+  "rejected": {
+    icon: <IonIcon icon={closeCircle} />,
+    message: "Rejected",
+    color: "c-danger",
+  },
+  "invalidated": {
+    icon: <IonIcon icon={closeCircle} />,
+    message: "Invalidated",
+    color: "c-danger",
+  },
 };
 
-const statusIcons = {
-  "approved": <IonIcon icon={checkmarkCircle} />,
-  "pending_upload": <IonIcon icon={closeCircle} />,
-  "rejected": <IonIcon icon={closeCircle} />,
-  "uploaded": <IonIcon icon={ellipsisHorizontalCircle} />,
-};
-
-const statusMessages = {
-  "approved": "Approved",
-  "pending_upload": "Not submitted",
-  "rejected": "Not approved",
-  "uploaded": "Under review",
-};
-
-const statusColors = {
-  "approved": "c-primary",
-  "pending_upload": "c-danger",
-  "rejected": "c-danger",
-  "uploaded": "",
-};
-
-export default function Onboarding({ stage }: Props) {
+export default function Onboarding() {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [documentCount, setDocumentCount] = useState(0);
   const { authApi } = useAuth();
@@ -69,39 +95,44 @@ export default function Onboarding({ stage }: Props) {
 
   useEffect(() => {
     async function getDocuments() {
+      if (typeof dataRequirements === "undefined") return;
       const newDocuments = [];
       let newDocumentCount = 0;
       let approvedDocumentCount = 0;
-      if (typeof dataRequirements !== "undefined") {
-        newDocumentCount = dataRequirements.data?.length || 0;
-        for (const dataRequirement of dataRequirements.data) {
-          const evidenceLink = dataRequirement?.relationships?.active_evidence_submission?.links?.related;
-          if (!evidenceLink) continue;
-          const evidenceId = evidenceLink.split("/").pop();
-          if (!evidenceId) continue;
-          const { data: evidenceSubmission } =
-            await authApi.get(`/docfox/evidence-submission?evidenceId=${evidenceId}`);
-          const status = evidenceSubmission?.data?.attributes?.status
-          const doc = {
-            name: dataRequirement?.attributes?.name,
-            status,
-          };
-          if (status === "approved") {
-            approvedDocumentCount++;
-          }
-          newDocuments.push(doc);
+      newDocumentCount = dataRequirements.data?.length || 0;
+      for (const dataRequirement of dataRequirements.data) {
+        const evidenceLink = dataRequirement?.relationships?.active_evidence_submission?.links?.related;
+        if (!evidenceLink) continue;
+        const evidenceId = evidenceLink.split("/").pop();
+        if (!evidenceId) continue;
+        const { data: evidenceSubmission } =
+          await authApi.get(`/docfox/evidence-submission?evidenceId=${evidenceId}`);
+        const status = evidenceSubmission?.data?.attributes?.status
+        const doc = {
+          name: dataRequirement?.attributes?.name,
+          status,
+        };
+        if (status === "accepted") {
+          approvedDocumentCount++;
+        }
+        newDocuments.push(doc);
+      }
+      if (documentCount > 0) {
+        if (documentCount === approvedDocumentCount) {
+          updateUser({ onboardingStage: "PENDING" });
+        } else if (documentCount > approvedDocumentCount) {
+          updateUser({ onboardingStage: "KYC" });
         }
       }
       setDocuments(newDocuments);
       setDocumentCount(newDocumentCount);
-      if (documentCount > 0 && documentCount === approvedDocumentCount) {
-        updateUser({ onboardingStage: "PENDING" });
-      }
     }
     getDocuments();
   }, [dataRequirements]);
 
   if (typeof profile === "undefined") return null;
+
+  const { companyName, onboardingStage } = profile;
 
   function handleStart() {
     updateUser({ onboardingStage: "CONFIRMATION" });
@@ -111,11 +142,9 @@ export default function Onboarding({ stage }: Props) {
     updateUser({ onboardingStage: "KYC" });
   }
 
-  const { companyName } = profile;
-
   let content = null;
 
-  if (stage === "START") {
+  if (onboardingStage === "START") {
     content = (
       <div className="t-center">
         <Logo />
@@ -126,7 +155,7 @@ export default function Onboarding({ stage }: Props) {
         <IonButton onClick={handleStart}>Get Started</IonButton>
       </div>
     );
-  } else if (stage === "CONFIRMATION") {
+  } else if (onboardingStage === "CONFIRMATION") {
     content = (
       <div>
         <IonText className="t-center">
@@ -137,38 +166,34 @@ export default function Onboarding({ stage }: Props) {
         <IonButton onClick={handleConfirm}>Confirm</IonButton>
       </div>
     );
-  } else if (stage === "KYC") {
-    if (documentCount > 0) {
-      content = (
-        <div className="t-center">
-          <IonText>
-            <p className="brow">Step 2</p>
-            <h1>New account documents</h1>
-            <p>{documentCount} documents required</p>
-          </IonText>
-          <div className="Onboarding__documents">
-            {documents.map(({ name, status }) => (
-              <div key={name} className="Onboarding__document">
-                <span>{name}</span>
-                <span className={`Onboarding__documentStatus ${statusColors[status]}`}>{statusIcons[status] || null} {statusMessages[status] || ""}</span>
-              </div>
-            ))}
-          </div>
-          <IonButton href={invitationLink} target="_blank">Upload documents</IonButton>
-        </div>
-      );
-    } else {
-      content = (
-        <div className="t-center">
-          <IonText>
-            <p className="brow">Step 2</p>
-            <h1>New account documents</h1>
-          </IonText>
+  } else if (onboardingStage === "KYC") {
+    content = (
+      <div className="t-center">
+        <IonText className="t-center">
+          <p className="brow">Step 2</p>
+          <h1>New account documents</h1>
+        </IonText>
+        {documentCount > 0 ?
+          <>
+            <IonText className="t-center">
+              <p>{documentCount} documents required</p>
+            </IonText>
+            <div className="Onboarding__documents">
+              {documents.map(({ name, status }) => (
+                <div key={name} className="Onboarding__document">
+                  <span>{name}</span>
+                  <span className={`Onboarding__documentStatus ${statuses[status].color}`}>{statuses[status].icon || null} {statuses[status].message || ""}</span>
+                </div>
+              ))}
+            </div>
+            <IonButton href={invitationLink} target="_blank">Upload documents</IonButton>
+          </>
+        :
           <IonSpinner name="crescent" />
-        </div>
-      );
-    }
-  } else if (stage === "PENDING") {
+        }
+      </div>
+    );
+  } else if (onboardingStage === "PENDING") {
     content = (
       <div className="t-center">
         <Logo />
