@@ -35,8 +35,8 @@ export default function PortalRoutes() {
           <Switch>
             {/* Paths with nested routes must not have "exact" */}
             <Route path="/dashboard" component={Dashboard} />
-            <Route path="/profile" component={Profile} />
             <Route path="/transfer" component={Transfer} />
+            <Route path="/profile" component={Profile} />
             {/* Fallback route */}
             <Route render={() => <Redirect to="/dashboard" />} />
           </Switch>

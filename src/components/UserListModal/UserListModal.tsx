@@ -23,10 +23,10 @@ export default function UserListModal() {
     <IonModal isOpen={isOpen} onWillDismiss={closeModal}>
       <IonHeader>
         <IonToolbar>
-          <IonButtons slot="start">
+          <IonTitle>New user</IonTitle>
+          <IonButtons slot="end">
             <IonButton onClick={closeModal}>Cancel</IonButton>
           </IonButtons>
-          <IonTitle>New user</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">

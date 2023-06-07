@@ -100,7 +100,7 @@ export default function FormUserAccount({ profile }: Props) {
     >
       <Form>
         <IonList>
-          <IonListHeader>Profile information</IonListHeader>
+          <IonListHeader><h3>Profile information</h3></IonListHeader>
 
           <FormInput
             label="First Name"
