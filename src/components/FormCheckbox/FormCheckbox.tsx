@@ -4,38 +4,37 @@ import { useField } from "formik";
 import cn from "classnames";
 
 // components
-import { IonIcon, IonItem, IonInput, IonLabel, IonNote } from "@ionic/react";
+import { IonCheckbox, IonItem, IonLabel, IonNote } from "@ionic/react";
 
-import "./FormInput.scss";
+import "./FormCheckbox.scss";
 
 type Props = {
   className?: string;
-  icon?: string;
   label?: string;
   note?: string;
-} & ComponentProps<typeof IonInput> &
+} & ComponentProps<typeof IonCheckbox> &
   FieldHookConfig<string>;
 
 export default function FormInput(props: Props) {
   const [field, meta] = useField(props);
 
-  const { className, icon, label, note, ...rest } = props;
+  const { className, label, note, ...rest } = props;
 
   return (
     <IonItem
-      className={cn("FormInput", className, {
+      className={cn("FormCheckbox", className, {
         "ion-invalid": !!meta.error,
         "ion-touched": meta.touched,
       })}
     >
-      {!!label && <IonLabel position="stacked">{label}</IonLabel>}
-      {!!icon && <IonIcon icon={icon} className="FormInput__icon" />}
-      <IonInput
+      <IonCheckbox
         {...field}
         {...rest}
-        onIonBlur={field.onBlur}
-        onIonChange={field.onChange}
+        checked={field.checked}
+        onClick={field.onChange}
+        className="FormCheckbox__checkbox"
       />
+      {!!label && <IonLabel>{label}</IonLabel>}
       {!!note && !meta.error && <IonNote slot="helper">{note}</IonNote>}
       {!!meta.error && <IonNote slot="error">{meta.error}</IonNote>}
     </IonItem>

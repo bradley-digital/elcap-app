@@ -30,6 +30,17 @@ type AccountUpdateInput = {
   client?: string;
 };
 
+export type ExternalAccount = {
+  id: string;
+  accountName: string;
+  accountNumber: string;
+  financialInstitution: string;
+  intermediaryBankName?: string;
+  intermediaryRoutingNumber?: string;
+  intermediaryFurtherCreditTo?: string;
+  routingNumber: string;
+};
+
 export type Transaction = {
   id: string;
   accountNumber: string;
@@ -87,6 +98,18 @@ export type Transaction = {
   transactionSourceId: string;
   transactionSourceCode: number;
   transactionType: string;
+};
+
+export type Transfer = {
+  accountName: string;
+  accountNumber: string;
+  amount: number;
+  memo: string;
+  status: string;
+  submittedBy: string;
+  transactionNumber: string;
+  transferDate: string;
+  updatedBy: string;
 };
 
 const accountQueryKey = "westernAllianceAccount";

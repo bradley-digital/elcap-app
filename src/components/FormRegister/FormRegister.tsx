@@ -61,46 +61,38 @@ export default function FormRegister() {
           type="text"
           placeholder="First Name"
         />
-
         <FormInput
           label="Last Name"
           name="lastName"
           type="text"
           placeholder="Last Name"
         />
-
         <FormInput
           label="Email"
           name="email"
           type="email"
           placeholder="Email"
         />
-
         <FormInput label="Phone" name="phone" type="text" placeholder="Phone" />
-
         <FormInput
           label="Address line 1"
           name="addressLine1"
           type="text"
           placeholder="Address line 1"
         />
-
         <FormInput
           label="Address line 2"
           name="addressLine2"
           type="text"
           placeholder="Address line 2"
         />
-
         <FormInput
           label="Country"
           name="country"
           type="text"
           placeholder="Country"
         />
-
         <FormInput label="State" name="state" type="text" placeholder="State" />
-
         <SubmitButton isSubmitting={isSubmitting}>
           Register
         </SubmitButton>

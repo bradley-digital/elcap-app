@@ -55,9 +55,7 @@ export default function FormWesternAlliance({ account }: Props) {
       <Form>
         <IonList>
           <IonListHeader>Account information</IonListHeader>
-
           <FormInput label="Client" name="client" type="text" icon={pencil} />
-
           <FormInput
             label="Account Title"
             name="accountTitle"
@@ -65,7 +63,6 @@ export default function FormWesternAlliance({ account }: Props) {
             icon={lockClosed}
             readonly={true}
           />
-
           <FormInput
             label="Account Number"
             name="accountNumber"
@@ -73,7 +70,6 @@ export default function FormWesternAlliance({ account }: Props) {
             icon={lockClosed}
             readonly={true}
           />
-
           <FormInput
             label="Account Balance"
             name="accountBalance"
@@ -81,7 +77,6 @@ export default function FormWesternAlliance({ account }: Props) {
             icon={lockClosed}
             readonly={true}
           />
-
           <SubmitButton isSubmitting={isSubmitting}>
             Update Account
           </SubmitButton>

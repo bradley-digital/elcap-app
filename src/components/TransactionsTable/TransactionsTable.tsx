@@ -9,11 +9,9 @@ import { chevronBack, chevronForward, download } from "ionicons/icons";
 import { createCSV, downloadCSV } from "lib/csv";
 import { currency } from "lib/formats";
 
-// components
-import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
-
 // hooks
 import { transactionTypeMap as originalTransactionTypeMap } from "hooks/useWesternAllianceAccount";
+import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
 
 import {
   createColumnHelper,
@@ -92,9 +90,9 @@ export default function TransactionsTable() {
     string[]
   >([]);
 
-  const accountNumbers =
-    accounts?.map((account) => account.accountNumber) || [];
   const timeRanges = ["YTD", "MTD", "3M", "1Y", "3Y", "5Y", "Max"];
+  const accountNumbers =
+    accounts?.map(({ accountNumber }) => accountNumber) || [];
 
   useEffect(() => {
     const transactionTypes = Object.keys(transactionTypeMap);
@@ -144,9 +142,7 @@ export default function TransactionsTable() {
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  if (!transactions) {
-    return null;
-  }
+  if (!transactions) return null;
 
   const accountOptions =
     accounts
@@ -190,12 +186,12 @@ export default function TransactionsTable() {
     }
   }
 
-  function isInTransactionType(transaction: Transaction): boolean {
-    return selectedTransactionTypes.includes(transaction.transactionType);
+  function isInTransactionType({ transactionType }: Transaction): boolean {
+    return selectedTransactionTypes.includes(transactionType);
   }
 
-  function isInAccountNumbers(transaction: Transaction): boolean {
-    return selectedAccountNumbers.includes(transaction.accountNumber);
+  function isInAccountNumbers({ accountNumber }: Transaction): boolean {
+    return selectedAccountNumbers.includes(accountNumber);
   }
 
   function exportCSV() {
@@ -232,9 +228,9 @@ export default function TransactionsTable() {
                 multiple={true}
                 value={selectedAccountNumbers}
               >
-                {accountOptions?.map((option) => (
-                  <IonSelectOption key={option.value} value={option.value}>
-                    {option.label}
+                {accountOptions?.map(({ label, value }) => (
+                  <IonSelectOption key={value} value={value}>
+                    {label}
                   </IonSelectOption>
                 ))}
               </IonSelect>

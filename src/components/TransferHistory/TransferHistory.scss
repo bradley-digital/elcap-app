@@ -1,0 +1,117 @@
+@import "@/theme/variables.scss";
+
+.TransferHistory {
+  table {
+    width: 100%;
+  }
+
+  th {
+    text-align: left;
+  }
+
+  th,
+  td {
+    padding: 16px;
+    border-bottom: 1px solid $border-color;
+    white-space: nowrap;
+
+    &:last-child {
+      padding-right: 0;
+    }
+  }
+
+  &__description {
+    min-width: 300px;
+    white-space: normal;
+  }
+
+  &__filters {
+    display: flex;
+    flex-wrap: wrap;
+
+    > ion-item {
+      flex: 1 0 auto;
+    }
+  }
+
+  &__scroll {
+    &--parent {
+      width: 100%;
+      overflow: hidden;
+    }
+
+    &--child {
+      width: 100%;
+      overflow-y: scroll;
+      padding-right: 17px;
+      box-sizing: content-box;
+    }
+  }
+
+  &__pagination {
+    align-items: center;
+    display: flex;
+    padding: 16px;
+
+    > * {
+      margin-right: 16px;
+    }
+
+    > :last-child {
+      margin-right: 0;
+    }
+
+    @media (max-width: 576px) {
+      flex-wrap: wrap;
+      padding: 16px 0;
+    }
+  }
+
+  &__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    background-color: transparent;
+    border: 1px solid $border-color;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+  }
+
+  &__download {
+    width: auto;
+    border-radius: 16px;
+    padding: 0 8px;
+
+    ion-icon {
+      margin-right: 4px;
+    }
+  }
+
+  &__forward,
+  &__back--all {
+    margin-right: 4px;
+  }
+
+  &__back--all,
+  &__forward--all {
+    > :first-child {
+      margin-right: -8px;
+    }
+  }
+
+  &__select {
+    margin-left: auto;
+    background: transparent;
+    border: 1px solid $border-color;
+    padding: 6px;
+    width: auto;
+
+    @media (max-width: 576px) {
+      margin-top: 16px;
+      width: 100%;
+    }
+  }
+}

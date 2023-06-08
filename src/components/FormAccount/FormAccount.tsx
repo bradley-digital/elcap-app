@@ -90,21 +90,18 @@ export default function FormAccount({ profile }: Props) {
         <FormObserver onChange={handleChange} />
         <IonList>
           <IonListHeader>Profile information</IonListHeader>
-
           <FormInput
             label="First Name"
             name="firstName"
             type="text"
             icon={pencil}
           />
-
           <FormInput
             label="Last Name"
             name="lastName"
             type="text"
             icon={pencil}
           />
-
           <FormInput
             label="Email"
             name="email"
@@ -112,34 +109,27 @@ export default function FormAccount({ profile }: Props) {
             icon={lockClosed}
             readonly
           />
-
           <FormInput label="Phone" name="phone" type="text" icon={pencil} />
-
           <FormInput
             label="Company Name"
             name="companyName"
             type="text"
             icon={pencil}
           />
-
           <FormInput
             label="Address line 1"
             name="addressLine1"
             type="text"
             icon={pencil}
           />
-
           <FormInput
             label="Address line 2"
             name="addressLine2"
             type="text"
             icon={pencil}
           />
-
           <FormInput label="Country" name="country" type="text" icon={pencil} />
-
           <FormInput label="State" name="state" type="text" icon={pencil} />
-
           {edited && (
             <SubmitButton className="w-100" isSubmitting={isSubmitting}>
               Update

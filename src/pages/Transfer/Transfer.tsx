@@ -32,8 +32,8 @@ export default function Profile(routeProps: RouteComponentProps) {
 
   return (
     <SplitPaneTemplate
-      title="Profile"
-      menuId="profile"
+      title="Pay & transfer"
+      menuId="transfer"
       menuLinks={menuLinks}
     >
       <TransferRoutes {...routeProps} />

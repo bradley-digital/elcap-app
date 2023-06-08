@@ -25,9 +25,9 @@ import { isOpenAtom } from "atoms/westernAllianceModal";
 import useWesternAllianceAccount from "hooks/useWesternAllianceAccount";
 
 export default function FormCreateWesternAlliance() {
-  const { createAccount } = useWesternAllianceAccount();
-  const [, setIsOpen] = useAtom(isOpenAtom);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [, setIsOpen] = useAtom(isOpenAtom);
+  const { createAccount } = useWesternAllianceAccount();
 
   return (
     <Formik
@@ -51,21 +51,18 @@ export default function FormCreateWesternAlliance() {
       <Form>
         <IonList>
           <FormInput label="Client" name="client" type="text" icon={pencil} />
-
           <FormInput
             label="Account Title"
             name="accountTitle"
             type="text"
             icon={pencil}
           />
-
           <FormInput
             label="Account Number"
             name="accountNumber"
             type="text"
             icon={pencil}
           />
-
           <SubmitButton isSubmitting={isSubmitting}>
             Create New Account
           </SubmitButton>

@@ -4,24 +4,30 @@ export const phoneRegExp =
   /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/;
 
 export const numberRegExp = /[0-9]/g;
-
 export const symbolRegExp = /[^a-zA-Z0-9\s]/g;
-
 export const firstNameValidation = Yup.string().required("First Name required");
-
 export const lastNameValidation = Yup.string().required("Last Name required");
-
 export const addressLine1Validation = Yup.string().required("Address required");
-
 export const addressLine2Validation = Yup.string().nullable();
-
 export const countryValidation = Yup.string().required("Country required");
-
 export const companyNameValidation = Yup.string().nullable();
-
 export const roleValidation = Yup.string().required("Role required");
-
 export const accountBalanceValidation = Yup.number().nullable();
+export const transferFromAccountValidation = Yup.string().nullable();
+export const transferToAccountValidation = Yup.string().nullable();
+export const transferAmountValidation = Yup.number().nullable();
+export const transferMemoValidation = Yup.string().nullable();
+export const wireAmountValidation = Yup.number().nullable();
+export const wireExternalAccountNameValidation = Yup.string().nullable();
+export const wireExternalAccountNumberValidation = Yup.string().nullable();
+export const wireExternalFinancialInstitutionValidation = Yup.string().nullable();
+export const wireIntermediaryBankNameValidation = Yup.string().nullable();
+export const wireIntermediaryRoutingNumberValidation = Yup.string().nullable();
+export const wireIntermediaryFurtherCreditToValidation = Yup.string().nullable();
+export const wireMemoValidation = Yup.string().nullable();
+export const wireRecievingAccountValidation = Yup.string().nullable();
+export const wireSendingAccountValidation = Yup.string().nullable();
+export const wireUseIntermediaryAccountValidation = Yup.boolean().nullable();
 
 export const accountTitleValidation = Yup.string().required(
   "Account Title required"
