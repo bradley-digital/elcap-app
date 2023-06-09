@@ -18,7 +18,12 @@
     &:last-child {
       padding-right: 0;
     }
+
+    a {
+      cursor: pointer;
+    }
   }
+
 
   &__description {
     min-width: 300px;

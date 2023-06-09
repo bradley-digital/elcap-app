@@ -78,7 +78,6 @@ const columns = [
 ];
 
 export default function TransactionsTable() {
-  const { accounts, transactions } = useUserWesternAllianceAccount();
   const [selectedAccountNumbers, setSelectedAccountNumbers] = useState<
     string[]
   >([]);
@@ -86,6 +85,7 @@ export default function TransactionsTable() {
   const [selectedTransactionTypes, setSelectedTransactionTypes] = useState<
     string[]
   >([]);
+  const { accounts, transactions } = useUserWesternAllianceAccount();
 
   const timeRanges = ["YTD", "MTD", "3M", "1Y", "3Y", "5Y", "Max"];
   const accountNumbers =

@@ -39,11 +39,11 @@ import "./TransferHistory.scss";
 const columnHelper = createColumnHelper<Transfer>();
 
 export default function TransferHistory() {
-  const { transfers } = useUserWesternAllianceAccount();
-  const [, setId] = useAtom(idAtom);
-  const [, setIsOpen] = useAtom(isOpenAtom);
   const [selectedTimeRange, setSelectedTimeRange] = useState("YTD");
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
+  const [, setId] = useAtom(idAtom);
+  const [, setIsOpen] = useAtom(isOpenAtom);
+  const { transfers } = useUserWesternAllianceAccount();
 
   const timeRanges = ["YTD", "MTD", "3M", "1Y", "3Y", "5Y", "Max"];
   const statuses = transfers?.map(({ status }) => status) || [];

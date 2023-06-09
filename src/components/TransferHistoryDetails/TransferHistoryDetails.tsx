@@ -17,8 +17,8 @@ import {
 } from "@ionic/react";
 
 export default function TransferHistoryDetails() {
-  const { transfers } = useUserWesternAllianceAccount();
   const [transferId] = useAtom(idAtom);
+  const { transfers } = useUserWesternAllianceAccount();
 
   const transfer = transfers?.find(({ id }) => id === transferId);
   if (typeof transfer === "undefined") return null;
