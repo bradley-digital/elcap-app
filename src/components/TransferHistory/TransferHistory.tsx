@@ -4,11 +4,16 @@ import { useEffect, useMemo, useState } from "react";
 import { chevronBack, chevronForward } from "ionicons/icons";
 
 // lib
-import { currency } from "lib/formats";
+import { currency, date } from "lib/formats";
 
 // hooks
 import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
+import { useAtom } from "jotai";
 
+// atoms
+import { idAtom, isOpenAtom } from "atoms/transferHistoryModal";
+
+// components
 import {
   createColumnHelper,
   flexRender,
@@ -16,7 +21,6 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-
 import {
   IonCol,
   IonGrid,
@@ -34,36 +38,10 @@ import "./TransferHistory.scss";
 
 const columnHelper = createColumnHelper<Transfer>();
 
-const columns = [
-  columnHelper.accessor("transferDate", {
-    header: () => "Transfer Date",
-    // UTC offset for PT is -08:00
-    // https://en.wikipedia.org/wiki/List_of_UTC_offsets
-    cell: (info) =>
-      new Date(info.getValue().replace("Z", "-08:00")).toLocaleDateString(
-        "en-US"
-      ),
-  }),
-  columnHelper.accessor("accountName", {
-    header: () => "Account Name",
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor("accountNumber", {
-    header: () => "Account Number",
-    cell: (info) => `...${info.getValue().slice(-4)}`,
-  }),
-  columnHelper.accessor("amount", {
-    header: () => "Amount",
-    cell: (info) => currency.format(Number(info.getValue())),
-  }),
-  columnHelper.accessor("status", {
-    header: () => "Status",
-    cell: (info) => info.getValue(),
-  }),
-];
-
 export default function TransferHistory() {
   const { transfers } = useUserWesternAllianceAccount();
+  const [, setId] = useAtom(idAtom);
+  const [, setIsOpen] = useAtom(isOpenAtom);
   const [selectedTimeRange, setSelectedTimeRange] = useState("YTD");
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
 
@@ -89,6 +67,37 @@ export default function TransferHistory() {
     selectedTimeRange,
   ]);
 
+  const columns = useMemo(() => {
+    return [
+      columnHelper.accessor("transferDate", {
+        header: () => "Transfer date",
+        cell: (info) => date(info.getValue()),
+      }),
+      columnHelper.accessor("accountNumber", {
+        header: () => "Account number",
+        cell: (info) => `...${info.getValue().slice(-4)}`,
+      }),
+      columnHelper.accessor("accountName", {
+        header: () => "Account name",
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor("amount", {
+        header: () => "Amount",
+        cell: (info) => currency(Number(info.getValue())),
+      }),
+      columnHelper.accessor("id", {
+        header: () => "Details",
+        cell: (info) => (
+          <a onClick={() => openModal(info.getValue())}>See details</a>
+        ),
+      }),
+      columnHelper.accessor("status", {
+        header: () => "Status",
+        cell: (info) => info.getValue(),
+      }),
+    ];
+  }, []);
+
   const table = useReactTable({
     data: filteredTransfers,
     columns,
@@ -106,7 +115,12 @@ export default function TransferHistory() {
       }))
       .sort((a, b) => a.label.localeCompare(b.label)) || [];
 
-  function isInDateRange(transfer: Transfer): boolean {
+  function openModal(id: string) {
+    setId(id);
+    setIsOpen(true);
+  }
+
+  function isInDateRange(transfer: Transfer) {
     const date = new Date(transfer.transferDate);
     const currentDate = new Date();
     const timeDiff = Math.abs(currentDate.getTime() - date.getTime());

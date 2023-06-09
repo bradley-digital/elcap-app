@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as Yup from "yup";
 
 // lib
@@ -12,7 +12,7 @@ import {
   wireIntermediaryRoutingNumberValidation,
   wireIntermediaryFurtherCreditToValidation,
   wireMemoValidation,
-  wireRecievingAccountValidation,
+  wireReceivingAccountValidation,
   wireSendingAccountValidation,
   wireUseIntermediaryAccountValidation,
 } from "lib/formValidation";
@@ -30,13 +30,15 @@ import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
 
 export default function TransferWire() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [storedReceivingAccount, setStoredReceivingAccount] = useState("");
+  const [storedUseIntermediary, setStoredUseIntermediary] = useState(false);
   const { accounts, externalAccounts } = useUserWesternAllianceAccount();
 
   const accountOptions =
     accounts
       ?.map(({ accountBalance, accountNumber, accountTitle }) => {
         const truncatedAccountNumber = accountNumber.slice(-4);
-        const label = `${accountTitle} (...${truncatedAccountNumber}): ${currency.format(accountBalance)}`;
+        const label = `${accountTitle} (...${truncatedAccountNumber}): ${currency(accountBalance)}`;
         return {
           value: accountNumber,
           label,
@@ -73,7 +75,7 @@ export default function TransferWire() {
         intermediaryFurtherCreditTo: "",
         intermediaryRoutingNumber: "",
         memo: "",
-        recievingAccount: "",
+        receivingAccount: "",
         sendingAccount: "",
         useIntermediaryAccount: false,
       }}
@@ -87,7 +89,7 @@ export default function TransferWire() {
         intermediaryFurtherCreditTo: wireIntermediaryFurtherCreditToValidation,
         intermediaryRoutingNumber: wireIntermediaryRoutingNumberValidation,
         memo: wireMemoValidation,
-        recievingAccount: wireRecievingAccountValidation,
+        receivingAccount: wireReceivingAccountValidation,
         sendingAccount: wireSendingAccountValidation,
         useIntermediaryAccount: wireUseIntermediaryAccountValidation,
       })}
@@ -99,50 +101,55 @@ export default function TransferWire() {
     >
       {({ values, setFieldValue }) => {
 
-        if (values.recievingAccount !== "new") {
-          const externalAccount = externalAccounts?.find(({ accountNumber }) => accountNumber === values.recievingAccount);
-          if (externalAccount) {
-            const {
-              accountName,
-              accountNumber,
-              financialInstitution,
-              intermediaryBankName,
-              intermediaryFurtherCreditTo,
-              intermediaryRoutingNumber,
-              routingNumber,
-            } = externalAccount;
-            if (values.externalAccountName === "" && accountName) {
-              setFieldValue("externalAccountName", accountName, false);
-            }
-            if (values.externalAccountNumber === "" && accountNumber) {
-              setFieldValue("externalAccountNumber", accountNumber, false);
-            }
-            if (values.externalFinancialInstitution === "" && financialInstitution) {
-              setFieldValue("externalFinancialInstitution", financialInstitution, false);
-            }
-            if (values.externalRoutingNumber === "" && routingNumber) {
-              setFieldValue("externalRoutingNumber", routingNumber, false);
-            }
-            if (values.intermediaryBankName === "" && intermediaryBankName) {
-              setFieldValue("intermediaryBankName", intermediaryBankName, false);
-            }
-            if (values.intermediaryRoutingNumber === "" && intermediaryRoutingNumber) {
-              setFieldValue("intermediaryRoutingNumber", intermediaryRoutingNumber, false);
-            }
-            if (values.intermediaryFurtherCreditTo === "" && intermediaryFurtherCreditTo) {
-              setFieldValue("intermediaryFurtherCreditTo", intermediaryFurtherCreditTo, false);
-            }
-            if (
-              values.useIntermediaryAccount === false && (
-                intermediaryBankName ||
-                intermediaryFurtherCreditTo ||
-                intermediaryRoutingNumber
-              )
-            ) {
-              setFieldValue("useIntermediaryAccount", true, false);
+        useEffect(() => {
+          if (values.receivingAccount !== storedReceivingAccount) {
+            setStoredReceivingAccount(values.receivingAccount);
+            if (values.receivingAccount === "new") {
+              setFieldValue("externalAccountName", "", false);
+              setFieldValue("externalAccountNumber", "", false);
+              setFieldValue("externalFinancialInstitution", "", false);
+              setFieldValue("externalRoutingNumber", "", false);
+              setFieldValue("intermediaryBankName", "", false);
+              setFieldValue("intermediaryRoutingNumber", "", false);
+              setFieldValue("intermediaryFurtherCreditTo", "", false);
+              setFieldValue("useIntermediaryAccount", false, false);
+            } else {
+              const externalAccount = externalAccounts?.find(({ accountNumber }) => accountNumber === values.receivingAccount);
+              if (externalAccount) {
+                const {
+                  accountName,
+                  accountNumber,
+                  financialInstitution,
+                  intermediaryBankName,
+                  intermediaryFurtherCreditTo,
+                  intermediaryRoutingNumber,
+                  routingNumber,
+                } = externalAccount;
+                const useIntermediary =
+                  intermediaryBankName ||
+                  intermediaryFurtherCreditTo ||
+                  intermediaryRoutingNumber;
+                setFieldValue("externalAccountName", accountName || "", false);
+                setFieldValue("externalAccountNumber", accountNumber || "", false);
+                setFieldValue("externalFinancialInstitution", financialInstitution || "", false);
+                setFieldValue("externalRoutingNumber", routingNumber || "", false);
+                setFieldValue("intermediaryBankName", intermediaryBankName || "", false);
+                setFieldValue("intermediaryRoutingNumber", intermediaryRoutingNumber || "", false);
+                setFieldValue("intermediaryFurtherCreditTo", intermediaryFurtherCreditTo || "", false);
+                setFieldValue("useIntermediaryAccount", useIntermediary, false);
+              }
             }
           }
-        }
+
+          if (values.useIntermediaryAccount !== storedUseIntermediary) {
+            setStoredUseIntermediary(values.useIntermediaryAccount);
+            if (!values.useIntermediaryAccount) {
+              setFieldValue("intermediaryBankName", "", false);
+              setFieldValue("intermediaryRoutingNumber", "", false);
+              setFieldValue("intermediaryFurtherCreditTo", "", false);
+            }
+          }
+        }, [values]);
 
         return (
           <Form>
@@ -158,7 +165,7 @@ export default function TransferWire() {
               <FormSelect
                 label="Receiving account"
                 placeholder="Choose an account"
-                name="recievingAccount"
+                name="receivingAccount"
                 type="text"
                 className="FormAccountSelect"
                 options={externalAccountOptions}
@@ -225,7 +232,7 @@ export default function TransferWire() {
                 note="Use letters and numbers only (up to 32 characters)"
               />
               <SubmitButton isSubmitting={isSubmitting}>
-                Transfer money
+                Submit wire transfer
               </SubmitButton>
             </IonList>
           </Form>

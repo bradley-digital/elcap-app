@@ -101,6 +101,7 @@ export type Transaction = {
 };
 
 export type Transfer = {
+  id: string;
   accountName: string;
   accountNumber: string;
   amount: number;

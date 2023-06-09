@@ -7,7 +7,7 @@ import { chevronBack, chevronForward, download } from "ionicons/icons";
 
 // lib
 import { createCSV, downloadCSV } from "lib/csv";
-import { currency } from "lib/formats";
+import { currency, date } from "lib/formats";
 
 // hooks
 import { transactionTypeMap as originalTransactionTypeMap } from "hooks/useWesternAllianceAccount";
@@ -49,10 +49,7 @@ const columns = [
     header: () => "Date",
     // UTC offset for PT is -08:00
     // https://en.wikipedia.org/wiki/List_of_UTC_offsets
-    cell: (info) =>
-      new Date(info.getValue().replace("Z", "-08:00")).toLocaleDateString(
-        "en-US"
-      ),
+    cell: (info) => date(info.getValue()),
   }),
   columnHelper.accessor("accountNumber", {
     header: () => "Account",
@@ -72,11 +69,11 @@ const columns = [
   }),
   columnHelper.accessor("transactionAmount", {
     header: () => "Amount",
-    cell: (info) => currency.format(Number(info.getValue())),
+    cell: (info) => currency(Number(info.getValue())),
   }),
   columnHelper.accessor("accountBalance", {
     header: () => "Balance",
-    cell: (info) => currency.format(Number(info.getValue())),
+    cell: (info) => currency(Number(info.getValue())),
   }),
 ];
 

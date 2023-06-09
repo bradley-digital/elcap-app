@@ -11,6 +11,7 @@ import { queryKey } from "hooks/useUser";
 
 const mockTransferData: Transfer[] = [
   {
+    id: "asdfap98sdfh",
     accountName: "El Capitan Advisor for Money Market Fund 8",
     accountNumber: "8996488782",
     amount: 100.00,
@@ -22,6 +23,7 @@ const mockTransferData: Transfer[] = [
     updatedBy: "Kate Gurske",
   },
   {
+    id: "nfqasdfu",
     accountName: "El Capitan Advisor for Money Market Fund 8",
     accountNumber: "8996488782",
     amount: 2000.00,

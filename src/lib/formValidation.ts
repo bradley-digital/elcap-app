@@ -25,7 +25,7 @@ export const wireIntermediaryBankNameValidation = Yup.string().nullable();
 export const wireIntermediaryRoutingNumberValidation = Yup.string().nullable();
 export const wireIntermediaryFurtherCreditToValidation = Yup.string().nullable();
 export const wireMemoValidation = Yup.string().nullable();
-export const wireRecievingAccountValidation = Yup.string().nullable();
+export const wireReceivingAccountValidation = Yup.string().nullable();
 export const wireSendingAccountValidation = Yup.string().nullable();
 export const wireUseIntermediaryAccountValidation = Yup.boolean().nullable();
 

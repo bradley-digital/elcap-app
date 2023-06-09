@@ -28,7 +28,7 @@ export default function TransferAccount() {
     accounts
       ?.map(({ accountBalance, accountNumber, accountTitle }) => {
         const truncatedAccountNumber = accountNumber.slice(-4);
-        const label = `${accountTitle} (...${truncatedAccountNumber}): ${currency.format(accountBalance)}`;
+        const label = `${accountTitle} (...${truncatedAccountNumber}): ${currency(accountBalance)}`;
         return {
           value: accountNumber,
           label,

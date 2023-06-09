@@ -48,7 +48,7 @@ export default function PortalRoutes() {
           </IonTabButton>
           <IonTabButton tab="transfer" href="/transfer">
             <IonIcon icon={card} />
-            <IonLabel>Pay & transfer</IonLabel>
+            <IonLabel>Money movement</IonLabel>
           </IonTabButton>
           <IonTabButton tab="profile" href="/profile">
             <IonIcon icon={personCircle} />
