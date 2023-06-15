@@ -1,32 +1,45 @@
 import type { Transaction } from "hooks/useWesternAllianceAccount";
+import { useEffect, useState } from "react";
 import "chartjs-adapter-moment";
 import { v4 as uuidv4 } from "uuid";
+
+// hooks
 import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
 
 export default function useChartData(
   selectedTimeRange: string,
   selectedAccountNumbers: string[]
 ) {
-  const { accounts, transactions } = useUserWesternAllianceAccount();
+  const { accounts, getWesternAllianceBackfilledTransactions } =
+    useUserWesternAllianceAccount(selectedTimeRange);
 
-  const transactionsSortedByFirst = transactions
-    ? transactions?.sort(
-        (a, b) =>
-          Number(new Date(a.postingDate)) - Number(new Date(b.postingDate))
-      )
-    : [];
+  const [backfilledTransactions, setBackfilledTransactions] =
+    useState<any>(null);
 
-  if (!transactions) {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getWesternAllianceBackfilledTransactions();
+        setBackfilledTransactions(data);
+      } catch (error) {
+        console.error("Error fetching transactions:", error);
+      }
+    };
+
+    fetchData();
+  }, [selectedTimeRange]);
+
+  if (!backfilledTransactions) {
     return {
       isSuccess: false,
       data: undefined,
       options: undefined,
-      currentBalance: undefined,
+      accountBalance: undefined,
       transactionTypes: undefined,
     };
   }
 
-  const accountsCurrentBalanceTotal = accounts?.reduce(
+  const accountsBalanceTotal = accounts?.reduce(
     (acc: number, account: any) => acc + Number(account.accountBalance),
     0
   );
@@ -34,7 +47,7 @@ export default function useChartData(
   const isSingleAccountSelected = selectedAccountNumbers.length < 2;
 
   const filteredAccountTransactions = (accountNumber: string | number) => {
-    const accountsByAccountNumber = transactions?.filter(
+    const accountsByAccountNumber = backfilledTransactions?.filter(
       (transaction) => transaction.accountNumber === accountNumber
     );
 
@@ -56,12 +69,11 @@ export default function useChartData(
   };
 
   const individualAccounts: any = [];
+  // adds transactions to each account
   accounts?.forEach((account: any) => {
     individualAccounts.push({
-      accountTitle: account.accountTitle,
-      accountNumber: account.accountNumber,
+      ...account,
       transactions: filteredAccountTransactions(account.accountNumber),
-      currentBalance: account.accountBalance,
     });
   });
 
@@ -89,43 +101,6 @@ export default function useChartData(
 
     // loop through accounts from within each account
     individualAccounts.forEach((indvAccount: any) => {
-      // start logic to add transactions for every day
-      const firstPostingDate = new Date(
-        transactionsSortedByFirst[0].postingDate
-      ).getTime();
-
-      const transactionsSortedByLast = indvAccount.transactions.sort(
-        (a: any, b: any) =>
-          Number(new Date(b.postingDate)) - Number(new Date(a.postingDate))
-      );
-      const lastPostingDate = new Date(
-        transactionsSortedByLast[0].postingDate
-      ).getTime();
-
-      const daysBetween = Math.floor(
-        (lastPostingDate - firstPostingDate) / (1000 * 60 * 60 * 24)
-      );
-
-      for (let i = 0; i < daysBetween; i++) {
-        const postingDate = new Date(
-          firstPostingDate + i * 24 * 60 * 60 * 1000
-        );
-
-        const existingTransaction = indvAccount.transactions.find(
-          (t: any) => t.postingDate === postingDate.toISOString()
-        );
-
-        if (!existingTransaction) {
-          indvAccount.transactions.push({
-            postingDate: postingDate.toISOString(),
-            id: uuidv4(),
-            accountNumber: indvAccount.accountNumber,
-            transactionAmount: "0",
-          });
-        }
-      }
-      // end logic to add transactions for every day
-
       // exclude self
       if (account.accountNumber === indvAccount.accountNumber) {
         return;
@@ -177,14 +152,13 @@ export default function useChartData(
       )
     : individualAccounts;
 
-
   const selectedAccountTransactions = isSingleAccountSelected
     ? filteredAccountTransactions(selectedAccountNumbers[0])
-    : transactions;
+    : backfilledTransactions;
 
   function createChartData(
     accountTransactions: Transaction[],
-    currentBalance: number
+    accountBalance: number
   ) {
     const balanceData: Array<any> = [];
 
@@ -193,7 +167,7 @@ export default function useChartData(
         new Date(a.postingDate).getTime() - new Date(b.postingDate).getTime()
     );
 
-    let balanceAtTimeOfTransaction = currentBalance;
+    let balanceAtTimeOfTransaction = accountBalance;
 
     const transactionsWithBalance = accountTransactions
       .reverse()
@@ -313,10 +287,10 @@ export default function useChartData(
 
   const data = {
     datasets: selectedAccounts.map((account: any, index: number) => {
-      const currentBalance = Number(account.currentBalance);
+      const accountBalance = Number(account.accountBalance);
       const { balanceData } = createChartData(
         account.transactions,
-        currentBalance
+        accountBalance
       );
 
       return {
@@ -414,7 +388,7 @@ export default function useChartData(
     data,
     accounts,
     options,
-    accountsCurrentBalanceTotal,
+    accountsCurrentBalanceTotal: accountsBalanceTotal,
     transactionTypes,
   };
 }
