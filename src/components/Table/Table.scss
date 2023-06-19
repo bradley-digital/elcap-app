@@ -1,6 +1,6 @@
 @import "@/theme/variables.scss";
 
-.TransferHistory {
+.Table {
   table {
     width: 100%;
   }
@@ -18,12 +18,7 @@
     &:last-child {
       padding-right: 0;
     }
-
-    a {
-      cursor: pointer;
-    }
   }
-
 
   &__description {
     min-width: 300px;
@@ -37,6 +32,12 @@
     > ion-item {
       flex: 1 0 auto;
     }
+  }
+
+  &__toolbar {
+    display: flex;
+    justify-content: flex-end;
+    padding: 16px 0;
   }
 
   &__scroll {

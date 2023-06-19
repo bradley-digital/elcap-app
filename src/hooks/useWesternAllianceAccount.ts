@@ -117,7 +117,7 @@ const accountQueryKey = "westernAllianceAccount";
 
 export const transactionTypeMap: StringMap = {
   C: "Deposit",
-  D: "Withdrawl",
+  D: "Withdrawal",
   F: "Float",
   M: "Miscellaneous Service Charge",
   X: "Reversed",

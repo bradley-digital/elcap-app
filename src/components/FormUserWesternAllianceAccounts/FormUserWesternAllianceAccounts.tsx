@@ -7,7 +7,6 @@ import {
   IonLabel,
   IonList,
   IonItem,
-  IonListHeader,
 } from "@ionic/react";
 
 // hooks
@@ -59,7 +58,6 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
 
   return (
     <IonList className="FormUserWesternAllianceAccounts">
-      <IonListHeader>Western Alliance Accounts</IonListHeader>
       {accountOptions.map(({ label, value }) => (
         <IonItem key={value}>
           <IonCheckbox

@@ -3,7 +3,7 @@ import type { Transaction, StringMap } from "hooks/useWesternAllianceAccount";
 type Header = [keyof Transaction, string];
 
 import { useEffect, useMemo, useState } from "react";
-import { chevronBack, chevronForward, download } from "ionicons/icons";
+import { download } from "ionicons/icons";
 
 // lib
 import { createCSV, downloadCSV } from "lib/csv";
@@ -12,29 +12,19 @@ import { currency, date } from "lib/formats";
 // hooks
 import { transactionTypeMap as originalTransactionTypeMap } from "hooks/useWesternAllianceAccount";
 import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
+import { createColumnHelper } from "@tanstack/react-table";
 
+// components
 import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  getPaginationRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-
-import {
-  IonCol,
-  IonGrid,
   IonIcon,
   IonItem,
   IonLabel,
   IonList,
-  IonRippleEffect,
-  IonRow,
   IonSelect,
   IonSelectOption,
 } from "@ionic/react";
 
-import "./TransactionsTable.scss";
+import Table from "components/Table/Table";
 
 const transactionTypeMap: StringMap = {};
 const wantedTypes = ["C", "D", "X"];
@@ -132,13 +122,6 @@ export default function TransactionsTable() {
     selectedTransactionTypes,
   ]);
 
-  const table = useReactTable({
-    data: filteredTransactions,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-  });
-
   if (!transactions) return null;
 
   const accountOptions =
@@ -211,159 +194,71 @@ export default function TransactionsTable() {
     downloadCSV(csv, `elcap-transactions-${iso}.csv`);
   }
 
+  const before = (
+    <>
+      <IonList className="Table__filters">
+        <IonItem>
+          <IonLabel position="stacked">Accounts</IonLabel>
+          <IonSelect
+            interfaceOptions={{ cssClass: "FormAccountSelect" }}
+            placeholder="Select Account"
+            onIonChange={(e) => setSelectedAccountNumbers(e.detail.value)}
+            multiple={true}
+            value={selectedAccountNumbers}
+          >
+            {accountOptions?.map(({ label, value }) => (
+              <IonSelectOption key={value} value={value}>
+                {label}
+              </IonSelectOption>
+            ))}
+          </IonSelect>
+        </IonItem>
+        <IonItem>
+          <IonLabel position="stacked">Transaction Type</IonLabel>
+          <IonSelect
+            placeholder="Select Transaction Types"
+            onIonChange={(e) => setSelectedTransactionTypes(e.detail.value)}
+            multiple={true}
+            value={selectedTransactionTypes}
+          >
+            {Object.entries(transactionTypeMap).map(([key, value]) => (
+              <IonSelectOption key={key} value={key}>
+                {value}
+              </IonSelectOption>
+            ))}
+          </IonSelect>
+        </IonItem>
+        <IonItem>
+          <IonLabel position="stacked">Dates</IonLabel>
+          <IonSelect
+            placeholder="Select Date"
+            onIonChange={(e) => setSelectedTimeRange(e.detail.value)}
+            value={selectedTimeRange}
+          >
+            {timeRanges?.map((time) => (
+              <IonSelectOption key={time} value={time}>
+                {time}
+              </IonSelectOption>
+            ))}
+          </IonSelect>
+        </IonItem>
+      </IonList>
+      <div className="Table__toolbar">
+        <button
+          className="ion-activatable Table__button Table__download"
+          onClick={exportCSV}
+        >
+          <IonIcon icon={download} /> Export
+        </button>
+      </div>
+    </>
+  );
+
   return (
-    <IonGrid className="TransactionsTable">
-      <IonRow className="ion-justify-content-center">
-        <IonCol>
-          <IonList className="TransactionsTable__filters">
-            <IonItem>
-              <IonLabel position="stacked">Accounts</IonLabel>
-              <IonSelect
-                interfaceOptions={{ cssClass: "FormAccountSelect" }}
-                placeholder="Select Account"
-                onIonChange={(e) => setSelectedAccountNumbers(e.detail.value)}
-                multiple={true}
-                value={selectedAccountNumbers}
-              >
-                {accountOptions?.map(({ label, value }) => (
-                  <IonSelectOption key={value} value={value}>
-                    {label}
-                  </IonSelectOption>
-                ))}
-              </IonSelect>
-            </IonItem>
-            <IonItem>
-              <IonLabel position="stacked">Transaction Type</IonLabel>
-              <IonSelect
-                placeholder="Select Transaction Types"
-                onIonChange={(e) => setSelectedTransactionTypes(e.detail.value)}
-                multiple={true}
-                value={selectedTransactionTypes}
-              >
-                {Object.entries(transactionTypeMap).map(([key, value]) => (
-                  <IonSelectOption key={key} value={key}>
-                    {value}
-                  </IonSelectOption>
-                ))}
-              </IonSelect>
-            </IonItem>
-            <IonItem>
-              <IonLabel position="stacked">Dates</IonLabel>
-              <IonSelect
-                placeholder="Select Date"
-                onIonChange={(e) => setSelectedTimeRange(e.detail.value)}
-                value={selectedTimeRange}
-              >
-                {timeRanges?.map((time) => (
-                  <IonSelectOption key={time} value={time}>
-                    {time}
-                  </IonSelectOption>
-                ))}
-              </IonSelect>
-            </IonItem>
-          </IonList>
-          <div className="TransactionsTable__toolbar">
-            <button
-              className="ion-activatable TransactionsTable__button TransactionsTable__download"
-              onClick={exportCSV}
-            >
-              <IonIcon icon={download} /> Export
-            </button>
-          </div>
-          <div className="TransactionsTable__scroll--parent">
-            <div className="TransactionsTable__scroll--child">
-              <table>
-                <thead>
-                  {table.getHeaderGroups().map((headerGroup) => (
-                    <tr key={headerGroup.id}>
-                      {headerGroup.headers.map((header) => (
-                        <th key={header.id}>
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
-                        </th>
-                      ))}
-                    </tr>
-                  ))}
-                </thead>
-                <tbody>
-                  {table.getRowModel().rows.map((row) => (
-                    <tr key={row.id}>
-                      {row.getVisibleCells().map((cell) => (
-                        <td key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div className="TransactionsTable__pagination">
-            <button
-              className="ion-activatable TransactionsTable__button TransactionsTable__back--all"
-              onClick={() => table.setPageIndex(0)}
-              disabled={!table.getCanPreviousPage()}
-            >
-              <IonIcon icon={chevronBack} />
-              <IonIcon icon={chevronBack} />
-              <IonRippleEffect />
-            </button>
-            <button
-              className="ion-activatable TransactionsTable__button TransactionsTable__back"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              <IonIcon icon={chevronBack} />
-              <IonRippleEffect />
-            </button>
-            <button
-              className="ion-activatable TransactionsTable__button TransactionsTable__forward"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              <IonIcon icon={chevronForward} />
-              <IonRippleEffect />
-            </button>
-            <button
-              className="ion-activatable TransactionsTable__button TransactionsTable__forward--all"
-              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-              disabled={!table.getCanNextPage()}
-            >
-              <IonIcon icon={chevronForward} />
-              <IonIcon icon={chevronForward} />
-              <IonRippleEffect />
-            </button>
-            <div>
-              <span>Page </span>
-              <strong>
-                {table.getState().pagination.pageIndex + 1} of{" "}
-                {table.getPageCount()}
-              </strong>
-            </div>
-            <IonSelect
-              className="TransactionsTable__select"
-              value={table.getState().pagination.pageSize}
-              onIonChange={(e) => {
-                table.setPageSize(Number(e.target.value));
-              }}
-            >
-              {[10, 20, 30, 40, 50].map((pageSize) => (
-                <IonSelectOption key={pageSize} value={pageSize}>
-                  Show {pageSize}
-                </IonSelectOption>
-              ))}
-            </IonSelect>
-          </div>
-        </IonCol>
-      </IonRow>
-    </IonGrid>
+    <Table
+      before={before}
+      columns={columns}
+      data={filteredTransactions}
+    />
   );
 }

@@ -1,7 +1,6 @@
 import type { Transfer } from "hooks/useWesternAllianceAccount";
 
 import { useEffect, useMemo, useState } from "react";
-import { chevronBack, chevronForward } from "ionicons/icons";
 
 // lib
 import { currency, date } from "lib/formats";
@@ -9,32 +8,22 @@ import { currency, date } from "lib/formats";
 // hooks
 import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
 import { useAtom } from "jotai";
+import { createColumnHelper } from "@tanstack/react-table";
 
 // atoms
 import { idAtom, isOpenAtom } from "atoms/transferHistoryModal";
 
 // components
+
 import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  getPaginationRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import {
-  IonCol,
-  IonGrid,
-  IonIcon,
   IonItem,
   IonLabel,
   IonList,
-  IonRippleEffect,
-  IonRow,
   IonSelect,
   IonSelectOption,
 } from "@ionic/react";
 
-import "./TransferHistory.scss";
+import Table from "components/Table/Table";
 
 const columnHelper = createColumnHelper<Transfer>();
 
@@ -51,21 +40,6 @@ export default function TransferHistory() {
   useEffect(() => {
     setSelectedStatuses(statuses);
   }, [transfers]);
-
-  const filteredTransfers = useMemo(() => {
-    return (
-      transfers
-        ?.filter(
-          (transfer) =>
-            isInDateRange(transfer) &&
-            isInStatuses(transfer)
-        ) || []
-    );
-  }, [
-    transfers,
-    selectedStatuses,
-    selectedTimeRange,
-  ]);
 
   const columns = useMemo(() => {
     return [
@@ -98,12 +72,20 @@ export default function TransferHistory() {
     ];
   }, []);
 
-  const table = useReactTable({
-    data: filteredTransfers,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-  });
+  const filteredTransfers = useMemo(() => {
+    return (
+      transfers
+        ?.filter(
+          (transfer) =>
+            isInDateRange(transfer) &&
+            isInStatuses(transfer)
+        ) || []
+    );
+  }, [
+    transfers,
+    selectedStatuses,
+    selectedTimeRange,
+  ]);
 
   if (!transfers) return null;
 
@@ -154,135 +136,45 @@ export default function TransferHistory() {
     return selectedStatuses.includes(status);
   }
 
+  const before = (
+    <IonList className="Table__filters">
+      <IonItem>
+        <IonLabel position="stacked">Statuses</IonLabel>
+        <IonSelect
+          placeholder="Select Statuses"
+          onIonChange={(e) => setSelectedStatuses(e.detail.value)}
+          multiple={true}
+          value={selectedStatuses}
+        >
+          {statusOptions?.map(({ label, value }) => (
+            <IonSelectOption key={value} value={value}>
+              {label}
+            </IonSelectOption>
+          ))}
+        </IonSelect>
+      </IonItem>
+      <IonItem>
+        <IonLabel position="stacked">Dates</IonLabel>
+        <IonSelect
+          placeholder="Select Date"
+          onIonChange={(e) => setSelectedTimeRange(e.detail.value)}
+          value={selectedTimeRange}
+        >
+          {timeRanges?.map((time) => (
+            <IonSelectOption key={time} value={time}>
+              {time}
+            </IonSelectOption>
+          ))}
+        </IonSelect>
+      </IonItem>
+    </IonList>
+  );
+
   return (
-    <IonGrid className="TransferHistory">
-      <IonRow className="ion-justify-content-center">
-        <IonCol>
-          <IonList className="TransferHistory__filters">
-            <IonItem>
-              <IonLabel position="stacked">Statuses</IonLabel>
-              <IonSelect
-                placeholder="Select Statuses"
-                onIonChange={(e) => setSelectedStatuses(e.detail.value)}
-                multiple={true}
-                value={selectedStatuses}
-              >
-                {statusOptions?.map(({ label, value }) => (
-                  <IonSelectOption key={value} value={value}>
-                    {label}
-                  </IonSelectOption>
-                ))}
-              </IonSelect>
-            </IonItem>
-            <IonItem>
-              <IonLabel position="stacked">Dates</IonLabel>
-              <IonSelect
-                placeholder="Select Date"
-                onIonChange={(e) => setSelectedTimeRange(e.detail.value)}
-                value={selectedTimeRange}
-              >
-                {timeRanges?.map((time) => (
-                  <IonSelectOption key={time} value={time}>
-                    {time}
-                  </IonSelectOption>
-                ))}
-              </IonSelect>
-            </IonItem>
-          </IonList>
-          <div className="TransferHistory__scroll--parent">
-            <div className="TransferHistory__scroll--child">
-              <table>
-                <thead>
-                  {table.getHeaderGroups().map((headerGroup) => (
-                    <tr key={headerGroup.id}>
-                      {headerGroup.headers.map((header) => (
-                        <th key={header.id}>
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
-                        </th>
-                      ))}
-                    </tr>
-                  ))}
-                </thead>
-                <tbody>
-                  {table.getRowModel().rows.map((row) => (
-                    <tr key={row.id}>
-                      {row.getVisibleCells().map((cell) => (
-                        <td key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div className="TransferHistory__pagination">
-            <button
-              className="ion-activatable TransferHistory__button TransferHistory__back--all"
-              onClick={() => table.setPageIndex(0)}
-              disabled={!table.getCanPreviousPage()}
-            >
-              <IonIcon icon={chevronBack} />
-              <IonIcon icon={chevronBack} />
-              <IonRippleEffect />
-            </button>
-            <button
-              className="ion-activatable TransferHistory__button TransferHistory__back"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              <IonIcon icon={chevronBack} />
-              <IonRippleEffect />
-            </button>
-            <button
-              className="ion-activatable TransferHistory__button TransferHistory__forward"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              <IonIcon icon={chevronForward} />
-              <IonRippleEffect />
-            </button>
-            <button
-              className="ion-activatable TransferHistory__button TransferHistory__forward--all"
-              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-              disabled={!table.getCanNextPage()}
-            >
-              <IonIcon icon={chevronForward} />
-              <IonIcon icon={chevronForward} />
-              <IonRippleEffect />
-            </button>
-            <div>
-              <span>Page </span>
-              <strong>
-                {table.getState().pagination.pageIndex + 1} of{" "}
-                {table.getPageCount()}
-              </strong>
-            </div>
-            <IonSelect
-              className="TransferHistory__select"
-              value={table.getState().pagination.pageSize}
-              onIonChange={(e) => {
-                table.setPageSize(Number(e.target.value));
-              }}
-            >
-              {[10, 20, 30, 40, 50].map((pageSize) => (
-                <IonSelectOption key={pageSize} value={pageSize}>
-                  Show {pageSize}
-                </IonSelectOption>
-              ))}
-            </IonSelect>
-          </div>
-        </IonCol>
-      </IonRow>
-    </IonGrid>
+    <Table
+      before={before}
+      columns={columns}
+      data={filteredTransfers}
+    />
   );
 }

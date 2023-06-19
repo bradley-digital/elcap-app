@@ -13,7 +13,7 @@ export default function Profile() {
 
   if (typeof profile !== "undefined") {
     return (
-      <PageTemplate title="Profile">
+      <PageTemplate title="Overview">
         <IonGrid>
           <IonRow className="ion-justify-content-center">
             <IonCol size-md="8" size-lg="6">
