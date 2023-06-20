@@ -9,7 +9,7 @@ import { menuLinks } from "pages/Pay/consts";
 
 export default function Pay(routeProps: RouteComponentProps) {
   return (
-    <SplitPaneTemplate title="Pay" menuId="main" menuLinks={menuLinks}>
+    <SplitPaneTemplate title="Pay" menuId="pay" menuLinks={menuLinks}>
       <PayRoutes {...routeProps} />
     </SplitPaneTemplate>
   );

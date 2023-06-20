@@ -5,7 +5,7 @@ import WireTransfer from "components/TransferWire/TransferWire";
 
 export default function TransferWire() {
   return (
-    <PageTemplate title="Wire transfer">
+    <PageTemplate title="Wire transfer" menuId="transfer">
       <IonGrid>
         <IonRow className="ion-justify-content-center">
           <IonCol size-md="8" size-lg="6">
