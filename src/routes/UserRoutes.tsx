@@ -11,11 +11,11 @@ import Docfox from "pages/User/UserDocfox";
 import useUserManagement from "hooks/useUserManagement";
 
 export default function UserRoutes({ match }: RouteComponentProps) {
-  const { isSuccess, data } = useUserManagement();
+  const { data } = useUserManagement();
   const { userId } = useParams<{ userId: string }>();
   const router = useIonRouter();
 
-  if (isSuccess && typeof data !== "undefined") {
+  if (typeof data !== "undefined") {
     const user = data.find((user) => user.id === userId);
 
     if (typeof user === "undefined") {

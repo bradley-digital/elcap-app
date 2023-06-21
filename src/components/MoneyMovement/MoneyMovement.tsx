@@ -6,12 +6,8 @@ import { useEffect, useMemo, useState } from "react";
 import { currency, date } from "lib/formats";
 
 // hooks
-import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
-import { useAtom } from "jotai";
+import useWesternAllianceAccount from "hooks/useWesternAllianceAccount";
 import { createColumnHelper } from "@tanstack/react-table";
-
-// atoms
-import { idAtom, isOpenAtom } from "atoms/transferHistoryModal";
 
 // components
 import {
@@ -29,9 +25,7 @@ const columnHelper = createColumnHelper<Transfer>();
 export default function TransferHistory() {
   const [selectedTimeRange, setSelectedTimeRange] = useState("YTD");
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
-  const [, setId] = useAtom(idAtom);
-  const [, setIsOpen] = useAtom(isOpenAtom);
-  const { transfers } = useUserWesternAllianceAccount();
+  const { transfers } = useWesternAllianceAccount();
 
   const timeRanges = ["YTD", "MTD", "3M", "1Y", "3Y", "5Y", "Max"];
   const statuses = transfers?.map(({ status }) => status) || [];
@@ -58,15 +52,15 @@ export default function TransferHistory() {
         header: () => "Amount",
         cell: (info) => currency(Number(info.getValue())),
       }),
-      columnHelper.accessor("id", {
-        header: () => "Details",
-        cell: (info) => (
-          <a onClick={() => openModal(info.getValue())}>See details</a>
-        ),
-      }),
       columnHelper.accessor("status", {
         header: () => "Status",
         cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor("id", {
+        header: () => "Details",
+        cell: (info) => (
+          <a href={`/money-movement/${info.getValue()}`}>See details</a>
+        ),
       }),
     ];
   }, []);
@@ -95,11 +89,6 @@ export default function TransferHistory() {
         value: status,
       }))
       .sort((a, b) => a.label.localeCompare(b.label)) || [];
-
-  function openModal(id: string) {
-    setId(id);
-    setIsOpen(true);
-  }
 
   function isInDateRange(transfer: Transfer) {
     const date = new Date(transfer.transferDate);

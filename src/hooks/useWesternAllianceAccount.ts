@@ -113,7 +113,42 @@ export type Transfer = {
   updatedBy: string;
 };
 
-const accountQueryKey = "westernAllianceAccount";
+const mockTransferData: Transfer[] = [
+  {
+    id: "asdfap98sdfh",
+    accountName: "El Capitan Advisor for Money Market Fund 8",
+    accountNumber: "8996488782",
+    amount: 100.00,
+    memo: "First transfer",
+    status: "Submitted",
+    submittedBy: "Joshua Bradley",
+    transactionNumber: "36546873543",
+    transferDate: "2023-05-30T00:00:00.000Z",
+    updatedBy: "Kate Gurske",
+  },
+  {
+    id: "nfqasdfu",
+    accountName: "El Capitan Advisor for Money Market Fund 8",
+    accountNumber: "8996488782",
+    amount: 2000.00,
+    memo: "Second transfer",
+    status: "Complete",
+    submittedBy: "Joshua Bradley",
+    transactionNumber: "36546873543",
+    transferDate: "2023-05-20T00:00:00.000Z",
+    updatedBy: "Kate Gurske",
+  },
+];
+
+async function mockGetTransfers() {
+  return {
+    data: mockTransferData
+  };
+}
+
+const queryKey = "westernAlliance";
+const accountQueryKey = `${queryKey}Account`;
+const transferQueryKey = `${queryKey}Transfer`;
 
 export const transactionTypeMap: StringMap = {
   C: "Deposit",
@@ -130,6 +165,11 @@ export default function useWesternAllianceAccount() {
   const { isSuccess: accountsIsSuccess, data: accounts } = useQuery(
     accountQueryKey,
     getAccounts
+  );
+
+  const { isSuccess: transfersIsSuccess, data: transfers } = useQuery(
+    transferQueryKey,
+    getTransfers
   );
 
   const { mutate: createAccount } = useMutation(createAccountMutation, {
@@ -153,6 +193,11 @@ export default function useWesternAllianceAccount() {
   async function getAccounts() {
     const { data } = await authApi.get<Account[]>("/western-alliance/accounts");
     data.sort((a, b) => a.accountTitle.localeCompare(b.accountTitle));
+    return data;
+  }
+
+  async function getTransfers() {
+    const { data } = await mockGetTransfers();
     return data;
   }
 
@@ -185,6 +230,8 @@ export default function useWesternAllianceAccount() {
     accounts,
     createAccount,
     deleteAccount,
+    transfers,
+    transfersIsSuccess,
     updateAccount,
   };
 }

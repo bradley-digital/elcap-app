@@ -34,8 +34,8 @@ export default function UserAccountActions({ profile }: Props) {
 
   return (
     <div>
-      <IonListHeader>Profile actions</IonListHeader>
       <IonList>
+        <IonListHeader>Profile actions</IonListHeader>
         <IonItem>
           <IonText>
             <h6>Invite user</h6>
