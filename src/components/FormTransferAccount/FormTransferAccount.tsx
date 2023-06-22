@@ -6,7 +6,6 @@ import { currency } from "lib/formats";
 import {
   transferFromAccountValidation,
   transferToAccountValidation,
-  transferAmountValidation,
   transferMemoValidation,
 } from "lib/formValidation";
 
@@ -20,9 +19,25 @@ import SubmitButton from "components/SubmitButton/SubmitButton";
 // hooks
 import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
 
-export default function TransferAccount() {
+export default function FormTransferAccount() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { accounts } = useUserWesternAllianceAccount();
+
+  const transferAmountValidation = Yup
+    .number()
+    .nullable()
+    .test(
+      "max",
+      "Amount must be less than the account balance",
+      (value, context) => {
+        const account = accounts?.find(({ accountNumber }) => accountNumber === context.parent.fromAccount);
+        if (account) {
+          return value <= parseFloat(account.accountBalance);
+        }
+        return true;
+      }
+    )
+    .required("Amount required");
 
   const accountOptions =
     accounts

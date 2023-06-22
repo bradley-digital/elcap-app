@@ -20,7 +20,7 @@ import { lockClosed, pencil } from "ionicons/icons";
 
 // components
 import { Form, Formik } from "formik";
-import { IonList, IonListHeader } from "@ionic/react";
+import { IonList } from "@ionic/react";
 import FormObserver from "components/FormObserver/FormObserver";
 import FormInput from "components/FormInput/FormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
@@ -89,7 +89,6 @@ export default function FormAccount({ profile }: Props) {
       <Form>
         <FormObserver onChange={handleChange} />
         <IonList>
-          <IonListHeader>Profile information</IonListHeader>
           <FormInput
             label="First Name"
             name="firstName"

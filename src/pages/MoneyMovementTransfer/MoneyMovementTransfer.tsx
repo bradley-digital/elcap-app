@@ -1,4 +1,3 @@
-import type { RouteComponentProps } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { useIonRouter } from "@ionic/react";
 

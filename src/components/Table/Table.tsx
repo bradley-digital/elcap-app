@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { CoumnHelper } from "@tanstack/react-table";
+import type { ColumnHelper } from "@tanstack/react-table";
 
 type Props = {
   columns: ColumnHelper[];

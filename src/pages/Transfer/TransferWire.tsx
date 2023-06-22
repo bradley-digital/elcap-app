@@ -1,7 +1,7 @@
 // components
 import { IonCol, IonGrid, IonRow } from "@ionic/react";
 import PageTemplate from "components/PageTemplate/PageTemplate";
-import WireTransfer from "components/TransferWire/TransferWire";
+import FormTransferWire from "components/FormTransferWire/FormTransferWire";
 
 export default function TransferWire() {
   return (
@@ -9,7 +9,7 @@ export default function TransferWire() {
       <IonGrid>
         <IonRow className="ion-justify-content-center">
           <IonCol size-md="8" size-lg="6">
-            <WireTransfer />
+            <FormTransferWire />
           </IonCol>
         </IonRow>
       </IonGrid>
