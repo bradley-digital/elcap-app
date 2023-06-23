@@ -21,7 +21,7 @@ import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
 
 export default function FormTransferAccount() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { accounts } = useUserWesternAllianceAccount();
+  const { accounts, createTransfer } = useUserWesternAllianceAccount();
 
   const transferAmountValidation = Yup
     .number()
@@ -32,7 +32,7 @@ export default function FormTransferAccount() {
       (value, context) => {
         const account = accounts?.find(({ accountNumber }) => accountNumber === context.parent.fromAccount);
         if (account) {
-          return value <= parseFloat(account.accountBalance);
+          return Number(value) <= parseFloat(account.accountBalance);
         }
         return true;
       }
@@ -43,7 +43,7 @@ export default function FormTransferAccount() {
     accounts
       ?.map(({ accountBalance, accountNumber, accountTitle }) => {
         const truncatedAccountNumber = accountNumber.slice(-4);
-        const label = `${accountTitle} (...${truncatedAccountNumber}): ${currency(accountBalance)}`;
+        const label = `${accountTitle} (...${truncatedAccountNumber}): ${currency(Number(accountBalance))}`;
         return {
           value: accountNumber,
           label,
@@ -66,9 +66,16 @@ export default function FormTransferAccount() {
         toAccount: transferToAccountValidation,
       })}
       onSubmit={(values) => {
-        setIsSubmitting(true);
-        console.log(values);
-        setIsSubmitting(false);
+        async function submit() {
+          setIsSubmitting(true);
+          await createTransfer({
+            ...values,
+            amount: values.amount || 0,
+            type: "ACCOUNT",
+          });
+          setIsSubmitting(false);
+        }
+        submit();
       }}
     >
       {({ values }) => (

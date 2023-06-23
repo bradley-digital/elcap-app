@@ -7,8 +7,12 @@ type Props = {
 // lib
 import { currency, date } from "lib/formats";
 
+// hooks
+import useWesternAllianceAccount, { transferStatusMap, transferTypeMap } from "hooks/useWesternAllianceAccount";
+
 // components
 import {
+  IonIcon,
   IonButton,
   IonItem,
   IonLabel,
@@ -16,31 +20,40 @@ import {
   IonListHeader,
   IonText,
 } from "@ionic/react";
+import { arrowBack } from "ionicons/icons";
 
 export default function MoneyMovementTransfer({ transfer }: Props) {
+  const { updateTransfer } = useWesternAllianceAccount();
+
   const {
     id,
-    accountName,
-    accountNumber,
     amount,
     memo,
     status,
-    submittedBy,
     transactionNumber,
     transferDate,
-    updatedBy,
+    type,
   } = transfer;
 
-  function handleAccept() {
-    console.log(`Accept: ${id}`);
+  const accountName = transfer?.westernAllianceFromAccount?.accountTitle;
+  const accountNumber = transfer?.westernAllianceFromAccount?.accountNumber;
+  const submittedBy = `${transfer?.userSubmittedBy?.firstName || ""} ${transfer?.userSubmittedBy?.lastName || ""}`;
+  const updatedBy = `${transfer?.userUpdatedBy?.firstName || ""} ${transfer?.userUpdatedBy?.lastName || ""}`;
+
+  function handleApprove() {
+    updateTransfer({ id, status: "APPROVED" });
   }
 
-  function handleDeny() {
-    console.log(`Deny: ${id}`);
+  function handleReject() {
+    updateTransfer({ id, status: "REJECTED" });
   }
 
   return (
     <div>
+      <IonButton fill="clear" routerLink="/money-movement">
+        <IonIcon slot="start" icon={arrowBack} />
+        All transfers
+      </IonButton>
       <IonList>
         <IonItem>
           <IonLabel>Transfer date</IonLabel>
@@ -56,11 +69,15 @@ export default function MoneyMovementTransfer({ transfer }: Props) {
         </IonItem>
         <IonItem>
           <IonLabel>Amount</IonLabel>
-          <IonText>{currency(amount)}</IonText>
+          <IonText>{currency(Number(amount))}</IonText>
+        </IonItem>
+        <IonItem>
+          <IonLabel>Type</IonLabel>
+          <IonText>{transferTypeMap[type]} transfer</IonText>
         </IonItem>
         <IonItem>
           <IonLabel>Status</IonLabel>
-          <IonText>{status}</IonText>
+          <IonText>{transferStatusMap[status]}</IonText>
         </IonItem>
         <IonItem>
           <IonLabel>Memo</IonLabel>
@@ -76,7 +93,7 @@ export default function MoneyMovementTransfer({ transfer }: Props) {
         </IonItem>
         <IonItem>
           <IonLabel>Transaction number</IonLabel>
-          <IonText>{transactionNumber}</IonText>
+          <IonText>{transactionNumber || "Not set"}</IonText>
         </IonItem>
       </IonList>
       <IonList>
@@ -86,14 +103,14 @@ export default function MoneyMovementTransfer({ transfer }: Props) {
             <h6>Approve transfer</h6>
             <p>Approve this transfer and initiate money movement.</p>
           </IonText>
-          <IonButton onClick={handleAccept} slot="end" size="default">Approve transfer</IonButton>
+          <IonButton onClick={handleApprove} slot="end" size="default">Approve transfer</IonButton>
         </IonItem>
         <IonItem>
           <IonText>
-            <h6>Deny transfer</h6>
-            <p>Deny this transfer and disallow future handling of this transfer.</p>
+            <h6>Reject transfer</h6>
+            <p>Reject this transfer and deny future handling of this transfer.</p>
           </IonText>
-          <IonButton color="danger" onClick={handleDeny} slot="end" size="default">Deny transfer</IonButton>
+          <IonButton color="danger" onClick={handleReject} slot="end" size="default">Reject transfer</IonButton>
         </IonItem>
       </IonList>
     </div>

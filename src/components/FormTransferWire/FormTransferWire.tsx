@@ -32,7 +32,12 @@ export default function FormTransferWire() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [storedReceivingAccount, setStoredReceivingAccount] = useState("");
   const [storedUseIntermediary, setStoredUseIntermediary] = useState(false);
-  const { accounts, externalAccounts } = useUserWesternAllianceAccount();
+  const {
+    accounts,
+    createExternalAccount,
+    createTransfer,
+    externalAccounts,
+  } = useUserWesternAllianceAccount();
 
   const wireAmountValidation = Yup
     .number()
@@ -43,7 +48,7 @@ export default function FormTransferWire() {
       (value, context) => {
         const account = accounts?.find(({ accountNumber }) => accountNumber === context.parent.fromAccount);
         if (account) {
-          return value <= parseFloat(account.accountBalance);
+          return Number(value) <= parseFloat(account.accountBalance);
         }
         return true;
       }
@@ -54,7 +59,7 @@ export default function FormTransferWire() {
     accounts
       ?.map(({ accountBalance, accountNumber, accountTitle }) => {
         const truncatedAccountNumber = accountNumber.slice(-4);
-        const label = `${accountTitle} (...${truncatedAccountNumber}): ${currency(accountBalance)}`;
+        const label = `${accountTitle} (...${truncatedAccountNumber}): ${currency(Number(accountBalance))}`;
         return {
           value: accountNumber,
           label,
@@ -109,10 +114,49 @@ export default function FormTransferWire() {
         sendingAccount: wireSendingAccountValidation,
         useIntermediaryAccount: wireUseIntermediaryAccountValidation,
       })}
-      onSubmit={(values) => {
-        setIsSubmitting(true);
-        console.log(values);
-        setIsSubmitting(false);
+      onSubmit={({
+        amount,
+        externalAccountName,
+        externalAccountNumber,
+        externalFinancialInstitution,
+        externalRoutingNumber,
+        intermediaryBankName,
+        intermediaryFurtherCreditTo,
+        intermediaryRoutingNumber,
+        memo,
+        receivingAccount,
+        sendingAccount,
+        useIntermediaryAccount,
+      }) => {
+        async function submit() {
+          try {
+            setIsSubmitting(true);
+            if (receivingAccount === "new") {
+              await createExternalAccount({
+                accountName: externalAccountName,
+                accountNumber: externalAccountNumber,
+                financialInstitution: externalFinancialInstitution,
+                routingNumber: externalRoutingNumber,
+                intermediaryBankName,
+                intermediaryFurtherCreditTo,
+                intermediaryRoutingNumber,
+                useIntermediary: useIntermediaryAccount,
+              });
+            }
+            await createTransfer({
+              amount: amount || 0,
+              externalAccount: (receivingAccount !== "new" && receivingAccount) || externalAccountNumber,
+              fromAccount: sendingAccount,
+              memo,
+              type: "WIRE",
+            });
+          } catch (e) {
+            console.error(e);
+          } finally {
+            setIsSubmitting(false);
+          }
+        }
+        submit();
       }}
     >
       {({ values, setFieldValue }) => {
@@ -140,11 +184,8 @@ export default function FormTransferWire() {
                   intermediaryFurtherCreditTo,
                   intermediaryRoutingNumber,
                   routingNumber,
+                  useIntermediary,
                 } = externalAccount;
-                const useIntermediary =
-                  intermediaryBankName ||
-                  intermediaryFurtherCreditTo ||
-                  intermediaryRoutingNumber;
                 setFieldValue("externalAccountName", accountName || "", false);
                 setFieldValue("externalAccountNumber", accountNumber || "", false);
                 setFieldValue("externalFinancialInstitution", financialInstitution || "", false);

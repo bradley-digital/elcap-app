@@ -1,11 +1,10 @@
 import type { ReactNode } from "react";
-import type { ColumnHelper } from "@tanstack/react-table";
 
 type Props = {
-  columns: ColumnHelper[];
+  columns: any[];
   data: any;
-  before: ReactNode;
-  after: ReactNode;
+  before?: ReactNode;
+  after?: ReactNode;
 };
 
 import {

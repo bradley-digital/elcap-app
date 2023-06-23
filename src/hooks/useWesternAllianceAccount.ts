@@ -1,6 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
-
-// hooks
 import useAuth from "hooks/useAuth";
 
 export type StringMap = {
@@ -9,7 +7,7 @@ export type StringMap = {
 
 export type Account = {
   id: string;
-  accountBalance: number;
+  accountBalance: string;
   accountNumber: string;
   accountTitle: string;
   client: string;
@@ -24,7 +22,7 @@ type AccountCreateInput = {
 
 type AccountUpdateInput = {
   id: string;
-  accountBalance?: number;
+  accountBalance?: string;
   accountNumber?: string;
   accountTitle?: string;
   client?: string;
@@ -39,6 +37,18 @@ export type ExternalAccount = {
   intermediaryRoutingNumber?: string;
   intermediaryFurtherCreditTo?: string;
   routingNumber: string;
+  useIntermediary: boolean;
+};
+
+export type ExternalAccountCreateInput = {
+  accountName: string;
+  accountNumber: string;
+  financialInstitution: string;
+  intermediaryBankName?: string;
+  intermediaryRoutingNumber?: string;
+  intermediaryFurtherCreditTo?: string;
+  routingNumber: string;
+  useIntermediary: boolean;
 };
 
 export type Transaction = {
@@ -102,53 +112,57 @@ export type Transaction = {
 
 export type Transfer = {
   id: string;
-  accountName: string;
-  accountNumber: string;
-  amount: number;
-  memo: string;
+  amount: string;
+  externalAccount: string | null;
+  fromAccount: string;
+  memo: string | null;
   status: string;
   submittedBy: string;
-  transactionNumber: string;
+  toAccount: string | null;
+  transactionNumber: string | null;
   transferDate: string;
-  updatedBy: string;
+  type: string;
+  updatedBy: string | null;
+  userSubmittedBy: {
+    firstName: string;
+    lastName: string;
+  },
+  userUpdatedBy: null | {
+    firstName: string;
+    lastName: string;
+  },
+  westernAllianceFromAccount: {
+    accountNumber: string;
+    accountTitle: string;
+  },
+  westernAllianceToAccount: null | {
+    accountNumber: string;
+    accountTitle: string;
+  },
 };
 
-const mockTransferData: Transfer[] = [
-  {
-    id: "asdfap98sdfh",
-    accountName: "El Capitan Advisor for Money Market Fund 8",
-    accountNumber: "8996488782",
-    amount: 100.00,
-    memo: "First transfer",
-    status: "Submitted",
-    submittedBy: "Joshua Bradley",
-    transactionNumber: "36546873543",
-    transferDate: "2023-05-30T00:00:00.000Z",
-    updatedBy: "Kate Gurske",
-  },
-  {
-    id: "nfqasdfu",
-    accountName: "El Capitan Advisor for Money Market Fund 8",
-    accountNumber: "8996488782",
-    amount: 2000.00,
-    memo: "Second transfer",
-    status: "Complete",
-    submittedBy: "Joshua Bradley",
-    transactionNumber: "36546873543",
-    transferDate: "2023-05-20T00:00:00.000Z",
-    updatedBy: "Kate Gurske",
-  },
-];
+export type TransferTable = {
+  id: string;
+  accountName: string;
+  accountNumber: string;
+  amount: string;
+  status: string;
+  transferDate: string;
+};
 
-async function mockGetTransfers() {
-  return {
-    data: mockTransferData
-  };
-}
+export type TransferCreateInput = {
+  amount: number;
+  externalAccount?: string;
+  fromAccount: string;
+  memo?: string;
+  toAccount?: string;
+  type: string;
+};
 
-const queryKey = "westernAlliance";
-const accountQueryKey = `${queryKey}Account`;
-const transferQueryKey = `${queryKey}Transfer`;
+export type TransferUpdateInput = {
+  id: string;
+  status: string;
+};
 
 export const transactionTypeMap: StringMap = {
   C: "Deposit",
@@ -157,6 +171,23 @@ export const transactionTypeMap: StringMap = {
   M: "Miscellaneous Service Charge",
   X: "Reversed",
 };
+
+export const transferStatusMap: StringMap = {
+  APPROVED: "Approved",
+  COMPLETED: "Completed",
+  REVIEWED: "Reviewed",
+  REJECTED: "Rejected",
+  SUBMITTED: "Submitted",
+};
+
+export const transferTypeMap: StringMap = {
+  ACCOUNT: "Account",
+  WIRE: "Wire",
+};
+
+const queryKey = "westernAlliance";
+const accountQueryKey = `${queryKey}Account`;
+const transferQueryKey = `${queryKey}Transfer`;
 
 export default function useWesternAllianceAccount() {
   const { authApi } = useAuth();
@@ -190,6 +221,12 @@ export default function useWesternAllianceAccount() {
     },
   });
 
+  const { mutate: updateTransfer } = useMutation(updateTransferMutation, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(transferQueryKey);
+    },
+  });
+
   async function getAccounts() {
     const { data } = await authApi.get<Account[]>("/western-alliance/accounts");
     data.sort((a, b) => a.accountTitle.localeCompare(b.accountTitle));
@@ -197,7 +234,12 @@ export default function useWesternAllianceAccount() {
   }
 
   async function getTransfers() {
-    const { data } = await mockGetTransfers();
+    const { data } = await authApi.get<Transfer[]>("/western-alliance/transfers");
+    data.sort((t1, t2) => {
+      const d1 = new Date(t1.transferDate);
+      const d2 = new Date(t2.transferDate);
+      return d2.getTime() - d1.getTime();
+    });
     return data;
   }
 
@@ -224,6 +266,14 @@ export default function useWesternAllianceAccount() {
     return data;
   }
 
+  async function updateTransferMutation(body: TransferUpdateInput) {
+    const { data } = await authApi.patch<Transfer>(
+      "/western-alliance/transfer",
+      body
+    );
+    return data;
+  }
+
   return {
     accountQueryKey,
     accountsIsSuccess,
@@ -233,5 +283,6 @@ export default function useWesternAllianceAccount() {
     transfers,
     transfersIsSuccess,
     updateAccount,
+    updateTransfer,
   };
 }

@@ -1,4 +1,4 @@
-import type { Transfer } from "hooks/useWesternAllianceAccount";
+import type { TransferTable } from "hooks/useWesternAllianceAccount";
 
 import { useEffect, useMemo, useState } from "react";
 
@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { currency, date } from "lib/formats";
 
 // hooks
-import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
+import useUserWesternAllianceAccount, { portalTransferStatusMap } from "hooks/useUserWesternAllianceAccount";
 import { useAtom } from "jotai";
 import { createColumnHelper } from "@tanstack/react-table";
 
@@ -24,7 +24,11 @@ import {
 
 import Table from "components/Table/Table";
 
-const columnHelper = createColumnHelper<Transfer>();
+const columnHelper = createColumnHelper<TransferTable>();
+
+function mapStatus(status: string) {
+  return portalTransferStatusMap[status] || "Unknown"
+}
 
 export default function TransferHistory() {
   const [selectedTimeRange, setSelectedTimeRange] = useState("YTD");
@@ -32,9 +36,11 @@ export default function TransferHistory() {
   const [, setId] = useAtom(idAtom);
   const [, setIsOpen] = useAtom(isOpenAtom);
   const { transfers } = useUserWesternAllianceAccount();
+  console.log(transfers);
 
   const timeRanges = ["YTD", "MTD", "3M", "1Y", "3Y", "5Y", "Max"];
-  const statuses = transfers?.map(({ status }) => status) || [];
+  const mappedStatuses = transfers?.map(({ status }) => mapStatus(status)) || [];
+  const statuses = [...new Set(mappedStatuses)];
 
   useEffect(() => {
     setSelectedStatuses(statuses);
@@ -74,6 +80,16 @@ export default function TransferHistory() {
   const filteredTransfers = useMemo(() => {
     return (
       transfers
+        ?.map((transfer) => {
+          return {
+            id: transfer?.id,
+            accountName: transfer?.westernAllianceFromAccount?.accountTitle,
+            accountNumber: transfer?.westernAllianceFromAccount?.accountNumber,
+            amount: transfer?.amount,
+            status: mapStatus(transfer?.status),
+            transferDate: transfer?.transferDate,
+          };
+        })
         ?.filter(
           (transfer) =>
             isInDateRange(transfer) &&
@@ -101,7 +117,7 @@ export default function TransferHistory() {
     setIsOpen(true);
   }
 
-  function isInDateRange(transfer: Transfer) {
+  function isInDateRange(transfer: TransferTable) {
     const date = new Date(transfer.transferDate);
     const currentDate = new Date();
     const timeDiff = Math.abs(currentDate.getTime() - date.getTime());
@@ -131,7 +147,7 @@ export default function TransferHistory() {
     }
   }
 
-  function isInStatuses({ status }: Transfer): boolean {
+  function isInStatuses({ status }: TransferTable): boolean {
     return selectedStatuses.includes(status);
   }
 

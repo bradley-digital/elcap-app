@@ -1,4 +1,4 @@
-import type { Transfer } from "hooks/useWesternAllianceAccount";
+import type { TransferTable } from "hooks/useWesternAllianceAccount";
 
 import { useEffect, useMemo, useState } from "react";
 
@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { currency, date } from "lib/formats";
 
 // hooks
-import useWesternAllianceAccount from "hooks/useWesternAllianceAccount";
+import useWesternAllianceAccount, { transferStatusMap } from "hooks/useWesternAllianceAccount";
 import { createColumnHelper } from "@tanstack/react-table";
 
 // components
@@ -20,7 +20,11 @@ import {
 
 import Table from "components/Table/Table";
 
-const columnHelper = createColumnHelper<Transfer>();
+const columnHelper = createColumnHelper<TransferTable>();
+
+function mapStatus(status: string) {
+  return transferStatusMap[status] || "Unknown"
+}
 
 export default function TransferHistory() {
   const [selectedTimeRange, setSelectedTimeRange] = useState("YTD");
@@ -28,7 +32,8 @@ export default function TransferHistory() {
   const { transfers } = useWesternAllianceAccount();
 
   const timeRanges = ["YTD", "MTD", "3M", "1Y", "3Y", "5Y", "Max"];
-  const statuses = transfers?.map(({ status }) => status) || [];
+  const mappedStatuses = transfers?.map(({ status }) => mapStatus(status)) || [];
+  const statuses = [...new Set(mappedStatuses)];
 
   useEffect(() => {
     setSelectedStatuses(statuses);
@@ -52,15 +57,15 @@ export default function TransferHistory() {
         header: () => "Amount",
         cell: (info) => currency(Number(info.getValue())),
       }),
-      columnHelper.accessor("status", {
-        header: () => "Status",
-        cell: (info) => info.getValue(),
-      }),
       columnHelper.accessor("id", {
         header: () => "Details",
         cell: (info) => (
           <a href={`/money-movement/${info.getValue()}`}>See details</a>
         ),
+      }),
+      columnHelper.accessor("status", {
+        header: () => "Status",
+        cell: (info) => info.getValue(),
       }),
     ];
   }, []);
@@ -68,7 +73,17 @@ export default function TransferHistory() {
   const filteredTransfers = useMemo(() => {
     return (
       transfers
-        ?.filter(
+        ?.map((transfer) => {
+          return {
+            id: transfer?.id,
+            accountName: transfer?.westernAllianceFromAccount?.accountTitle,
+            accountNumber: transfer?.westernAllianceFromAccount?.accountNumber,
+            amount: transfer?.amount,
+            status: mapStatus(transfer?.status),
+            transferDate: transfer?.transferDate,
+          };
+        })
+        .filter(
           (transfer) =>
             isInDateRange(transfer) &&
             isInStatuses(transfer)
@@ -90,7 +105,7 @@ export default function TransferHistory() {
       }))
       .sort((a, b) => a.label.localeCompare(b.label)) || [];
 
-  function isInDateRange(transfer: Transfer) {
+  function isInDateRange(transfer: TransferTable) {
     const date = new Date(transfer.transferDate);
     const currentDate = new Date();
     const timeDiff = Math.abs(currentDate.getTime() - date.getTime());
@@ -120,7 +135,7 @@ export default function TransferHistory() {
     }
   }
 
-  function isInStatuses({ status }: Transfer): boolean {
+  function isInStatuses({ status }: TransferTable): boolean {
     return selectedStatuses.includes(status);
   }
 

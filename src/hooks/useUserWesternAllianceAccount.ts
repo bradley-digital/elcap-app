@@ -1,75 +1,24 @@
 import type {
   Account,
   ExternalAccount,
+  ExternalAccountCreateInput,
+  StringMap,
   Transfer,
+  TransferCreateInput,
   Transaction,
 } from "hooks/useWesternAllianceAccount";
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import useAuth from "hooks/useAuth";
 
 import { queryKey } from "hooks/useUser";
 
-const mockTransferData: Transfer[] = [
-  {
-    id: "asdfap98sdfh",
-    accountName: "El Capitan Advisor for Money Market Fund 8",
-    accountNumber: "8996488782",
-    amount: 100.00,
-    memo: "First transfer",
-    status: "Submitted",
-    submittedBy: "Joshua Bradley",
-    transactionNumber: "36546873543",
-    transferDate: "2023-05-30T00:00:00.000Z",
-    updatedBy: "Kate Gurske",
-  },
-  {
-    id: "nfqasdfu",
-    accountName: "El Capitan Advisor for Money Market Fund 8",
-    accountNumber: "8996488782",
-    amount: 2000.00,
-    memo: "Second transfer",
-    status: "Complete",
-    submittedBy: "Joshua Bradley",
-    transactionNumber: "36546873543",
-    transferDate: "2023-05-20T00:00:00.000Z",
-    updatedBy: "Kate Gurske",
-  },
-];
-
-const mockExternalAccountData: ExternalAccount[] = [
-  {
-    id: "abcd",
-    accountName: "Total Checking",
-    accountNumber: "123456789",
-    financialInstitution: "Bank of America",
-    intermediaryBankName: "Bank of America",
-    intermediaryRoutingNumber: "987654321",
-    intermediaryFurtherCreditTo: "",
-    routingNumber: "123409871",
-  },
-  {
-    id: "abce",
-    accountName: "Total Savings",
-    accountNumber: "1234562345",
-    financialInstitution: "Chase Bank",
-    intermediaryBankName: "Chase Bank",
-    intermediaryRoutingNumber: "987652349",
-    intermediaryFurtherCreditTo: "",
-    routingNumber: "123404345",
-  },
-];
-
-async function getTransfers() {
-  return {
-    data: mockTransferData
-  };
-}
-
-async function getExternalAccounts() {
-  return {
-    data: mockExternalAccountData,
-  };
-}
+export const portalTransferStatusMap: StringMap = {
+  APPROVED: "Approved",
+  COMPLETED: "Completed",
+  REVIEWED: "Submitted",
+  REJECTED: "Rejected",
+  SUBMITTED: "Submitted",
+};
 
 const westernAllianceAccountsQueryKey = `${queryKey}WesternAllianceAccounts`;
 const westernAllianceExternalAccountsQueryKey = `${queryKey}WesternAllianceExternalAccounts`;
@@ -78,6 +27,7 @@ const westernAllianceTransferQueryKey = `${queryKey}WesternAllianceTransfer`;
 
 export default function useUserWesternAlliance() {
   const { authApi } = useAuth();
+  const queryClient = useQueryClient();
 
   const { isSuccess: accountsIsSuccess, data: accounts } = useQuery(
     westernAllianceAccountsQueryKey,
@@ -99,6 +49,18 @@ export default function useUserWesternAlliance() {
     getWesternAllianceTransfers
   );
 
+  const { mutateAsync: createExternalAccount } = useMutation(createExternalAccountMutation, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(westernAllianceExternalAccountsQueryKey);
+    },
+  });
+
+  const { mutateAsync: createTransfer } = useMutation(createTransferMutation, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(westernAllianceTransferQueryKey);
+    },
+  });
+
   async function getWesternAllianceAccounts() {
     const { data } = await authApi.get<Account[]>(
       "/users/western-alliance/accounts"
@@ -108,7 +70,7 @@ export default function useUserWesternAlliance() {
   }
 
   async function getWesternAllianceExternalAccounts() {
-    const { data } = await getExternalAccounts();
+    const { data } = await authApi.get<ExternalAccount[]>("/users/western-alliance/external-accounts");
     return data;
   }
 
@@ -125,13 +87,25 @@ export default function useUserWesternAlliance() {
   }
 
   async function getWesternAllianceTransfers() {
-    const { data } = await getTransfers();
+    const { data } = await authApi.get<Transfer[]>("/users/western-alliance/transfers");
+    return data;
+  }
+
+  async function createExternalAccountMutation(body: ExternalAccountCreateInput) {
+    const { data } = await authApi.post<ExternalAccount>("/users/western-alliance/external-account", body);
+    return data;
+  }
+
+  async function createTransferMutation(body: TransferCreateInput) {
+    const { data } = await authApi.post<Transfer>("/users/western-alliance/transfer", body);
     return data;
   }
 
   return {
     accounts,
     accountsIsSuccess,
+    createExternalAccount,
+    createTransfer,
     externalAccounts,
     externalAccountsIsSuccess,
     transactions,

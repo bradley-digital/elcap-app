@@ -3,7 +3,8 @@ import { currency, date } from "lib/formats";
 
 // hooks
 import { useAtom } from "jotai";
-import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
+import { transferTypeMap } from "hooks/useWesternAllianceAccount";
+import useUserWesternAllianceAccount, { portalTransferStatusMap } from "hooks/useUserWesternAllianceAccount";
 
 // atoms
 import { idAtom } from "atoms/transferHistoryModal";
@@ -24,16 +25,18 @@ export default function TransferHistoryDetails() {
   if (typeof transfer === "undefined") return null;
 
   const {
-    accountName,
-    accountNumber,
     amount,
     memo,
     status,
-    submittedBy,
     transactionNumber,
     transferDate,
-    updatedBy,
+    type,
   } = transfer;
+
+  const accountName = transfer?.westernAllianceFromAccount?.accountTitle;
+  const accountNumber = transfer?.westernAllianceFromAccount?.accountNumber;
+  const submittedBy = `${transfer?.userSubmittedBy?.firstName || ""} ${transfer?.userSubmittedBy?.lastName || ""}`;
+  const updatedBy = `${transfer?.userUpdatedBy?.firstName || ""} ${transfer?.userUpdatedBy?.lastName || ""}`;
 
   return (
     <IonList>
@@ -51,11 +54,15 @@ export default function TransferHistoryDetails() {
       </IonItem>
       <IonItem>
         <IonLabel>Amount</IonLabel>
-        <IonText>{currency(amount)}</IonText>
+        <IonText>{currency(Number(amount))}</IonText>
+      </IonItem>
+      <IonItem>
+        <IonLabel>Type</IonLabel>
+        <IonText>{transferTypeMap[type]} transfer</IonText>
       </IonItem>
       <IonItem>
         <IonLabel>Status</IonLabel>
-        <IonText>{status}</IonText>
+        <IonText>{portalTransferStatusMap[status]}</IonText>
       </IonItem>
       <IonItem>
         <IonLabel>Memo</IonLabel>
@@ -71,7 +78,7 @@ export default function TransferHistoryDetails() {
       </IonItem>
       <IonItem>
         <IonLabel>Transaction number</IonLabel>
-        <IonText>{transactionNumber}</IonText>
+        <IonText>{transactionNumber || "Not set"}</IonText>
       </IonItem>
     </IonList>
   );
