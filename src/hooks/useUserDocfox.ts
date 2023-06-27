@@ -5,6 +5,7 @@ import useAuth from "hooks/useAuth";
 import { queryKey } from "hooks/useUser";
 
 const docfoxApplicationQueryKey = `${queryKey}DocfoxApplication`;
+const docfoxApplicationDataRequirementsQueryKey = `${queryKey}DocfoxApplicationDataRequirements`;
 const docfoxInvitationLinkQueryKey = `${queryKey}DocfoxInvitationLink`;
 const docfoxTemplateQueryKey = `${queryKey}DocfoxTemplate`;
 
@@ -15,6 +16,11 @@ export default function useUserDocfox() {
   const { isSuccess: applicationIsSuccess, data: application } = useQuery(
     docfoxApplicationQueryKey,
     getDocfoxApplication
+  );
+
+  const { isSuccess: dataRequirementsIsSuccess, data: dataRequirements } = useQuery(
+    docfoxApplicationDataRequirementsQueryKey,
+    getDocfoxApplicationDataRequirements
   );
 
   const { isSuccess: invitationLinkIsSuccess, data: invitationLink } = useQuery(
@@ -59,6 +65,11 @@ export default function useUserDocfox() {
     return data;
   }
 
+  async function getDocfoxApplicationDataRequirements() {
+    const { data } = await authApi.get("/users/docfox/application/data-requirements");
+    return data;
+  }
+
   async function getDocfoxInvitationLink() {
     const { data } = await authApi.get("/users/docfox/invitation-link");
     return data?.invitationLink || "";
@@ -92,6 +103,8 @@ export default function useUserDocfox() {
   return {
     application,
     applicationIsSuccess,
+    dataRequirements,
+    dataRequirementsIsSuccess,
     deleteProfileData,
     invitationLink,
     invitationLinkIsSuccess,

@@ -23,10 +23,10 @@ export default function WesternAllianceListModal() {
     <IonModal isOpen={isOpen} onWillDismiss={closeModal}>
       <IonHeader>
         <IonToolbar>
-          <IonButtons slot="start">
+          <IonTitle>New account</IonTitle>
+          <IonButtons slot="end">
             <IonButton onClick={closeModal}>Cancel</IonButton>
           </IonButtons>
-          <IonTitle>New account</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">

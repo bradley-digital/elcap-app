@@ -7,7 +7,7 @@ import { transactions } from "pages/Pay/consts";
 
 export default function PayTransactions() {
   return (
-    <PageTemplate title="Transactions" menuId="main">
+    <PageTemplate title="Transactions" menuId="pay">
       <IonGrid>
         <IonRow className="ion-justify-content-center">
           <IonCol size-md="8" size-lg="6">

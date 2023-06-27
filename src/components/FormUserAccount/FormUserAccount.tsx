@@ -32,15 +32,15 @@ import useUserManagement from "hooks/useUserManagement";
 const roleOptions = [
   {
     value: "ADMIN",
-    label: "ADMIN",
+    label: "Admin",
   },
   {
     value: "PAYMENTS",
-    label: "PAYMENTS",
+    label: "Payments",
   },
   {
     value: "PORTAL",
-    label: "PORTAL",
+    label: "Portal",
   },
 ];
 
@@ -101,21 +101,18 @@ export default function FormUserAccount({ profile }: Props) {
       <Form>
         <IonList>
           <IonListHeader>Profile information</IonListHeader>
-
           <FormInput
             label="First Name"
             name="firstName"
             type="text"
             icon={pencil}
           />
-
           <FormInput
             label="Last Name"
             name="lastName"
             type="text"
             icon={pencil}
           />
-
           <FormInput
             label="Email"
             name="email"
@@ -123,36 +120,28 @@ export default function FormUserAccount({ profile }: Props) {
             icon={lockClosed}
             readonly={true}
           />
-
           <FormInput label="Phone" name="phone" type="text" icon={pencil} />
-
           <FormInput
             label="Company Name"
             name="companyName"
             type="text"
             icon={pencil}
           />
-
           <FormInput
             label="Address line 1"
             name="addressLine1"
             type="text"
             icon={pencil}
           />
-
           <FormInput
             label="Address line 2"
             name="addressLine2"
             type="text"
             icon={pencil}
           />
-
           <FormInput label="Country" name="country" type="text" icon={pencil} />
-
           <FormInput label="State" name="state" type="text" icon={pencil} />
-
           <FormSelect label="Role" name="role" options={roleOptions} />
-
           <SubmitButton isSubmitting={isSubmitting}>Update User</SubmitButton>
         </IonList>
       </Form>

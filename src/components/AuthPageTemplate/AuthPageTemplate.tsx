@@ -24,11 +24,13 @@ export default function AuthPageTemplate({
   return (
     <IonPage className={cn("AuthPageTemplate", className)} {...rest}>
       <IonContent fullscreen>
-        <Logo />
-        <IonText>
-          <h1 className="AuthPageTemplate__title">{title}</h1>
-        </IonText>
-        {children}
+        <div className="AuthPageTemplate__inner">
+          <Logo />
+          <IonText>
+            <h1 className="AuthPageTemplate__title">{title}</h1>
+          </IonText>
+          {children}
+        </div>
       </IonContent>
     </IonPage>
   );

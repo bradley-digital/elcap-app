@@ -1,7 +1,18 @@
 import type { Transaction } from "hooks/useWesternAllianceAccount";
 import "chartjs-adapter-moment";
 import { v4 as uuidv4 } from "uuid";
+
+// lib
+import { currency, date } from "lib/formats";
+
+// hooks
 import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
+
+const dateOptions: Intl.DateTimeFormatOptions = {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+};
 
 export default function useChartData(
   selectedTimeRange: string,
@@ -268,13 +279,7 @@ export default function useChartData(
     );
 
     transactionsWithBalanceByYear.forEach((balance) => {
-      const date = new Date(balance.postingDate);
-      const options: Intl.DateTimeFormatOptions = {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      };
-      const shortDate = date.toLocaleDateString("en-US", options);
+      const shortDate = date(balance.postingDate, dateOptions);
 
       const balanceCoordinates = {
         x: Date.parse(shortDate),
@@ -356,21 +361,12 @@ export default function useChartData(
             }
 
             if (context.parsed.x !== null) {
-              const date = new Date(context.parsed.x);
-              const options: Intl.DateTimeFormatOptions = {
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-              };
-              const shortDate = date.toLocaleDateString("en-US", options);
+              const shortDate = date(context.parsed.x, dateOptions);
               label += shortDate + " | ";
             }
 
             if (context.parsed.y !== null) {
-              label += new Intl.NumberFormat("en-US", {
-                style: "currency",
-                currency: "USD",
-              }).format(context.parsed.y);
+              label += currency(context.parsed.y);
             }
             return label;
           },

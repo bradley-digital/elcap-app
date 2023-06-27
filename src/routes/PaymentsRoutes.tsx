@@ -16,7 +16,7 @@ import {
 // pages
 import Example from "pages/Example/Example";
 import Pay from "pages/Pay/Pay";
-import Profile from "pages/Profile/Profile";
+import Profile from "pages/Profile/ProfileOverview";
 import Shop from "pages/Shop/Shop";
 
 export default function PaymentsRoutes() {

@@ -1,0 +1,15 @@
+.FormCheckbox {
+  border-bottom: solid 1px rgba(0, 0, 0, 0.13);
+  --border-color: transparent;
+  --border-width: 0;
+
+  .item {
+    .sc-ion-label-md-h {
+      white-space: normal;
+    }
+  }
+
+  &__checkbox {
+    margin-right: 18px;
+  }
+}

@@ -16,20 +16,21 @@ import {
 import "./FormSelect.scss";
 
 type Props = {
+  className?: string;
+  icon?: string;
   label: string;
+  note?: string;
   options: {
     value: string;
     label: string;
   }[];
-  icon?: string;
-  className?: string;
   position?: "fixed" | "stacked" | "floating";
 } & ComponentProps<typeof IonSelect> &
   FieldHookConfig<string>;
 
 export default function FormSelect(props: Props) {
   const [field, meta] = useField(props);
-  const { label, icon, options, className, position, ...rest } = props;
+  const { className, icon, label, note, options, position, ...rest } = props;
 
   const selectedOption = options.find(
     (option) => option.value === field.value
@@ -63,7 +64,8 @@ export default function FormSelect(props: Props) {
         ))}
       </IonSelect>
 
-      {meta.error && <IonNote slot="error">{meta.error}</IonNote>}
+      {!!note && !meta.error && <IonNote slot="helper">{note}</IonNote>}
+      {!!meta.error && <IonNote slot="error">{meta.error}</IonNote>}
     </IonItem>
   );
 }

@@ -61,7 +61,7 @@ export default function DashboardOverview() {
     return null;
   }
 
-  const currentBalance = currency.format(accountsCurrentBalanceTotal);
+  const currentBalance = currency(accountsCurrentBalanceTotal);
   const timeRange = ["YTD", "MTD", "3M", "1Y", "3Y", "5Y", "Max"];
 
   const accountOptions =
@@ -104,7 +104,7 @@ export default function DashboardOverview() {
               {accounts?.map((account) => {
                 return (
                   <p key={hash(account)}>
-                    {`${account.accountTitle}: ${currency.format(
+                    {`${account.accountTitle}: ${currency(
                       Number(account.accountBalance)
                     )}`}
                   </p>

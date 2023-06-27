@@ -20,7 +20,7 @@ import { lockClosed, pencil } from "ionicons/icons";
 
 // components
 import { Form, Formik } from "formik";
-import { IonList, IonListHeader } from "@ionic/react";
+import { IonList } from "@ionic/react";
 import FormObserver from "components/FormObserver/FormObserver";
 import FormInput from "components/FormInput/FormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
@@ -33,7 +33,7 @@ type Props = {
 };
 
 export default function FormAccount({ profile }: Props) {
-  const { mutate } = useUser();
+  const { updateUser } = useUser();
   const [edited, setEdited] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -81,7 +81,7 @@ export default function FormAccount({ profile }: Props) {
       })}
       onSubmit={(values) => {
         setIsSubmitting(true);
-        mutate(values);
+        updateUser(values);
         setEdited(false);
         setIsSubmitting(false);
       }}
@@ -89,22 +89,18 @@ export default function FormAccount({ profile }: Props) {
       <Form>
         <FormObserver onChange={handleChange} />
         <IonList>
-          <IonListHeader>Profile information</IonListHeader>
-
           <FormInput
             label="First Name"
             name="firstName"
             type="text"
             icon={pencil}
           />
-
           <FormInput
             label="Last Name"
             name="lastName"
             type="text"
             icon={pencil}
           />
-
           <FormInput
             label="Email"
             name="email"
@@ -112,34 +108,27 @@ export default function FormAccount({ profile }: Props) {
             icon={lockClosed}
             readonly
           />
-
           <FormInput label="Phone" name="phone" type="text" icon={pencil} />
-
           <FormInput
             label="Company Name"
             name="companyName"
             type="text"
             icon={pencil}
           />
-
           <FormInput
             label="Address line 1"
             name="addressLine1"
             type="text"
             icon={pencil}
           />
-
           <FormInput
             label="Address line 2"
             name="addressLine2"
             type="text"
             icon={pencil}
           />
-
           <FormInput label="Country" name="country" type="text" icon={pencil} />
-
           <FormInput label="State" name="state" type="text" icon={pencil} />
-
           {edited && (
             <SubmitButton className="w-100" isSubmitting={isSubmitting}>
               Update

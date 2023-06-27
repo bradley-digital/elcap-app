@@ -1,6 +1,6 @@
 @import "@/theme/variables.scss";
 
-.TransactionsTable {
+.Table {
   table {
     width: 100%;
   }
@@ -17,6 +17,15 @@
 
     &:last-child {
       padding-right: 0;
+    }
+
+    a {
+      cursor: pointer;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 

@@ -19,8 +19,8 @@ import useUserManagement from "hooks/useUserManagement";
 import { add } from "ionicons/icons";
 
 export default function UserManagement() {
-  const { isSuccess, data } = useUserManagement();
   const [, setIsOpen] = useAtom(isOpenAtom);
+  const { isSuccess, data } = useUserManagement();
 
   function openModal() {
     setIsOpen(true);
