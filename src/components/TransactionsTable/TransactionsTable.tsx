@@ -37,8 +37,6 @@ const columnHelper = createColumnHelper<Transaction>();
 const columns = [
   columnHelper.accessor("postingDate", {
     header: () => "Date",
-    // UTC offset for PT is -08:00
-    // https://en.wikipedia.org/wiki/List_of_UTC_offsets
     cell: (info) => date(info.getValue()),
   }),
   columnHelper.accessor("accountNumber", {
@@ -255,10 +253,6 @@ export default function TransactionsTable() {
   );
 
   return (
-    <Table
-      before={before}
-      columns={columns}
-      data={filteredTransactions}
-    />
+    <Table before={before} columns={columns} data={filteredTransactions} />
   );
 }
