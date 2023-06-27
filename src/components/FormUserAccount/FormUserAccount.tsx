@@ -14,6 +14,7 @@ import {
   stateValidation,
   companyNameValidation,
   roleValidation,
+  isCannabisValidation,
 } from "lib/formValidation";
 
 // icons
@@ -28,6 +29,7 @@ import SubmitButton from "components/SubmitButton/SubmitButton";
 
 // hooks
 import useUserManagement from "hooks/useUserManagement";
+import FormCheckbox from "components/FormCheckbox/FormCheckbox";
 
 const roleOptions = [
   {
@@ -64,6 +66,7 @@ export default function FormUserAccount({ profile }: Props) {
     country,
     state,
     role: origRole,
+    isCannabis,
   } = profile;
 
   return (
@@ -79,6 +82,7 @@ export default function FormUserAccount({ profile }: Props) {
         country,
         state,
         role: origRole,
+        isCannabis: isCannabis || false,
       }}
       validationSchema={Yup.object({
         firstName: firstNameValidation,
@@ -91,6 +95,7 @@ export default function FormUserAccount({ profile }: Props) {
         country: countryValidation,
         state: stateValidation,
         role: roleValidation,
+        isCannabis: isCannabisValidation,
       })}
       onSubmit={(values) => {
         setIsSubmitting(true);
@@ -142,6 +147,7 @@ export default function FormUserAccount({ profile }: Props) {
           <FormInput label="Country" name="country" type="text" icon={pencil} />
           <FormInput label="State" name="state" type="text" icon={pencil} />
           <FormSelect label="Role" name="role" options={roleOptions} />
+          <FormCheckbox label="Cannabis" name="isCannabis" type="checkbox" />
           <SubmitButton isSubmitting={isSubmitting}>Update User</SubmitButton>
         </IonList>
       </Form>

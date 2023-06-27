@@ -13,6 +13,7 @@ export type Profile = {
   lastName: string;
   email: string;
   phone: string;
+  isCannabis?: boolean;
   companyName?: string;
   addressLine1: string;
   addressLine2: string;
@@ -43,10 +44,10 @@ export default function useUser() {
   const { authApi } = useAuth();
   const queryClient = useQueryClient();
 
-  const {
-    isSuccess: profileIsSuccess,
-    data: profile,
-  } = useQuery(queryKey, getUser);
+  const { isSuccess: profileIsSuccess, data: profile } = useQuery(
+    queryKey,
+    getUser
+  );
 
   const { mutate: updateUser } = useMutation(updateUserMutation, {
     onSuccess: (data) => {
