@@ -8,7 +8,10 @@ type Props = {
 import { currency, date } from "lib/formats";
 
 // hooks
-import useWesternAllianceAccount, { transferStatusMap, transferTypeMap } from "hooks/useWesternAllianceAccount";
+import useWesternAllianceAccount, {
+  transferStatusMap,
+  transferTypeMap,
+} from "hooks/useWesternAllianceAccount";
 
 // components
 import {
@@ -25,20 +28,17 @@ import { arrowBack } from "ionicons/icons";
 export default function MoneyMovementTransfer({ transfer }: Props) {
   const { updateTransfer } = useWesternAllianceAccount();
 
-  const {
-    id,
-    amount,
-    memo,
-    status,
-    transactionNumber,
-    transferDate,
-    type,
-  } = transfer;
+  const { id, amount, memo, status, transactionNumber, transferDate, type } =
+    transfer;
 
   const accountName = transfer?.westernAllianceFromAccount?.accountTitle;
   const accountNumber = transfer?.westernAllianceFromAccount?.accountNumber;
-  const submittedBy = `${transfer?.userSubmittedBy?.firstName || ""} ${transfer?.userSubmittedBy?.lastName || ""}`;
-  const updatedBy = `${transfer?.userUpdatedBy?.firstName || ""} ${transfer?.userUpdatedBy?.lastName || ""}`;
+  const submittedBy = `${transfer?.userSubmittedBy?.firstName || ""} ${
+    transfer?.userSubmittedBy?.lastName || ""
+  }`;
+  const updatedBy = `${transfer?.userUpdatedBy?.firstName || ""} ${
+    transfer?.userUpdatedBy?.lastName || ""
+  }`;
 
   function handleApprove() {
     updateTransfer({ id, status: "APPROVED" });
@@ -103,14 +103,31 @@ export default function MoneyMovementTransfer({ transfer }: Props) {
             <h6>Approve transfer</h6>
             <p>Approve this transfer and initiate money movement.</p>
           </IonText>
-          <IonButton onClick={handleApprove} slot="end" size="default">Approve transfer</IonButton>
+          <IonButton
+            onClick={handleApprove}
+            slot="end"
+            size="default"
+            disabled={status === "APPROVED"}
+          >
+            Approve transfer
+          </IonButton>
         </IonItem>
         <IonItem>
           <IonText>
             <h6>Reject transfer</h6>
-            <p>Reject this transfer and deny future handling of this transfer.</p>
+            <p>
+              Reject this transfer and deny future handling of this transfer.
+            </p>
           </IonText>
-          <IonButton color="danger" onClick={handleReject} slot="end" size="default">Reject transfer</IonButton>
+          <IonButton
+            color="danger"
+            onClick={handleReject}
+            slot="end"
+            size="default"
+            disabled={status === "APPROVED" || status === "REJECTED"}
+          >
+            Reject transfer
+          </IonButton>
         </IonItem>
       </IonList>
     </div>
