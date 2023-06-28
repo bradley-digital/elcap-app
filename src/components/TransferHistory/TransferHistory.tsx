@@ -6,7 +6,9 @@ import { useEffect, useMemo, useState } from "react";
 import { currency, date } from "lib/formats";
 
 // hooks
-import useUserWesternAllianceAccount, { portalTransferStatusMap } from "hooks/useUserWesternAllianceAccount";
+import useUserWesternAllianceAccount, {
+  portalTransferStatusMap,
+} from "hooks/useUserWesternAllianceAccount";
 import { useAtom } from "jotai";
 import { createColumnHelper } from "@tanstack/react-table";
 
@@ -27,7 +29,7 @@ import Table from "components/Table/Table";
 const columnHelper = createColumnHelper<TransferTable>();
 
 function mapStatus(status: string) {
-  return portalTransferStatusMap[status] || "Unknown"
+  return portalTransferStatusMap[status] || "Unknown";
 }
 
 export default function TransferHistory() {
@@ -39,7 +41,8 @@ export default function TransferHistory() {
   console.log(transfers);
 
   const timeRanges = ["YTD", "MTD", "3M", "1Y", "3Y", "5Y", "Max"];
-  const mappedStatuses = transfers?.map(({ status }) => mapStatus(status)) || [];
+  const mappedStatuses =
+    transfers?.map(({ status }) => mapStatus(status)) || [];
   const statuses = [...new Set(mappedStatuses)];
 
   useEffect(() => {
@@ -91,16 +94,10 @@ export default function TransferHistory() {
           };
         })
         ?.filter(
-          (transfer) =>
-            isInDateRange(transfer) &&
-            isInStatuses(transfer)
+          (transfer) => isInDateRange(transfer) && isInStatuses(transfer)
         ) || []
     );
-  }, [
-    transfers,
-    selectedStatuses,
-    selectedTimeRange,
-  ]);
+  }, [transfers, selectedStatuses, selectedTimeRange]);
 
   if (typeof transfers === "undefined") return null;
 
@@ -185,11 +182,5 @@ export default function TransferHistory() {
     </IonList>
   );
 
-  return (
-    <Table
-      before={before}
-      columns={columns}
-      data={filteredTransfers}
-    />
-  );
+  return <Table before={before} columns={columns} data={filteredTransfers} />;
 }

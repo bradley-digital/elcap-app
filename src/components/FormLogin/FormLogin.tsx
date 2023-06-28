@@ -46,9 +46,7 @@ export default function FormLogin() {
           type="password"
           placeholder="Password"
         />
-        <SubmitButton isSubmitting={isSubmitting}>
-          Login
-        </SubmitButton>
+        <SubmitButton isSubmitting={isSubmitting}>Login</SubmitButton>
       </Form>
     </Formik>
   );

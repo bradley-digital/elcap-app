@@ -1,11 +1,14 @@
 export function createCSV(rows: any[]) {
-  return rows.map((row) => row
-    .map(String)
-    .map((v: string) => v.replaceAll('"', '""'))
-    .map((v: string) => v.trim())
-    .map((v: string) => `"${v}"`)
-    .join(",")
-  ).join("\r\n");
+  return rows
+    .map((row) =>
+      row
+        .map(String)
+        .map((v: string) => v.replaceAll('"', '""'))
+        .map((v: string) => v.trim())
+        .map((v: string) => `"${v}"`)
+        .join(",")
+    )
+    .join("\r\n");
 }
 
 export function downloadBlob(

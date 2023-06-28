@@ -14,12 +14,7 @@ type Document = {
 import { useEffect, useState } from "react";
 
 // components
-import {
-  IonButton,
-  IonIcon,
-  IonSpinner,
-  IonText,
-} from "@ionic/react";
+import { IonButton, IonIcon, IonSpinner, IonText } from "@ionic/react";
 import {
   checkmarkCircle,
   closeCircle,
@@ -36,42 +31,42 @@ import useAuth from "hooks/useAuth";
 import "./OnboardingSteps.scss";
 
 const statuses = {
-  "pending_upload": {
+  pending_upload: {
     icon: <IonIcon icon={closeCircle} />,
     message: "Not submitted",
     color: "c-danger",
   },
-  "data_call_pending": {
+  data_call_pending: {
     icon: <IonIcon icon={ellipsisHorizontalCircle} />,
     message: "External data loading",
     color: "",
   },
-  "data_call_complete": {
+  data_call_complete: {
     icon: <IonIcon icon={ellipsisHorizontalCircle} />,
     message: "External data loaded",
     color: "",
   },
-  "being_processed": {
+  being_processed: {
     icon: <IonIcon icon={ellipsisHorizontalCircle} />,
     message: "Processing image",
     color: "",
   },
-  "pending_review": {
+  pending_review: {
     icon: <IonIcon icon={ellipsisHorizontalCircle} />,
     message: "Under review",
     color: "",
   },
-  "accepted": {
+  accepted: {
     icon: <IonIcon icon={checkmarkCircle} />,
     message: "Approved",
     color: "c-primary",
   },
-  "rejected": {
+  rejected: {
     icon: <IonIcon icon={closeCircle} />,
     message: "Rejected",
     color: "c-danger",
   },
-  "invalidated": {
+  invalidated: {
     icon: <IonIcon icon={closeCircle} />,
     message: "Invalidated",
     color: "c-danger",
@@ -83,10 +78,7 @@ export default function OnboardingSteps() {
   const [documentCount, setDocumentCount] = useState(0);
   const { authApi } = useAuth();
   const { profile, updateUser } = useUser();
-  const {
-    dataRequirements,
-    invitationLink,
-  } = useUserDocfox();
+  const { dataRequirements, invitationLink } = useUserDocfox();
 
   useEffect(() => {
     async function getDocuments() {
@@ -96,13 +88,16 @@ export default function OnboardingSteps() {
       let approvedDocumentCount = 0;
       newDocumentCount = dataRequirements.data?.length || 0;
       for (const dataRequirement of dataRequirements.data) {
-        const evidenceLink = dataRequirement?.relationships?.active_evidence_submission?.links?.related;
+        const evidenceLink =
+          dataRequirement?.relationships?.active_evidence_submission?.links
+            ?.related;
         if (!evidenceLink) continue;
         const evidenceId = evidenceLink.split("/").pop();
         if (!evidenceId) continue;
-        const { data: evidenceSubmission } =
-          await authApi.get(`/docfox/evidence-submission?evidenceId=${evidenceId}`);
-        const status = evidenceSubmission?.data?.attributes?.status
+        const { data: evidenceSubmission } = await authApi.get(
+          `/docfox/evidence-submission?evidenceId=${evidenceId}`
+        );
+        const status = evidenceSubmission?.data?.attributes?.status;
         const doc = {
           name: dataRequirement?.attributes?.name,
           status,
@@ -143,7 +138,9 @@ export default function OnboardingSteps() {
         <Logo />
         <IonText>
           <h1>Welcome {companyName}!</h1>
-          <p>Please click the link below to complete your onboarding process.</p>
+          <p>
+            Please click the link below to complete your onboarding process.
+          </p>
         </IonText>
         <IonButton onClick={handleStart}>Get Started</IonButton>
       </div>
@@ -166,7 +163,7 @@ export default function OnboardingSteps() {
           <p className="brow">Step 2</p>
           <h1>New account documents</h1>
         </IonText>
-        {documentCount > 0 ?
+        {documentCount > 0 ? (
           <>
             <IonText className="t-center">
               <p>{documentCount} documents required</p>
@@ -178,16 +175,19 @@ export default function OnboardingSteps() {
                   <span
                     className={`OnboardingSteps__documentStatus ${statuses[status].color}`}
                   >
-                    {statuses[status].icon || null} {statuses[status].message || ""}
+                    {statuses[status].icon || null}{" "}
+                    {statuses[status].message || ""}
                   </span>
                 </div>
               ))}
             </div>
-            <IonButton href={invitationLink} target="_blank">Upload documents</IonButton>
+            <IonButton href={invitationLink} target="_blank">
+              Upload documents
+            </IonButton>
           </>
-        :
+        ) : (
           <IonSpinner name="crescent" />
-        }
+        )}
       </div>
     );
   } else if (onboardingStage === "PENDING") {
@@ -196,7 +196,10 @@ export default function OnboardingSteps() {
         <Logo />
         <IonText>
           <h1>Thank you!</h1>
-          <p>You will be notified when your documents have been approved, or if any additional documents are required.</p>
+          <p>
+            You will be notified when your documents have been approved, or if
+            any additional documents are required.
+          </p>
         </IonText>
       </div>
     );

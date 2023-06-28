@@ -37,9 +37,7 @@ export default function ForgotPasswordForm() {
           type="email"
           placeholder="Email"
         />
-        <SubmitButton isSubmitting={isSubmitting}>
-          Submit
-        </SubmitButton>
+        <SubmitButton isSubmitting={isSubmitting}>Submit</SubmitButton>
       </Form>
     </Formik>
   );

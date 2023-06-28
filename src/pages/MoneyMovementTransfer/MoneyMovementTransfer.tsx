@@ -2,11 +2,7 @@ import { useParams } from "react-router-dom";
 import { useIonRouter } from "@ionic/react";
 
 // components
-import {
-  IonCol,
-  IonGrid,
-  IonRow,
-} from "@ionic/react";
+import { IonCol, IonGrid, IonRow } from "@ionic/react";
 import PageTemplate from "components/PageTemplate/PageTemplate";
 import MoneyMovementTransferC from "components/MoneyMovementTransfer/MoneyMovementTransfer";
 

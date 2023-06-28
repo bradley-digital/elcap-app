@@ -16,16 +16,8 @@ export default function TransferRoutes({ match }: RouteComponentProps) {
           path={`${match.url}/overview`}
           render={() => <Overview />}
         />
-        <Route
-          exact
-          path={`${match.url}/account`}
-          render={() => <Account />}
-        />
-        <Route
-          exact
-          path={`${match.url}/wire`}
-          render={() => <Wire />}
-        />
+        <Route exact path={`${match.url}/account`} render={() => <Account />} />
+        <Route exact path={`${match.url}/wire`} render={() => <Wire />} />
         {/* Fallback route */}
         <Route render={() => <Redirect to={`${match.url}/overview`} />} />
       </Switch>

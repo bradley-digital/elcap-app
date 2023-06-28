@@ -40,7 +40,9 @@ export default function UserList({ users }: Props) {
       {sortedKeys.map((role: any) => (
         <IonList key={role} className="UserList__sublist">
           <IonListHeader>
-            <IonLabel>{`${role.charAt(0).toUpperCase()}${role.slice(1).toLowerCase()}`}</IonLabel>
+            <IonLabel>{`${role.charAt(0).toUpperCase()}${role
+              .slice(1)
+              .toLowerCase()}`}</IonLabel>
           </IonListHeader>
           {groupedUsers[role].map((user: Profile) => (
             <IonItem

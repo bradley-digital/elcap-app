@@ -23,14 +23,15 @@ export default function FormTransferAccount() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { accounts, createTransfer } = useUserWesternAllianceAccount();
 
-  const transferAmountValidation = Yup
-    .number()
+  const transferAmountValidation = Yup.number()
     .nullable()
     .test(
       "max",
       "Amount must be less than the account balance",
       (value, context) => {
-        const account = accounts?.find(({ accountNumber }) => accountNumber === context.parent.fromAccount);
+        const account = accounts?.find(
+          ({ accountNumber }) => accountNumber === context.parent.fromAccount
+        );
         if (account) {
           return Number(value) <= parseFloat(account.accountBalance);
         }
@@ -43,7 +44,9 @@ export default function FormTransferAccount() {
     accounts
       ?.map(({ accountBalance, accountNumber, accountTitle }) => {
         const truncatedAccountNumber = accountNumber.slice(-4);
-        const label = `${accountTitle} (...${truncatedAccountNumber}): ${currency(Number(accountBalance))}`;
+        const label = `${accountTitle} (...${truncatedAccountNumber}): ${currency(
+          Number(accountBalance)
+        )}`;
         return {
           value: accountNumber,
           label,
@@ -95,14 +98,12 @@ export default function FormTransferAccount() {
               name="toAccount"
               type="text"
               className="FormAccountSelect"
-              options={accountOptions?.filter(({ value }) => value !== values.fromAccount)}
+              options={accountOptions?.filter(
+                ({ value }) => value !== values.fromAccount
+              )}
               disabled={values.fromAccount === ""}
             />
-            <FormInput
-              label="Amount"
-              name="amount"
-              type="text"
-            />
+            <FormInput label="Amount" name="amount" type="text" />
             <FormInput
               label="Memo (optional)"
               name="memo"

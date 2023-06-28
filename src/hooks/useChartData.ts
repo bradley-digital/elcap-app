@@ -188,7 +188,6 @@ export default function useChartData(
       )
     : individualAccounts;
 
-
   const selectedAccountTransactions = isSingleAccountSelected
     ? filteredAccountTransactions(selectedAccountNumbers[0])
     : transactions;

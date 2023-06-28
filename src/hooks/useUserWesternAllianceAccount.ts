@@ -34,10 +34,11 @@ export default function useUserWesternAlliance() {
     getWesternAllianceAccounts
   );
 
-  const { isSuccess: externalAccountsIsSuccess, data: externalAccounts } = useQuery(
-    westernAllianceExternalAccountsQueryKey,
-    getWesternAllianceExternalAccounts
-  );
+  const { isSuccess: externalAccountsIsSuccess, data: externalAccounts } =
+    useQuery(
+      westernAllianceExternalAccountsQueryKey,
+      getWesternAllianceExternalAccounts
+    );
 
   const { isSuccess: transactionsIsSuccess, data: transactions } = useQuery(
     westernAllianceTransactionsQueryKey,
@@ -49,11 +50,14 @@ export default function useUserWesternAlliance() {
     getWesternAllianceTransfers
   );
 
-  const { mutateAsync: createExternalAccount } = useMutation(createExternalAccountMutation, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(westernAllianceExternalAccountsQueryKey);
-    },
-  });
+  const { mutateAsync: createExternalAccount } = useMutation(
+    createExternalAccountMutation,
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(westernAllianceExternalAccountsQueryKey);
+      },
+    }
+  );
 
   const { mutateAsync: createTransfer } = useMutation(createTransferMutation, {
     onSuccess: () => {
@@ -70,7 +74,9 @@ export default function useUserWesternAlliance() {
   }
 
   async function getWesternAllianceExternalAccounts() {
-    const { data } = await authApi.get<ExternalAccount[]>("/users/western-alliance/external-accounts");
+    const { data } = await authApi.get<ExternalAccount[]>(
+      "/users/western-alliance/external-accounts"
+    );
     return data;
   }
 
@@ -87,17 +93,27 @@ export default function useUserWesternAlliance() {
   }
 
   async function getWesternAllianceTransfers() {
-    const { data } = await authApi.get<Transfer[]>("/users/western-alliance/transfers");
+    const { data } = await authApi.get<Transfer[]>(
+      "/users/western-alliance/transfers"
+    );
     return data;
   }
 
-  async function createExternalAccountMutation(body: ExternalAccountCreateInput) {
-    const { data } = await authApi.post<ExternalAccount>("/users/western-alliance/external-account", body);
+  async function createExternalAccountMutation(
+    body: ExternalAccountCreateInput
+  ) {
+    const { data } = await authApi.post<ExternalAccount>(
+      "/users/western-alliance/external-account",
+      body
+    );
     return data;
   }
 
   async function createTransferMutation(body: TransferCreateInput) {
-    const { data } = await authApi.post<Transfer>("/users/western-alliance/transfer", body);
+    const { data } = await authApi.post<Transfer>(
+      "/users/western-alliance/transfer",
+      body
+    );
     return data;
   }
 

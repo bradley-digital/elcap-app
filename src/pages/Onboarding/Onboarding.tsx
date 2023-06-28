@@ -1,11 +1,5 @@
 // components
-import {
-  IonCol,
-  IonContent,
-  IonGrid,
-  IonPage,
-  IonRow,
-} from "@ionic/react";
+import { IonCol, IonContent, IonGrid, IonPage, IonRow } from "@ionic/react";
 import OnboardingSteps from "components/OnboardingSteps/OnboardingSteps";
 
 export default function Onboarding() {

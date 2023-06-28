@@ -12,12 +12,7 @@ import {
 
 // components
 import { Form, Formik } from "formik";
-import {
-  IonButton,
-  IonIcon,
-  IonList,
-  IonListHeader,
-} from "@ionic/react";
+import { IonButton, IonIcon, IonList, IonListHeader } from "@ionic/react";
 import { alertCircle, checkmarkCircle, closeCircle } from "ionicons/icons";
 import FormInput from "components/FormInput/FormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
@@ -147,9 +142,7 @@ export default function FormDocfox() {
                 name="kyc_entity_template_id"
               />
               {formInputs}
-              <SubmitButton isSubmitting={isSubmitting}>
-                Submit
-              </SubmitButton>
+              <SubmitButton isSubmitting={isSubmitting}>Submit</SubmitButton>
             </IonList>
           </Form>
         </Formik>
