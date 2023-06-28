@@ -18,10 +18,11 @@ export default function useUserDocfox() {
     getDocfoxApplication
   );
 
-  const { isSuccess: dataRequirementsIsSuccess, data: dataRequirements } = useQuery(
-    docfoxApplicationDataRequirementsQueryKey,
-    getDocfoxApplicationDataRequirements
-  );
+  const { isSuccess: dataRequirementsIsSuccess, data: dataRequirements } =
+    useQuery(
+      docfoxApplicationDataRequirementsQueryKey,
+      getDocfoxApplicationDataRequirements
+    );
 
   const { isSuccess: invitationLinkIsSuccess, data: invitationLink } = useQuery(
     docfoxInvitationLinkQueryKey,
@@ -66,7 +67,9 @@ export default function useUserDocfox() {
   }
 
   async function getDocfoxApplicationDataRequirements() {
-    const { data } = await authApi.get("/users/docfox/application/data-requirements");
+    const { data } = await authApi.get(
+      "/users/docfox/application/data-requirements"
+    );
     return data;
   }
 

@@ -32,21 +32,18 @@ export default function FormTransferWire() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [storedReceivingAccount, setStoredReceivingAccount] = useState("");
   const [storedUseIntermediary, setStoredUseIntermediary] = useState(false);
-  const {
-    accounts,
-    createExternalAccount,
-    createTransfer,
-    externalAccounts,
-  } = useUserWesternAllianceAccount();
+  const { accounts, createExternalAccount, createTransfer, externalAccounts } =
+    useUserWesternAllianceAccount();
 
-  const wireAmountValidation = Yup
-    .number()
+  const wireAmountValidation = Yup.number()
     .nullable()
     .test(
       "max",
       "Amount must be less than the account balance",
       (value, context) => {
-        const account = accounts?.find(({ accountNumber }) => accountNumber === context.parent.fromAccount);
+        const account = accounts?.find(
+          ({ accountNumber }) => accountNumber === context.parent.fromAccount
+        );
         if (account) {
           return Number(value) <= parseFloat(account.accountBalance);
         }
@@ -59,7 +56,9 @@ export default function FormTransferWire() {
     accounts
       ?.map(({ accountBalance, accountNumber, accountTitle }) => {
         const truncatedAccountNumber = accountNumber.slice(-4);
-        const label = `${accountTitle} (...${truncatedAccountNumber}): ${currency(Number(accountBalance))}`;
+        const label = `${accountTitle} (...${truncatedAccountNumber}): ${currency(
+          Number(accountBalance)
+        )}`;
         return {
           value: accountNumber,
           label,
@@ -104,7 +103,8 @@ export default function FormTransferWire() {
         amount: wireAmountValidation,
         externalAccountName: wireExternalAccountNameValidation,
         externalAccountNumber: wireExternalAccountNumberValidation,
-        externalFinancialInstitution: wireExternalFinancialInstitutionValidation,
+        externalFinancialInstitution:
+          wireExternalFinancialInstitutionValidation,
         externalRoutingNumber: wireExternalRoutingNumberValidation,
         intermediaryBankName: wireIntermediaryBankNameValidation,
         intermediaryFurtherCreditTo: wireIntermediaryFurtherCreditToValidation,
@@ -145,7 +145,9 @@ export default function FormTransferWire() {
             }
             await createTransfer({
               amount: amount || 0,
-              externalAccount: (receivingAccount !== "new" && receivingAccount) || externalAccountNumber,
+              externalAccount:
+                (receivingAccount !== "new" && receivingAccount) ||
+                externalAccountNumber,
               fromAccount: sendingAccount,
               memo,
               type: "WIRE",
@@ -160,7 +162,6 @@ export default function FormTransferWire() {
       }}
     >
       {({ values, setFieldValue }) => {
-
         useEffect(() => {
           if (values.receivingAccount !== storedReceivingAccount) {
             setStoredReceivingAccount(values.receivingAccount);
@@ -174,7 +175,9 @@ export default function FormTransferWire() {
               setFieldValue("intermediaryFurtherCreditTo", "", false);
               setFieldValue("useIntermediaryAccount", false, false);
             } else {
-              const externalAccount = externalAccounts?.find(({ accountNumber }) => accountNumber === values.receivingAccount);
+              const externalAccount = externalAccounts?.find(
+                ({ accountNumber }) => accountNumber === values.receivingAccount
+              );
               if (externalAccount) {
                 const {
                   accountName,
@@ -187,12 +190,36 @@ export default function FormTransferWire() {
                   useIntermediary,
                 } = externalAccount;
                 setFieldValue("externalAccountName", accountName || "", false);
-                setFieldValue("externalAccountNumber", accountNumber || "", false);
-                setFieldValue("externalFinancialInstitution", financialInstitution || "", false);
-                setFieldValue("externalRoutingNumber", routingNumber || "", false);
-                setFieldValue("intermediaryBankName", intermediaryBankName || "", false);
-                setFieldValue("intermediaryRoutingNumber", intermediaryRoutingNumber || "", false);
-                setFieldValue("intermediaryFurtherCreditTo", intermediaryFurtherCreditTo || "", false);
+                setFieldValue(
+                  "externalAccountNumber",
+                  accountNumber || "",
+                  false
+                );
+                setFieldValue(
+                  "externalFinancialInstitution",
+                  financialInstitution || "",
+                  false
+                );
+                setFieldValue(
+                  "externalRoutingNumber",
+                  routingNumber || "",
+                  false
+                );
+                setFieldValue(
+                  "intermediaryBankName",
+                  intermediaryBankName || "",
+                  false
+                );
+                setFieldValue(
+                  "intermediaryRoutingNumber",
+                  intermediaryRoutingNumber || "",
+                  false
+                );
+                setFieldValue(
+                  "intermediaryFurtherCreditTo",
+                  intermediaryFurtherCreditTo || "",
+                  false
+                );
                 setFieldValue("useIntermediaryAccount", useIntermediary, false);
               }
             }
@@ -227,9 +254,7 @@ export default function FormTransferWire() {
                 className="FormAccountSelect"
                 options={externalAccountOptions}
               />
-              <IonListHeader>
-                Receiving account details
-              </IonListHeader>
+              <IonListHeader>Receiving account details</IonListHeader>
               <FormInput
                 label="Financial institution name"
                 name="externalFinancialInstitution"
@@ -274,14 +299,8 @@ export default function FormTransferWire() {
                   />
                 </>
               )}
-              <IonListHeader>
-                Transfer details
-              </IonListHeader>
-              <FormInput
-                label="Amount"
-                name="amount"
-                type="text"
-              />
+              <IonListHeader>Transfer details</IonListHeader>
+              <FormInput label="Amount" name="amount" type="text" />
               <FormInput
                 label="Memo (optional)"
                 name="memo"

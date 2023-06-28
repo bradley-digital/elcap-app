@@ -6,7 +6,9 @@ import { useEffect, useMemo, useState } from "react";
 import { currency, date } from "lib/formats";
 
 // hooks
-import useWesternAllianceAccount, { transferStatusMap } from "hooks/useWesternAllianceAccount";
+import useWesternAllianceAccount, {
+  transferStatusMap,
+} from "hooks/useWesternAllianceAccount";
 import { createColumnHelper } from "@tanstack/react-table";
 
 // components
@@ -23,7 +25,7 @@ import Table from "components/Table/Table";
 const columnHelper = createColumnHelper<TransferTable>();
 
 function mapStatus(status: string) {
-  return transferStatusMap[status] || "Unknown"
+  return transferStatusMap[status] || "Unknown";
 }
 
 export default function TransferHistory() {
@@ -32,7 +34,8 @@ export default function TransferHistory() {
   const { transfers } = useWesternAllianceAccount();
 
   const timeRanges = ["YTD", "MTD", "3M", "1Y", "3Y", "5Y", "Max"];
-  const mappedStatuses = transfers?.map(({ status }) => mapStatus(status)) || [];
+  const mappedStatuses =
+    transfers?.map(({ status }) => mapStatus(status)) || [];
   const statuses = [...new Set(mappedStatuses)];
 
   useEffect(() => {
@@ -84,16 +87,10 @@ export default function TransferHistory() {
           };
         })
         .filter(
-          (transfer) =>
-            isInDateRange(transfer) &&
-            isInStatuses(transfer)
+          (transfer) => isInDateRange(transfer) && isInStatuses(transfer)
         ) || []
     );
-  }, [
-    transfers,
-    selectedStatuses,
-    selectedTimeRange,
-  ]);
+  }, [transfers, selectedStatuses, selectedTimeRange]);
 
   if (typeof transfers === "undefined") return null;
 
@@ -173,11 +170,5 @@ export default function TransferHistory() {
     </IonList>
   );
 
-  return (
-    <Table
-      before={before}
-      columns={columns}
-      data={filteredTransfers}
-    />
-  );
+  return <Table before={before} columns={columns} data={filteredTransfers} />;
 }

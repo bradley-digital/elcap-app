@@ -19,7 +19,12 @@ import {
   IonTabs,
 } from "@ionic/react";
 
-import { business, personCircle, peopleCircle, swapHorizontal } from "ionicons/icons";
+import {
+  business,
+  personCircle,
+  peopleCircle,
+  swapHorizontal,
+} from "ionicons/icons";
 
 export default function AdminRoutes() {
   return (
@@ -29,7 +34,10 @@ export default function AdminRoutes() {
           {/* Paths with nested routes must not have "exact" */}
           <Route path="/user-management/:userId" component={User} />
           <Route path="/account-management/:accountId" component={Account} />
-          <Route path="/money-movement/:transferId" component={MoneyMovementTransfer} />
+          <Route
+            path="/money-movement/:transferId"
+            component={MoneyMovementTransfer}
+          />
           <Route exact path="/profile" component={Profile} />
           <Route exact path="/user-management" component={UserManagement} />
           <Route exact path="/money-movement" component={MoneyMovement} />

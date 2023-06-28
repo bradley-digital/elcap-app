@@ -1,7 +1,13 @@
 import type { Profile } from "hooks/useUser";
 
 // components
-import { IonButton, IonItem, IonList, IonListHeader, IonText } from "@ionic/react";
+import {
+  IonButton,
+  IonItem,
+  IonList,
+  IonListHeader,
+  IonText,
+} from "@ionic/react";
 
 // hooks
 import useUserManagement from "hooks/useUserManagement";
@@ -39,23 +45,42 @@ export default function UserAccountActions({ profile }: Props) {
         <IonItem>
           <IonText>
             <h6>Invite user</h6>
-            <p>Send the user an invitation email to create their password and accept their account.</p>
+            <p>
+              Send the user an invitation email to create their password and
+              accept their account.
+            </p>
           </IonText>
-          <IonButton onClick={handleInvite} slot="end" size="default">Invite user</IonButton>
+          <IonButton onClick={handleInvite} slot="end" size="default">
+            Invite user
+          </IonButton>
         </IonItem>
         <IonItem>
           <IonText>
             <h6>Approve user</h6>
-            <p>Confirm that the user has completed onboarding and is ready to use the application.</p>
+            <p>
+              Confirm that the user has completed onboarding and is ready to use
+              the application.
+            </p>
           </IonText>
-          <IonButton onClick={handleApprove} slot="end" size="default">Approve user</IonButton>
+          <IonButton onClick={handleApprove} slot="end" size="default">
+            Approve user
+          </IonButton>
         </IonItem>
         <IonItem>
           <IonText>
             <h6>Delete user</h6>
-            <p>Once you delete a user there is no going back. Please be certain.</p>
+            <p>
+              Once you delete a user there is no going back. Please be certain.
+            </p>
           </IonText>
-          <IonButton color="danger" onClick={handleDelete} slot="end" size="default">Delete user</IonButton>
+          <IonButton
+            color="danger"
+            onClick={handleDelete}
+            slot="end"
+            size="default"
+          >
+            Delete user
+          </IonButton>
         </IonItem>
       </IonList>
     </div>

@@ -55,9 +55,7 @@ export default function FormSetPassword({ registerToken }: Props) {
           type="password"
           placeholder="Password"
         />
-        <SubmitButton isSubmitting={isSubmitting}>
-          Set Password
-        </SubmitButton>
+        <SubmitButton isSubmitting={isSubmitting}>Set Password</SubmitButton>
       </Form>
     </Formik>
   );

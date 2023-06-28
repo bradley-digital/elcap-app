@@ -126,19 +126,19 @@ export type Transfer = {
   userSubmittedBy: {
     firstName: string;
     lastName: string;
-  },
+  };
   userUpdatedBy: null | {
     firstName: string;
     lastName: string;
-  },
+  };
   westernAllianceFromAccount: {
     accountNumber: string;
     accountTitle: string;
-  },
+  };
   westernAllianceToAccount: null | {
     accountNumber: string;
     accountTitle: string;
-  },
+  };
 };
 
 export type TransferTable = {
@@ -234,7 +234,9 @@ export default function useWesternAllianceAccount() {
   }
 
   async function getTransfers() {
-    const { data } = await authApi.get<Transfer[]>("/western-alliance/transfers");
+    const { data } = await authApi.get<Transfer[]>(
+      "/western-alliance/transfers"
+    );
     data.sort((t1, t2) => {
       const d1 = new Date(t1.transferDate);
       const d2 = new Date(t2.transferDate);

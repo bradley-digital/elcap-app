@@ -93,9 +93,7 @@ export default function FormRegister() {
           placeholder="Country"
         />
         <FormInput label="State" name="state" type="text" placeholder="State" />
-        <SubmitButton isSubmitting={isSubmitting}>
-          Register
-        </SubmitButton>
+        <SubmitButton isSubmitting={isSubmitting}>Register</SubmitButton>
       </Form>
     </Formik>
   );

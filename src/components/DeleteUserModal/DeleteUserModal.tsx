@@ -53,7 +53,12 @@ export default function UserListModal({ profile }: Props) {
       </IonHeader>
       <IonContent className="ion-padding">
         <IonText>
-          <p>Deleting this user will permanently remove their profile and any related history. Accounts and transactions will not be deleted, but their association with this user will be lost. Are you sure you want to continue?</p>
+          <p>
+            Deleting this user will permanently remove their profile and any
+            related history. Accounts and transactions will not be deleted, but
+            their association with this user will be lost. Are you sure you want
+            to continue?
+          </p>
         </IonText>
         <IonButton color="danger" onClick={handleDelete}>
           Delete this user

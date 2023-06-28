@@ -2,12 +2,7 @@ import type { Profile } from "hooks/useUser";
 import { useEffect, useState } from "react";
 
 // components
-import {
-  IonCheckbox,
-  IonLabel,
-  IonList,
-  IonItem,
-} from "@ionic/react";
+import { IonCheckbox, IonLabel, IonList, IonItem } from "@ionic/react";
 
 // hooks
 import useUserManagement from "hooks/useUserManagement";

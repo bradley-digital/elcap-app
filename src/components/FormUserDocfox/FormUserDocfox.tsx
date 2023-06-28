@@ -14,12 +14,7 @@ import {
 
 // components
 import { Form, Formik } from "formik";
-import {
-  IonButton,
-  IonIcon,
-  IonList,
-  IonListHeader,
-} from "@ionic/react";
+import { IonButton, IonIcon, IonList, IonListHeader } from "@ionic/react";
 import { alertCircle, checkmarkCircle, closeCircle } from "ionicons/icons";
 import FormObserver from "components/FormObserver/FormObserver";
 import FormSelect from "components/FormSelect/FormSelect";
@@ -206,9 +201,7 @@ export default function FormUserDocfox({ profile }: Props) {
               options={entityTemplateOptions}
             />
             {formInputs}
-            <SubmitButton isSubmitting={isSubmitting}>
-              Submit
-            </SubmitButton>
+            <SubmitButton isSubmitting={isSubmitting}>Submit</SubmitButton>
           </IonList>
         </Form>
       </Formik>

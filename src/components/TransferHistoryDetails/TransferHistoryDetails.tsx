@@ -4,18 +4,15 @@ import { currency, date } from "lib/formats";
 // hooks
 import { useAtom } from "jotai";
 import { transferTypeMap } from "hooks/useWesternAllianceAccount";
-import useUserWesternAllianceAccount, { portalTransferStatusMap } from "hooks/useUserWesternAllianceAccount";
+import useUserWesternAllianceAccount, {
+  portalTransferStatusMap,
+} from "hooks/useUserWesternAllianceAccount";
 
 // atoms
 import { idAtom } from "atoms/transferHistoryModal";
 
 // components
-import {
-  IonItem,
-  IonLabel,
-  IonList,
-  IonText,
-} from "@ionic/react";
+import { IonItem, IonLabel, IonList, IonText } from "@ionic/react";
 
 export default function TransferHistoryDetails() {
   const [transferId] = useAtom(idAtom);
@@ -24,19 +21,17 @@ export default function TransferHistoryDetails() {
   const transfer = transfers?.find(({ id }) => id === transferId);
   if (typeof transfer === "undefined") return null;
 
-  const {
-    amount,
-    memo,
-    status,
-    transactionNumber,
-    transferDate,
-    type,
-  } = transfer;
+  const { amount, memo, status, transactionNumber, transferDate, type } =
+    transfer;
 
   const accountName = transfer?.westernAllianceFromAccount?.accountTitle;
   const accountNumber = transfer?.westernAllianceFromAccount?.accountNumber;
-  const submittedBy = `${transfer?.userSubmittedBy?.firstName || ""} ${transfer?.userSubmittedBy?.lastName || ""}`;
-  const updatedBy = `${transfer?.userUpdatedBy?.firstName || ""} ${transfer?.userUpdatedBy?.lastName || ""}`;
+  const submittedBy = `${transfer?.userSubmittedBy?.firstName || ""} ${
+    transfer?.userSubmittedBy?.lastName || ""
+  }`;
+  const updatedBy = `${transfer?.userUpdatedBy?.firstName || ""} ${
+    transfer?.userUpdatedBy?.lastName || ""
+  }`;
 
   return (
     <IonList>

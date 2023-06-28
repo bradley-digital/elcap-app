@@ -25,11 +25,7 @@ export default function Profile(routeProps: RouteComponentProps) {
   ];
 
   return (
-    <SplitPaneTemplate
-      title="Profile"
-      menuId="profile"
-      menuLinks={menuLinks}
-    >
+    <SplitPaneTemplate title="Profile" menuId="profile" menuLinks={menuLinks}>
       <ProfileRoutes {...routeProps} />
     </SplitPaneTemplate>
   );

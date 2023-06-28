@@ -15,7 +15,7 @@ type Props = {
 } & ComponentProps<typeof IonCheckbox> &
   FieldHookConfig<string>;
 
-export default function FormInput(props: Props) {
+export default function FormCheckbox(props: Props) {
   const [field, meta] = useField(props);
 
   const { className, label, note, ...rest } = props;
