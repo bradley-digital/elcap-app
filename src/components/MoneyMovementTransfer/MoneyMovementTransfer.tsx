@@ -26,6 +26,7 @@ import {
 import { arrowBack } from "ionicons/icons";
 
 export default function MoneyMovementTransfer({ transfer }: Props) {
+  console.log({ transfer });
   const { updateTransfer } = useWesternAllianceAccount();
 
   const { id, amount, memo, status, transactionNumber, transferDate, type } =
@@ -33,6 +34,8 @@ export default function MoneyMovementTransfer({ transfer }: Props) {
 
   const accountName = transfer?.westernAllianceFromAccount?.accountTitle;
   const accountNumber = transfer?.westernAllianceFromAccount?.accountNumber;
+  const externalAccount = transfer?.externalAccount;
+  const externalToAccount = transfer?.externalToAccount;
   const submittedBy = `${transfer?.userSubmittedBy?.firstName || ""} ${
     transfer?.userSubmittedBy?.lastName || ""
   }`;
@@ -67,6 +70,60 @@ export default function MoneyMovementTransfer({ transfer }: Props) {
           <IonLabel>Account number</IonLabel>
           <IonText>{accountNumber}</IonText>
         </IonItem>
+        {!externalAccount && (
+          <IonItem>
+            <IonLabel>To account name</IonLabel>
+            <IonText>{accountName}</IonText>
+          </IonItem>
+        )}
+        {!externalAccount && (
+          <IonItem>
+            <IonLabel>To account number</IonLabel>
+            <IonText>{accountNumber}</IonText>
+          </IonItem>
+        )}
+        {externalAccount && (
+          <IonItem>
+            <IonLabel>To account name</IonLabel>
+            <IonText>{externalToAccount?.accountName}</IonText>
+          </IonItem>
+        )}
+        {externalAccount && (
+          <IonItem>
+            <IonLabel>To account number</IonLabel>
+            <IonText>{externalToAccount?.accountNumber}</IonText>
+          </IonItem>
+        )}
+        {externalAccount && (
+          <IonItem>
+            <IonLabel>Financial institution</IonLabel>
+            <IonText>{externalToAccount?.financialInstitution}</IonText>
+          </IonItem>
+        )}
+        {externalAccount && externalToAccount?.useIntermediary && (
+          <IonItem>
+            <IonLabel>Intermediary bank name</IonLabel>
+            <IonText>{externalToAccount?.intermediaryBankName}</IonText>
+          </IonItem>
+        )}
+        {externalAccount && externalToAccount?.useIntermediary && (
+          <IonItem>
+            <IonLabel>Intermediary routing number</IonLabel>
+            <IonText>{externalToAccount?.intermediaryRoutingNumber}</IonText>
+          </IonItem>
+        )}
+        {externalAccount && externalToAccount?.useIntermediary && (
+          <IonItem>
+            <IonLabel>Intermediary further credit to</IonLabel>
+            <IonText>{externalToAccount?.intermediaryFurtherCreditTo}</IonText>
+          </IonItem>
+        )}
+        {externalAccount && (
+          <IonItem>
+            <IonLabel>Routing Number</IonLabel>
+            <IonText>{externalToAccount?.routingNumber}</IonText>
+          </IonItem>
+        )}
         <IonItem>
           <IonLabel>Amount</IonLabel>
           <IonText>{currency(Number(amount))}</IonText>
