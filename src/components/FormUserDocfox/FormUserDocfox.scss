@@ -26,11 +26,6 @@
     }
   }
 
-  // remove time selection from ion-datetime
-  ion-datetime-button::part(button) {
-    display: none !important;
-  }
-
   &__dateTimeLabel {
     margin-left: 15px;
     font-size: 11px;

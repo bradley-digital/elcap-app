@@ -58,7 +58,11 @@ function buildFormInputsHelper(children: any = [], section: any = {}) {
               className="FormUserDocfox__dateTimeButton"
             />
             <IonModal keepContentsMounted={true}>
-              <IonDatetime id="datetime" showDefaultButtons={true} />
+              <IonDatetime
+                id="datetime"
+                showDefaultButtons={true}
+                presentation="date"
+              />
             </IonModal>
           </>
         );

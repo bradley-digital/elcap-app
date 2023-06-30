@@ -125,20 +125,10 @@ export function useApplication(applicationId: string) {
       queryClient.invalidateQueries(applicationQueryKey);
     },
     onError: (error: unknown) => {
-      const parsedError = JSON.parse(getErrorMessage(error));
-
-      const errorMessage =
-        "issue: " +
-        parsedError.title +
-        "<br/>" +
-        "status: " +
-        parsedError.status +
-        "<br/>" +
-        "detail: " +
-        parsedError.detail;
-
       showToast({
-        message: errorMessage || "There was an error processing your request",
+        message:
+          JSON.parse(getErrorMessage(error)).detail ||
+          "There was an error processing your request",
         duration: 8 * 1000,
         position: "bottom",
         color: "danger",
