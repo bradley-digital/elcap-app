@@ -114,7 +114,6 @@ export type Transfer = {
   id: string;
   amount: string;
   externalAccount: string | null;
-  fromAccount: string;
   externalToAccount: {
     id: string;
     accountName: string;
@@ -126,6 +125,7 @@ export type Transfer = {
     intermediaryRoutingNumber: string | null;
     useIntermediary: boolean;
   } | null;
+  fromAccount: string;
   memo: string | null;
   status: string;
   submittedBy: string;

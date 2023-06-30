@@ -26,7 +26,6 @@ import {
 import { arrowBack } from "ionicons/icons";
 
 export default function MoneyMovementTransfer({ transfer }: Props) {
-  console.log({ transfer });
   const { updateTransfer } = useWesternAllianceAccount();
 
   const { id, amount, memo, status, transactionNumber, transferDate, type } =
@@ -36,12 +35,20 @@ export default function MoneyMovementTransfer({ transfer }: Props) {
   const accountNumber = transfer?.westernAllianceFromAccount?.accountNumber;
   const externalAccount = transfer?.externalAccount;
   const externalToAccount = transfer?.externalToAccount;
+  const externalAccountName = externalToAccount?.accountName;
+  const externalAccountNumber = externalToAccount?.accountNumber;
+  const financialInstitution = externalToAccount?.financialInstitution;
+  const intermediaryBankName = externalToAccount?.intermediaryBankName;
+  const intermediaryFurtherCreditTo = externalToAccount?.intermediaryFurtherCreditTo;
+  const intermediaryRoutingNumber = externalToAccount?.intermediaryRoutingNumber;
+  const routingNumber = externalToAccount?.routingNumber;
   const submittedBy = `${transfer?.userSubmittedBy?.firstName || ""} ${
     transfer?.userSubmittedBy?.lastName || ""
   }`;
   const updatedBy = `${transfer?.userUpdatedBy?.firstName || ""} ${
     transfer?.userUpdatedBy?.lastName || ""
   }`;
+  const useIntermediary = externalToAccount?.useIntermediary;
 
   function handleApprove() {
     updateTransfer({ id, status: "APPROVED" });
@@ -71,58 +78,52 @@ export default function MoneyMovementTransfer({ transfer }: Props) {
           <IonText>{accountNumber}</IonText>
         </IonItem>
         {!externalAccount && (
-          <IonItem>
-            <IonLabel>To account name</IonLabel>
-            <IonText>{accountName}</IonText>
-          </IonItem>
-        )}
-        {!externalAccount && (
-          <IonItem>
-            <IonLabel>To account number</IonLabel>
-            <IonText>{accountNumber}</IonText>
-          </IonItem>
-        )}
-        {externalAccount && (
-          <IonItem>
-            <IonLabel>To account name</IonLabel>
-            <IonText>{externalToAccount?.accountName}</IonText>
-          </IonItem>
+          <>
+            <IonItem>
+              <IonLabel>To account name</IonLabel>
+              <IonText>{accountName}</IonText>
+            </IonItem>
+            <IonItem>
+              <IonLabel>To account number</IonLabel>
+              <IonText>{accountNumber}</IonText>
+            </IonItem>
+          </>
         )}
         {externalAccount && (
-          <IonItem>
-            <IonLabel>To account number</IonLabel>
-            <IonText>{externalToAccount?.accountNumber}</IonText>
-          </IonItem>
+          <>
+            <IonItem>
+              <IonLabel>Financial institution</IonLabel>
+              <IonText>{financialInstitution}</IonText>
+            </IonItem>
+            <IonItem>
+              <IonLabel>To account name</IonLabel>
+              <IonText>{externalAccountName}</IonText>
+            </IonItem>
+            <IonItem>
+              <IonLabel>To account number</IonLabel>
+              <IonText>{externalAccountNumber}</IonText>
+            </IonItem>
+            <IonItem>
+              <IonLabel>Routing Number</IonLabel>
+              <IonText>{routingNumber}</IonText>
+            </IonItem>
+          </>
         )}
-        {externalAccount && (
-          <IonItem>
-            <IonLabel>Financial institution</IonLabel>
-            <IonText>{externalToAccount?.financialInstitution}</IonText>
-          </IonItem>
-        )}
-        {externalAccount && externalToAccount?.useIntermediary && (
-          <IonItem>
-            <IonLabel>Intermediary bank name</IonLabel>
-            <IonText>{externalToAccount?.intermediaryBankName}</IonText>
-          </IonItem>
-        )}
-        {externalAccount && externalToAccount?.useIntermediary && (
-          <IonItem>
-            <IonLabel>Intermediary routing number</IonLabel>
-            <IonText>{externalToAccount?.intermediaryRoutingNumber}</IonText>
-          </IonItem>
-        )}
-        {externalAccount && externalToAccount?.useIntermediary && (
-          <IonItem>
-            <IonLabel>Intermediary further credit to</IonLabel>
-            <IonText>{externalToAccount?.intermediaryFurtherCreditTo}</IonText>
-          </IonItem>
-        )}
-        {externalAccount && (
-          <IonItem>
-            <IonLabel>Routing Number</IonLabel>
-            <IonText>{externalToAccount?.routingNumber}</IonText>
-          </IonItem>
+        {externalAccount && useIntermediary && (
+          <>
+            <IonItem>
+              <IonLabel>Intermediary bank name</IonLabel>
+              <IonText>{intermediaryBankName}</IonText>
+            </IonItem>
+            <IonItem>
+              <IonLabel>Intermediary routing number</IonLabel>
+              <IonText>{intermediaryRoutingNumber}</IonText>
+            </IonItem>
+            <IonItem>
+              <IonLabel>Intermediary further credit to</IonLabel>
+              <IonText>{intermediaryFurtherCreditTo}</IonText>
+            </IonItem>
+          </>
         )}
         <IonItem>
           <IonLabel>Amount</IonLabel>
