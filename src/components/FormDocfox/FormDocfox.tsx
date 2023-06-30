@@ -12,7 +12,13 @@ import {
 
 // components
 import { Form, Formik } from "formik";
-import { IonButton, IonIcon, IonList, IonListHeader } from "@ionic/react";
+import {
+  IonButton,
+  IonIcon,
+  IonList,
+  IonListHeader,
+  IonSpinner,
+} from "@ionic/react";
 import { alertCircle, checkmarkCircle, closeCircle } from "ionicons/icons";
 import FormInput from "components/FormInput/FormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
@@ -60,6 +66,7 @@ export default function FormDocfox() {
         The application has not been started. If this is urgent please contact
         your El Capitan admin.
       </p>
+      <IonSpinner name="crescent" />;
     </div>
   );
 

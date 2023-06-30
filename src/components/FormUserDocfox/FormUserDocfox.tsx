@@ -14,11 +14,21 @@ import {
 
 // components
 import { Form, Formik } from "formik";
-import { IonButton, IonIcon, IonList, IonListHeader } from "@ionic/react";
+import {
+  IonButton,
+  IonIcon,
+  IonList,
+  IonListHeader,
+  IonSpinner,
+  useIonToast,
+} from "@ionic/react";
 import { alertCircle, checkmarkCircle, closeCircle } from "ionicons/icons";
 import FormObserver from "components/FormObserver/FormObserver";
 import FormSelect from "components/FormSelect/FormSelect";
 import SubmitButton from "components/SubmitButton/SubmitButton";
+
+// lib
+import getErrorMessage from "lib/error";
 
 // hooks
 import {
@@ -84,6 +94,8 @@ export default function FormUserDocfox({ profile }: Props) {
     [formSections]
   );
 
+  console.log("formInputs:", formInputs);
+
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   const entityTemplateOptions =
     templates?.data?.map((template: any) => {
@@ -105,8 +117,14 @@ export default function FormUserDocfox({ profile }: Props) {
     }
   }
 
-  let statusElement = null;
+  let statusElement = (
+    <div className="FormUserDocfox__status danger">
+      <IonSpinner name="crescent" />;
+    </div>
+  );
+
   const status = application?.data?.attributes?.status?.status;
+
   const statusDescription =
     application?.data?.attributes?.status?.status_description;
 
@@ -128,6 +146,7 @@ export default function FormUserDocfox({ profile }: Props) {
     statusElement = (
       <div className="FormUserDocfox__status danger">
         <IonIcon icon={closeCircle} />
+        <IonSpinner name="crescent" />
         <p>The application has not been started.</p>
       </div>
     );
@@ -159,6 +178,7 @@ export default function FormUserDocfox({ profile }: Props) {
         enableReinitialize={true}
         validationSchema={Yup.object(validationObject)}
         onSubmit={(values) => {
+          console.log("values:", values);
           setIsSubmitting(true);
           async function updateApplication() {
             const { deleteData, patchData, postData } = buildUpdateData(

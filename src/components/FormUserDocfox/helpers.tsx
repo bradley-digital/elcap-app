@@ -1,5 +1,10 @@
 import type { ReactNode } from "react";
-import { IonListHeader } from "@ionic/react";
+import {
+  IonListHeader,
+  IonDatetime,
+  IonDatetimeButton,
+  IonModal,
+} from "@ionic/react";
 import FormInput from "components/FormInput/FormInput";
 import FormSelect from "components/FormSelect/FormSelect";
 
@@ -8,6 +13,7 @@ function buildFormInputsHelper(children: any = [], section: any = {}) {
   for (const sectionTitle in section) {
     if (sectionTitle === "hiddenFields") continue;
     const nextSection = section[sectionTitle];
+    console.log("nextSection:", nextSection.format);
     if (nextSection.name) {
       let label = sectionTitle;
       if (nextSection.required) {
@@ -42,6 +48,19 @@ function buildFormInputsHelper(children: any = [], section: any = {}) {
             placeholder={nextSection.placeholder}
             type="tel"
           />
+        );
+      } else if (nextSection.format === "date") {
+        children.push(
+          <>
+            <h6 className="FormUserDocfox__dateTimeLabel">{label}</h6>
+            <IonDatetimeButton
+              datetime="datetime"
+              className="FormUserDocfox__dateTimeButton"
+            />
+            <IonModal keepContentsMounted={true}>
+              <IonDatetime id="datetime" showDefaultButtons={true} />
+            </IonModal>
+          </>
         );
       } else {
         children.push(

@@ -1,8 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
+// lib
+import getErrorMessage from "lib/error";
+
 // hooks
 import { queryKey as userQueryKey } from "hooks/useUserManagement";
 import useAuth from "hooks/useAuth";
+import { useIonToast } from "@ionic/react";
 
 export type DocfoxApplication = {
   id: string;
@@ -66,10 +70,11 @@ export function useTemplate(templateId: string) {
 export function useApplications() {
   const { authApi } = useAuth();
 
-  const { isSuccess: applicationsIsSuccess, data: applications } = useQuery(
-    applicationsQueryKey,
-    getApplications
-  );
+  const {
+    isSuccess: applicationsIsSuccess,
+    data: applications,
+    isError: applicationError,
+  } = useQuery(applicationsQueryKey, getApplications);
 
   async function getApplications() {
     const { data } = await authApi.get("/docfox/applications");
@@ -79,6 +84,7 @@ export function useApplications() {
   return {
     applications,
     applicationsIsSuccess,
+    applicationError,
   };
 }
 
@@ -107,7 +113,7 @@ export function useInvitationLink(contactId: string) {
 export function useApplication(applicationId: string) {
   const { authApi } = useAuth();
   const queryClient = useQueryClient();
-
+  const [showToast] = useIonToast();
   const { isSuccess: applicationIsSuccess, data: application } = useQuery(
     [applicationQueryKey, applicationId],
     () => getApplication(applicationId)
@@ -117,6 +123,26 @@ export function useApplication(applicationId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries(userQueryKey);
       queryClient.invalidateQueries(applicationQueryKey);
+    },
+    onError: (error: unknown) => {
+      const parsedError = JSON.parse(getErrorMessage(error));
+
+      const errorMessage =
+        "issue: " +
+        parsedError.title +
+        "<br/>" +
+        "status: " +
+        parsedError.status +
+        "<br/>" +
+        "detail: " +
+        parsedError.detail;
+
+      showToast({
+        message: errorMessage || "There was an error processing your request",
+        duration: 8 * 1000,
+        position: "bottom",
+        color: "danger",
+      });
     },
   });
 
