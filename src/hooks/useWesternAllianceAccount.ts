@@ -114,6 +114,17 @@ export type Transfer = {
   id: string;
   amount: string;
   externalAccount: string | null;
+  externalToAccount: {
+    id: string;
+    accountName: string;
+    accountNumber: string;
+    financialInstitution: string;
+    routingNumber: string;
+    intermediaryBankName: string | null;
+    intermediaryFurtherCreditTo: string | null;
+    intermediaryRoutingNumber: string | null;
+    useIntermediary: boolean;
+  } | null;
   fromAccount: string;
   memo: string | null;
   status: string;
