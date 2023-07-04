@@ -19,7 +19,7 @@ export default function SubmitButton({
   return (
     <div className="SubmitButton">
       <input className="SubmitButton__hiddenInput" type="submit"></input>
-      <IonButton {...rest} type="submit">
+      <IonButton {...rest} type="submit" disabled={isSubmitting}>
         {isSubmitting ? <IonSpinner name="crescent" /> : children}
       </IonButton>
     </div>

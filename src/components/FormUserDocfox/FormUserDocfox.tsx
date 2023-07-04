@@ -19,16 +19,11 @@ import {
   IonIcon,
   IonList,
   IonListHeader,
-  IonSpinner,
-  useIonToast,
 } from "@ionic/react";
 import { alertCircle, checkmarkCircle, closeCircle } from "ionicons/icons";
 import FormObserver from "components/FormObserver/FormObserver";
 import FormSelect from "components/FormSelect/FormSelect";
 import SubmitButton from "components/SubmitButton/SubmitButton";
-
-// lib
-import getErrorMessage from "lib/error";
 
 // hooks
 import {
@@ -94,8 +89,6 @@ export default function FormUserDocfox({ profile }: Props) {
     [formSections]
   );
 
-  console.log("formInputs:", formInputs);
-
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   const entityTemplateOptions =
     templates?.data?.map((template: any) => {
@@ -117,11 +110,7 @@ export default function FormUserDocfox({ profile }: Props) {
     }
   }
 
-  let statusElement = (
-    <div className="FormUserDocfox__status danger">
-      <IonSpinner name="crescent" />;
-    </div>
-  );
+  let statusElement = null;
 
   const status = application?.data?.attributes?.status?.status;
 
@@ -146,7 +135,6 @@ export default function FormUserDocfox({ profile }: Props) {
     statusElement = (
       <div className="FormUserDocfox__status danger">
         <IonIcon icon={closeCircle} />
-        <IonSpinner name="crescent" />
         <p>The application has not been started.</p>
       </div>
     );
@@ -178,37 +166,42 @@ export default function FormUserDocfox({ profile }: Props) {
         enableReinitialize={true}
         validationSchema={Yup.object(validationObject)}
         onSubmit={(values) => {
-          console.log("values:", values);
           setIsSubmitting(true);
+
           async function updateApplication() {
             const { deleteData, patchData, postData } = buildUpdateData(
               application,
               values
             );
+
             if (Array.isArray(patchData)) {
               for (const data of patchData) {
                 await patchProfileData(data);
               }
             }
+
             if (Array.isArray(deleteData)) {
               for (const data of deleteData) {
                 await deleteProfileData(data);
               }
             }
+
             if (Array.isArray(postData)) {
               for (const data of postData) {
                 await postProfileData(data);
               }
             }
+            setIsSubmitting(false);
           }
+
           if (!applicationId || templateId !== initialTemplateId) {
             const postData = buildPostData(values);
             postData.userId = userId;
             postApplication(postData);
+            setIsSubmitting(false);
           } else if (application) {
             updateApplication();
           }
-          setIsSubmitting(false);
         }}
       >
         <Form>

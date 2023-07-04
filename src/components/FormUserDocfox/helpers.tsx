@@ -1,19 +1,15 @@
 import type { ReactNode } from "react";
-import {
-  IonListHeader,
-  IonDatetime,
-  IonDatetimeButton,
-  IonModal,
-} from "@ionic/react";
+import { IonListHeader } from "@ionic/react";
 import FormInput from "components/FormInput/FormInput";
 import FormSelect from "components/FormSelect/FormSelect";
+
+import FormUserDocfoxDatetime from "./FormUserDocfoxDatetime";
 
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
 function buildFormInputsHelper(children: any = [], section: any = {}) {
   for (const sectionTitle in section) {
     if (sectionTitle === "hiddenFields") continue;
     const nextSection = section[sectionTitle];
-    console.log("nextSection:", nextSection.format);
     if (nextSection.name) {
       let label = sectionTitle;
       if (nextSection.required) {
@@ -52,18 +48,12 @@ function buildFormInputsHelper(children: any = [], section: any = {}) {
       } else if (nextSection.format === "date") {
         children.push(
           <>
-            <h6 className="FormUserDocfox__dateTimeLabel">{label}</h6>
-            <IonDatetimeButton
-              datetime="datetime"
-              className="FormUserDocfox__dateTimeButton"
+            <FormUserDocfoxDatetime
+              key={nextSection.name}
+              label={label}
+              name={`['${nextSection.name}']`}
+              type="date"
             />
-            <IonModal keepContentsMounted={true}>
-              <IonDatetime
-                id="datetime"
-                showDefaultButtons={true}
-                presentation="date"
-              />
-            </IonModal>
           </>
         );
       } else {
