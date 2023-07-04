@@ -1,6 +1,8 @@
-import { useEffect, type ReactNode } from "react";
+import { type ReactNode } from "react";
 
 import {
+  IonBadge,
+  IonButton,
   IonButtons,
   IonContent,
   IonHeader,
@@ -9,10 +11,11 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  useIonRouter,
 } from "@ionic/react";
 import { notificationsOutline } from "ionicons/icons";
-import {  getUserId } from "hooks/useTokens";
-import { socket } from "lib/socket";
+import { useNotification } from "hooks/useNotification";
+import "./PageTemplate.scss";
 
 type Props = {
   children: ReactNode;
@@ -27,21 +30,12 @@ export default function PageTemplate({
   title,
   ...rest
 }: Props) {
-  const userId = getUserId();
-  useEffect(() => {
-    const listener = (value: any) => {
-      // push into list messages a new one
-      console.log({ value });
-    };
-    socket.on(userId, listener);
-
-    return () => {
-      socket.off(userId, listener);
-    };
-  }, [userId]);
-
+  const router = useIonRouter();
+  const { unViewedCountIsSucces, unviewedNotificationsCount } = useNotification(
+    {}
+  );
   return (
-    <IonPage {...rest}>
+    <IonPage {...rest} className="PageTemplate">
       <IonHeader>
         <IonToolbar>
           {menuId && (
@@ -51,9 +45,29 @@ export default function PageTemplate({
           )}
           <IonTitle>{title}</IonTitle>
 
-          <IonButtons slot="end">
-            <IonIcon icon={notificationsOutline} />
-          </IonButtons>
+          {router.routeInfo.pathname !== "/notifications" && (
+            <IonButtons slot="end">
+              <IonButton
+                onClick={() => {
+                  router.push("/notifications");
+                }}
+                color="dark"
+                className="PageTemplate__notification--button"
+                slot="end"
+              >
+                <IonIcon
+                  icon={notificationsOutline}
+                  size="large"
+                  className="PageTemplate__notification--bell"
+                />
+                {unViewedCountIsSucces && unviewedNotificationsCount > 0 && (
+                  <IonBadge slot="start" color="tertiary">
+                    {unviewedNotificationsCount}
+                  </IonBadge>
+                )}
+              </IonButton>
+            </IonButtons>
+          )}
         </IonToolbar>
       </IonHeader>
       <IonContent>{children}</IonContent>
