@@ -9,7 +9,7 @@ type Props = {
   type: string;
 };
 
-const FormUserDocfoxDatetime = ({ label, ...props }: Props) => {
+const FormUserDocfoxDate = ({ label, ...props }: Props) => {
   const [, meta, helpers] = useField(props);
   const { setValue } = helpers;
   const [startDate, setStartDate] = useState(new Date());
@@ -36,4 +36,4 @@ const FormUserDocfoxDatetime = ({ label, ...props }: Props) => {
   );
 };
 
-export default FormUserDocfoxDatetime;
+export default FormUserDocfoxDate;

@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { IonListHeader } from "@ionic/react";
 import FormInput from "components/FormInput/FormInput";
 import FormSelect from "components/FormSelect/FormSelect";
-import FormUserDocfoxDatetime from "./FormUserDocfoxDatetime";
+import FormUserDocfoxDate from "./FormUserDocfoxDate";
 
 // styles
 import "react-datepicker/dist/react-datepicker.css";
@@ -27,7 +27,7 @@ function buildFormInputsHelper(children: any = [], section: any = {}) {
             name={`['${nextSection.name}']`}
             placeholder={nextSection.placeholder}
             options={nextSection.select_options}
-          />
+          />,
         );
       } else if (nextSection.format === "email") {
         children.push(
@@ -37,7 +37,7 @@ function buildFormInputsHelper(children: any = [], section: any = {}) {
             name={`['${nextSection.name}']`}
             placeholder={nextSection.placeholder}
             type="email"
-          />
+          />,
         );
       } else if (nextSection.format === "phone") {
         children.push(
@@ -47,16 +47,16 @@ function buildFormInputsHelper(children: any = [], section: any = {}) {
             name={`['${nextSection.name}']`}
             placeholder={nextSection.placeholder}
             type="tel"
-          />
+          />,
         );
       } else if (nextSection.format === "date") {
         children.push(
-          <FormUserDocfoxDatetime
+          <FormUserDocfoxDate
             key={nextSection.name}
             label={label}
             name={`['${nextSection.name}']`}
             type="date"
-          />
+          />,
         );
       } else {
         children.push(
@@ -65,12 +65,12 @@ function buildFormInputsHelper(children: any = [], section: any = {}) {
             label={label}
             name={`['${nextSection.name}']`}
             placeholder={nextSection.placeholder}
-          />
+          />,
         );
       }
     } else if (nextSection) {
       children.push(
-        <IonListHeader key={sectionTitle}>{sectionTitle}</IonListHeader>
+        <IonListHeader key={sectionTitle}>{sectionTitle}</IonListHeader>,
       );
       buildFormInputsHelper(children, nextSection);
     }
