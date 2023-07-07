@@ -66,7 +66,6 @@ export default function FormDocfox() {
         The application has not been started. If this is urgent please contact
         your El Capitan admin.
       </p>
-      <IonSpinner name="crescent" />;
     </div>
   );
 

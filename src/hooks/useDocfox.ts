@@ -70,11 +70,10 @@ export function useTemplate(templateId: string) {
 export function useApplications() {
   const { authApi } = useAuth();
 
-  const {
-    isSuccess: applicationsIsSuccess,
-    data: applications,
-    isError: applicationError,
-  } = useQuery(applicationsQueryKey, getApplications);
+  const { isSuccess: applicationsIsSuccess, data: applications } = useQuery(
+    applicationsQueryKey,
+    getApplications
+  );
 
   async function getApplications() {
     const { data } = await authApi.get("/docfox/applications");
@@ -84,7 +83,6 @@ export function useApplications() {
   return {
     applications,
     applicationsIsSuccess,
-    applicationError,
   };
 }
 

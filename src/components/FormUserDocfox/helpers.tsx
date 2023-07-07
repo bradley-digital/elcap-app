@@ -47,14 +47,12 @@ function buildFormInputsHelper(children: any = [], section: any = {}) {
         );
       } else if (nextSection.format === "date") {
         children.push(
-          <>
-            <FormUserDocfoxDatetime
-              key={nextSection.name}
-              label={label}
-              name={`['${nextSection.name}']`}
-              type="date"
-            />
-          </>
+          <FormUserDocfoxDatetime
+            key={nextSection.name}
+            label={label}
+            name={`['${nextSection.name}']`}
+            type="date"
+          />
         );
       } else {
         children.push(
