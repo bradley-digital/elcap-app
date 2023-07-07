@@ -1,9 +1,13 @@
 import type { ReactNode } from "react";
+
+// components
 import { IonListHeader } from "@ionic/react";
 import FormInput from "components/FormInput/FormInput";
 import FormSelect from "components/FormSelect/FormSelect";
-
 import FormUserDocfoxDatetime from "./FormUserDocfoxDatetime";
+
+// styles
+import "react-datepicker/dist/react-datepicker.css";
 
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
 function buildFormInputsHelper(children: any = [], section: any = {}) {
