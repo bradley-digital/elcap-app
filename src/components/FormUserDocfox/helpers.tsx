@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { IonListHeader } from "@ionic/react";
 import FormInput from "components/FormInput/FormInput";
 import FormSelect from "components/FormSelect/FormSelect";
-import FormUserDocfoxDatetime from "./FormUserDocfoxDatetime";
+import FormUserDocfoxDate from "./FormUserDocfoxDate";
 
 // styles
 import "react-datepicker/dist/react-datepicker.css";
@@ -51,7 +51,7 @@ function buildFormInputsHelper(children: any = [], section: any = {}) {
         );
       } else if (nextSection.format === "date") {
         children.push(
-          <FormUserDocfoxDatetime
+          <FormUserDocfoxDate
             key={nextSection.name}
             label={label}
             name={`['${nextSection.name}']`}
