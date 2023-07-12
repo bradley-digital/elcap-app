@@ -6,6 +6,7 @@ import * as Yup from "yup";
 import {
   passwordValidation,
   confirmPasswordValidation,
+  otpValidation,
 } from "lib/formValidation";
 
 // hooks
@@ -28,16 +29,19 @@ export default function FormSetPassword({ registerToken }: Props) {
       initialValues={{
         password: "",
         confirmPassword: "",
+        otp: "",
       }}
       validationSchema={Yup.object({
         password: passwordValidation,
         confirmPassword: confirmPasswordValidation,
+        otp: otpValidation,
       })}
-      onSubmit={async ({ password }) => {
+      onSubmit={async ({ password, otp }) => {
         setIsSubmitting(true);
         await setPassword({
           registerToken,
           password,
+          otp,
         });
         setIsSubmitting(false);
       }}
@@ -55,6 +59,7 @@ export default function FormSetPassword({ registerToken }: Props) {
           type="password"
           placeholder="Password"
         />
+        <FormInput label="OTP" name="otp" type="number" placeholder="OTP" />
         <SubmitButton isSubmitting={isSubmitting}>Set Password</SubmitButton>
       </Form>
     </Formik>
