@@ -1,6 +1,6 @@
 // components
 import { Link, useParams } from "react-router-dom";
-import { IonCol, IonRow, IonText } from "@ionic/react";
+import { IonText } from "@ionic/react";
 import AuthPageTemplate from "components/AuthPageTemplate/AuthPageTemplate";
 import FormSetPassword from "components/FormSetPassword/FormSetPassword";
 import PasswordRequirements from "components/PasswordRequirements/PasswordRequirements";
