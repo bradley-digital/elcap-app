@@ -1,15 +1,15 @@
 // components
 import { IonCol, IonGrid, IonRow } from "@ionic/react";
 import PageTemplate from "components/PageTemplate/PageTemplate";
-import FormTransferWire from "components/FormTransferWire/FormTransferWire";
+import FormTransferExternal from "components/FormTransferExternal/FormTransferExternal";
 
-export default function TransferWire() {
+export default function TransferExternal() {
   return (
-    <PageTemplate title="Wire transfer" menuId="transfer">
+    <PageTemplate title="External transfer" menuId="transfer">
       <IonGrid>
         <IonRow className="ion-justify-content-center">
           <IonCol size-md="8" size-lg="6">
-            <FormTransferWire />
+            <FormTransferExternal />
           </IonCol>
         </IonRow>
       </IonGrid>

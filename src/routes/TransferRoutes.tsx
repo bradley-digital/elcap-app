@@ -5,7 +5,7 @@ import { IonRouterOutlet } from "@ionic/react";
 // components
 import Account from "pages/Transfer/TransferAccount";
 import Overview from "pages/Transfer/TransferOverview";
-import Wire from "pages/Transfer/TransferWire";
+import TransferExternal from "pages/Transfer/TransferExternal";
 
 export default function TransferRoutes({ match }: RouteComponentProps) {
   return (
@@ -17,7 +17,11 @@ export default function TransferRoutes({ match }: RouteComponentProps) {
           render={() => <Overview />}
         />
         <Route exact path={`${match.url}/account`} render={() => <Account />} />
-        <Route exact path={`${match.url}/wire`} render={() => <Wire />} />
+        <Route
+          exact
+          path={`${match.url}/external`}
+          render={() => <TransferExternal />}
+        />
         {/* Fallback route */}
         <Route render={() => <Redirect to={`${match.url}/overview`} />} />
       </Switch>
