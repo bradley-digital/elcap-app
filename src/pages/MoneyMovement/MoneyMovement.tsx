@@ -1,10 +1,33 @@
-import PageTemplate from "components/PageTemplate/PageTemplate";
-import MoneyMovementC from "components/MoneyMovement/MoneyMovement";
+import SplitPaneTemplate from "components/SplitPaneTemplate/SplitPaneTemplate";
+import { exit, receipt } from "ionicons/icons";
+import { MenuLink } from "components/MenuLinks/MenuLinks";
+import { RouteComponentProps } from "react-router";
+import MoneyMovementRoutes from "routes/MoneyMovementRoutes";
 
-export default function MoneyMovement() {
+export default function MoneyMovement(routeProps: RouteComponentProps) {
+  const { match } = routeProps;
+  const menuLinks: MenuLink[] = [
+    {
+      id: 1,
+      icon: receipt,
+      href: `${match.url}/overview`,
+      label: "Overview",
+    },
+    {
+      id: 3,
+      icon: exit,
+      href: `${match.url}/transfer`,
+      label: "External transfer",
+    },
+  ];
+
   return (
-    <PageTemplate title="Money movement">
-      <MoneyMovementC />
-    </PageTemplate>
+    <SplitPaneTemplate
+      title="Money movement"
+      menuId="transfer"
+      menuLinks={menuLinks}
+    >
+      <MoneyMovementRoutes {...routeProps} />
+    </SplitPaneTemplate>
   );
 }

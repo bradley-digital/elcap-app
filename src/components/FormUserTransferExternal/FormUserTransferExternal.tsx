@@ -25,16 +25,16 @@ import FormCheckbox from "components/FormCheckbox/FormCheckbox";
 import FormInput from "components/FormInput/FormInput";
 import FormSelect from "components/FormSelect/FormSelect";
 import SubmitButton from "components/SubmitButton/SubmitButton";
+import useWesternAllianceAccount from "hooks/useWesternAllianceAccount";
 
 // hooks
-import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
 
-export default function FormTransferExternal() {
+export default function FormUserTransferExternal() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [storedReceivingAccount, setStoredReceivingAccount] = useState("");
   const [storedUseIntermediary, setStoredUseIntermediary] = useState(false);
   const { accounts, createExternalAccount, createTransfer, externalAccounts } =
-    useUserWesternAllianceAccount();
+    useWesternAllianceAccount();
 
   const transferTypeOptions = [
     {
