@@ -110,7 +110,7 @@ export default function FormTransferExternal() {
         receivingAccount: "",
         sendingAccount: "",
         useIntermediaryAccount: false,
-        type: "",
+        type: "WIRE",
       }}
       validationSchema={Yup.object({
         amount: wireAmountValidation,
@@ -255,6 +255,14 @@ export default function FormTransferExternal() {
           <Form>
             <IonList>
               <FormSelect
+                label="Transfer type"
+                placeholder="Choose a type"
+                name="type"
+                type="text"
+                className="FormAccountSelect"
+                options={transferTypeOptions}
+              />
+              <FormSelect
                 label="Sending account"
                 placeholder="Choose an account"
                 name="sendingAccount"
@@ -290,14 +298,6 @@ export default function FormTransferExternal() {
                 label="Routing number"
                 name="externalRoutingNumber"
                 type="text"
-              />
-              <FormSelect
-                label="Transfer type"
-                placeholder="Choose a type"
-                name="type"
-                type="text"
-                className="FormAccountSelect"
-                options={transferTypeOptions}
               />
               <FormCheckbox
                 label="Use intermediary account?"

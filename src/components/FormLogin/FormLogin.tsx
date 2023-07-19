@@ -3,7 +3,11 @@ import { Form, Formik } from "formik";
 import * as Yup from "yup";
 
 // lib
-import { emailValidation, passwordValidation } from "lib/formValidation";
+import {
+  emailValidation,
+  otpValidation,
+  passwordValidation,
+} from "lib/formValidation";
 
 // hooks
 import useAuth from "hooks/useAuth";
@@ -21,10 +25,12 @@ export default function FormLogin() {
       initialValues={{
         email: "",
         password: "",
+        otp: "",
       }}
       validationSchema={Yup.object({
         email: emailValidation,
         password: passwordValidation,
+        otp: otpValidation,
       })}
       onSubmit={async (values, actions) => {
         setIsSubmitting(true);
@@ -45,6 +51,12 @@ export default function FormLogin() {
           name="password"
           type="password"
           placeholder="Password"
+        />
+        <FormInput
+          label="Authentication code"
+          name="otp"
+          type="text"
+          placeholder="Authentication code"
         />
         <SubmitButton isSubmitting={isSubmitting}>Login</SubmitButton>
       </Form>
