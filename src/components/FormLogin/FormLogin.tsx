@@ -52,7 +52,12 @@ export default function FormLogin() {
           type="password"
           placeholder="Password"
         />
-        <FormInput label="OTP" name="otp" type="number" placeholder="OTP" />
+        <FormInput
+          label="Authentication code"
+          name="otp"
+          type="text"
+          placeholder="Authentication code"
+        />
         <SubmitButton isSubmitting={isSubmitting}>Login</SubmitButton>
       </Form>
     </Formik>
