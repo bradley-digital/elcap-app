@@ -20,6 +20,7 @@ export const clientValidation = Yup.string().required("Client required");
 export const confirmPasswordValidation = Yup.string()
   .oneOf([Yup.ref("password"), null], "Passwords must match")
   .required("Password required");
+export const otpValidation = Yup.string().required("Authentication code required");
 export const companyNameValidation = Yup.string().nullable();
 export const countryValidation = Yup.string().required("Country required");
 export const emailValidation = Yup.string()

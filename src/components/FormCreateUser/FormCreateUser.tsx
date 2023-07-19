@@ -38,10 +38,6 @@ const roleOptions = [
     label: "ADMIN",
   },
   {
-    value: "PAYMENTS",
-    label: "PAYMENTS",
-  },
-  {
     value: "PORTAL",
     label: "PORTAL",
   },
