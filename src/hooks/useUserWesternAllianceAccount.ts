@@ -25,7 +25,7 @@ const westernAllianceExternalAccountsQueryKey = `${queryKey}WesternAllianceExter
 const westernAllianceTransactionsQueryKey = `${queryKey}WesternAllianceTransactions`;
 const westernAllianceTransferQueryKey = `${queryKey}WesternAllianceTransfer`;
 
-export default function useUserWesternAlliance() {
+export default function useUserWesternAllianceAccount() {
   const { authApi } = useAuth();
   const queryClient = useQueryClient();
 

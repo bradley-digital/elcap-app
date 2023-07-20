@@ -1,22 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import * as Yup from "yup";
-
-// lib
-import { currency } from "lib/formats";
-import {
-  wireExternalAccountNameValidation,
-  wireExternalAccountNumberValidation,
-  wireExternalFinancialInstitutionValidation,
-  wireExternalRoutingNumberValidation,
-  wireIntermediaryBankNameValidation,
-  wireIntermediaryRoutingNumberValidation,
-  wireIntermediaryFurtherCreditToValidation,
-  wireMemoValidation,
-  wireReceivingAccountValidation,
-  wireSendingAccountValidation,
-  wireUseIntermediaryAccountValidation,
-  wireTypeValidation,
-} from "lib/formValidation";
 
 // components
 import { IonList, IonListHeader } from "@ionic/react";
@@ -27,154 +10,67 @@ import FormSelect from "components/FormSelect/FormSelect";
 import SubmitButton from "components/SubmitButton/SubmitButton";
 
 // hooks
+import useTransferExternal from "hooks/useTransferExternal";
+import useTransferExternalFormik from "hooks/useTransferExternalFormik";
 import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
 
 export default function FormTransferExternal() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [storedReceivingAccount, setStoredReceivingAccount] = useState("");
-  const [storedUseIntermediary, setStoredUseIntermediary] = useState(false);
-  const { accounts, createExternalAccount, createTransfer, externalAccounts } =
-    useUserWesternAllianceAccount();
+  const { 
+    setStoredReceivingAccount,
+    setStoredUseIntermediary,
+    setIsSubmitting,
+    storedReceivingAccount,
+    storedUseIntermediary,
+    isSubmitting,
+    transferTypeOptions
+   } = useTransferExternal()
 
-  const transferTypeOptions = [
-    {
-      value: "WIRE",
-      label: "Wire",
-    },
-    {
-      value: "ACH",
-      label: "ACH",
-    },
-  ];
+   const {accounts, createExternalAccount, createTransfer, externalAccounts } =
+   useUserWesternAllianceAccount();
 
-  const wireAmountValidation = Yup.number()
-    .nullable()
-    .test(
-      "max",
-      "Amount must be less than the account balance",
-      (value, context) => {
-        const account = accounts?.find(
-          ({ accountNumber }) => accountNumber === context.parent.fromAccount,
-        );
-        if (account) {
-          return Number(value) <= parseFloat(account.accountBalance);
-        }
-        return true;
-      },
-    )
-    .required("Amount required");
+   const { 
+    initialValues,
+    validationSchema,
+    accountOptions,
+    externalAccountOptions
+  } = useTransferExternalFormik(accounts, externalAccounts)
 
-  const accountOptions =
-    accounts
-      ?.map(({ accountBalance, accountNumber, accountTitle }) => {
-        const truncatedAccountNumber = accountNumber.slice(-4);
-        const label = `${accountTitle} (...${truncatedAccountNumber}): ${currency(
-          Number(accountBalance),
-        )}`;
-        return {
-          value: accountNumber,
-          label,
-        };
-      })
-      .sort((a, b) => a.label.localeCompare(b.label)) || [];
-
-  const externalAccountOptions =
-    externalAccounts
-      ?.map(({ financialInstitution, accountNumber }) => {
-        const truncatedAccountNumber = accountNumber.slice(-4);
-        const label = `${financialInstitution} (...${truncatedAccountNumber})`;
-        return {
-          value: accountNumber,
-          label,
-        };
-      })
-      .sort((a, b) => a.label.localeCompare(b.label)) || [];
-
-  externalAccountOptions.push({
-    value: "new",
-    label: "Add new bank account",
-  });
+  const handleSubmit = async(values:Yup.InferType<typeof validationSchema>)=>{
+    try {
+      setIsSubmitting(true);
+      if (values.receivingAccount === "new") {
+        await createExternalAccount({
+          accountName: values.externalAccountName,
+          accountNumber: values.externalAccountNumber,
+          financialInstitution: values.externalFinancialInstitution,
+          routingNumber: values.externalRoutingNumber,
+          intermediaryBankName: values.intermediaryBankName,
+          intermediaryFurtherCreditTo: values.intermediaryFurtherCreditTo,
+          intermediaryRoutingNumber: values.intermediaryRoutingNumber,
+          useIntermediary: values.useIntermediaryAccount || false,
+        });
+      }
+      await createTransfer({
+        amount: values.amount || 0,
+        externalAccount:
+          (values.receivingAccount !== "new" && values.receivingAccount) ||
+          values.externalAccountNumber,
+        fromAccount: values.sendingAccount,
+        memo:values.memo,
+        type: values.type,
+      });
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
   return (
     <Formik
-      initialValues={{
-        amount: null,
-        externalAccountName: "",
-        externalAccountNumber: "",
-        externalFinancialInstitution: "",
-        externalRoutingNumber: "",
-        intermediaryBankName: "",
-        intermediaryFurtherCreditTo: "",
-        intermediaryRoutingNumber: "",
-        memo: "",
-        receivingAccount: "",
-        sendingAccount: "",
-        useIntermediaryAccount: false,
-        type: "WIRE",
-      }}
-      validationSchema={Yup.object({
-        amount: wireAmountValidation,
-        externalAccountName: wireExternalAccountNameValidation,
-        externalAccountNumber: wireExternalAccountNumberValidation,
-        externalFinancialInstitution:
-          wireExternalFinancialInstitutionValidation,
-        externalRoutingNumber: wireExternalRoutingNumberValidation,
-        intermediaryBankName: wireIntermediaryBankNameValidation,
-        intermediaryFurtherCreditTo: wireIntermediaryFurtherCreditToValidation,
-        intermediaryRoutingNumber: wireIntermediaryRoutingNumberValidation,
-        memo: wireMemoValidation,
-        receivingAccount: wireReceivingAccountValidation,
-        sendingAccount: wireSendingAccountValidation,
-        useIntermediaryAccount: wireUseIntermediaryAccountValidation,
-        type: wireTypeValidation,
-      })}
-      onSubmit={({
-        amount,
-        externalAccountName,
-        externalAccountNumber,
-        externalFinancialInstitution,
-        externalRoutingNumber,
-        intermediaryBankName,
-        intermediaryFurtherCreditTo,
-        intermediaryRoutingNumber,
-        memo,
-        receivingAccount,
-        sendingAccount,
-        useIntermediaryAccount,
-        type,
-      }) => {
-        async function submit() {
-          try {
-            setIsSubmitting(true);
-            if (receivingAccount === "new") {
-              await createExternalAccount({
-                accountName: externalAccountName,
-                accountNumber: externalAccountNumber,
-                financialInstitution: externalFinancialInstitution,
-                routingNumber: externalRoutingNumber,
-                intermediaryBankName,
-                intermediaryFurtherCreditTo,
-                intermediaryRoutingNumber,
-                useIntermediary: useIntermediaryAccount,
-              });
-            }
-            await createTransfer({
-              amount: amount || 0,
-              externalAccount:
-                (receivingAccount !== "new" && receivingAccount) ||
-                externalAccountNumber,
-              fromAccount: sendingAccount,
-              memo,
-              type,
-            });
-          } catch (e) {
-            console.error(e);
-          } finally {
-            setIsSubmitting(false);
-          }
-        }
-        submit();
-      }}
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={handleSubmit}
     >
       {({ values, setFieldValue }) => {
         useEffect(() => {
