@@ -33,13 +33,9 @@ export default function AdminRoutes() {
           {/* Paths with nested routes must not have "exact" */}
           <Route path="/user-management/:userId" component={User} />
           <Route path="/account-management/:accountId" component={Account} />
-          {/* <Route
-            path="/money-movement/:transferId"
-            component={MoneyMovementTransfer}
-          /> */}
+          <Route path="/money-movement" component={MoneyMovement} />
           <Route exact path="/profile" component={Profile} />
           <Route exact path="/user-management" component={UserManagement} />
-          <Route path="/money-movement" component={MoneyMovement} />
           <Route
             exact
             path="/account-management"

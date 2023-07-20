@@ -14,7 +14,7 @@ export default function MoneyMovement(routeProps: RouteComponentProps) {
       label: "Overview",
     },
     {
-      id: 3,
+      id: 2,
       icon: exit,
       href: `${match.url}/transfer`,
       label: "External transfer",
@@ -24,7 +24,7 @@ export default function MoneyMovement(routeProps: RouteComponentProps) {
   return (
     <SplitPaneTemplate
       title="Money movement"
-      menuId="transfer"
+      menuId="money-movement"
       menuLinks={menuLinks}
     >
       <MoneyMovementRoutes {...routeProps} />

@@ -255,6 +255,14 @@ export default function FormUserTransferExternal() {
           <Form>
             <IonList>
               <FormSelect
+                label="Transfer type"
+                placeholder="Choose a type"
+                name="type"
+                type="text"
+                className="FormAccountSelect"
+                options={transferTypeOptions}
+              />
+              <FormSelect
                 label="Sending account"
                 placeholder="Choose an account"
                 name="sendingAccount"
@@ -291,14 +299,6 @@ export default function FormUserTransferExternal() {
                 name="externalRoutingNumber"
                 type="text"
               />
-              <FormSelect
-                label="Transfer type"
-                placeholder="Choose a type"
-                name="type"
-                type="text"
-                className="FormAccountSelect"
-                options={transferTypeOptions}
-              />
               <FormCheckbox
                 label="Use intermediary account?"
                 name="useIntermediaryAccount"
@@ -332,7 +332,7 @@ export default function FormUserTransferExternal() {
                 note="Use letters and numbers only (up to 32 characters)"
               />
               <SubmitButton isSubmitting={isSubmitting}>
-                Submit external transfer
+                Submit transfer
               </SubmitButton>
             </IonList>
           </Form>

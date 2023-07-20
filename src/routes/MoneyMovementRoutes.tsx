@@ -3,9 +3,9 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import { IonRouterOutlet } from "@ionic/react";
 
 // components
-import MoneyMovement from "components/MoneyMovement/MoneyMovement";
-import MoneyMovementTransfer from "pages/MoneyMovementTransfer/MoneyMovementTransfer";
-import TransferUserExternal from "pages/Transfer/TransferUserExternal";
+import Overview from "pages/MoneyMovement/MoneyMovementOverview";
+import Transfer from "pages/MoneyMovement/MoneyMovementTransfer";
+import TransferExternal from "pages/MoneyMovement/MoneyMovementTransferExternal";
 
 export default function MoneyMovementRoutes({ match }: RouteComponentProps) {
   return (
@@ -14,16 +14,16 @@ export default function MoneyMovementRoutes({ match }: RouteComponentProps) {
         <Route
           exact
           path={`${match.url}/overview`}
-          render={() => <MoneyMovement />}
+          render={() => <Overview />}
         />
         <Route
           exact
           path={`${match.url}/transfer`}
-          render={() => <TransferUserExternal />}
+          render={() => <TransferExternal />}
         />
         <Route
           path={`${match.url}/:transferId`}
-          component={MoneyMovementTransfer}
+          render={() => <Transfer/>}
         />
 
         {/* Fallback route */}
