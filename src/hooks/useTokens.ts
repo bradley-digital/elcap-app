@@ -4,7 +4,6 @@ type TokenResponse = {
   accessToken: string;
   refreshToken: string;
   role: string;
-  userId: string;
 };
 const refreshTokenName = "refreshToken";
 function setRefreshToken(token: string): void {
@@ -29,10 +28,9 @@ export default function useTokens() {
       accessToken: newAccessToken,
       refreshToken: newRefreshToken,
       role: newRole,
-      userId,
     } = tokens;
 
-    if (newAccessToken && newRefreshToken && newRole && userId) {
+    if (newAccessToken && newRefreshToken && newRole) {
       setRole(newRole);
       setIsAuthenticated(true);
       accessTokenRef.current = newAccessToken;
