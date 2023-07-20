@@ -15,6 +15,7 @@ import {
   wireReceivingAccountValidation,
   wireSendingAccountValidation,
   wireUseIntermediaryAccountValidation,
+  wireTypeValidation,
 } from "lib/formValidation";
 
 // components
@@ -35,6 +36,17 @@ export default function FormTransferWire() {
   const { accounts, createExternalAccount, createTransfer, externalAccounts } =
     useUserWesternAllianceAccount();
 
+  const transferTypeOptions = [
+    {
+      value: "WIRE",
+      label: "Wire",
+    },
+    {
+      value: "ACH",
+      label: "ACH",
+    },
+  ];
+
   const wireAmountValidation = Yup.number()
     .nullable()
     .test(
@@ -42,13 +54,13 @@ export default function FormTransferWire() {
       "Amount must be less than the account balance",
       (value, context) => {
         const account = accounts?.find(
-          ({ accountNumber }) => accountNumber === context.parent.fromAccount
+          ({ accountNumber }) => accountNumber === context.parent.fromAccount,
         );
         if (account) {
           return Number(value) <= parseFloat(account.accountBalance);
         }
         return true;
-      }
+      },
     )
     .required("Amount required");
 
@@ -57,7 +69,7 @@ export default function FormTransferWire() {
       ?.map(({ accountBalance, accountNumber, accountTitle }) => {
         const truncatedAccountNumber = accountNumber.slice(-4);
         const label = `${accountTitle} (...${truncatedAccountNumber}): ${currency(
-          Number(accountBalance)
+          Number(accountBalance),
         )}`;
         return {
           value: accountNumber,
@@ -98,6 +110,7 @@ export default function FormTransferWire() {
         receivingAccount: "",
         sendingAccount: "",
         useIntermediaryAccount: false,
+        type: "WIRE",
       }}
       validationSchema={Yup.object({
         amount: wireAmountValidation,
@@ -113,6 +126,7 @@ export default function FormTransferWire() {
         receivingAccount: wireReceivingAccountValidation,
         sendingAccount: wireSendingAccountValidation,
         useIntermediaryAccount: wireUseIntermediaryAccountValidation,
+        type: wireTypeValidation,
       })}
       onSubmit={({
         amount,
@@ -127,6 +141,7 @@ export default function FormTransferWire() {
         receivingAccount,
         sendingAccount,
         useIntermediaryAccount,
+        type,
       }) => {
         async function submit() {
           try {
@@ -150,7 +165,7 @@ export default function FormTransferWire() {
                 externalAccountNumber,
               fromAccount: sendingAccount,
               memo,
-              type: "WIRE",
+              type,
             });
           } catch (e) {
             console.error(e);
@@ -176,7 +191,8 @@ export default function FormTransferWire() {
               setFieldValue("useIntermediaryAccount", false, false);
             } else {
               const externalAccount = externalAccounts?.find(
-                ({ accountNumber }) => accountNumber === values.receivingAccount
+                ({ accountNumber }) =>
+                  accountNumber === values.receivingAccount,
               );
               if (externalAccount) {
                 const {
@@ -193,32 +209,32 @@ export default function FormTransferWire() {
                 setFieldValue(
                   "externalAccountNumber",
                   accountNumber || "",
-                  false
+                  false,
                 );
                 setFieldValue(
                   "externalFinancialInstitution",
                   financialInstitution || "",
-                  false
+                  false,
                 );
                 setFieldValue(
                   "externalRoutingNumber",
                   routingNumber || "",
-                  false
+                  false,
                 );
                 setFieldValue(
                   "intermediaryBankName",
                   intermediaryBankName || "",
-                  false
+                  false,
                 );
                 setFieldValue(
                   "intermediaryRoutingNumber",
                   intermediaryRoutingNumber || "",
-                  false
+                  false,
                 );
                 setFieldValue(
                   "intermediaryFurtherCreditTo",
                   intermediaryFurtherCreditTo || "",
-                  false
+                  false,
                 );
                 setFieldValue("useIntermediaryAccount", useIntermediary, false);
               }
@@ -238,6 +254,14 @@ export default function FormTransferWire() {
         return (
           <Form>
             <IonList>
+              <FormSelect
+                label="Transfer type"
+                placeholder="Choose a type"
+                name="type"
+                type="text"
+                className="FormAccountSelect"
+                options={transferTypeOptions}
+              />
               <FormSelect
                 label="Sending account"
                 placeholder="Choose an account"
@@ -308,7 +332,7 @@ export default function FormTransferWire() {
                 note="Use letters and numbers only (up to 32 characters)"
               />
               <SubmitButton isSubmitting={isSubmitting}>
-                Submit wire transfer
+                Submit external transfer
               </SubmitButton>
             </IonList>
           </Form>

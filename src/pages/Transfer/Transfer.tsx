@@ -25,8 +25,8 @@ export default function Profile(routeProps: RouteComponentProps) {
     {
       id: 3,
       icon: exit,
-      href: `${match.url}/wire`,
-      label: "Wire transfer",
+      href: `${match.url}/external`,
+      label: "External transfer",
     },
   ];
 
