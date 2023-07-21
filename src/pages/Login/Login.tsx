@@ -13,10 +13,6 @@ export default function Login() {
         <p>Hi there! Welcome to El Capitan.</p>
       </IonText>
       <FormLogin />
-      <div className="AuthPageTemplate__buttonRow">
-        <GoogleLoginButton />
-        <FacebookLoginButton />
-      </div>
       <IonText className="AuthPageTemplate__linkRow">
         <Link to="/forgot-password" className="secondary">
           Forgot password?
