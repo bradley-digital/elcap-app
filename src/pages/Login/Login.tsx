@@ -3,8 +3,6 @@ import { Link } from "react-router-dom";
 import { IonText } from "@ionic/react";
 import AuthPageTemplate from "components/AuthPageTemplate/AuthPageTemplate";
 import FormLogin from "components/FormLogin/FormLogin";
-import GoogleLoginButton from "components/SocialLoginButton/GoogleLoginButton";
-import FacebookLoginButton from "components/SocialLoginButton/FacebookLoginButton";
 
 export default function Login() {
   return (
