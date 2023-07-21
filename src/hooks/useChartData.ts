@@ -20,14 +20,12 @@ export default function useChartData(
 ) {
   const { accounts, transactions } = useUserWesternAllianceAccount();
 
-  const transactionsSortedByFirst = transactions
-    ? transactions?.sort(
-        (a, b) =>
-          Number(new Date(a.postingDate)) - Number(new Date(b.postingDate))
-      )
-    : [];
-
-  if (!transactions) {
+  if (
+    !transactions ||
+    transactions.length === 0 ||
+    !accounts ||
+    accounts.length === 0
+  ) {
     return {
       isSuccess: false,
       data: undefined,
@@ -36,6 +34,13 @@ export default function useChartData(
       transactionTypes: undefined,
     };
   }
+
+  const transactionsSortedByFirst = transactions
+    ? transactions?.sort(
+        (a, b) =>
+          Number(new Date(a.postingDate)) - Number(new Date(b.postingDate))
+      )
+    : [];
 
   const accountsCurrentBalanceTotal = accounts?.reduce(
     (acc: number, account: any) => acc + Number(account.accountBalance),
@@ -79,7 +84,8 @@ export default function useChartData(
   // account smoothing
   individualAccounts.forEach((account: any) => {
     // if transactions happen on the same day, combine them
-    account.transactions = account.transactions.reduce(
+    if (account.transactions?.length === 0) return;
+    account.transactions = account.transactions?.reduce(
       (acc: any, curr: any) => {
         const existingTransaction = acc.find(
           (t: any) => t.postingDate === curr.postingDate
@@ -102,7 +108,7 @@ export default function useChartData(
     individualAccounts.forEach((indvAccount: any) => {
       // start logic to add transactions for every day
       const firstPostingDate = new Date(
-        transactionsSortedByFirst[0].postingDate
+        transactionsSortedByFirst[0]?.postingDate
       ).getTime();
 
       const transactionsSortedByLast = indvAccount.transactions.sort(
@@ -110,7 +116,7 @@ export default function useChartData(
           Number(new Date(b.postingDate)) - Number(new Date(a.postingDate))
       );
       const lastPostingDate = new Date(
-        transactionsSortedByLast[0].postingDate
+        transactionsSortedByLast[0]?.postingDate
       ).getTime();
 
       const daysBetween = Math.floor(
@@ -158,7 +164,8 @@ export default function useChartData(
       // add a new transaction to indvAccount with the postingDates not in IndvAccount
       postingDatesNotInIndvAccount.forEach((postingDate: any) => {
         // find the previous transaction with the date closest to the postingDate
-        const previousTransaction = indvAccount.transactions.reduce(
+        if (indvAccount.transactions?.length === 0) return;
+        const previousTransaction = indvAccount.transactions?.reduce(
           (prev: any, curr: any) => {
             return Math.abs(
               Number(new Date(curr.postingDate)) - Number(new Date(postingDate))
