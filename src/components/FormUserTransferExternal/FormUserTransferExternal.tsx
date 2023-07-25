@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import * as Yup from "yup";
 
 // components
@@ -28,7 +27,8 @@ export default function FormUserTransferExternal() {
       initialValues,
       validationSchema,
       accountOptions,
-      externalAccountOptions
+      externalAccountOptions,
+      Automation
     } = useTransferExternalFormik(accounts, externalAccounts)
 
   const handleSubmit = async(values:Yup.InferType<typeof validationSchema>)=>{
@@ -68,83 +68,14 @@ export default function FormUserTransferExternal() {
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      {({ values, setFieldValue }) => {
-        useEffect(() => {
-          if (values.receivingAccount !== storedReceivingAccount) {
-            setStoredReceivingAccount(values.receivingAccount);
-            if (values.receivingAccount === "new") {
-              setFieldValue("externalAccountName", "", false);
-              setFieldValue("externalAccountNumber", "", false);
-              setFieldValue("externalFinancialInstitution", "", false);
-              setFieldValue("externalRoutingNumber", "", false);
-              setFieldValue("intermediaryBankName", "", false);
-              setFieldValue("intermediaryRoutingNumber", "", false);
-              setFieldValue("intermediaryFurtherCreditTo", "", false);
-              setFieldValue("useIntermediaryAccount", false, false);
-            } else {
-              const externalAccount = externalAccounts?.find(
-                ({ accountNumber }) =>
-                  accountNumber === values.receivingAccount,
-              );
-              if (externalAccount) {
-                const {
-                  accountName,
-                  accountNumber,
-                  financialInstitution,
-                  intermediaryBankName,
-                  intermediaryFurtherCreditTo,
-                  intermediaryRoutingNumber,
-                  routingNumber,
-                  useIntermediary,
-                } = externalAccount;
-                setFieldValue("externalAccountName", accountName || "", false);
-                setFieldValue(
-                  "externalAccountNumber",
-                  accountNumber || "",
-                  false,
-                );
-                setFieldValue(
-                  "externalFinancialInstitution",
-                  financialInstitution || "",
-                  false,
-                );
-                setFieldValue(
-                  "externalRoutingNumber",
-                  routingNumber || "",
-                  false,
-                );
-                setFieldValue(
-                  "intermediaryBankName",
-                  intermediaryBankName || "",
-                  false,
-                );
-                setFieldValue(
-                  "intermediaryRoutingNumber",
-                  intermediaryRoutingNumber || "",
-                  false,
-                );
-                setFieldValue(
-                  "intermediaryFurtherCreditTo",
-                  intermediaryFurtherCreditTo || "",
-                  false,
-                );
-                setFieldValue("useIntermediaryAccount", useIntermediary, false);
-              }
-            }
-          }
-
-          if (values.useIntermediaryAccount !== storedUseIntermediary) {
-            setStoredUseIntermediary(values.useIntermediaryAccount);
-            if (!values.useIntermediaryAccount) {
-              setFieldValue("intermediaryBankName", "", false);
-              setFieldValue("intermediaryRoutingNumber", "", false);
-              setFieldValue("intermediaryFurtherCreditTo", "", false);
-            }
-          }
-        }, [values]);
-
-        return (
+      {({ values }) => (
           <Form>
+            <Automation 
+              setStoredReceivingAccount={setStoredReceivingAccount} 
+              setStoredUseIntermediary={setStoredUseIntermediary} 
+              storedReceivingAccount={storedReceivingAccount} 
+              storedUseIntermediary={storedUseIntermediary} 
+            />
             <IonList>
               <FormSelect
                 label="Transfer type"
@@ -228,8 +159,8 @@ export default function FormUserTransferExternal() {
               </SubmitButton>
             </IonList>
           </Form>
-        );
-      }}
+        )
+      }
     </Formik>
   );
 }

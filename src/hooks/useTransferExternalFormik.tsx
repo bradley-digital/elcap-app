@@ -2,6 +2,16 @@ import { wireExternalAccountNameValidation, wireExternalAccountNumberValidation,
 import * as Yup from "yup";
 import { currency } from "lib/formats";
 import { Account, ExternalAccount } from "./useWesternAllianceAccount";
+import { useFormikContext } from "formik";
+import { useEffect } from "react";
+
+    
+type IAutomate = {
+  storedReceivingAccount: string
+  setStoredReceivingAccount: (value:string)=>void
+  storedUseIntermediary: boolean
+  setStoredUseIntermediary: (value:boolean)=>void
+}
 
 export default function useTransferExternalFormik(accounts?: Account[], externalAccounts?: ExternalAccount[]){
     const initialValues ={
@@ -85,11 +95,91 @@ export default function useTransferExternalFormik(accounts?: Account[], external
         value: "new",
         label: "Add new bank account",
     });
-    
+
+    const Automation = ({storedReceivingAccount, setStoredReceivingAccount, setStoredUseIntermediary, storedUseIntermediary}: IAutomate)=>{
+      const { values, submitForm, setFieldValue } = useFormikContext<Yup.InferType<typeof validationSchema>>();
+      useEffect(() => {
+          if (values.receivingAccount !== storedReceivingAccount) {
+            setStoredReceivingAccount(values.receivingAccount);
+            if (values.receivingAccount === "new") {
+              setFieldValue("externalAccountName", "", false);
+              setFieldValue("externalAccountNumber", "", false);
+              setFieldValue("externalFinancialInstitution", "", false);
+              setFieldValue("externalRoutingNumber", "", false);
+              setFieldValue("intermediaryBankName", "", false);
+              setFieldValue("intermediaryRoutingNumber", "", false);
+              setFieldValue("intermediaryFurtherCreditTo", "", false);
+              setFieldValue("useIntermediaryAccount", false, false);
+            } else {
+              const externalAccount = externalAccounts?.find(
+                ({ accountNumber }) =>
+                  accountNumber === values.receivingAccount,
+              );
+              if (externalAccount) {
+                const {
+                  accountName,
+                  accountNumber,
+                  financialInstitution,
+                  intermediaryBankName,
+                  intermediaryFurtherCreditTo,
+                  intermediaryRoutingNumber,
+                  routingNumber,
+                  useIntermediary,
+                } = externalAccount;
+                setFieldValue("externalAccountName", accountName || "", false);
+                setFieldValue(
+                  "externalAccountNumber",
+                  accountNumber || "",
+                  false,
+                );
+                setFieldValue(
+                  "externalFinancialInstitution",
+                  financialInstitution || "",
+                  false,
+                );
+                setFieldValue(
+                  "externalRoutingNumber",
+                  routingNumber || "",
+                  false,
+                );
+                setFieldValue(
+                  "intermediaryBankName",
+                  intermediaryBankName || "",
+                  false,
+                );
+                setFieldValue(
+                  "intermediaryRoutingNumber",
+                  intermediaryRoutingNumber || "",
+                  false,
+                );
+                setFieldValue(
+                  "intermediaryFurtherCreditTo",
+                  intermediaryFurtherCreditTo || "",
+                  false,
+                );
+                setFieldValue("useIntermediaryAccount", useIntermediary, false);
+              }
+            }
+          }
+
+          if (values.useIntermediaryAccount !== storedUseIntermediary) {
+            setStoredUseIntermediary(values.useIntermediaryAccount || false);
+            if (!values.useIntermediaryAccount) {
+              setFieldValue("intermediaryBankName", "", false);
+              setFieldValue("intermediaryRoutingNumber", "", false);
+              setFieldValue("intermediaryFurtherCreditTo", "", false);
+            }
+          }
+      }, [values, submitForm]);
+
+      return null
+    }
+
     return{
         initialValues,
         validationSchema,
         accountOptions,
         externalAccountOptions,
+        Automation
     }
 }
