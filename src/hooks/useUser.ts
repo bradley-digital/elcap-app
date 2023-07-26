@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 // hooks
 import useAuth from "hooks/useAuth";
 
-type ProfileAccount = Pick<Account, "accountNumber" | "accountTitle">;
+type ProfileAccount = Pick<Account, "accountNumber" | "accountName">;
 
 export type Profile = {
   id: string;
@@ -46,7 +46,7 @@ export default function useUser() {
 
   const { isSuccess: profileIsSuccess, data: profile } = useQuery(
     queryKey,
-    getUser
+    getUser,
   );
 
   const { mutate: updateUser } = useMutation(updateUserMutation, {

@@ -31,7 +31,7 @@ export default function MoneyMovementTransfer({ transfer }: Props) {
   const { id, amount, memo, status, transactionNumber, transferDate, type } =
     transfer;
 
-  const accountName = transfer?.westernAllianceFromAccount?.accountTitle;
+  const accountName = transfer?.westernAllianceFromAccount?.accountName;
   const accountNumber = transfer?.westernAllianceFromAccount?.accountNumber;
   const externalAccount = transfer?.externalAccount;
   const externalToAccount = transfer?.externalToAccount;
@@ -39,8 +39,10 @@ export default function MoneyMovementTransfer({ transfer }: Props) {
   const externalAccountNumber = externalToAccount?.accountNumber;
   const financialInstitution = externalToAccount?.financialInstitution;
   const intermediaryBankName = externalToAccount?.intermediaryBankName;
-  const intermediaryFurtherCreditTo = externalToAccount?.intermediaryFurtherCreditTo;
-  const intermediaryRoutingNumber = externalToAccount?.intermediaryRoutingNumber;
+  const intermediaryFurtherCreditTo =
+    externalToAccount?.intermediaryFurtherCreditTo;
+  const intermediaryRoutingNumber =
+    externalToAccount?.intermediaryRoutingNumber;
   const routingNumber = externalToAccount?.routingNumber;
   const submittedBy = `${transfer?.userSubmittedBy?.firstName || ""} ${
     transfer?.userSubmittedBy?.lastName || ""

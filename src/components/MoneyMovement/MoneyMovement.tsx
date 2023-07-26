@@ -79,7 +79,7 @@ export default function MoneyMovement() {
         ?.map((transfer) => {
           return {
             id: transfer?.id,
-            accountName: transfer?.westernAllianceFromAccount?.accountTitle,
+            accountName: transfer?.westernAllianceFromAccount?.accountName,
             accountNumber: transfer?.westernAllianceFromAccount?.accountNumber,
             amount: transfer?.amount,
             status: mapStatus(transfer?.status),

@@ -29,7 +29,7 @@ import Table from "components/Table/Table";
 const transactionTypeMap: StringMap = {};
 const wantedTypes = ["C", "D", "X"];
 wantedTypes.forEach(
-  (k) => (transactionTypeMap[k] = originalTransactionTypeMap[k])
+  (k) => (transactionTypeMap[k] = originalTransactionTypeMap[k]),
 );
 
 const columnHelper = createColumnHelper<Transaction>();
@@ -95,7 +95,7 @@ export default function TransactionsTable() {
           (transaction) =>
             isInDateRange(transaction) &&
             isInTransactionType(transaction) &&
-            isInAccountNumbers(transaction)
+            isInAccountNumbers(transaction),
         )
         .map((transaction) => {
           transaction.fullTrailerRecord =
@@ -126,7 +126,7 @@ export default function TransactionsTable() {
     accounts
       ?.map((account) => {
         const truncatedAccountNumber = account.accountNumber.slice(-4);
-        const label = `${account.accountTitle} (...${truncatedAccountNumber})`;
+        const label = `${account.accountName} (...${truncatedAccountNumber})`;
         return {
           value: account.accountNumber,
           label,
