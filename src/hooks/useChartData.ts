@@ -16,7 +16,7 @@ const dateOptions: Intl.DateTimeFormatOptions = {
 
 export default function useChartData(
   selectedTimeRange: string,
-  selectedAccountNumbers: string[]
+  selectedAccountNumbers: string[],
 ) {
   const { accounts, transactions } = useUserWesternAllianceAccount();
 
@@ -38,20 +38,20 @@ export default function useChartData(
   const transactionsSortedByFirst = transactions
     ? transactions?.sort(
         (a, b) =>
-          Number(new Date(a.postingDate)) - Number(new Date(b.postingDate))
+          Number(new Date(a.postingDate)) - Number(new Date(b.postingDate)),
       )
     : [];
 
   const accountsCurrentBalanceTotal = accounts?.reduce(
     (acc: number, account: any) => acc + Number(account.accountBalance),
-    0
+    0,
   );
 
   const isSingleAccountSelected = selectedAccountNumbers.length < 2;
 
   const filteredAccountTransactions = (accountNumber: string | number) => {
     const accountsByAccountNumber = transactions?.filter(
-      (transaction) => transaction.accountNumber === accountNumber
+      (transaction) => transaction.accountNumber === accountNumber,
     );
 
     const filteredTransactions = accountsByAccountNumber.map(
@@ -65,7 +65,7 @@ export default function useChartData(
           transactionIsReversed: transaction.transactionIsReversed,
           transactionType: transaction.transactionType,
         };
-      }
+      },
     );
 
     return filteredTransactions;
@@ -74,7 +74,7 @@ export default function useChartData(
   const individualAccounts: any = [];
   accounts?.forEach((account: any) => {
     individualAccounts.push({
-      accountTitle: account.accountTitle,
+      accountName: account.accountName,
       accountNumber: account.accountNumber,
       transactions: filteredAccountTransactions(account.accountNumber),
       currentBalance: account.accountBalance,
@@ -88,7 +88,7 @@ export default function useChartData(
     account.transactions = account.transactions?.reduce(
       (acc: any, curr: any) => {
         const existingTransaction = acc.find(
-          (t: any) => t.postingDate === curr.postingDate
+          (t: any) => t.postingDate === curr.postingDate,
         );
 
         curr.transactionAmount = Number(curr.transactionAmount);
@@ -101,35 +101,35 @@ export default function useChartData(
 
         return acc;
       },
-      []
+      [],
     );
 
     // loop through accounts from within each account
     individualAccounts.forEach((indvAccount: any) => {
       // start logic to add transactions for every day
       const firstPostingDate = new Date(
-        transactionsSortedByFirst[0]?.postingDate
+        transactionsSortedByFirst[0]?.postingDate,
       ).getTime();
 
       const transactionsSortedByLast = indvAccount.transactions.sort(
         (a: any, b: any) =>
-          Number(new Date(b.postingDate)) - Number(new Date(a.postingDate))
+          Number(new Date(b.postingDate)) - Number(new Date(a.postingDate)),
       );
       const lastPostingDate = new Date(
-        transactionsSortedByLast[0]?.postingDate
+        transactionsSortedByLast[0]?.postingDate,
       ).getTime();
 
       const daysBetween = Math.floor(
-        (lastPostingDate - firstPostingDate) / (1000 * 60 * 60 * 24)
+        (lastPostingDate - firstPostingDate) / (1000 * 60 * 60 * 24),
       );
 
       for (let i = 0; i < daysBetween; i++) {
         const postingDate = new Date(
-          firstPostingDate + i * 24 * 60 * 60 * 1000
+          firstPostingDate + i * 24 * 60 * 60 * 1000,
         );
 
         const existingTransaction = indvAccount.transactions.find(
-          (t: any) => t.postingDate === postingDate.toISOString()
+          (t: any) => t.postingDate === postingDate.toISOString(),
         );
 
         if (!existingTransaction) {
@@ -156,9 +156,9 @@ export default function useChartData(
       const postingDatesNotInIndvAccount = accountPostingDates.filter(
         (postingDate: any) => {
           return !indvAccount.transactions.some(
-            (t: any) => t.postingDate === postingDate
+            (t: any) => t.postingDate === postingDate,
           );
-        }
+        },
       );
 
       // add a new transaction to indvAccount with the postingDates not in IndvAccount
@@ -168,15 +168,16 @@ export default function useChartData(
         const previousTransaction = indvAccount.transactions?.reduce(
           (prev: any, curr: any) => {
             return Math.abs(
-              Number(new Date(curr.postingDate)) - Number(new Date(postingDate))
+              Number(new Date(curr.postingDate)) -
+                Number(new Date(postingDate)),
             ) <
               Math.abs(
                 Number(new Date(prev.postingDate)) -
-                  Number(new Date(postingDate))
+                  Number(new Date(postingDate)),
               )
               ? curr
               : prev;
-          }
+          },
         );
 
         indvAccount.transactions.push({
@@ -191,7 +192,7 @@ export default function useChartData(
 
   const selectedAccounts = isSingleAccountSelected
     ? individualAccounts.filter(
-        (account: any) => account.accountNumber === selectedAccountNumbers[0]
+        (account: any) => account.accountNumber === selectedAccountNumbers[0],
       )
     : individualAccounts;
 
@@ -201,13 +202,13 @@ export default function useChartData(
 
   function createChartData(
     accountTransactions: Transaction[],
-    currentBalance: number
+    currentBalance: number,
   ) {
     const balanceData: Array<any> = [];
 
     accountTransactions.sort(
       (a, b) =>
-        new Date(a.postingDate).getTime() - new Date(b.postingDate).getTime()
+        new Date(a.postingDate).getTime() - new Date(b.postingDate).getTime(),
     );
 
     let balanceAtTimeOfTransaction = currentBalance;
@@ -281,7 +282,7 @@ export default function useChartData(
           default:
             return true;
         }
-      }
+      },
     );
 
     transactionsWithBalanceByYear.forEach((balance) => {
@@ -319,7 +320,7 @@ export default function useChartData(
   ];
 
   const transactionTypes = new Set(
-    selectedAccountTransactions.map(({ transactionType }) => transactionType)
+    selectedAccountTransactions.map(({ transactionType }) => transactionType),
   );
 
   const data = {
@@ -327,11 +328,11 @@ export default function useChartData(
       const currentBalance = Number(account.currentBalance);
       const { balanceData } = createChartData(
         account.transactions,
-        currentBalance
+        currentBalance,
       );
 
       return {
-        label: account.accountTitle,
+        label: account.accountName,
         fill: "start",
         showLine: true,
         data: balanceData,
