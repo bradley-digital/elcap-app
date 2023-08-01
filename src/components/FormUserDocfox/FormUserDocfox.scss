@@ -37,18 +37,4 @@
     border-bottom: 1px solid lighten($color: $gray, $amount: 25%);
     padding: 10px;
   }
-
-  .react-datepicker {
-    &__input-container {
-      margin-left: 5px;
-      padding: 10px;
-      input {
-        padding: 10px;
-      }
-    }
-    &-popper {
-      position: absolute;
-      z-index: 2;
-    }
-  }
 }

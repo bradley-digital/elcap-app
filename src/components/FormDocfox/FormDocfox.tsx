@@ -46,6 +46,7 @@ export default function FormDocfox() {
     () => buildInitialValues(application, schema, templateId),
     [application, schema],
   );
+
   const validationObject = useMemo(() => buildValidation(schema), [schema]);
   const formSections = useMemo(() => buildFormSections(schema), [schema]);
   const formInputs = useMemo(

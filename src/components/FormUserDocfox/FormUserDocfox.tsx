@@ -191,17 +191,16 @@ export default function FormUserDocfox({ profile }: Props) {
                 await postProfileData(data);
               }
             }
-            setIsSubmitting(false);
           }
 
           if (!applicationId || templateId !== initialTemplateId) {
             const postData = buildPostData(values);
             postData.userId = userId;
             postApplication(postData);
-            setIsSubmitting(false);
           } else if (application) {
             updateApplication();
           }
+          setIsSubmitting(false);
         }}
       >
         <Form>
