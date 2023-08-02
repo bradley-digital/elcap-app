@@ -69,7 +69,7 @@ export default function useUserWesternAlliance() {
     const { data } = await authApi.get<Account[]>(
       "/users/western-alliance/accounts"
     );
-    data.sort((a, b) => a.accountTitle.localeCompare(b.accountTitle));
+    data.sort((a, b) => a.accountName.localeCompare(b.accountName));
     return data;
   }
 

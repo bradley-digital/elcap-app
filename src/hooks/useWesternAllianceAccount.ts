@@ -9,14 +9,14 @@ export type Account = {
   id: string;
   accountBalance: string;
   accountNumber: string;
-  accountTitle: string;
+  accountName: string;
   client: string;
 };
 
 type AccountCreateInput = {
   accountBalance?: number;
   accountNumber: string;
-  accountTitle: string;
+  accountName: string;
   client: string;
 };
 
@@ -24,7 +24,7 @@ type AccountUpdateInput = {
   id: string;
   accountBalance?: string;
   accountNumber?: string;
-  accountTitle?: string;
+  accountName?: string;
   client?: string;
 };
 
@@ -144,11 +144,11 @@ export type Transfer = {
   };
   westernAllianceFromAccount: {
     accountNumber: string;
-    accountTitle: string;
+    accountName: string;
   };
   westernAllianceToAccount: null | {
     accountNumber: string;
-    accountTitle: string;
+    accountName: string;
   };
 };
 
@@ -240,7 +240,7 @@ export default function useWesternAllianceAccount() {
 
   async function getAccounts() {
     const { data } = await authApi.get<Account[]>("/western-alliance/accounts");
-    data.sort((a, b) => a.accountTitle.localeCompare(b.accountTitle));
+    data.sort((a, b) => a.accountName.localeCompare(b.accountName));
     return data;
   }
 

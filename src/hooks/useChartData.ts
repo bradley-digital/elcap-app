@@ -74,7 +74,7 @@ export default function useChartData(
   const individualAccounts: any = [];
   accounts?.forEach((account: any) => {
     individualAccounts.push({
-      accountTitle: account.accountTitle,
+      accountName: account.accountName,
       accountNumber: account.accountNumber,
       transactions: filteredAccountTransactions(account.accountNumber),
       currentBalance: account.accountBalance,
@@ -331,7 +331,7 @@ export default function useChartData(
       );
 
       return {
-        label: account.accountTitle,
+        label: account.accountName,
         fill: "start",
         showLine: true,
         data: balanceData,

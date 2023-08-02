@@ -79,7 +79,7 @@ export default function TransferHistory() {
         ?.map((transfer) => {
           return {
             id: transfer?.id,
-            accountName: transfer?.westernAllianceFromAccount?.accountTitle,
+            accountName: transfer?.westernAllianceFromAccount?.accountName,
             accountNumber: transfer?.westernAllianceFromAccount?.accountNumber,
             amount: transfer?.amount,
             status: mapStatus(transfer?.status),
@@ -87,7 +87,7 @@ export default function TransferHistory() {
           };
         })
         .filter(
-          (transfer) => isInDateRange(transfer) && isInStatuses(transfer)
+          (transfer) => isInDateRange(transfer) && isInStatuses(transfer),
         ) || []
     );
   }, [transfers, selectedStatuses, selectedTimeRange]);
