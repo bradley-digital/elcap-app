@@ -108,7 +108,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function handleAuthentication(
     url: string,
-    body: SetPasswordBody | LoginBody | GoogleLoginBody | FacebookLoginBody,
+    body: SetPasswordBody | LoginBody | GoogleLoginBody | FacebookLoginBody
   ): Promise<void> {
     try {
       const res = await authApi.post(url, body);

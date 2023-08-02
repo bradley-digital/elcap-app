@@ -31,23 +31,23 @@ export default function useUserWesternAlliance() {
 
   const { isSuccess: accountsIsSuccess, data: accounts } = useQuery(
     westernAllianceAccountsQueryKey,
-    getWesternAllianceAccounts,
+    getWesternAllianceAccounts
   );
 
   const { isSuccess: externalAccountsIsSuccess, data: externalAccounts } =
     useQuery(
       westernAllianceExternalAccountsQueryKey,
-      getWesternAllianceExternalAccounts,
+      getWesternAllianceExternalAccounts
     );
 
   const { isSuccess: transactionsIsSuccess, data: transactions } = useQuery(
     westernAllianceTransactionsQueryKey,
-    getWesternAllianceTransactions,
+    getWesternAllianceTransactions
   );
 
   const { isSuccess: transfersIsSuccess, data: transfers } = useQuery(
     westernAllianceTransferQueryKey,
-    getWesternAllianceTransfers,
+    getWesternAllianceTransfers
   );
 
   const { mutateAsync: createExternalAccount } = useMutation(
@@ -56,7 +56,7 @@ export default function useUserWesternAlliance() {
       onSuccess: () => {
         queryClient.invalidateQueries(westernAllianceExternalAccountsQueryKey);
       },
-    },
+    }
   );
 
   const { mutateAsync: createTransfer } = useMutation(createTransferMutation, {
@@ -67,7 +67,7 @@ export default function useUserWesternAlliance() {
 
   async function getWesternAllianceAccounts() {
     const { data } = await authApi.get<Account[]>(
-      "/users/western-alliance/accounts",
+      "/users/western-alliance/accounts"
     );
     data.sort((a, b) => a.accountName.localeCompare(b.accountName));
     return data;
@@ -75,14 +75,14 @@ export default function useUserWesternAlliance() {
 
   async function getWesternAllianceExternalAccounts() {
     const { data } = await authApi.get<ExternalAccount[]>(
-      "/users/western-alliance/external-accounts",
+      "/users/western-alliance/external-accounts"
     );
     return data;
   }
 
   async function getWesternAllianceTransactions() {
     const { data } = await authApi.get<Transaction[]>(
-      "/users/western-alliance/transactions",
+      "/users/western-alliance/transactions"
     );
     data.sort((t1, t2) => {
       const d1 = new Date(t1.postingDate);
@@ -94,17 +94,17 @@ export default function useUserWesternAlliance() {
 
   async function getWesternAllianceTransfers() {
     const { data } = await authApi.get<Transfer[]>(
-      "/users/western-alliance/transfers",
+      "/users/western-alliance/transfers"
     );
     return data;
   }
 
   async function createExternalAccountMutation(
-    body: ExternalAccountCreateInput,
+    body: ExternalAccountCreateInput
   ) {
     const { data } = await authApi.post<ExternalAccount>(
       "/users/western-alliance/external-account",
-      body,
+      body
     );
     return data;
   }
@@ -112,7 +112,7 @@ export default function useUserWesternAlliance() {
   async function createTransferMutation(body: TransferCreateInput) {
     const { data } = await authApi.post<Transfer>(
       "/users/western-alliance/transfer",
-      body,
+      body
     );
     return data;
   }

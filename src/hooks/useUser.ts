@@ -46,7 +46,7 @@ export default function useUser() {
 
   const { isSuccess: profileIsSuccess, data: profile } = useQuery(
     queryKey,
-    getUser,
+    getUser
   );
 
   const { mutate: updateUser } = useMutation(updateUserMutation, {
