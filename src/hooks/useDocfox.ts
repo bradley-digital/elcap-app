@@ -149,6 +149,16 @@ export function useApplication(applicationId: string) {
       onSuccess: () => {
         queryClient.invalidateQueries(applicationQueryKey);
       },
+      onError: (error: unknown) => {
+        showToast({
+          message:
+            JSON.parse(getErrorMessage(error)).detail ||
+            "There was an error processing your request",
+          duration: 8 * 1000,
+          position: "bottom",
+          color: "danger",
+        });
+      },
     }
   );
 
