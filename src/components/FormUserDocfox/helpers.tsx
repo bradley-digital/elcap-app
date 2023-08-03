@@ -24,7 +24,7 @@ function buildFormInputsHelper(children: any = [], section: any = {}) {
             name={`['${nextSection.name}']`}
             placeholder={nextSection.placeholder}
             options={nextSection.select_options}
-          />,
+          />
         );
       } else if (nextSection.format === "email") {
         children.push(
@@ -34,7 +34,7 @@ function buildFormInputsHelper(children: any = [], section: any = {}) {
             name={`['${nextSection.name}']`}
             placeholder={nextSection.placeholder}
             type="email"
-          />,
+          />
         );
       } else if (nextSection.format === "phone") {
         children.push(
@@ -44,7 +44,7 @@ function buildFormInputsHelper(children: any = [], section: any = {}) {
             name={`['${nextSection.name}']`}
             placeholder={nextSection.placeholder}
             type="tel"
-          />,
+          />
         );
       } else if (nextSection.format === "date") {
         children.push(
@@ -62,12 +62,12 @@ function buildFormInputsHelper(children: any = [], section: any = {}) {
             label={label}
             name={`['${nextSection.name}']`}
             placeholder={nextSection.placeholder}
-          />,
+          />
         );
       }
     } else if (nextSection) {
       children.push(
-        <IonListHeader key={sectionTitle}>{sectionTitle}</IonListHeader>,
+        <IonListHeader key={sectionTitle}>{sectionTitle}</IonListHeader>
       );
       buildFormInputsHelper(children, nextSection);
     }
