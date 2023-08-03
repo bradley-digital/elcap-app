@@ -230,7 +230,7 @@ export default function useWesternAllianceAccount() {
       onSuccess: () => {
         queryClient.invalidateQueries(externalAccountsQueryKey);
       },
-    },
+    }
   );
 
   const { mutateAsync: createTransfer } = useMutation(createTransferMutation, {
@@ -265,7 +265,7 @@ export default function useWesternAllianceAccount() {
 
   async function getWesternAllianceExternalAccounts() {
     const { data } = await authApi.get<ExternalAccount[]>(
-      "/western-alliance/external-accounts",
+      "/western-alliance/external-accounts"
     );
     return data;
   }
@@ -273,17 +273,17 @@ export default function useWesternAllianceAccount() {
   async function createTransferMutation(body: TransferCreateInput) {
     const { data } = await authApi.post<Transfer>(
       "/western-alliance/transfer",
-      body,
+      body
     );
     return data;
   }
 
   async function createExternalAccountMutation(
-    body: ExternalAccountCreateInput,
+    body: ExternalAccountCreateInput
   ) {
     const { data } = await authApi.post<ExternalAccount>(
       "/western-alliance/external-account",
-      body,
+      body
     );
     return data;
   }

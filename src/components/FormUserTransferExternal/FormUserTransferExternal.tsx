@@ -12,26 +12,26 @@ import useTransferExternalFormik from "hooks/useTransferExternalFormik";
 import useWesternAllianceAccount from "hooks/useWesternAllianceAccount";
 
 export default function FormUserTransferExternal() {
-  const { 
-      setStoredReceivingAccount,
-      setStoredUseIntermediary,
-      setIsSubmitting,
-      storedReceivingAccount,
-      storedUseIntermediary,
-      isSubmitting,
-      transferTypeOptions
-    } = useTransferExternal()
+  const {
+    setStoredReceivingAccount,
+    setStoredUseIntermediary,
+    setIsSubmitting,
+    storedReceivingAccount,
+    storedUseIntermediary,
+    isSubmitting,
+    transferTypeOptions
+  } = useTransferExternal()
 
   const { accounts, createExternalAccount, createTransfer, externalAccounts } = useWesternAllianceAccount();
-   const { 
-      initialValues,
-      validationSchema,
-      accountOptions,
-      externalAccountOptions,
-      Automation
-    } = useTransferExternalFormik(accounts, externalAccounts)
+  const {
+    initialValues,
+    validationSchema,
+    accountOptions,
+    externalAccountOptions,
+    Automation
+  } = useTransferExternalFormik(accounts, externalAccounts)
 
-  const handleSubmit = async(values:Yup.InferType<typeof validationSchema>)=>{
+  const handleSubmit = async (values: Yup.InferType<typeof validationSchema>) => {
     try {
       setIsSubmitting(true);
       if (values.receivingAccount === "new") {
@@ -61,7 +61,7 @@ export default function FormUserTransferExternal() {
       setIsSubmitting(false);
     }
   }
-  
+
   return (
     <Formik
       initialValues={initialValues}
@@ -69,97 +69,97 @@ export default function FormUserTransferExternal() {
       onSubmit={handleSubmit}
     >
       {({ values }) => (
-          <Form>
-            <Automation 
-              setStoredReceivingAccount={setStoredReceivingAccount} 
-              setStoredUseIntermediary={setStoredUseIntermediary} 
-              storedReceivingAccount={storedReceivingAccount} 
-              storedUseIntermediary={storedUseIntermediary} 
+        <Form>
+          <Automation
+            setStoredReceivingAccount={setStoredReceivingAccount}
+            setStoredUseIntermediary={setStoredUseIntermediary}
+            storedReceivingAccount={storedReceivingAccount}
+            storedUseIntermediary={storedUseIntermediary}
+          />
+          <IonList>
+            <FormSelect
+              label="Transfer type"
+              placeholder="Choose a type"
+              name="type"
+              type="text"
+              className="FormAccountSelect"
+              options={transferTypeOptions}
             />
-            <IonList>
-              <FormSelect
-                label="Transfer type"
-                placeholder="Choose a type"
-                name="type"
-                type="text"
-                className="FormAccountSelect"
-                options={transferTypeOptions}
-              />
-              <FormSelect
-                label="Sending account"
-                placeholder="Choose an account"
-                name="sendingAccount"
-                type="text"
-                className="FormAccountSelect"
-                options={accountOptions}
-              />
-              <FormSelect
-                label="Receiving account"
-                placeholder="Choose an account"
-                name="receivingAccount"
-                type="text"
-                className="FormAccountSelect"
-                options={externalAccountOptions}
-              />
-              <IonListHeader>Receiving account details</IonListHeader>
-              <FormInput
-                label="Financial institution name"
-                name="externalFinancialInstitution"
-                type="text"
-              />
-              <FormInput
-                label="Account name"
-                name="externalAccountName"
-                type="text"
-              />
-              <FormInput
-                label="Account number"
-                name="externalAccountNumber"
-                type="text"
-              />
-              <FormInput
-                label="Routing number"
-                name="externalRoutingNumber"
-                type="text"
-              />
-              <FormCheckbox
-                label="Use intermediary account?"
-                name="useIntermediaryAccount"
-                type="checkbox"
-              />
-              {values.useIntermediaryAccount && (
-                <>
-                  <FormInput
-                    label="Intermediary bank name"
-                    name="intermediaryBankName"
-                    type="text"
-                  />
-                  <FormInput
-                    label="Intermediary routing number"
-                    name="intermediaryRoutingNumber"
-                    type="text"
-                  />
-                  <FormInput
-                    label="For further credit to"
-                    name="intermediaryFurtherCreditTo"
-                    type="text"
-                  />
-                </>
-              )}
-              <IonListHeader>Transfer details</IonListHeader>
-              <FormInput label="Amount" name="amount" type="text" />
-              <FormInput
-                label="Memo (optional)"
-                name="memo"
-                type="text"
-                note="Use letters and numbers only (up to 32 characters)"
-              />
-              <SubmitButton isSubmitting={isSubmitting}>
-                Submit transfer
-              </SubmitButton>
-            </IonList>
-          </Form>
-        )
+            <FormSelect
+              label="Sending account"
+              placeholder="Choose an account"
+              name="sendingAccount"
+              type="text"
+              className="FormAccountSelect"
+              options={accountOptions}
+            />
+            <FormSelect
+              label="Receiving account"
+              placeholder="Choose an account"
+              name="receivingAccount"
+              type="text"
+              className="FormAccountSelect"
+              options={externalAccountOptions}
+            />
+            <IonListHeader>Receiving account details</IonListHeader>
+            <FormInput
+              label="Financial institution name"
+              name="externalFinancialInstitution"
+              type="text"
+            />
+            <FormInput
+              label="Account name"
+              name="externalAccountName"
+              type="text"
+            />
+            <FormInput
+              label="Account number"
+              name="externalAccountNumber"
+              type="text"
+            />
+            <FormInput
+              label="Routing number"
+              name="externalRoutingNumber"
+              type="text"
+            />
+            <FormCheckbox
+              label="Use intermediary account?"
+              name="useIntermediaryAccount"
+              type="checkbox"
+            />
+            {values.useIntermediaryAccount && (
+              <>
+                <FormInput
+                  label="Intermediary bank name"
+                  name="intermediaryBankName"
+                  type="text"
+                />
+                <FormInput
+                  label="Intermediary routing number"
+                  name="intermediaryRoutingNumber"
+                  type="text"
+                />
+                <FormInput
+                  label="For further credit to"
+                  name="intermediaryFurtherCreditTo"
+                  type="text"
+                />
+              </>
+            )}
+            <IonListHeader>Transfer details</IonListHeader>
+            <FormInput label="Amount" name="amount" type="text" />
+            <FormInput
+              label="Memo (optional)"
+              name="memo"
+              type="text"
+              note="Use letters and numbers only (up to 32 characters)"
+            />
+            <SubmitButton isSubmitting={isSubmitting}>
+              Submit transfer
+            </SubmitButton>
+          </IonList>
+        </Form>
+      )
       }
     </Formik>
   );

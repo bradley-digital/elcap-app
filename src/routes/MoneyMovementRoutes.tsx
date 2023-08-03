@@ -21,10 +21,7 @@ export default function MoneyMovementRoutes({ match }: RouteComponentProps) {
           path={`${match.url}/transfer`}
           render={() => <TransferExternal />}
         />
-        <Route
-          path={`${match.url}/:transferId`}
-          render={() => <Transfer/>}
-        />
+        <Route path={`${match.url}/:transferId`} render={() => <Transfer />} />
 
         {/* Fallback route */}
         <Route render={() => <Redirect to={`${match.url}/overview`} />} />
