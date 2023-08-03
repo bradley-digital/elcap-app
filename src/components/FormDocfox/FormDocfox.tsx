@@ -40,18 +40,17 @@ export default function FormDocfox() {
 
   const schema = useMemo(
     () => buildSchema(template?.data?.attributes?.profile_schema),
-    [template],
+    [template]
   );
   const initialValues = useMemo(
     () => buildInitialValues(application, schema, templateId),
-    [application, schema],
+    [application, schema, isSubmitting]
   );
-
   const validationObject = useMemo(() => buildValidation(schema), [schema]);
   const formSections = useMemo(() => buildFormSections(schema), [schema]);
   const formInputs = useMemo(
     () => buildFormInputs(formSections),
-    [formSections],
+    [formSections]
   );
 
   let statusElement = (
@@ -113,7 +112,7 @@ export default function FormDocfox() {
             async function updateApplication() {
               const { deleteData, patchData, postData } = buildUpdateData(
                 application,
-                values,
+                values
               );
               if (Array.isArray(patchData)) {
                 for (const data of patchData) {

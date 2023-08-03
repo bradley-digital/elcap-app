@@ -31,6 +31,7 @@ const FormDatePicker = ({ label, ...props }: Props) => {
           showDefaultButtons={true}
           presentation="date"
           onIonChange={(e) => handleChange(e.detail.value)}
+          value={meta.value}
         />
       </IonModal>
 

@@ -53,7 +53,7 @@ function buildFormInputsHelper(children: any = [], section: any = {}) {
             label={label}
             name={`['${nextSection.name}']`}
             type="date"
-          />,
+          />
         );
       } else {
         children.push(
