@@ -77,7 +77,6 @@ export default function Notifications() {
           if (get(meta, "hasNextPage")) {
             await fetchNextPage();
           }
-          // setTimeout(() => ev.target.complete(), 500);
           ev.target.complete();
         }}
       >

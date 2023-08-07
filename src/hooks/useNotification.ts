@@ -37,19 +37,11 @@ export function useNotification({ size = 20 }: IUseNotification) {
   const [meta, setMeta] = useState({});
   const queryClient = useQueryClient();
 
-  async function getNofitications(query: {
-    pageParam: { size: number; cursor: string };
-  }) {
-    const pageSize = get(query, "pageParam.size", size);
-    const cursor = get(query, "pageParam.cursor", undefined);
-    const { data } = await authApi.get(
-      `/notifications?size=${pageSize}${cursor ? "&cursor=" + cursor : ""}`
-    );
-    setMeta(data.meta);
-    return data.result;
-  }
-
-  const { data, fetchNextPage, status } = useInfiniteQuery({
+  const {
+    data: notifications,
+    fetchNextPage,
+    status,
+  } = useInfiniteQuery({
     queryKey: [notificationsQueryKey],
     queryFn: getNofitications as QueryFunction<any, QueryKey>,
     getNextPageParam: (_page, lastPage) => {
@@ -76,6 +68,18 @@ export function useNotification({ size = 20 }: IUseNotification) {
     }
   );
 
+  async function getNofitications(query: {
+    pageParam: { size: number; cursor: string };
+  }) {
+    const pageSize = get(query, "pageParam.size", size);
+    const cursor = get(query, "pageParam.cursor", undefined);
+    const { data } = await authApi.get(
+      `/notifications?size=${pageSize}${cursor ? "&cursor=" + cursor : ""}`
+    );
+    setMeta(data.meta);
+    return data.result;
+  }
+
   async function patchAllNotificationsToViewedMutation() {
     const { data } = await authApi.patch("/notifications/viewed");
     return data;
@@ -87,7 +91,7 @@ export function useNotification({ size = 20 }: IUseNotification) {
   }
 
   return {
-    notifications: data,
+    notifications,
     status,
     fetchNextPage,
     meta,
