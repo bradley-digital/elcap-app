@@ -24,7 +24,7 @@ export default function TransferHistoryDetails() {
   const { amount, memo, status, transactionNumber, transferDate, type } =
     transfer;
 
-  const accountName = transfer?.westernAllianceFromAccount?.accountTitle;
+  const accountName = transfer?.westernAllianceFromAccount?.accountName;
   const accountNumber = transfer?.westernAllianceFromAccount?.accountNumber;
   const submittedBy = `${transfer?.userSubmittedBy?.firstName || ""} ${
     transfer?.userSubmittedBy?.lastName || ""

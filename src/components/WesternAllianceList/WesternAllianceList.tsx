@@ -19,7 +19,7 @@ export default function WesternAllianceList({ accounts }: Props) {
 
   const filteredAccounts = accounts.filter((account: Account) => {
     const fullName =
-      `${account.accountNumber} ${account.accountTitle}`.toLowerCase();
+      `${account.accountNumber} ${account.accountName}`.toLowerCase();
     return fullName.indexOf(search.toLowerCase()) > -1;
   });
 
@@ -27,17 +27,15 @@ export default function WesternAllianceList({ accounts }: Props) {
     <div className="WesternAllianceList">
       <IonSearchbar debounce={400} onIonChange={handleSearch}></IonSearchbar>
       <IonList>
-        {filteredAccounts.map(
-          ({ id, accountNumber, accountTitle }: Account) => (
-            <IonItem
-              key={id}
-              className="WesternAllianceList__item"
-              href={`/account-management/${id}`}
-            >
-              {`${accountTitle} (...${accountNumber.slice(-4)})`}
-            </IonItem>
-          )
-        )}
+        {filteredAccounts.map(({ id, accountNumber, accountName }: Account) => (
+          <IonItem
+            key={id}
+            className="WesternAllianceList__item"
+            href={`/account-management/${id}`}
+          >
+            {`${accountName} (...${accountNumber.slice(-4)})`}
+          </IonItem>
+        ))}
       </IonList>
     </div>
   );

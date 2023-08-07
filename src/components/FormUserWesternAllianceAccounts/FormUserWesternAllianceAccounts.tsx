@@ -32,7 +32,7 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
   const accountOptions =
     accounts?.map((account) => {
       const truncatedAccountNumber = account.accountNumber.slice(-4);
-      const label = `${account.accountTitle} (...${truncatedAccountNumber})`;
+      const label = `${account.accountName} (...${truncatedAccountNumber})`;
       return {
         value: account.accountNumber,
         label,

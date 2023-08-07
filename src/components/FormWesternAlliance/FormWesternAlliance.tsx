@@ -6,7 +6,7 @@ import * as Yup from "yup";
 import {
   accountBalanceValidation,
   accountNumberValidation,
-  accountTitleValidation,
+  accountNameValidation,
   clientValidation,
   routingNumberValidation,
 } from "lib/formValidation";
@@ -31,28 +31,21 @@ export default function FormWesternAlliance({ account }: Props) {
   const { updateAccount } = useWesternAllianceAccount();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const {
-    id,
-    accountBalance,
-    accountNumber,
-    accountTitle,
-    client,
-    routingNumber,
-  } = account;
+  const { id, accountBalance, accountNumber, accountName, client, routingNumber } = account;
 
   return (
     <Formik
       initialValues={{
         accountBalance,
         accountNumber,
-        accountTitle,
+        accountName,
         client,
         routingNumber,
       }}
       validationSchema={Yup.object({
         accountBalance: accountBalanceValidation,
         accountNumber: accountNumberValidation,
-        accountTitle: accountTitleValidation,
+        accountName: accountNameValidation,
         client: clientValidation,
         routingNumber: routingNumberValidation,
       })}
@@ -67,8 +60,8 @@ export default function FormWesternAlliance({ account }: Props) {
           <IonListHeader>Account information</IonListHeader>
           <FormInput label="Client" name="client" type="text" icon={pencil} />
           <FormInput
-            label="Account Title"
-            name="accountTitle"
+            label="Account Name"
+            name="accountName"
             type="text"
             icon={lockClosed}
             readonly={true}

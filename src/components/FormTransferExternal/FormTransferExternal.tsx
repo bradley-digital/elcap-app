@@ -66,9 +66,9 @@ export default function FormTransferWire() {
 
   const accountOptions =
     accounts
-      ?.map(({ accountBalance, accountNumber, accountTitle }) => {
+      ?.map(({ accountBalance, accountNumber, accountName }) => {
         const truncatedAccountNumber = accountNumber.slice(-4);
-        const label = `${accountTitle} (...${truncatedAccountNumber}): ${currency(
+        const label = `${accountName} (...${truncatedAccountNumber}): ${currency(
           Number(accountBalance),
         )}`;
         return {
