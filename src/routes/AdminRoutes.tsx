@@ -5,6 +5,7 @@ import Account from "pages/Account/Account";
 import AccountManagement from "pages/AccountManagement/AccountManagement";
 import MoneyMovement from "pages/MoneyMovement/MoneyMovement";
 import MoneyMovementTransfer from "pages/MoneyMovementTransfer/MoneyMovementTransfer";
+import Notification from "pages/Notification/Notification";
 import Profile from "pages/Profile/ProfileOverview";
 import UserManagement from "pages/UserManagement/UserManagement";
 import User from "pages/User/User";
@@ -38,6 +39,7 @@ export default function AdminRoutes() {
             path="/money-movement/:transferId"
             component={MoneyMovementTransfer}
           />
+          <Route exact path="/notifications" component={Notification} />
           <Route exact path="/profile" component={Profile} />
           <Route exact path="/user-management" component={UserManagement} />
           <Route exact path="/money-movement" component={MoneyMovement} />

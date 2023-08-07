@@ -77,7 +77,7 @@ export function useNotification({ size = 20 }: IUseNotification) {
   );
 
   async function patchAllNotificationsToViewedMutation() {
-    const { data } = await authApi.patch("/notifications/update/viewed");
+    const { data } = await authApi.patch("/notifications/viewed");
     return data;
   }
 
