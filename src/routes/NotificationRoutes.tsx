@@ -6,7 +6,6 @@ import { IonRouterOutlet } from "@ionic/react";
 import Notification from "pages/Notification/Notification";
 
 export default function NotificationRoutes({ match }: RouteComponentProps) {
-  console.log({ match: match.url });
   return (
     <IonRouterOutlet>
       <Switch>
