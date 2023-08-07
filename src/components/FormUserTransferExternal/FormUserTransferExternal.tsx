@@ -19,16 +19,17 @@ export default function FormUserTransferExternal() {
     storedReceivingAccount,
     storedUseIntermediary,
     isSubmitting,
-    transferTypeOptions
+    transferTypeOptions,
   } = useTransferExternal()
 
   const { accounts, createExternalAccount, createTransfer, externalAccounts } = useWesternAllianceAccount();
+
   const {
     initialValues,
     validationSchema,
     accountOptions,
     externalAccountOptions,
-    Automation
+    Automation,
   } = useTransferExternalFormik(accounts, externalAccounts)
 
   const handleSubmit = async (values: Yup.InferType<typeof validationSchema>) => {

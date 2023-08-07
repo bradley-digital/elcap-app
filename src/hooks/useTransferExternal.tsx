@@ -1,6 +1,5 @@
 import { useState } from "react";
 
-
 export default function useTransferExternal() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [storedReceivingAccount, setStoredReceivingAccount] = useState("");
