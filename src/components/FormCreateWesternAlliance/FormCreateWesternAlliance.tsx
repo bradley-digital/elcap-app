@@ -6,6 +6,7 @@ import {
   accountNumberValidation,
   accountNameValidation,
   clientValidation,
+  routingNumberValidation,
 } from "lib/formValidation";
 
 // icons
@@ -35,11 +36,13 @@ export default function FormCreateWesternAlliance() {
         accountNumber: "",
         accountName: "",
         client: "",
+        routingNumber: "",
       }}
       validationSchema={Yup.object({
         accountNumber: accountNumberValidation,
         accountName: accountNameValidation,
         client: clientValidation,
+        routingNumber: routingNumberValidation,
       })}
       onSubmit={(values) => {
         setIsSubmitting(true);
@@ -63,6 +66,7 @@ export default function FormCreateWesternAlliance() {
             type="text"
             icon={pencil}
           />
+          <FormInput label="Routing number" name="routingNumber" type="text" />
           <SubmitButton isSubmitting={isSubmitting}>
             Create New Account
           </SubmitButton>

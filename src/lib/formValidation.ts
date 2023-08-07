@@ -17,6 +17,10 @@ export const accountNameValidation = Yup.string().required(
 export const addressLine1Validation = Yup.string().required("Address required");
 export const addressLine2Validation = Yup.string().nullable();
 export const clientValidation = Yup.string().required("Client required");
+export const routingNumberValidation = Yup.string()
+  .length(9, "Must be 9 characters in length")
+  .matches(numberRegExp, "Must contain only numbers")
+  .required("Routing number is required");
 export const confirmPasswordValidation = Yup.string()
   .oneOf([Yup.ref("password"), null], "Passwords must match")
   .required("Password required");
