@@ -147,7 +147,11 @@ export default function FormUserAccount({ profile }: Props) {
           <FormInput label="Country" name="country" type="text" icon={pencil} />
           <FormInput label="State" name="state" type="text" icon={pencil} />
           <FormSelect label="Role" name="role" options={roleOptions} />
-          <FormCheckbox label="Is cannabis client?" name="isCannabis" type="checkbox" />
+          <FormCheckbox
+            label="Is cannabis client?"
+            name="isCannabis"
+            type="checkbox"
+          />
           <SubmitButton isSubmitting={isSubmitting}>Update User</SubmitButton>
         </IonList>
       </Form>

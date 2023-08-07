@@ -31,7 +31,14 @@ export default function FormWesternAlliance({ account }: Props) {
   const { updateAccount } = useWesternAllianceAccount();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { id, accountBalance, accountNumber, accountName, client, routingNumber } = account;
+  const {
+    id,
+    accountBalance,
+    accountNumber,
+    accountName,
+    client,
+    routingNumber,
+  } = account;
 
   return (
     <Formik

@@ -71,11 +71,12 @@
     "yup": "^0.32.11"
   },
   "scripts": {
-    "start": "vite",
     "build": "tsc && vite build",
+    "lint": "eslint . --ext .ts,.tsx",
+    "prettier": "prettier --write **/*.{ts,tsx}",
     "serve": "vite preview",
-    "test": "dotenv -- npx playwright test",
-    "lint": "eslint . --ext .ts,.tsx"
+    "start": "vite",
+    "test": "dotenv -- npx playwright test"
   },
   "eslintConfig": {
     "extends": [

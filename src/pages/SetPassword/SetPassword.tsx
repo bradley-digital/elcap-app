@@ -15,10 +15,7 @@ export default function SetPassword() {
 
   return (
     <AuthPageTemplate title="Complete registration">
-      <FormSetPassword
-        otpAuthUrl={otpAuthUrl}
-        registerToken={registerToken}
-      />
+      <FormSetPassword otpAuthUrl={otpAuthUrl} registerToken={registerToken} />
       <IonText className="AuthPageTemplate__linkRow">
         <Link to="/login" className="secondary">
           Back to login

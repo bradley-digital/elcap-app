@@ -30,13 +30,13 @@ export default function FormTransferAccount() {
       "Amount must be less than the account balance",
       (value, context) => {
         const account = accounts?.find(
-          ({ accountNumber }) => accountNumber === context.parent.fromAccount,
+          ({ accountNumber }) => accountNumber === context.parent.fromAccount
         );
         if (account) {
           return Number(value) <= parseFloat(account.accountBalance);
         }
         return true;
-      },
+      }
     )
     .required("Amount required");
 
@@ -45,7 +45,7 @@ export default function FormTransferAccount() {
       ?.map(({ accountBalance, accountNumber, accountName }) => {
         const truncatedAccountNumber = accountNumber.slice(-4);
         const label = `${accountName} (...${truncatedAccountNumber}): ${currency(
-          Number(accountBalance),
+          Number(accountBalance)
         )}`;
         return {
           value: accountNumber,
@@ -99,7 +99,7 @@ export default function FormTransferAccount() {
               type="text"
               className="FormAccountSelect"
               options={accountOptions?.filter(
-                ({ value }) => value !== values.fromAccount,
+                ({ value }) => value !== values.fromAccount
               )}
               disabled={values.fromAccount === ""}
             />

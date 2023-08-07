@@ -42,7 +42,7 @@ export default function DashboardOverview() {
 
   useEffect(() => {
     setSelectedAccountNumbers(
-      accounts?.map((account) => account.accountNumber) || [""],
+      accounts?.map((account) => account.accountNumber) || [""]
     );
   }, [accounts]);
 
@@ -105,7 +105,7 @@ export default function DashboardOverview() {
                 return (
                   <p key={hash(account)}>
                     {`${account.accountName}: ${currency(
-                      Number(account.accountBalance),
+                      Number(account.accountBalance)
                     )}`}
                   </p>
                 );
