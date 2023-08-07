@@ -9,14 +9,15 @@ export type Account = {
   id: string;
   accountBalance: string;
   accountNumber: string;
-  accountTitle: string;
+  accountName: string;
   client: string;
+  routingNumber: string;
 };
 
 type AccountCreateInput = {
   accountBalance?: number;
   accountNumber: string;
-  accountTitle: string;
+  accountName: string;
   client: string;
 };
 
@@ -24,7 +25,7 @@ type AccountUpdateInput = {
   id: string;
   accountBalance?: string;
   accountNumber?: string;
-  accountTitle?: string;
+  accountName?: string;
   client?: string;
 };
 
@@ -144,11 +145,11 @@ export type Transfer = {
   };
   westernAllianceFromAccount: {
     accountNumber: string;
-    accountTitle: string;
+    accountName: string;
   };
   westernAllianceToAccount: null | {
     accountNumber: string;
-    accountTitle: string;
+    accountName: string;
   };
 };
 
@@ -206,12 +207,12 @@ export default function useWesternAllianceAccount() {
 
   const { isSuccess: accountsIsSuccess, data: accounts } = useQuery(
     accountQueryKey,
-    getAccounts
+    getAccounts,
   );
 
   const { isSuccess: transfersIsSuccess, data: transfers } = useQuery(
     transferQueryKey,
-    getTransfers
+    getTransfers,
   );
 
   const { mutate: createAccount } = useMutation(createAccountMutation, {
@@ -240,13 +241,13 @@ export default function useWesternAllianceAccount() {
 
   async function getAccounts() {
     const { data } = await authApi.get<Account[]>("/western-alliance/accounts");
-    data.sort((a, b) => a.accountTitle.localeCompare(b.accountTitle));
+    data.sort((a, b) => a.accountName.localeCompare(b.accountName));
     return data;
   }
 
   async function getTransfers() {
     const { data } = await authApi.get<Transfer[]>(
-      "/western-alliance/transfers"
+      "/western-alliance/transfers",
     );
     data.sort((t1, t2) => {
       const d1 = new Date(t1.transferDate);
@@ -259,14 +260,14 @@ export default function useWesternAllianceAccount() {
   async function createAccountMutation(body: AccountCreateInput) {
     const { data } = await authApi.post<Account>(
       "/western-alliance/account",
-      body
+      body,
     );
     return data;
   }
 
   async function deleteAccountMutation(id: string) {
     const { data } = await authApi.delete<Account>(
-      `/western-alliance/account?id=${id}`
+      `/western-alliance/account?id=${id}`,
     );
     return data;
   }
@@ -274,7 +275,7 @@ export default function useWesternAllianceAccount() {
   async function updateAccountMutation(body: AccountUpdateInput) {
     const { data } = await authApi.patch<Account>(
       "/western-alliance/account",
-      body
+      body,
     );
     return data;
   }
@@ -282,7 +283,7 @@ export default function useWesternAllianceAccount() {
   async function updateTransferMutation(body: TransferUpdateInput) {
     const { data } = await authApi.patch<Transfer>(
       "/western-alliance/transfer",
-      body
+      body,
     );
     return data;
   }
