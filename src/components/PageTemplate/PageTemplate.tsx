@@ -17,7 +17,7 @@ type Props = {
   children: ReactNode;
   menuId?: string;
   title: string;
-  className: string;
+  className?: string;
   [rest: string]: any;
 };
 
@@ -25,7 +25,7 @@ export default function PageTemplate({
   children,
   menuId,
   title,
-  className,
+  className = "",
   ...rest
 }: Props) {
   const router = useIonRouter();
