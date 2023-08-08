@@ -14,9 +14,17 @@ import {
 } from "lib/formValidation";
 import * as Yup from "yup";
 import { currency } from "lib/formats";
-import { Account, ExternalAccount } from "./useWesternAllianceAccount";
+import {
+  Account,
+  ExternalAccount,
+  ExternalAccountCreateInput,
+  Transfer,
+  TransferCreateInput,
+} from "./useWesternAllianceAccount";
 import { useFormikContext } from "formik";
-import { useEffect } from "react";
+import { Dispatch, useEffect } from "react";
+import { SetStateAction } from "jotai";
+import { UseMutateAsyncFunction } from "react-query";
 
 type IAutomate = {
   storedReceivingAccount: string;
@@ -25,10 +33,31 @@ type IAutomate = {
   setStoredUseIntermediary: (value: boolean) => void;
 };
 
-export default function useTransferExternalFormik(
-  accounts?: Account[],
-  externalAccounts?: ExternalAccount[]
-) {
+type Props = {
+  setIsSubmitting: Dispatch<SetStateAction<boolean>>;
+  createExternalAccount: UseMutateAsyncFunction<
+    ExternalAccount,
+    unknown,
+    ExternalAccountCreateInput,
+    unknown
+  >;
+  createTransfer: UseMutateAsyncFunction<
+    Transfer,
+    unknown,
+    TransferCreateInput,
+    unknown
+  >;
+  accounts?: Account[];
+  externalAccounts?: ExternalAccount[];
+};
+
+export default function useTransferExternalFormik({
+  accounts,
+  externalAccounts,
+  setIsSubmitting,
+  createExternalAccount,
+  createTransfer,
+}: Props) {
   const initialValues = {
     amount: 0,
     externalAccountName: "",
@@ -108,6 +137,37 @@ export default function useTransferExternalFormik(
     value: "new",
     label: "Add new bank account",
   });
+
+  const submit = async (values: Yup.InferType<typeof validationSchema>) => {
+    try {
+      setIsSubmitting(true);
+      if (values.receivingAccount === "new") {
+        await createExternalAccount({
+          accountName: values.externalAccountName,
+          accountNumber: values.externalAccountNumber,
+          financialInstitution: values.externalFinancialInstitution,
+          routingNumber: values.externalRoutingNumber,
+          intermediaryBankName: values.intermediaryBankName,
+          intermediaryFurtherCreditTo: values.intermediaryFurtherCreditTo,
+          intermediaryRoutingNumber: values.intermediaryRoutingNumber,
+          useIntermediary: values.useIntermediaryAccount || false,
+        });
+      }
+      await createTransfer({
+        amount: values.amount || 0,
+        externalAccount:
+          (values.receivingAccount !== "new" && values.receivingAccount) ||
+          values.externalAccountNumber,
+        fromAccount: values.sendingAccount,
+        memo: values.memo,
+        type: values.type,
+      });
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const Automation = ({
     storedReceivingAccount,
@@ -191,5 +251,6 @@ export default function useTransferExternalFormik(
     accountOptions,
     externalAccountOptions,
     Automation,
+    submit,
   };
 }
