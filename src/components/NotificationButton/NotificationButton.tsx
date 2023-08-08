@@ -32,7 +32,7 @@ export default function NotificationButton({ setIsOpen }: Props) {
         />
         {unViewedCountIsSucces && unviewedNotificationsCount > 0 && (
           <IonBadge slot="start" color="tertiary">
-            {unviewedNotificationsCount}
+            {unviewedNotificationsCount <= 99 ? unviewedNotificationsCount.toString() : "99+"}
           </IonBadge>
         )}
       </IonButton>
