@@ -5,7 +5,6 @@ import useUser from "hooks/useUser";
 
 // pages
 import Dashboard from "pages/Dashboard/Dashboard";
-import Notification from "pages/Notification/Notification";
 import Onboarding from "pages/Onboarding/Onboarding";
 import Profile from "pages/Profile/Profile";
 import Transfer from "pages/Transfer/Transfer";
@@ -38,7 +37,6 @@ export default function PortalRoutes() {
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/transfer" component={Transfer} />
             <Route path="/profile" component={Profile} />
-            <Route exact path="/notifications" component={Notification} />
             {/* Fallback route */}
             <Route render={() => <Redirect to="/dashboard" />} />
           </Switch>
