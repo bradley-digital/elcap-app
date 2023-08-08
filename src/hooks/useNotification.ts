@@ -68,6 +68,32 @@ export function useNotification({ size = 20 }: IUseNotification) {
     }
   );
 
+  const { mutateAsync: patchNotificationToSeen } = useMutation(
+    patchNotificationToSeenMutation,
+    {
+      onSuccess: (data) => {
+        queryClient.setQueryData(
+          notificationsQueryKey,
+          (prevNotifications: any) => {
+            const pages = prevNotifications.pages;
+            pages.forEach((element: INotification[]) => {
+              const notification = element.find(
+                (notif) => notif.id === data.notification.id
+              );
+              if (notification) {
+                notification.seen = true;
+              }
+            });
+            return {
+              ...prevNotifications,
+              pages,
+            };
+          }
+        );
+      },
+    }
+  );
+
   async function getNofitications(query: {
     pageParam: { size: number; cursor: string };
   }) {
@@ -85,6 +111,11 @@ export function useNotification({ size = 20 }: IUseNotification) {
     return data;
   }
 
+  async function patchNotificationToSeenMutation(body: { id: string }) {
+    const { data } = await authApi.patch("/notifications/seen", body);
+    return data;
+  }
+
   async function getUnviewedNotificationsCount() {
     const { data } = await authApi.get("/notifications/unviewed");
     return data;
@@ -98,5 +129,6 @@ export function useNotification({ size = 20 }: IUseNotification) {
     unViewedCountIsSucces,
     unviewedNotificationsCount,
     patchAllNotificationsToViewed,
+    patchNotificationToSeen,
   };
 }

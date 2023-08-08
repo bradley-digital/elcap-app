@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import {
   IonContent,
   IonInfiniteScroll,
@@ -7,6 +7,13 @@ import {
   IonItem,
   IonLabel,
   IonText,
+  IonButton,
+  IonButtons,
+  IonHeader,
+  IonModal,
+  IonTitle,
+  IonToolbar,
+  useIonRouter,
 } from "@ionic/react";
 import {
   INotification,
@@ -19,10 +26,16 @@ import "./Notifications.scss";
 import { useQueryClient } from "react-query";
 import { socket } from "lib/socket";
 
-export default function Notifications() {
-  const { notifications, fetchNextPage, meta, patchAllNotificationsToViewed } =
+type Props = {
+  isOpen: boolean;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+};
+
+export default function Notifications({ isOpen, setIsOpen }: Props) {
+  const { notifications, fetchNextPage, meta, patchAllNotificationsToViewed, patchNotificationToSeen } =
     useNotification({});
   const queryClient = useQueryClient();
+  const router = useIonRouter();
 
   useEffect(() => {
     const listener = (value: any) => {
@@ -44,44 +57,67 @@ export default function Notifications() {
     const notificationNsp = socket("/notification");
     notificationNsp.on("notification:new", listener);
     return () => {
-      patchAllNotificationsToViewed();
       notificationNsp.disconnect();
     };
   }, []);
 
-  return (
-    <IonContent className="Notifications">
-      {isEmpty(notifications?.pages[0]) ? (
-        <IonContent className="ion-text-center ion-padding">
-          <IonText color="medium">No notifications</IonText>
-        </IonContent>
-      ) : (
-        <IonList>
-          {notifications?.pages?.map((page) => {
-            return page.map((item: INotification) => (
-              <IonItem
-                key={item.id}
-                className={`${
-                  item.seen ? "Notifications__seen" : "Notifications__unseen"
-                }`}
-              >
-                <IonLabel>{item.message}</IonLabel>
-              </IonItem>
-            ));
-          })}
-        </IonList>
-      )}
+  useEffect(() => {
+    if (isOpen) {
+      patchAllNotificationsToViewed();
+    }
+  }, [isOpen]);
 
-      <IonInfiniteScroll
-        onIonInfinite={async (ev) => {
-          if (get(meta, "hasNextPage")) {
-            await fetchNextPage();
-          }
-          ev.target.complete();
-        }}
-      >
-        <IonInfiniteScrollContent></IonInfiniteScrollContent>
-      </IonInfiniteScroll>
-    </IonContent>
+  function closeModal() {
+    setIsOpen(false);
+  }
+
+  return (
+    <IonModal isOpen={isOpen} onWillDismiss={closeModal}>
+      <IonHeader>
+        <IonToolbar>
+          <IonTitle>Notifications</IonTitle>
+          <IonButtons slot="end">
+            <IonButton onClick={closeModal}>Close</IonButton>
+          </IonButtons>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent className="ion-text-center">
+        {isEmpty(notifications?.pages[0]) ? (
+          <IonText color="medium">No notifications</IonText>
+        ) : (
+          <IonList>
+            {notifications?.pages?.map((page) => {
+              return page.map((item: INotification) => (
+                <IonItem
+                  key={item.id}
+                  className={`${
+                    item.seen ? "Notifications__seen" : "Notifications__unseen"
+                  }`}
+                  onClick={() => {
+                    patchNotificationToSeen({id: item.id})
+                    if (item.link) {
+                      router.push(item.link);
+                    }
+                  }}
+                >
+                  <IonLabel>{item.message}</IonLabel>
+                </IonItem>
+              ));
+            })}
+          </IonList>
+        )}
+
+        <IonInfiniteScroll
+          onIonInfinite={async (ev) => {
+            if (get(meta, "hasNextPage")) {
+              await fetchNextPage();
+            }
+            ev.target.complete();
+          }}
+        >
+          <IonInfiniteScrollContent></IonInfiniteScrollContent>
+        </IonInfiniteScroll>
+      </IonContent>
+    </IonModal>
   );
 }

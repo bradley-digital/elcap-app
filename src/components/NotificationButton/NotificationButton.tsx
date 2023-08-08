@@ -3,13 +3,15 @@ import {
   IonButton,
   IonIcon,
   IonBadge,
-  useIonRouter,
 } from "@ionic/react";
 import { useNotification } from "hooks/useNotification";
 import { notificationsOutline } from "ionicons/icons";
+import { Dispatch, SetStateAction } from "react";
 
-export default function NotificationButton() {
-  const router = useIonRouter();
+type Props = {
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+};
+export default function NotificationButton({ setIsOpen }: Props) {
   const { unViewedCountIsSucces, unviewedNotificationsCount } = useNotification(
     {}
   );
@@ -17,7 +19,7 @@ export default function NotificationButton() {
     <IonButtons slot="end">
       <IonButton
         onClick={() => {
-          router.push("/notifications");
+          setIsOpen(true);
         }}
         color="dark"
         className="PageTemplate__notification--button"

@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import {
   IonButtons,
   IonContent,
@@ -7,11 +7,11 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
-  useIonRouter,
 } from "@ionic/react";
 import "./PageTemplate.scss";
 import NotificationButton from "components/NotificationButton/NotificationButton";
 import classNames from "classnames";
+import Notifications from "components/Notification/Notifications";
 
 type Props = {
   children: ReactNode;
@@ -28,7 +28,7 @@ export default function PageTemplate({
   className = "",
   ...rest
 }: Props) {
-  const router = useIonRouter();
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <IonPage {...rest} className={classNames("PageTemplate", className)}>
       <IonHeader>
@@ -40,9 +40,8 @@ export default function PageTemplate({
           )}
           <IonTitle>{title}</IonTitle>
 
-          {router.routeInfo.pathname !== "/notifications" && (
-            <NotificationButton />
-          )}
+          <NotificationButton setIsOpen={setIsOpen} />
+          <Notifications isOpen={isOpen} setIsOpen={setIsOpen} />
         </IonToolbar>
       </IonHeader>
       <IonContent>{children}</IonContent>
