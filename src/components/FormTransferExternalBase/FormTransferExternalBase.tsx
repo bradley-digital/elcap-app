@@ -1,3 +1,4 @@
+import type { UseMutateAsyncFunction } from "react-query";
 import { IonList, IonListHeader } from "@ionic/react";
 import FormCheckbox from "components/FormCheckbox/FormCheckbox";
 import FormInput from "components/FormInput/FormInput";
@@ -5,7 +6,6 @@ import FormSelect from "components/FormSelect/FormSelect";
 import SubmitButton from "components/SubmitButton/SubmitButton";
 import { Formik, Form } from "formik";
 import useTransferExternal from "hooks/useTransferExternal";
-import useTransferExternalFormik from "hooks/useTransferExternalFormik";
 import {
   Account,
   ExternalAccount,
@@ -13,9 +13,10 @@ import {
   Transfer,
   TransferCreateInput,
 } from "hooks/useWesternAllianceAccount";
-import { UseMutateAsyncFunction } from "react-query";
 
 type Props = {
+  accounts?: Account[];
+  externalAccounts?: ExternalAccount[];
   createExternalAccount: UseMutateAsyncFunction<
     ExternalAccount,
     unknown,
@@ -28,38 +29,27 @@ type Props = {
     TransferCreateInput,
     unknown
   >;
-  accounts?: Account[];
-  externalAccounts?: ExternalAccount[];
 };
 
 export default function FormTransferExternalBase({
-  createExternalAccount,
-  createTransfer,
   accounts,
   externalAccounts,
+  createExternalAccount,
+  createTransfer,
 }: Props) {
   const {
-    setStoredReceivingAccount,
-    setStoredUseIntermediary,
-    setIsSubmitting,
-    storedReceivingAccount,
-    storedUseIntermediary,
-    isSubmitting,
-    transferTypeOptions,
-  } = useTransferExternal();
-
-  const {
-    initialValues,
-    validationSchema,
     accountOptions,
+    ConditionalLogic,
     externalAccountOptions,
-    Automation,
+    initialValues,
+    isSubmitting,
     submit,
-  } = useTransferExternalFormik({
-    setIsSubmitting,
+    transferTypeOptions,
+    validationSchema,
+  } = useTransferExternal({
+    accounts,
     createExternalAccount,
     createTransfer,
-    accounts,
     externalAccounts,
   });
 
@@ -71,12 +61,7 @@ export default function FormTransferExternalBase({
     >
       {({ values }) => (
         <Form>
-          <Automation
-            setStoredReceivingAccount={setStoredReceivingAccount}
-            setStoredUseIntermediary={setStoredUseIntermediary}
-            storedReceivingAccount={storedReceivingAccount}
-            storedUseIntermediary={storedUseIntermediary}
-          />
+          <ConditionalLogic />
           <IonList>
             <FormSelect
               label="Transfer type"

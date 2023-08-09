@@ -1,4 +1,3 @@
-// hooks
 import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
 import FormTransferExternalBase from "components/FormTransferExternalBase/FormTransferExternalBase";
 
