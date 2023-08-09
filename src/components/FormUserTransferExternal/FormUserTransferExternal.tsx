@@ -1,9 +1,9 @@
-import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
+import useWesternAllianceAccount from "hooks/useWesternAllianceAccount";
 import FormTransferExternalBase from "components/FormTransferExternalBase/FormTransferExternalBase";
 
-export default function FormTransferExternal() {
+export default function FormUserTransferExternal() {
   const { accounts, createExternalAccount, createTransfer, externalAccounts } =
-    useUserWesternAllianceAccount();
+    useWesternAllianceAccount();
 
   return (
     <FormTransferExternalBase

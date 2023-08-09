@@ -28,7 +28,7 @@ function mapStatus(status: string) {
   return transferStatusMap[status] || "Unknown";
 }
 
-export default function TransferHistory() {
+export default function MoneyMovement() {
   const [selectedTimeRange, setSelectedTimeRange] = useState("YTD");
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const { transfers } = useWesternAllianceAccount();
