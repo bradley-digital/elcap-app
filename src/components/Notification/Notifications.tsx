@@ -1,4 +1,8 @@
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { useEffect } from "react";
+import { useQueryClient } from "react-query";
+import { socket } from "lib/socket";
+import { get, isEmpty, update } from "lodash";
+import { useAtom } from "jotai";
 import {
   IonContent,
   IonInfiniteScroll,
@@ -15,7 +19,6 @@ import {
   IonToolbar,
   useIonRouter,
 } from "@ionic/react";
-import { useAtom } from "jotai";
 import { isOpenAtom } from "atoms/userListModal";
 import {
   INotification,
@@ -23,15 +26,14 @@ import {
   unviewedNotificationsCountQueryKey,
   useNotification,
 } from "hooks/useNotification";
-import { get, isEmpty, update } from "lodash";
 import "./Notifications.scss";
-import { useQueryClient } from "react-query";
-import { socket } from "lib/socket";
 
 export default function Notifications() {
   const [isOpen, setIsOpen] = useAtom(isOpenAtom);
-  const { notifications, fetchNextPage, meta, patchAllNotificationsToViewed, patchNotificationToSeen } =
-    useNotification({});
+
+  const { notifications, fetchNextPage, meta, patchAllNotificationsToViewed, patchNotificationToRead } =
+    useNotification();
+
   const queryClient = useQueryClient();
   const router = useIonRouter();
 
@@ -89,13 +91,11 @@ export default function Notifications() {
                 <IonItem
                   key={item.id}
                   className={`${
-                    item.seen ? "Notifications__seen" : "Notifications__unseen"
+                    item.read ? "Notifications__read" : "Notifications__unread"
                   }`}
+                  href={item.link}
                   onClick={() => {
-                    patchNotificationToSeen({id: item.id})
-                    if (item.link) {
-                      router.push(item.link);
-                    }
+                    patchNotificationToRead({ id: item.id })
                   }}
                 >
                   <IonLabel>{item.message}</IonLabel>

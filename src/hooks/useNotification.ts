@@ -16,7 +16,7 @@ export interface INotification {
   link: string | null;
   fromUserId: string;
   toUserId: string;
-  seen: boolean | null;
+  read: boolean | null;
   sendAnEmail: boolean | null;
   emailSent: boolean | null;
   emailsToSend: string[];
@@ -32,7 +32,7 @@ export const unviewedNotificationsCountQueryKey = `${queryKey}UnviewedNotificati
 type IUseNotification = {
   size?: number;
 };
-export function useNotification({ size = 20 }: IUseNotification) {
+export function useNotification({ size }: IUseNotification = { size: 20 }) {
   const { authApi } = useAuth();
   const [meta, setMeta] = useState({});
   const queryClient = useQueryClient();
@@ -68,8 +68,8 @@ export function useNotification({ size = 20 }: IUseNotification) {
     }
   );
 
-  const { mutateAsync: patchNotificationToSeen } = useMutation(
-    patchNotificationToSeenMutation,
+  const { mutateAsync: patchNotificationToRead } = useMutation(
+    patchNotificationToReadMutation,
     {
       onSuccess: (data) => {
         queryClient.setQueryData(
@@ -81,7 +81,7 @@ export function useNotification({ size = 20 }: IUseNotification) {
                 (notif) => notif.id === data.notification.id
               );
               if (notification) {
-                notification.seen = true;
+                notification.read = true;
               }
             });
             return {
@@ -111,8 +111,8 @@ export function useNotification({ size = 20 }: IUseNotification) {
     return data;
   }
 
-  async function patchNotificationToSeenMutation(body: { id: string }) {
-    const { data } = await authApi.patch("/notifications/seen", body);
+  async function patchNotificationToReadMutation(body: { id: string }) {
+    const { data } = await authApi.patch("/notifications/read", body);
     return data;
   }
 
@@ -129,6 +129,6 @@ export function useNotification({ size = 20 }: IUseNotification) {
     unViewedCountIsSucces,
     unviewedNotificationsCount,
     patchAllNotificationsToViewed,
-    patchNotificationToSeen,
+    patchNotificationToRead,
   };
 }

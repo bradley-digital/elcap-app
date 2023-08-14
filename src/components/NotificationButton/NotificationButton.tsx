@@ -12,9 +12,7 @@ import { notificationsOutline } from "ionicons/icons";
 export default function NotificationButton() {
   const [, setIsOpen] = useAtom(isOpenAtom);
 
-  const { unViewedCountIsSucces, unviewedNotificationsCount } = useNotification(
-    {}
-  );
+  const { unViewedCountIsSucces, unviewedNotificationsCount } = useNotification();
   return (
     <IonButtons slot="end">
       <IonButton
