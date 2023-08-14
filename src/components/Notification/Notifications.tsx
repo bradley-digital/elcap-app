@@ -93,7 +93,7 @@ export default function Notifications() {
                   className={`${
                     item.read ? "Notifications__read" : "Notifications__unread"
                   }`}
-                  href={item.link}
+                  href={item.link || undefined}
                   onClick={() => {
                     patchNotificationToRead({ id: item.id })
                   }}
