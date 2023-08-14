@@ -87,7 +87,7 @@ export default function MoneyMovement() {
           };
         })
         .filter(
-          (transfer) => isInDateRange(transfer) && isInStatuses(transfer),
+          (transfer) => isInDateRange(transfer) && isInStatuses(transfer)
         ) || []
     );
   }, [transfers, selectedStatuses, selectedTimeRange]);

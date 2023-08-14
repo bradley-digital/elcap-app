@@ -93,7 +93,7 @@ export default function TransferHistory() {
           };
         })
         ?.filter(
-          (transfer) => isInDateRange(transfer) && isInStatuses(transfer),
+          (transfer) => isInDateRange(transfer) && isInStatuses(transfer)
         ) || []
     );
   }, [transfers, selectedStatuses, selectedTimeRange]);
