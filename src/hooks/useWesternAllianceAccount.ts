@@ -200,6 +200,7 @@ export const transferTypeMap: StringMap = {
 const queryKey = "westernAlliance";
 const accountQueryKey = `${queryKey}Account`;
 const transferQueryKey = `${queryKey}Transfer`;
+const externalAccountsQueryKey = `${queryKey}ExternalAccounts`;
 
 export default function useWesternAllianceAccount() {
   const { authApi } = useAuth();
@@ -215,9 +216,27 @@ export default function useWesternAllianceAccount() {
     getTransfers
   );
 
+  const { isSuccess: externalAccountsIsSuccess, data: externalAccounts } =
+    useQuery(externalAccountsQueryKey, getWesternAllianceExternalAccounts);
+
   const { mutate: createAccount } = useMutation(createAccountMutation, {
     onSuccess: () => {
       queryClient.invalidateQueries(accountQueryKey);
+    },
+  });
+
+  const { mutateAsync: createExternalAccount } = useMutation(
+    createExternalAccountMutation,
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(externalAccountsQueryKey);
+      },
+    }
+  );
+
+  const { mutateAsync: createTransfer } = useMutation(createTransferMutation, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(transferQueryKey);
     },
   });
 
@@ -242,6 +261,31 @@ export default function useWesternAllianceAccount() {
   async function getAccounts() {
     const { data } = await authApi.get<Account[]>("/western-alliance/accounts");
     data.sort((a, b) => a.accountName.localeCompare(b.accountName));
+    return data;
+  }
+
+  async function getWesternAllianceExternalAccounts() {
+    const { data } = await authApi.get<ExternalAccount[]>(
+      "/western-alliance/external-accounts"
+    );
+    return data;
+  }
+
+  async function createTransferMutation(body: TransferCreateInput) {
+    const { data } = await authApi.post<Transfer>(
+      "/western-alliance/transfer",
+      body
+    );
+    return data;
+  }
+
+  async function createExternalAccountMutation(
+    body: ExternalAccountCreateInput
+  ) {
+    const { data } = await authApi.post<ExternalAccount>(
+      "/western-alliance/external-account",
+      body
+    );
     return data;
   }
 
@@ -298,5 +342,9 @@ export default function useWesternAllianceAccount() {
     transfersIsSuccess,
     updateAccount,
     updateTransfer,
+    createTransfer,
+    createExternalAccount,
+    externalAccounts,
+    externalAccountsIsSuccess,
   };
 }

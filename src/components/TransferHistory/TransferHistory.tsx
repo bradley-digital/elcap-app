@@ -38,7 +38,6 @@ export default function TransferHistory() {
   const [, setId] = useAtom(idAtom);
   const [, setIsOpen] = useAtom(isOpenAtom);
   const { transfers } = useUserWesternAllianceAccount();
-  console.log(transfers);
 
   const timeRanges = ["YTD", "MTD", "3M", "1Y", "3Y", "5Y", "Max"];
   const mappedStatuses =
