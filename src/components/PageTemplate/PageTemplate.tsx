@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import {
   IonButtons,
   IonContent,
@@ -28,7 +28,6 @@ export default function PageTemplate({
   className = "",
   ...rest
 }: Props) {
-  const [isOpen, setIsOpen] = useState(false);
   return (
     <IonPage {...rest} className={classNames("PageTemplate", className)}>
       <IonHeader>
@@ -39,9 +38,8 @@ export default function PageTemplate({
             </IonButtons>
           )}
           <IonTitle>{title}</IonTitle>
-
-          <NotificationButton setIsOpen={setIsOpen} />
-          <Notifications isOpen={isOpen} setIsOpen={setIsOpen} />
+          <NotificationButton />
+          <Notifications />
         </IonToolbar>
       </IonHeader>
       <IonContent>{children}</IonContent>

@@ -4,14 +4,14 @@ import {
   IonIcon,
   IonBadge,
 } from "@ionic/react";
+import { useAtom } from "jotai";
+import { isOpenAtom } from "atoms/userListModal";
 import { useNotification } from "hooks/useNotification";
 import { notificationsOutline } from "ionicons/icons";
-import { Dispatch, SetStateAction } from "react";
 
-type Props = {
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
-};
-export default function NotificationButton({ setIsOpen }: Props) {
+export default function NotificationButton() {
+  const [, setIsOpen] = useAtom(isOpenAtom);
+
   const { unViewedCountIsSucces, unviewedNotificationsCount } = useNotification(
     {}
   );

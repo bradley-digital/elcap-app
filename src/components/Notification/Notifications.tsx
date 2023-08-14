@@ -15,6 +15,8 @@ import {
   IonToolbar,
   useIonRouter,
 } from "@ionic/react";
+import { useAtom } from "jotai";
+import { isOpenAtom } from "atoms/userListModal";
 import {
   INotification,
   notificationsQueryKey,
@@ -26,12 +28,8 @@ import "./Notifications.scss";
 import { useQueryClient } from "react-query";
 import { socket } from "lib/socket";
 
-type Props = {
-  isOpen: boolean;
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
-};
-
-export default function Notifications({ isOpen, setIsOpen }: Props) {
+export default function Notifications() {
+  const [isOpen, setIsOpen] = useAtom(isOpenAtom);
   const { notifications, fetchNextPage, meta, patchAllNotificationsToViewed, patchNotificationToSeen } =
     useNotification({});
   const queryClient = useQueryClient();
@@ -83,7 +81,7 @@ export default function Notifications({ isOpen, setIsOpen }: Props) {
       </IonHeader>
       <IonContent className="ion-text-center">
         {isEmpty(notifications?.pages[0]) ? (
-          <IonText color="medium">No notifications</IonText>
+          <IonText className="Notifications__none" color="medium">No notifications</IonText>
         ) : (
           <IonList>
             {notifications?.pages?.map((page) => {

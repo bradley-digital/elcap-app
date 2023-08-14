@@ -1,4 +1,9 @@
 .Notifications {
+  &__none {
+    display: block;
+    margin-top: 16px;
+  }
+
   &__seen {
     background-color: rgb(255, 255, 255);
   }
@@ -6,5 +11,4 @@
   &__unseen {
     --ion-item-background: rgb(241, 239, 239);
   }
-
 }
