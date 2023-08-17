@@ -17,7 +17,6 @@ import {
   IonModal,
   IonTitle,
   IonToolbar,
-  useIonRouter,
 } from "@ionic/react";
 import { isOpenAtom } from "atoms/userListModal";
 import {
@@ -35,7 +34,6 @@ export default function Notifications() {
     useNotification();
 
   const queryClient = useQueryClient();
-  const router = useIonRouter();
 
   useEffect(() => {
     const listener = (value: any) => {

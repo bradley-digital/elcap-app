@@ -5,6 +5,9 @@
   "version": "1.0.1",
   "private": true,
   "license": "MIT",
+  "engines": {
+    "node": "18.17"
+  },
   "dependencies": {
     "@capacitor/app": "4.0.1",
     "@capacitor/cli": "4.2.0",
