@@ -13,6 +13,7 @@ import {
   Transfer,
   TransferCreateInput,
 } from "hooks/useWesternAllianceAccount";
+import FormDatePicker from "components/FormDatePicker/FormDatePicker";
 
 type Props = {
   accounts?: Account[];
@@ -52,7 +53,7 @@ export default function FormTransferExternalBase({
     createTransfer,
     externalAccounts,
   });
-
+  console.log({ initialValues });
   return (
     <Formik
       initialValues={initialValues}
@@ -134,6 +135,11 @@ export default function FormTransferExternalBase({
             )}
             <IonListHeader>Transfer details</IonListHeader>
             <FormInput label="Amount" name="amount" type="text" />
+            <FormDatePicker
+              label="Transfer date"
+              name="transferDate"
+              type="date"
+            />
             <FormInput
               label="Memo (optional)"
               name="memo"
