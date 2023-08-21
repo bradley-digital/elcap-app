@@ -53,7 +53,7 @@ export default function FormTransferExternalBase({
     createTransfer,
     externalAccounts,
   });
-  console.log({ initialValues });
+  
   return (
     <Formik
       initialValues={initialValues}
