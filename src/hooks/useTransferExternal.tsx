@@ -20,6 +20,7 @@ import {
   wireSendingAccountValidation,
   wireUseIntermediaryAccountValidation,
   wireTypeValidation,
+  transferDateValidation,
 } from "lib/formValidation";
 import * as Yup from "yup";
 import { currency } from "lib/formats";
@@ -48,7 +49,7 @@ export default function useTransferExternal({
   createExternalAccount,
   createTransfer,
 }: Props) {
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [storedReceivingAccount, setStoredReceivingAccount] = useState("");
   const [storedUseIntermediary, setStoredUseIntermediary] = useState(false);
 
@@ -77,6 +78,7 @@ export default function useTransferExternal({
     sendingAccount: "",
     useIntermediaryAccount: false,
     type: "WIRE",
+    transferDate: new Date().toISOString(),
   };
 
   const wireAmountValidation = Yup.number()
@@ -110,6 +112,7 @@ export default function useTransferExternal({
     sendingAccount: wireSendingAccountValidation,
     useIntermediaryAccount: wireUseIntermediaryAccountValidation,
     type: wireTypeValidation,
+    transferDate: transferDateValidation,
   });
 
   const accountOptions =
@@ -166,6 +169,7 @@ export default function useTransferExternal({
         fromAccount: values.sendingAccount,
         memo: values.memo,
         type: values.type,
+        transferDate: new Date(values.transferDate),
       });
     } catch (e) {
       console.error(e);

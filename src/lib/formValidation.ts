@@ -109,3 +109,7 @@ export const wireUseIntermediaryAccountValidation = Yup.boolean();
 export const wireTypeValidation = Yup.string()
   .oneOf(["WIRE", "ACH"])
   .required("Transfer type required");
+
+export const transferDateValidation = Yup.string().required(
+  "Transfer date required"
+);

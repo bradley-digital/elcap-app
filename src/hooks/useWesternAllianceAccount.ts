@@ -169,6 +169,7 @@ export type TransferCreateInput = {
   memo?: string;
   toAccount?: string;
   type: string;
+  transferDate: Date;
 };
 
 export type TransferUpdateInput = {

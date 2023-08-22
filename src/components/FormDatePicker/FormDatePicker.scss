@@ -1,0 +1,15 @@
+@import "@/theme/variables.scss";
+
+.FormDatePicker {
+  &__dateTimeLabel {
+    margin-left: 15px;
+    font-size: 11px;
+  }
+
+  &__dateTimeButton {
+    display: block;
+    margin-bottom: 10px;
+    border-bottom: 1px solid lighten($color: $gray, $amount: 25%);
+    padding: 10px;
+  }
+}
