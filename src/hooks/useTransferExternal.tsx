@@ -5,7 +5,7 @@ import type {
   ExternalAccountCreateInput,
   Transfer,
   TransferCreateInput,
-} from "./useWesternAllianceAccount";
+} from "@/hooks/useWesternAllianceAccount";
 import { useEffect, useState } from "react";
 import {
   wireExternalAccountNameValidation,
@@ -23,8 +23,9 @@ import {
   transferDateValidation,
 } from "lib/formValidation";
 import * as Yup from "yup";
-import { currency } from "lib/formats";
+import { currency, date } from "lib/formats";
 import { useFormikContext } from "formik";
+import { useDocusign } from "hooks/useDocusign";
 
 type Props = {
   accounts?: Account[];
@@ -52,6 +53,7 @@ export default function useTransferExternal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [storedReceivingAccount, setStoredReceivingAccount] = useState("");
   const [storedUseIntermediary, setStoredUseIntermediary] = useState(false);
+  const { postTransferAgreement, postView } = useDocusign();
 
   const transferTypeOptions = [
     {
@@ -161,6 +163,21 @@ export default function useTransferExternal({
           useIntermediary: values.useIntermediaryAccount || false,
         });
       }
+      const agreement = await postTransferAgreement({
+        amount: values.amount || 0,
+        externalAccount:
+          (values.receivingAccount !== "new" && values.receivingAccount) ||
+          values.externalAccountNumber,
+        fromAccount: values.sendingAccount,
+        memo: values.memo,
+        transferDate: date(values.transferDate),
+        type: values.type,
+      });
+      const view = await postView({
+        envelopeId: agreement?.envelopeId,
+      });
+      console.log(view);
+      /*
       await createTransfer({
         amount: values.amount || 0,
         externalAccount:
@@ -168,9 +185,10 @@ export default function useTransferExternal({
           values.externalAccountNumber,
         fromAccount: values.sendingAccount,
         memo: values.memo,
-        type: values.type,
         transferDate: new Date(values.transferDate),
+        type: values.type,
       });
+      */
     } catch (e) {
       console.error(e);
     } finally {
