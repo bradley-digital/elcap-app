@@ -9,6 +9,7 @@ export default function FormTransferExternal() {
     <FormTransferExternalBase
       accounts={accounts}
       createExternalAccount={createExternalAccount}
+      showDocusign={true}
       createTransfer={createTransfer}
       externalAccounts={externalAccounts}
     />

@@ -17,7 +17,6 @@ import FormDatePicker from "components/FormDatePicker/FormDatePicker";
 
 type Props = {
   accounts?: Account[];
-  externalAccounts?: ExternalAccount[];
   createExternalAccount: UseMutateAsyncFunction<
     ExternalAccount,
     unknown,
@@ -30,11 +29,14 @@ type Props = {
     TransferCreateInput,
     unknown
   >;
+  externalAccounts?: ExternalAccount[];
+  showDocusign: boolean;
 };
 
 export default function FormTransferExternalBase({
   accounts,
   externalAccounts,
+  showDocusign,
   createExternalAccount,
   createTransfer,
 }: Props) {
@@ -52,8 +54,9 @@ export default function FormTransferExternalBase({
     createExternalAccount,
     createTransfer,
     externalAccounts,
+    showDocusign,
   });
-  
+
   return (
     <Formik
       initialValues={initialValues}

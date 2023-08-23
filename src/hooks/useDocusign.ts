@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation } from "react-query";
 import useAuth from "hooks/useAuth";
 
 type TransferAgreementInput = {
@@ -13,10 +13,6 @@ type TransferAgreementInput = {
 type ViewInput = {
   envelopeId: string;
 };
-
-const queryKey = "docusign";
-const envelopeQueryKey = `${queryKey}Envelope`;
-const viewQueryKey = `${queryKey}View`;
 
 export function useDocusign() {
   const { authApi } = useAuth();

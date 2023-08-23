@@ -5,8 +5,12 @@ import type {
   ExternalAccountCreateInput,
   Transfer,
   TransferCreateInput,
-} from "@/hooks/useWesternAllianceAccount";
+} from "hooks/useWesternAllianceAccount";
 import { useEffect, useState } from "react";
+import { useAtom } from "jotai";
+import { useFormikContext } from "formik";
+import { isOpenAtom, agreementUrlAtom } from "atoms/fullscreenModal";
+import * as Yup from "yup";
 import {
   wireExternalAccountNameValidation,
   wireExternalAccountNumberValidation,
@@ -22,14 +26,11 @@ import {
   wireTypeValidation,
   transferDateValidation,
 } from "lib/formValidation";
-import * as Yup from "yup";
 import { currency, date } from "lib/formats";
-import { useFormikContext } from "formik";
 import { useDocusign } from "hooks/useDocusign";
 
 type Props = {
   accounts?: Account[];
-  externalAccounts?: ExternalAccount[];
   createExternalAccount: UseMutateAsyncFunction<
     ExternalAccount,
     unknown,
@@ -42,18 +43,23 @@ type Props = {
     TransferCreateInput,
     unknown
   >;
+  externalAccounts?: ExternalAccount[];
+  showDocusign: boolean;
 };
 
 export default function useTransferExternal({
   accounts,
-  externalAccounts,
   createExternalAccount,
   createTransfer,
+  externalAccounts,
+  showDocusign,
 }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [storedReceivingAccount, setStoredReceivingAccount] = useState("");
   const [storedUseIntermediary, setStoredUseIntermediary] = useState(false);
-  const { postTransferAgreement, postView } = useDocusign();
+  const [, setIsOpen] = useAtom(isOpenAtom);
+  const [, setAgreementUrl] = useAtom(agreementUrlAtom);
+  const { postTransferAgreement } = useDocusign();
 
   const transferTypeOptions = [
     {
@@ -163,32 +169,32 @@ export default function useTransferExternal({
           useIntermediary: values.useIntermediaryAccount || false,
         });
       }
-      const agreement = await postTransferAgreement({
-        amount: values.amount || 0,
-        externalAccount:
-          (values.receivingAccount !== "new" && values.receivingAccount) ||
-          values.externalAccountNumber,
-        fromAccount: values.sendingAccount,
-        memo: values.memo,
-        transferDate: date(values.transferDate),
-        type: values.type,
-      });
-      const view = await postView({
-        envelopeId: agreement?.envelopeId,
-      });
-      console.log(view);
-      /*
-      await createTransfer({
-        amount: values.amount || 0,
-        externalAccount:
-          (values.receivingAccount !== "new" && values.receivingAccount) ||
-          values.externalAccountNumber,
-        fromAccount: values.sendingAccount,
-        memo: values.memo,
-        transferDate: new Date(values.transferDate),
-        type: values.type,
-      });
-      */
+      if (showDocusign) {
+        const agreement = await postTransferAgreement({
+          amount: values.amount || 0,
+          externalAccount:
+            (values.receivingAccount !== "new" && values.receivingAccount) ||
+            values.externalAccountNumber,
+          fromAccount: values.sendingAccount,
+          transferDate: date(values.transferDate),
+          type: values.type,
+        });
+        if (agreement?.agreementUrl) {
+          setIsOpen(true);
+          setAgreementUrl(agreement.agreementUrl);
+        }
+      } else {
+        await createTransfer({
+          amount: values.amount || 0,
+          externalAccount:
+            (values.receivingAccount !== "new" && values.receivingAccount) ||
+            values.externalAccountNumber,
+          fromAccount: values.sendingAccount,
+          memo: values.memo,
+          transferDate: new Date(values.transferDate),
+          type: values.type,
+        });
+      }
     } catch (e) {
       console.error(e);
     } finally {

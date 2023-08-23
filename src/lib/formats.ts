@@ -7,6 +7,7 @@ export function currency(amount: number) {
 }
 
 export function date(dateString: string, options?: Intl.DateTimeFormatOptions) {
+  if (typeof dateString !== "string") return "";
   // UTC offset for PT is -08:00
   // https://en.wikipedia.org/wiki/List_of_UTC_offsets
   let offsetString = dateString;
