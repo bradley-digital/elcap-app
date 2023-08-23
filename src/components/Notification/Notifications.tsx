@@ -30,8 +30,13 @@ import "./Notifications.scss";
 export default function Notifications() {
   const [isOpen, setIsOpen] = useAtom(isOpenAtom);
 
-  const { notifications, fetchNextPage, meta, patchAllNotificationsToViewed, patchNotificationToRead } =
-    useNotification();
+  const {
+    notifications,
+    fetchNextPage,
+    meta,
+    patchAllNotificationsToViewed,
+    patchNotificationToRead,
+  } = useNotification();
 
   const queryClient = useQueryClient();
 
@@ -81,7 +86,9 @@ export default function Notifications() {
       </IonHeader>
       <IonContent className="ion-text-center">
         {isEmpty(notifications?.pages[0]) ? (
-          <IonText className="Notifications__none" color="medium">No notifications</IonText>
+          <IonText className="Notifications__none" color="medium">
+            No notifications
+          </IonText>
         ) : (
           <IonList>
             {notifications?.pages?.map((page) => {
@@ -93,7 +100,7 @@ export default function Notifications() {
                   }`}
                   href={item.link || undefined}
                   onClick={() => {
-                    patchNotificationToRead({ id: item.id })
+                    patchNotificationToRead({ id: item.id });
                   }}
                 >
                   <IonLabel>{item.message}</IonLabel>
