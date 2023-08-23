@@ -12,6 +12,6 @@ interface Window {
         },
         id: string
       ) => void;
-    }
-  }
+    };
+  };
 }

@@ -5,11 +5,13 @@ import type {
 } from "hooks/useWesternAllianceAccount";
 import { useCallback, useEffect, useState } from "react";
 import { useAtom } from "jotai";
-import {
-  IonModal,
-} from "@ionic/react";
+import { IonModal } from "@ionic/react";
 import useScript from "hooks/useScript";
-import { agreementUrlAtom, isOpenAtom, transferBodyAtom } from "atoms/transferAgreementModal";
+import {
+  agreementUrlAtom,
+  isOpenAtom,
+  transferBodyAtom,
+} from "atoms/transferAgreementModal";
 
 import "./TransferAgreementModal.scss";
 
@@ -22,9 +24,7 @@ type Props = {
   >;
 };
 
-export default function TransferAgreementModal({
-  createTransfer
-}: Props) {
+export default function TransferAgreementModal({ createTransfer }: Props) {
   const [mounted, setMounted] = useState(false);
   const ref = useCallback((node: HTMLDivElement) => {
     if (node === null) setMounted(false);
@@ -33,7 +33,9 @@ export default function TransferAgreementModal({
   const [isOpen, setIsOpen] = useAtom(isOpenAtom);
   const [agreementUrl] = useAtom(agreementUrlAtom);
   const [transferBody] = useAtom(transferBodyAtom);
-  const { scriptLoaded } = useScript("https://www.docusign.net/clickapi/sdk/latest/docusign-click.js");
+  const { scriptLoaded } = useScript(
+    "https://www.docusign.net/clickapi/sdk/latest/docusign-click.js"
+  );
 
   async function onAgreed() {
     try {
@@ -65,9 +67,12 @@ export default function TransferAgreementModal({
     };
   }, [scriptLoaded, agreementUrl, mounted]);
 
-
   return (
-    <IonModal className="TransferAgreementModal" isOpen={isOpen} canDismiss={!isOpen}>
+    <IonModal
+      className="TransferAgreementModal"
+      isOpen={isOpen}
+      canDismiss={!isOpen}
+    >
       <div id="clickwrap" className="dialog" ref={ref} />
     </IonModal>
   );

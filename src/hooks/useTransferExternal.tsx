@@ -9,7 +9,11 @@ import type {
 import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { useFormikContext } from "formik";
-import { agreementUrlAtom, isOpenAtom, transferBodyAtom } from "atoms/transferAgreementModal";
+import {
+  agreementUrlAtom,
+  isOpenAtom,
+  transferBodyAtom,
+} from "atoms/transferAgreementModal";
 import * as Yup from "yup";
 import {
   wireExternalAccountNameValidation,

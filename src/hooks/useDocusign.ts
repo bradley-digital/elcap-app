@@ -18,7 +18,9 @@ type ViewInput = {
 export function useDocusign() {
   const { authApi } = useAuth();
 
-  const { mutateAsync: postTransferAgreement } = useMutation(postTransferAgreementMutation);
+  const { mutateAsync: postTransferAgreement } = useMutation(
+    postTransferAgreementMutation
+  );
   const { mutateAsync: postView } = useMutation(postViewMutation);
 
   async function postTransferAgreementMutation(body: TransferAgreementInput) {

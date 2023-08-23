@@ -1,9 +1,4 @@
-import {
-  IonButtons,
-  IonButton,
-  IonIcon,
-  IonBadge,
-} from "@ionic/react";
+import { IonButtons, IonButton, IonIcon, IonBadge } from "@ionic/react";
 import { useAtom } from "jotai";
 import { isOpenAtom } from "atoms/userListModal";
 import { useNotification } from "hooks/useNotification";
@@ -12,7 +7,8 @@ import { notificationsOutline } from "ionicons/icons";
 export default function NotificationButton() {
   const [, setIsOpen] = useAtom(isOpenAtom);
 
-  const { unViewedCountIsSucces, unviewedNotificationsCount } = useNotification();
+  const { unViewedCountIsSucces, unviewedNotificationsCount } =
+    useNotification();
   return (
     <IonButtons slot="end">
       <IonButton
@@ -30,7 +26,9 @@ export default function NotificationButton() {
         />
         {unViewedCountIsSucces && unviewedNotificationsCount > 0 && (
           <IonBadge slot="start" color="tertiary">
-            {unviewedNotificationsCount <= 99 ? unviewedNotificationsCount.toString() : "99+"}
+            {unviewedNotificationsCount <= 99
+              ? unviewedNotificationsCount.toString()
+              : "99+"}
           </IonBadge>
         )}
       </IonButton>
