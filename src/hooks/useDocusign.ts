@@ -5,6 +5,7 @@ type TransferAgreementInput = {
   amount: number;
   externalAccount: string;
   fromAccount: string;
+  memo?: string;
   path?: string;
   transferDate: string;
   type: string;

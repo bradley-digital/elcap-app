@@ -168,8 +168,8 @@ export type TransferCreateInput = {
   fromAccount: string;
   memo?: string;
   toAccount?: string;
-  type: string;
   transferDate: Date;
+  type: string;
 };
 
 export type TransferUpdateInput = {

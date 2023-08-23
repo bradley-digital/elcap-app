@@ -6,8 +6,10 @@ interface Window {
   docuSignClick: {
     Clickwrap: {
       render: (
-        agreementUrl: string,
-        onAgreed: () => void,
+        config: {
+          agreementUrl: string;
+          onAgreed: () => void;
+        },
         id: string
       ) => void;
     }

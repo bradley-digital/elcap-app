@@ -1,26 +1,51 @@
+import type { UseMutateAsyncFunction } from "react-query";
+import type {
+  Transfer,
+  TransferCreateInput,
+} from "hooks/useWesternAllianceAccount";
 import { useCallback, useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import {
   IonModal,
 } from "@ionic/react";
 import useScript from "hooks/useScript";
-import { isOpenAtom, agreementUrlAtom } from "atoms/fullscreenModal";
+import { agreementUrlAtom, isOpenAtom, transferBodyAtom } from "atoms/transferAgreementModal";
 
-import "./FullscreenModal.scss";
+import "./TransferAgreementModal.scss";
 
-export default function TransferAgreementModal() {
+type Props = {
+  createTransfer: UseMutateAsyncFunction<
+    Transfer,
+    unknown,
+    TransferCreateInput,
+    unknown
+  >;
+};
+
+export default function TransferAgreementModal({
+  createTransfer
+}: Props) {
   const [mounted, setMounted] = useState(false);
-  const ref = useCallback((node) => {
+  const ref = useCallback((node: HTMLDivElement) => {
     if (node === null) setMounted(false);
     else setMounted(true);
   }, []);
   const [isOpen, setIsOpen] = useAtom(isOpenAtom);
   const [agreementUrl] = useAtom(agreementUrlAtom);
+  const [transferBody] = useAtom(transferBodyAtom);
   const { scriptLoaded } = useScript("https://www.docusign.net/clickapi/sdk/latest/docusign-click.js");
 
-  function onAgreed() {
-    setIsOpen(false);
-    window.location.reload();
+  async function onAgreed() {
+    try {
+      if (transferBody) {
+        await createTransfer(transferBody);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsOpen(false);
+      window.location.href = "/transfer/overview";
+    }
   }
 
   useEffect(() => {
@@ -40,8 +65,9 @@ export default function TransferAgreementModal() {
     };
   }, [scriptLoaded, agreementUrl, mounted]);
 
+
   return (
-    <IonModal className="FullscreenModal" isOpen={isOpen}>
+    <IonModal className="TransferAgreementModal" isOpen={isOpen} canDismiss={!isOpen}>
       <div id="clickwrap" className="dialog" ref={ref} />
     </IonModal>
   );

@@ -9,7 +9,7 @@ import type {
 import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { useFormikContext } from "formik";
-import { isOpenAtom, agreementUrlAtom } from "atoms/fullscreenModal";
+import { agreementUrlAtom, isOpenAtom, transferBodyAtom } from "atoms/transferAgreementModal";
 import * as Yup from "yup";
 import {
   wireExternalAccountNameValidation,
@@ -59,6 +59,7 @@ export default function useTransferExternal({
   const [storedUseIntermediary, setStoredUseIntermediary] = useState(false);
   const [, setIsOpen] = useAtom(isOpenAtom);
   const [, setAgreementUrl] = useAtom(agreementUrlAtom);
+  const [, setTransferBody] = useAtom(transferBodyAtom);
   const { postTransferAgreement } = useDocusign();
 
   const transferTypeOptions = [
@@ -169,31 +170,28 @@ export default function useTransferExternal({
           useIntermediary: values.useIntermediaryAccount || false,
         });
       }
+      const transferBody = {
+        amount: values.amount || 0,
+        externalAccount:
+          (values.receivingAccount !== "new" && values.receivingAccount) ||
+          values.externalAccountNumber,
+        fromAccount: values.sendingAccount,
+        memo: values.memo,
+        transferDate: new Date(values.transferDate),
+        type: values.type,
+      };
       if (showDocusign) {
         const agreement = await postTransferAgreement({
-          amount: values.amount || 0,
-          externalAccount:
-            (values.receivingAccount !== "new" && values.receivingAccount) ||
-            values.externalAccountNumber,
-          fromAccount: values.sendingAccount,
+          ...transferBody,
           transferDate: date(values.transferDate),
-          type: values.type,
         });
         if (agreement?.agreementUrl) {
           setIsOpen(true);
           setAgreementUrl(agreement.agreementUrl);
+          setTransferBody(transferBody);
         }
       } else {
-        await createTransfer({
-          amount: values.amount || 0,
-          externalAccount:
-            (values.receivingAccount !== "new" && values.receivingAccount) ||
-            values.externalAccountNumber,
-          fromAccount: values.sendingAccount,
-          memo: values.memo,
-          transferDate: new Date(values.transferDate),
-          type: values.type,
-        });
+        await createTransfer(transferBody);
       }
     } catch (e) {
       console.error(e);
