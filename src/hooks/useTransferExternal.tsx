@@ -7,13 +7,7 @@ import type {
   TransferCreateInput,
 } from "hooks/useWesternAllianceAccount";
 import { useEffect, useState } from "react";
-import { useAtom } from "jotai";
 import { useFormikContext } from "formik";
-import {
-  agreementUrlAtom,
-  isOpenAtom,
-  transferBodyAtom,
-} from "atoms/transferAgreementModal";
 import * as Yup from "yup";
 import {
   wireExternalAccountNameValidation,
@@ -31,7 +25,10 @@ import {
   transferDateValidation,
 } from "lib/formValidation";
 import { currency, date } from "lib/formats";
+import { createPopup } from "lib/popup";
 import { useDocusign } from "hooks/useDocusign";
+
+const host = import.meta.env.VITE_FRONTEND_HOST || "http://localhost:3021";
 
 type Props = {
   accounts?: Account[];
@@ -61,10 +58,7 @@ export default function useTransferExternal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [storedReceivingAccount, setStoredReceivingAccount] = useState("");
   const [storedUseIntermediary, setStoredUseIntermediary] = useState(false);
-  const [, setIsOpen] = useAtom(isOpenAtom);
-  const [, setAgreementUrl] = useAtom(agreementUrlAtom);
-  const [, setTransferBody] = useAtom(transferBodyAtom);
-  const { postTransferAgreement } = useDocusign();
+  const { postTransferAgreement, postView } = useDocusign();
 
   const transferTypeOptions = [
     {
@@ -189,10 +183,13 @@ export default function useTransferExternal({
           ...transferBody,
           transferDate: date(values.transferDate),
         });
-        if (agreement?.agreementUrl) {
-          setIsOpen(true);
-          setAgreementUrl(agreement.agreementUrl);
-          setTransferBody(transferBody);
+        const view = await postView({
+          envelopeId: agreement?.envelopeId,
+        });
+        if (view?.url) {
+          const popupUrl = `${view.url}&send=1&showEditPages=false&showHeaderActions=false`;
+          const endUrl = await createPopup(popupUrl, host);
+          if (endUrl.includes("?event=signing_complete")) await createTransfer(transferBody);
         }
       } else {
         await createTransfer(transferBody);

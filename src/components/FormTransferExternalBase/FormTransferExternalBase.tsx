@@ -137,7 +137,7 @@ export default function FormTransferExternalBase({
               </>
             )}
             <IonListHeader>Transfer details</IonListHeader>
-            <FormInput label="Amount" name="amount" type="text" />
+            <FormInput label="Amount" name="amount" type="number" />
             <FormDatePicker
               label="Transfer date"
               name="transferDate"
