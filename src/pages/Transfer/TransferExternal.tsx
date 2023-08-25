@@ -5,7 +5,7 @@ import FormTransferExternal from "components/FormTransferExternal/FormTransferEx
 
 export default function TransferExternal() {
   return (
-    <PageTemplate title="External transfer" menuId="transfer">
+    <PageTemplate title="External Transfer" menuId="transfer">
       <IonGrid>
         <IonRow className="ion-justify-content-center">
           <IonCol size-md="8" size-lg="6">

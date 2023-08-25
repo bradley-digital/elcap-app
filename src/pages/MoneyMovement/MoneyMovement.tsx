@@ -17,13 +17,13 @@ export default function MoneyMovement(routeProps: RouteComponentProps) {
       id: 2,
       icon: exit,
       href: `${match.url}/transfer`,
-      label: "External transfer",
+      label: "External Transfer",
     },
   ];
 
   return (
     <SplitPaneTemplate
-      title="Money movement"
+      title="Money Movement"
       menuId="money-movement"
       menuLinks={menuLinks}
     >
