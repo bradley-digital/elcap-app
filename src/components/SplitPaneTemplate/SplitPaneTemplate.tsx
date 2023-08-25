@@ -39,7 +39,7 @@ export default function SplitPaneTemplate({
               <div slot="start" className="SplitPaneTemplate__logo">
                 <LogoSvg height={24} width={24} />
               </div>
-              <IonTitle slot="start">{title}</IonTitle>
+              <IonTitle slot="start" className="SplitPaneTemplate__title">{title}</IonTitle>
             </IonToolbar>
           </IonHeader>
           <IonContent>
