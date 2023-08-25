@@ -20,19 +20,19 @@ export default function Profile(routeProps: RouteComponentProps) {
       id: 2,
       icon: swapHorizontal,
       href: `${match.url}/account`,
-      label: "Account transfer",
+      label: "Between Account Transfer",
     },
     {
       id: 3,
       icon: exit,
       href: `${match.url}/external`,
-      label: "External transfer",
+      label: "External Transfer",
     },
   ];
 
   return (
     <SplitPaneTemplate
-      title="Money movement"
+      title="Money Movement"
       menuId="transfer"
       menuLinks={menuLinks}
     >
