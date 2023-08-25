@@ -52,7 +52,6 @@ export default function FormSetPassword({ otpAuthUrl, registerToken }: Props) {
     >
       <Form>
         <IonText>
-          <p>Create your password.</p>
           <PasswordRequirements />
         </IonText>
         <FormInput
@@ -70,11 +69,16 @@ export default function FormSetPassword({ otpAuthUrl, registerToken }: Props) {
         <IonText>
           <br />
           <br />
-          <p>Create your two factor authentication code.</p>
+          <h3>Authenticator App</h3>
           <p>
             Scan the QR code with your authenticator application and enter the
             code you recieve.
           </p>
+          <p>Common authenticator apps you can use:</p>
+          <ul>
+            <li>Google Authenticator</li>
+            <li>Microsoft Authenticator</li>
+          </ul>
         </IonText>
         <QRCode link={otpAuthUrl} />
         <FormInput
