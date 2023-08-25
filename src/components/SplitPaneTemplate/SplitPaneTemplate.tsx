@@ -1,3 +1,4 @@
+import "./SplitPaneTemplate.scss";
 import type { MenuLink } from "components/MenuLinks/MenuLinks";
 import type { ReactNode } from "react";
 
@@ -11,6 +12,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
+import { ReactComponent as LogoSvg } from "assets/elcapitanadvisors_logo.svg";
 import MenuLinks from "components/MenuLinks/MenuLinks";
 
 type Props = {
@@ -29,12 +31,15 @@ export default function SplitPaneTemplate({
   ...rest
 }: Props) {
   return (
-    <IonPage {...rest}>
+    <IonPage {...rest} className="SplitPaneTemplate">
       <IonSplitPane contentId={menuId}>
         <IonMenu side="start" menuId={menuId} contentId={menuId}>
           <IonHeader>
             <IonToolbar>
-              <IonTitle>{title}</IonTitle>
+              <div slot="start" className="SplitPaneTemplate__logo">
+                <LogoSvg height={24} width={24} />
+              </div>
+              <IonTitle slot="start">{title}</IonTitle>
             </IonToolbar>
           </IonHeader>
           <IonContent>
