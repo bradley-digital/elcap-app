@@ -14,12 +14,7 @@ import {
 
 // components
 import { Form, Formik } from "formik";
-import {
-  IonButton,
-  IonIcon,
-  IonList,
-  IonListHeader,
-} from "@ionic/react";
+import { IonButton, IonIcon, IonList, IonListHeader } from "@ionic/react";
 import { alertCircle, checkmarkCircle, closeCircle } from "ionicons/icons";
 import FormObserver from "components/FormObserver/FormObserver";
 import FormSelect from "components/FormSelect/FormSelect";
@@ -176,7 +171,12 @@ export default function FormUserDocfox({ profile }: Props) {
 
             if (Array.isArray(patchData)) {
               for (const data of patchData) {
-                await patchProfileData(data);
+                try {
+                  await patchProfileData(data);
+                } catch (error) {
+                  console.error(`Error patching data: ${error}`);
+                  continue;
+                }
               }
             }
 
