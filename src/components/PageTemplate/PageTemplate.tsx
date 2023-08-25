@@ -5,6 +5,7 @@ import {
   IonHeader,
   IonMenuButton,
   IonPage,
+  IonText,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
@@ -12,6 +13,7 @@ import "./PageTemplate.scss";
 import NotificationButton from "components/NotificationButton/NotificationButton";
 import classNames from "classnames";
 import Notifications from "components/Notification/Notifications";
+import useUser from "hooks/useUser";
 
 type Props = {
   children: ReactNode;
@@ -28,6 +30,7 @@ export default function PageTemplate({
   className = "",
   ...rest
 }: Props) {
+  const { profile } = useUser();
   return (
     <IonPage {...rest} className={classNames("PageTemplate", className)}>
       <IonHeader>
@@ -38,7 +41,14 @@ export default function PageTemplate({
             </IonButtons>
           )}
           <IonTitle>{title}</IonTitle>
-          <NotificationButton />
+          {profile && (
+            <IonText slot="end" className="hidden-md">
+              {`${profile.firstName} ${profile.lastName}`}
+            </IonText>
+          )}
+          <IonButtons slot="end">
+            <NotificationButton />
+          </IonButtons>
           <Notifications />
         </IonToolbar>
       </IonHeader>

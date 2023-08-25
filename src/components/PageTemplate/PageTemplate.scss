@@ -1,5 +1,4 @@
 .PageTemplate {
-
   &__notification--button {
     position: relative;
 
@@ -10,6 +9,12 @@
       z-index: 10;
       --background: purple;
       --color: white;
-   }
- }
+    }
+  }
+
+  .hidden-md {
+    @media screen and (max-width: 576px) {
+      display: none;
+    }
+  }
 }
