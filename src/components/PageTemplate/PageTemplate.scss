@@ -1,4 +1,7 @@
 .PageTemplate {
+  &__logo {
+    margin-left: 16px;
+  }
 
   &__notification--button {
     position: relative;
@@ -10,6 +13,6 @@
       z-index: 10;
       --background: purple;
       --color: white;
-   }
- }
+    }
+  }
 }
