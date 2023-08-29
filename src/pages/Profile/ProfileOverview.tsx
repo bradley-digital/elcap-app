@@ -13,7 +13,7 @@ export default function Profile() {
 
   if (typeof profile !== "undefined") {
     return (
-      <PageTemplate title="Overview">
+      <PageTemplate title="Overview" showLogo={profile.role === "ADMIN"}>
         <IonGrid>
           <IonRow className="ion-justify-content-center">
             <IonCol size-md="8" size-lg="6">
