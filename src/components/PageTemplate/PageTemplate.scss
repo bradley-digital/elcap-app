@@ -1,0 +1,35 @@
+.PageTemplate {
+  &__logo {
+    margin-left: 16px;
+    margin-right: 12px;
+  }
+
+  &__notification--button {
+    &.ion-color-dark {
+      --ion-color-base: #666 !important;
+    }
+
+    position: relative;
+
+    ion-badge {
+      position: absolute;
+      left: -4px;
+      top: 0;
+      z-index: 10;
+      --background: purple;
+      --color: white;
+    }
+  }
+
+  &__account-name {
+    font-size: 12px;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    color: #666;
+  }
+
+  .hidden-md {
+    @media screen and (max-width: 575px) {
+      display: none;
+    }
+  }
+}

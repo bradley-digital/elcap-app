@@ -4,8 +4,9 @@ import * as Yup from "yup";
 // lib
 import {
   accountNumberValidation,
-  accountTitleValidation,
+  accountNameValidation,
   clientValidation,
+  routingNumberValidation,
 } from "lib/formValidation";
 
 // icons
@@ -33,13 +34,15 @@ export default function FormCreateWesternAlliance() {
     <Formik
       initialValues={{
         accountNumber: "",
-        accountTitle: "",
+        accountName: "",
         client: "",
+        routingNumber: "",
       }}
       validationSchema={Yup.object({
         accountNumber: accountNumberValidation,
-        accountTitle: accountTitleValidation,
+        accountName: accountNameValidation,
         client: clientValidation,
+        routingNumber: routingNumberValidation,
       })}
       onSubmit={(values) => {
         setIsSubmitting(true);
@@ -52,8 +55,8 @@ export default function FormCreateWesternAlliance() {
         <IonList>
           <FormInput label="Client" name="client" type="text" icon={pencil} />
           <FormInput
-            label="Account Title"
-            name="accountTitle"
+            label="Account Name"
+            name="accountName"
             type="text"
             icon={pencil}
           />
@@ -63,6 +66,7 @@ export default function FormCreateWesternAlliance() {
             type="text"
             icon={pencil}
           />
+          <FormInput label="Routing number" name="routingNumber" type="text" />
           <SubmitButton isSubmitting={isSubmitting}>
             Create New Account
           </SubmitButton>

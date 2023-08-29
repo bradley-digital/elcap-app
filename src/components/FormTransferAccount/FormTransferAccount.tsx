@@ -7,6 +7,7 @@ import {
   transferFromAccountValidation,
   transferToAccountValidation,
   transferMemoValidation,
+  transferDateValidation,
 } from "lib/formValidation";
 
 // components
@@ -18,6 +19,7 @@ import SubmitButton from "components/SubmitButton/SubmitButton";
 
 // hooks
 import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
+import FormDatePicker from "components/FormDatePicker/FormDatePicker";
 
 export default function FormTransferAccount() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -42,9 +44,9 @@ export default function FormTransferAccount() {
 
   const accountOptions =
     accounts
-      ?.map(({ accountBalance, accountNumber, accountTitle }) => {
+      ?.map(({ accountBalance, accountNumber, accountName }) => {
         const truncatedAccountNumber = accountNumber.slice(-4);
-        const label = `${accountTitle} (...${truncatedAccountNumber}): ${currency(
+        const label = `${accountName} (...${truncatedAccountNumber}): ${currency(
           Number(accountBalance)
         )}`;
         return {
@@ -61,12 +63,14 @@ export default function FormTransferAccount() {
         fromAccount: "",
         memo: "",
         toAccount: "",
+        transferDate: new Date().toISOString(),
       }}
       validationSchema={Yup.object({
         amount: transferAmountValidation,
         fromAccount: transferFromAccountValidation,
         memo: transferMemoValidation,
         toAccount: transferToAccountValidation,
+        transferDate: transferDateValidation,
       })}
       onSubmit={(values) => {
         async function submit() {
@@ -75,6 +79,7 @@ export default function FormTransferAccount() {
             ...values,
             amount: values.amount || 0,
             type: "ACCOUNT",
+            transferDate: new Date(values.transferDate),
           });
           setIsSubmitting(false);
         }
@@ -104,6 +109,11 @@ export default function FormTransferAccount() {
               disabled={values.fromAccount === ""}
             />
             <FormInput label="Amount" name="amount" type="text" />
+            <FormDatePicker
+              label="Transfer date"
+              name="transferDate"
+              type="date"
+            />
             <FormInput
               label="Memo (optional)"
               name="memo"

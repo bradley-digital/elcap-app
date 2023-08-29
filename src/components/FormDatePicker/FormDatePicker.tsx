@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+import "./FormDatePicker.scss";
+>>>>>>> dev
 import { useField } from "formik";
 import { IonDatetime, IonDatetimeButton, IonModal } from "@ionic/react";
 
@@ -18,11 +22,11 @@ const FormDatePicker = ({ label, ...props }: Props) => {
 
   return (
     <>
-      <h6 className="FormUserDocfox__dateTimeLabel">{label}</h6>
+      <h6 className="FormDatePicker__dateTimeLabel">{label}</h6>
 
       <IonDatetimeButton
         datetime={props.name}
-        className="FormUserDocfox__dateTimeButton"
+        className="FormDatePicker__dateTimeButton"
       />
 
       <IonModal keepContentsMounted={true}>

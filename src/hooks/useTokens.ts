@@ -5,23 +5,18 @@ type TokenResponse = {
   refreshToken: string;
   role: string;
 };
-
 const refreshTokenName = "refreshToken";
-
 function setRefreshToken(token: string): void {
   sessionStorage.setItem(refreshTokenName, token);
 }
-
 export function getRefreshToken(): string {
   const storedToken = sessionStorage.getItem(refreshTokenName);
   if (storedToken === null) return "";
   return storedToken;
 }
-
 function removeRefreshToken(): void {
   sessionStorage.removeItem(refreshTokenName);
 }
-
 export default function useTokens() {
   const accessTokenRef = useRef<string>("");
   const refreshTokenRef = useRef<string>(getRefreshToken());

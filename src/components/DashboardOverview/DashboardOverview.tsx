@@ -68,7 +68,7 @@ export default function DashboardOverview() {
     accounts
       ?.map((account) => {
         const truncatedAccountNumber = account.accountNumber.slice(-4);
-        const label = `${account.accountTitle} (...${truncatedAccountNumber})`;
+        const label = `${account.accountName} (...${truncatedAccountNumber})`;
         return {
           value: account.accountNumber,
           label,
@@ -104,7 +104,7 @@ export default function DashboardOverview() {
               {accounts?.map((account) => {
                 return (
                   <p key={hash(account)}>
-                    {`${account.accountTitle}: ${currency(
+                    {`${account.accountName}: ${currency(
                       Number(account.accountBalance)
                     )}`}
                   </p>
