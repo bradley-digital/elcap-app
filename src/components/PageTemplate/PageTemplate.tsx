@@ -50,7 +50,7 @@ export default function PageTemplate({
           )}
           <IonTitle>{title}</IonTitle>
           {profile && (
-            <IonText slot="end" className="hidden-md">
+            <IonText slot="end" className="hidden-md PageTemplate__account-name">
               {`${profile.firstName} ${profile.lastName}`}
             </IonText>
           )}
