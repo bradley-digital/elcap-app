@@ -21,7 +21,6 @@ export default function NotificationButton() {
       >
         <IonIcon
           icon={notificationsOutline}
-          size="large"
           className="PageTemplate__notification--bell"
         />
         {unViewedCountIsSucces && unviewedNotificationsCount > 0 && (

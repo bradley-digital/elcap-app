@@ -48,7 +48,7 @@ export default function AdminRoutes() {
       <IonTabBar slot="bottom">
         <IonTabButton tab="money-movement" href="/money-movement">
           <IonIcon icon={swapHorizontal} />
-          <IonLabel>Money movement</IonLabel>
+          <IonLabel>Money Movement</IonLabel>
         </IonTabButton>
         <IonTabButton tab="account" href="/account-management">
           <IonIcon icon={business} />

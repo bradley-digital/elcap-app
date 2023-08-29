@@ -13,6 +13,7 @@ type TransferAgreementInput = {
 
 type ViewInput = {
   envelopeId: string;
+  path?: string;
 };
 
 export function useDocusign() {

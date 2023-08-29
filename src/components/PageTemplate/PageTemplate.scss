@@ -1,4 +1,12 @@
 .PageTemplate {
+  &__logo {
+    margin-left: 16px;
+  }
+  
+  &__title {
+    padding-inline-start: 32px;
+  }
+
   &__notification--button {
     position: relative;
 

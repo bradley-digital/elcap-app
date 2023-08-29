@@ -20,7 +20,7 @@ export default function Dashboard(routeProps: RouteComponentProps) {
       id: 2,
       icon: receipt,
       href: `${match.url}/transactions`,
-      label: "Transactions",
+      label: "Transaction History",
     },
   ];
 
