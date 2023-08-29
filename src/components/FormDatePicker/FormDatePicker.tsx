@@ -1,6 +1,6 @@
-import "./FormDatePicker.scss";
 import { useField } from "formik";
 import { IonDatetime, IonDatetimeButton, IonModal } from "@ionic/react";
+import "./FormDatePicker.scss";
 
 type Props = {
   label: string;

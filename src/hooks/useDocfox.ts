@@ -1,8 +1,13 @@
+import { useEffect, useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+
+// lib
+import getErrorMessage from "lib/error";
 
 // hooks
 import { queryKey as userQueryKey } from "hooks/useUserManagement";
 import useAuth from "hooks/useAuth";
+import { useIonToast } from "@ionic/react";
 
 export type DocfoxApplication = {
   id: string;
@@ -13,6 +18,14 @@ export type DocfoxApplication = {
 export type DocfoxProfileDeleteInput = {
   id: string;
   type: string;
+};
+
+type DocfoxProfileError = {
+  title: string;
+  status: number;
+  detail: string;
+  source: string;
+  meta: string;
 };
 
 const queryKey = "docfox";
@@ -107,6 +120,27 @@ export function useInvitationLink(contactId: string) {
 export function useApplication(applicationId: string) {
   const { authApi } = useAuth();
   const queryClient = useQueryClient();
+  const [showToast] = useIonToast();
+  const errorData = useRef<DocfoxProfileError[]>([]);
+
+  useEffect(() => {
+    if (errorData.current.length === 0) return;
+
+    const timer = setTimeout(() => {
+      const errorStrings = errorData.current.map(
+        (error) => error.toString() + "<br/>"
+      );
+      showToast({
+        message: errorStrings.join(""),
+        duration: 8 * 1000,
+        position: "bottom",
+        color: "danger",
+      });
+      errorData.current = [];
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [errorData.current]);
 
   const { isSuccess: applicationIsSuccess, data: application } = useQuery(
     [applicationQueryKey, applicationId],
@@ -117,6 +151,16 @@ export function useApplication(applicationId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries(userQueryKey);
       queryClient.invalidateQueries(applicationQueryKey);
+    },
+    onError: (error: unknown) => {
+      showToast({
+        message:
+          JSON.parse(getErrorMessage(error)).detail ||
+          "There was an error processing your request",
+        duration: 8 * 1000,
+        position: "bottom",
+        color: "danger",
+      });
     },
   });
 
@@ -134,6 +178,17 @@ export function useApplication(applicationId: string) {
     {
       onSuccess: () => {
         queryClient.invalidateQueries(applicationQueryKey);
+      },
+      onError: (error: DocfoxProfileError) => {
+        const err = getErrorMessage(error);
+        const errorDetail = JSON.parse(err).detail;
+
+        if (!errorData.current.includes(errorDetail)) {
+          errorData.current = [
+            ...errorData.current,
+            JSON.parse(getErrorMessage(error)).detail,
+          ];
+        }
       },
     }
   );
