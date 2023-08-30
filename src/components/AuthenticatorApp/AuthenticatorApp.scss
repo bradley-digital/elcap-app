@@ -1,0 +1,58 @@
+@import "@/theme/variables.scss";
+
+.AuthenticatorApp {
+  &__text {
+    text-align: left;
+  }
+
+  &__otpInputWrapper {
+    position: relative;
+  }
+
+  &__otpIcon {
+    position: absolute;
+    right: 0;
+    top: 20px;
+    z-index: 10;
+    display: block;
+  }
+
+  &__qr {
+    width: 200px;
+    height: 200px;
+  }
+
+  &__secret {
+    width: 50%;
+  }
+
+  &__setupKeyButton {
+    margin-left: 4px;
+    margin-right: 4px;
+    background: transparent;
+    text-decoration: underline;
+    font-size: 1em;
+    cursor: pointer;
+  }
+
+  &__generateNew {
+    margin-top: 20px;
+    border-top: 0.5px solid $gray;
+  }
+
+  &__buttons {
+    width: 100%;
+    display: flex;
+    justify-content: end;
+  }
+
+  &__codesText {
+    width: 100%;
+    text-align: center;
+  }
+
+  &__generate {
+    position: relative;
+    border-top: 1px solid gray;
+  }
+}

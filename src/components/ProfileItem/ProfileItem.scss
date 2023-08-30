@@ -1,0 +1,9 @@
+@import "@/theme/variables.scss";
+
+.ProfileItem {
+  margin-left: -16px;
+
+  &__label {
+    padding-left: 16px;
+  }
+}

@@ -24,6 +24,7 @@ export type Profile = {
   createdAt: string;
   accounts?: ProfileAccount[];
   docfoxApplication: DocfoxApplication;
+  otpAuthUrl: string;
 };
 
 type ProfileUpdateInput = {
@@ -39,6 +40,7 @@ type ProfileUpdateInput = {
 };
 
 export const queryKey = "userAccount";
+export const recoveryCodesqueryKey = `${queryKey}RecoveryCodes`;
 
 export default function useUser() {
   const { authApi } = useAuth();
@@ -46,7 +48,12 @@ export default function useUser() {
 
   const { isSuccess: profileIsSuccess, data: profile } = useQuery(
     queryKey,
-    getUser
+    getUser,
+  );
+
+  const { isSuccess: recoveryCodesIsSuccess, data: recoveryCodes } = useQuery(
+    recoveryCodesqueryKey,
+    getRecoveryCodes,
   );
 
   const { mutate: updateUser } = useMutation(updateUserMutation, {
@@ -55,8 +62,24 @@ export default function useUser() {
     },
   });
 
+  const { mutate: generateNewRecoveryCodes } = useMutation(
+    generateNewRecoveryCodesMutation,
+    {
+      onSuccess: (data) => {
+        queryClient.setQueryData(recoveryCodesqueryKey, data);
+      },
+    },
+  );
+
+  const { mutateAsync: verifyOtp } = useMutation(verifyOtpMutation);
+
   async function getUser() {
     const { data } = await authApi.get<Profile>("/users/account");
+    return data;
+  }
+
+  async function getRecoveryCodes() {
+    const { data } = await authApi.get<string[]>("/users/recovery-codes");
     return data;
   }
 
@@ -65,10 +88,29 @@ export default function useUser() {
     return data;
   }
 
+  async function generateNewRecoveryCodesMutation() {
+    const { data } = await authApi.post<string[]>(
+      "/users/generate-new-recovery-codes",
+    );
+    return data;
+  }
+
+  async function verifyOtpMutation(body: { otp: string }) {
+    const { data } = await authApi.post<{ validOtp: boolean }>(
+      "/users/verify-otp",
+      body,
+    );
+    return data;
+  }
+
   return {
     userQueryKey: queryKey,
     profileIsSuccess,
     profile,
     updateUser,
+    recoveryCodesIsSuccess,
+    recoveryCodes,
+    generateNewRecoveryCodes,
+    verifyOtp,
   };
 }
