@@ -69,7 +69,7 @@ export default function FormTransferExternalBase({
           <IonList>
             <FormSelect
               label="Transfer type"
-              placeholder="Choose a type"
+              placeholder="Select transfer type"
               name="type"
               type="text"
               className="FormAccountSelect"

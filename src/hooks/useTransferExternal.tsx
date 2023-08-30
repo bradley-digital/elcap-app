@@ -84,7 +84,7 @@ export default function useTransferExternal({
     receivingAccount: "",
     sendingAccount: "",
     useIntermediaryAccount: false,
-    type: "WIRE",
+    type: "",
     transferDate: new Date().toISOString(),
   };
 
@@ -95,13 +95,13 @@ export default function useTransferExternal({
       "Amount must be less than the account balance",
       (value, context) => {
         const account = accounts?.find(
-          ({ accountNumber }) => accountNumber === context.parent.fromAccount
+          ({ accountNumber }) => accountNumber === context.parent.fromAccount,
         );
         if (account) {
           return Number(value) <= parseFloat(account.accountBalance);
         }
         return true;
-      }
+      },
     )
     .required("Amount required");
 
@@ -127,7 +127,7 @@ export default function useTransferExternal({
       ?.map(({ accountBalance, accountNumber, accountName }) => {
         const truncatedAccountNumber = accountNumber.slice(-4);
         const label = `${accountName} (...${truncatedAccountNumber}): ${currency(
-          Number(accountBalance)
+          Number(accountBalance),
         )}`;
         return {
           value: accountNumber,
@@ -190,7 +190,8 @@ export default function useTransferExternal({
         if (view?.url) {
           const popupUrl = `${view.url}&send=1&showEditPages=false&showHeaderActions=false`;
           const endUrl = await createPopup(popupUrl, host);
-          if (endUrl.includes("?event=signing_complete")) await createTransfer(transferBody);
+          if (endUrl.includes("?event=signing_complete"))
+            await createTransfer(transferBody);
         }
       } else {
         await createTransfer(transferBody);
@@ -219,7 +220,7 @@ export default function useTransferExternal({
           setFieldValue("useIntermediaryAccount", false, false);
         } else {
           const externalAccount = externalAccounts?.find(
-            ({ accountNumber }) => accountNumber === values.receivingAccount
+            ({ accountNumber }) => accountNumber === values.receivingAccount,
           );
           if (externalAccount) {
             const {
@@ -237,23 +238,23 @@ export default function useTransferExternal({
             setFieldValue(
               "externalFinancialInstitution",
               financialInstitution || "",
-              false
+              false,
             );
             setFieldValue("externalRoutingNumber", routingNumber || "", false);
             setFieldValue(
               "intermediaryBankName",
               intermediaryBankName || "",
-              false
+              false,
             );
             setFieldValue(
               "intermediaryRoutingNumber",
               intermediaryRoutingNumber || "",
-              false
+              false,
             );
             setFieldValue(
               "intermediaryFurtherCreditTo",
               intermediaryFurtherCreditTo || "",
-              false
+              false,
             );
             setFieldValue("useIntermediaryAccount", useIntermediary, false);
           }
