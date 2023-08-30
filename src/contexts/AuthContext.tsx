@@ -38,6 +38,7 @@ type ForgotPasswordBody = {
 type ResetPasswordBody = {
   resetToken: string;
   password: string;
+  otp: string;
 };
 
 type SetPasswordBody = {
@@ -108,7 +109,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function handleAuthentication(
     url: string,
-    body: SetPasswordBody | LoginBody | GoogleLoginBody | FacebookLoginBody
+    body: SetPasswordBody | LoginBody | GoogleLoginBody | FacebookLoginBody,
   ): Promise<void> {
     try {
       const res = await authApi.post(url, body);

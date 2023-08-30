@@ -7,6 +7,7 @@ import LogoutButton from "components/LogoutButton/LogoutButton";
 
 // hooks
 import useUser from "hooks/useUser";
+import ProfileAccountSecurity from "./ProfileAccountSecurity";
 
 export default function Profile() {
   const { profile } = useUser();
@@ -19,6 +20,7 @@ export default function Profile() {
             <IonCol size-md="8" size-lg="6">
               <ProfileCard profile={profile} />
               <FormAccount profile={profile} />
+              <ProfileAccountSecurity />
               <LogoutButton className="w-100">Logout</LogoutButton>
             </IonCol>
           </IonRow>
