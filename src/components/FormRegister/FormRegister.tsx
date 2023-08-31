@@ -12,6 +12,7 @@ import {
   addressLine2Validation,
   countryValidation,
   stateValidation,
+  isCannabisValidation,
 } from "lib/formValidation";
 
 // hooks
@@ -20,6 +21,7 @@ import useAuth from "hooks/useAuth";
 // components
 import FormInput from "components/AuthFormInput/AuthFormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
+import FormCheckbox from "components/AuthFormCheckbox/AuthFormCheckbox";
 
 export default function FormRegister() {
   const { register } = useAuth();
@@ -36,6 +38,7 @@ export default function FormRegister() {
         addressLine2: "",
         country: "",
         state: "",
+        isCannabis: false,
       }}
       validationSchema={Yup.object({
         firstName: firstNameValidation,
@@ -46,6 +49,7 @@ export default function FormRegister() {
         addressLine2: addressLine2Validation,
         country: countryValidation,
         state: stateValidation,
+        isCannabis: isCannabisValidation,
       })}
       onSubmit={async (values, actions) => {
         setIsSubmitting(true);
@@ -93,6 +97,12 @@ export default function FormRegister() {
           placeholder="Country"
         />
         <FormInput label="State" name="state" type="text" placeholder="State" />
+        <FormCheckbox
+          label="Is cannabis client?"
+          name="isCannabis"
+          type="checkbox"
+        />
+
         <SubmitButton isSubmitting={isSubmitting}>Register</SubmitButton>
       </Form>
     </Formik>
