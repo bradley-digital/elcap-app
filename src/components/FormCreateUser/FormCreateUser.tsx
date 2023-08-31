@@ -14,6 +14,7 @@ import {
   stateValidation,
   roleValidation,
 } from "lib/formValidation";
+import countries from "lib/countries.json";
 
 // icons
 import { pencil } from "ionicons/icons";
@@ -115,7 +116,7 @@ export default function FormCreateUser() {
             type="text"
             icon={pencil}
           />
-          <FormInput label="Country" name="country" type="text" icon={pencil} />
+          <FormSelect label="Country" name="country" options={countries} />
           <FormInput label="State" name="state" type="text" icon={pencil} />
           <FormSelect label="Role" name="role" options={roleOptions} />
           <SubmitButton isSubmitting={isSubmitting}>
