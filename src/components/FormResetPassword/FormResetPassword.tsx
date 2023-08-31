@@ -58,7 +58,7 @@ export default function FormResetPassword() {
           placeholder="Password"
         />
         <FormInput
-          label="Authentication or Recovery code"
+          label="Authentication/Recovery code"
           name="otp"
           type="text"
           placeholder="XXXXXX OR XXXXX-XXXXX"
