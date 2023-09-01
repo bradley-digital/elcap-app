@@ -4,12 +4,8 @@ import useWesternAllianceAccount, {
 } from "hooks/useWesternAllianceAccount";
 import "./WesternAllianceList.scss";
 
-type Props = {
-  accounts: Account[];
-};
-
-export default function WesternAllianceList({ accounts }: Props) {
-  const { setAccountsQuery } = useWesternAllianceAccount();
+export default function WesternAllianceList() {
+  const { accounts, setAccountsQuery } = useWesternAllianceAccount();
 
   function handleSearch(e: Event) {
     const target = e.target as HTMLIonSearchbarElement;
@@ -22,7 +18,7 @@ export default function WesternAllianceList({ accounts }: Props) {
     <div className="WesternAllianceList">
       <IonSearchbar debounce={400} onIonChange={handleSearch}></IonSearchbar>
       <IonList>
-        {accounts.map(({ id, accountNumber, accountName }: Account) => (
+        {accounts?.map(({ id, accountNumber, accountName }: Account) => (
           <IonItem
             key={id}
             className="WesternAllianceList__item"

@@ -210,7 +210,7 @@ export default function useWesternAllianceAccount() {
   const [accountsQuery, setAccountsQuery] = useState("");
 
   const { isSuccess: accountsIsSuccess, data: accounts } = useQuery(
-    [accountQueryKey, { query: accountsQuery }],
+    [accountQueryKey, accountsQuery],
     () => getAccounts({ query: accountsQuery }),
   );
 
@@ -265,7 +265,6 @@ export default function useWesternAllianceAccount() {
     const { data } = await authApi.get<Account[]>(
       `/western-alliance/accounts?query=${query}`,
     );
-    data.sort((a, b) => a.accountName.localeCompare(b.accountName));
     return data;
   }
 
