@@ -27,30 +27,51 @@ export default function MultipleAccountsSelect({
 SelectProps) {
   const [showOptions, setShowOptions] = useState(false);
 
-  const [selectedOptions, setSelectedOptions] =
-    useState<{ label: string; value: string }[]>(options);
+  // const [selectedOptions, setSelectedOptions] =
+  //   useState<{ label: string; value: string }[]>(options);
 
+  const [selectedOptions, setSelectedOptions] = useState(
+    Array(options.length).fill(false),
+  );
   const handleClick = (option: Option) => {
-    let newSelected = [...selectedOptions];
-    const selectedIndex = selectedOptions.findIndex(
-      (op) => op.value === option.value,
-    );
+    const newSelected = [...selectedOptions];
+    const selectedIndex = options.findIndex((op) => op.value === option.value);
     const isSelected = newSelected[selectedIndex];
+
+    newSelected[selectedIndex] = isSelected;
+    console.log({ option, isSelected, selectedIndex, newSelected });
 
     if (option.value === "all") {
       if (isSelected) {
-        newSelected = [];
+        newSelected.fill(false);
       } else {
-        newSelected = options;
+        newSelected.fill(true);
       }
     } else {
-      if (isSelected) {
-        newSelected.splice(selectedIndex, 1);
-      } else {
-        newSelected.push(option);
-      }
+      newSelected[selectedIndex] = !isSelected;
     }
+
     setSelectedOptions(newSelected);
+    // let newSelected = [...selectedOptions];
+    // const selectedIndex = selectedOptions.findIndex(
+    //   (op) => op.value === option.value,
+    // );
+    // const isSelected = newSelected[selectedIndex];
+
+    // if (option.value === "all") {
+    //   if (isSelected) {
+    //     newSelected = [];
+    //   } else {
+    //     newSelected = options;
+    //   }
+    // } else {
+    //   if (isSelected) {
+    //     newSelected.splice(selectedIndex, 1);
+    //   } else {
+    //     newSelected.push(option);
+    //   }
+    // }
+    // setSelectedOptions(newSelected);
   };
 
   const toggleOptions = () => {
@@ -73,7 +94,7 @@ SelectProps) {
         header={"Radio"}
         inputs={[
           ...options.map(
-            (option) =>
+            (option, i) =>
               ({
                 type: "checkbox",
                 label: option.label,
@@ -81,9 +102,7 @@ SelectProps) {
                   label: option.label,
                   value: option.value,
                 },
-                checked: selectedOptions.some(
-                  (selectedOption) => selectedOption.value === option.value,
-                ),
+                checked: selectedOptions[i],
                 handler: () => {
                   handleClick({
                     label: option.label,
