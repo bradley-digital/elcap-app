@@ -1,6 +1,6 @@
 import { AlertInput, IonAlert } from "@ionic/react";
 import "./FormMultiSelect.scss";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 export type Option = {
   label: string;
@@ -19,54 +19,46 @@ type SelectProps = {
   defaultSelected?: Option[];
 };
 export default function MultipleAccountsSelect({
-  onChange,
+  // onChange,
   options,
-  defaultSelected = [],
-}: // selected: selectedOptions = [],
+}: // defaultSelected = [],
+// selected: selectedOptions = [],
 // setSelected: setSelectedOptions,
 SelectProps) {
   const [showOptions, setShowOptions] = useState(false);
 
   const [selectedOptions, setSelectedOptions] =
-    useState<{ label: string; value: string }[]>(defaultSelected);
+    useState<{ label: string; value: string }[]>(options);
+
+  const handleClick = (option: Option) => {
+    let newSelected = [...selectedOptions];
+    const selectedIndex = selectedOptions.findIndex(
+      (op) => op.value === option.value,
+    );
+    const isSelected = newSelected[selectedIndex];
+
+    if (option.value === "all") {
+      if (isSelected) {
+        newSelected = [];
+      } else {
+        newSelected = options;
+      }
+    } else {
+      if (isSelected) {
+        newSelected.splice(selectedIndex, 1);
+      } else {
+        newSelected.push(option);
+      }
+    }
+    setSelectedOptions(newSelected);
+  };
 
   const toggleOptions = () => {
     setShowOptions(!showOptions);
   };
 
-  const handleOptionClick = (currentValue: Option[], option: Option) => {
-    console.log({ currentValue, option });
-    if (currentValue.length === 0) {
-      console.log({ empty: option });
-      setSelectedOptions([option]);
-      // onChange([option]);
-    } else if (currentValue.length > 0) {
-      const hasDuplicate = currentValue.some(
-        (selected) => selected.value === option.value,
-      );
-      if (hasDuplicate) {
-        const newValue = currentValue.filter(
-          (selected) => selected.value !== option.value,
-        );
-        console.log({ duplicate: newValue });
-        setSelectedOptions(newValue);
-        // onChange(newValue);
-        // console.log({ selectedOptions });
-      } else {
-        const newValue = [...currentValue, option];
-        console.log({ noDuplicate: newValue });
-        setSelectedOptions(newValue);
-        // onChange(newValue);
-        // console.log({ selectedOptions });
-      }
-    }
-  };
-
   console.log({ selectedOptions });
 
-  useMemo(() => {
-    onChange(selectedOptions);
-  }, [selectedOptions]);
   return (
     <div className="FormMultiSelect">
       <div className="FormMultiSelect__selectedValues" onClick={toggleOptions}>
@@ -80,23 +72,6 @@ SelectProps) {
         onDidDismiss={() => setShowOptions(false)}
         header={"Radio"}
         inputs={[
-          {
-            type: "checkbox",
-            label: "All accounts",
-            value: {
-              label: "All accounts",
-              value: "All accounts",
-            },
-            checked: selectedOptions.some(
-              (selected) => selected.value === "All accounts",
-            ),
-            handler: (e) => {
-              handleOptionClick(selectedOptions, {
-                label: "All accounts",
-                value: "All accounts",
-              });
-            },
-          },
           ...options.map(
             (option) =>
               ({
@@ -107,18 +82,18 @@ SelectProps) {
                   value: option.value,
                 },
                 checked: selectedOptions.some(
-                  (selected) => selected.value === "All accounts",
+                  (selectedOption) => selectedOption.value === option.value,
                 ),
-                handler: (e) => {
-                  handleOptionClick(selectedOptions, {
+                handler: () => {
+                  handleClick({
                     label: option.label,
                     value: option.value,
                   });
                 },
-              }) as AlertInput,
+              } as AlertInput),
           ),
         ]}
-      ></IonAlert>
+      />
     </div>
   );
 }
