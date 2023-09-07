@@ -1,0 +1,157 @@
+@import "@/theme/variables.scss";
+
+.MultiSelect {
+  width: 100%;
+  margin-top: 1px;
+  padding-left: 14px;
+
+  &:hover {
+    cursor: pointer;
+    background-color: rgb(241, 241, 241);
+  }
+
+  &__selectedValues {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    place-content: space-between;
+
+    padding: 8px 0;
+    width: 100%;
+
+    &ArrowIcon {
+      color: $gray;
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  &__checkbox {
+    &Wrapper {
+      padding: 10px 20px;
+    }
+
+    &Container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0px;
+    }
+
+    &Container:not(:last-child) {
+      margin-bottom: 16px;
+    }
+
+    &LabelContainer {
+      display: flex;
+      align-items: flex-start;
+      cursor: pointer;
+      user-select: none;
+      font-size: 14px;
+      color: #333;
+      text-align: left;
+    }
+
+    &Label {
+      margin-left: 10px;
+    }
+
+    &Input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+
+      &:checked + .MultiSelect__checkboxCustom {
+        background-color: #3880ff;
+        border: 0.5px solid #27f610;
+      }
+
+      &:checked + .MultiSelect__checkboxCustom::before {
+        opacity: 1;
+      }
+    }
+
+    &Custom {
+      position: relative;
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      min-width: 24px;
+      min-height: 24px;
+      border: 0.5px solid $gray;
+      border-radius: 100%;
+      margin-right: 6px;
+      transition: background-color 0.2s, border-color 0.2s;
+
+      &:before {
+        content: "✓";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 14px;
+        color: #fff;
+        opacity: 0;
+        transition: opacity 0.2s;
+        z-index: 100;
+      }
+    }
+  }
+
+  &__modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    transition: opacity 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease-in-out;
+
+    &ButtonsContainer {
+      display: flex;
+      justify-content: flex-end;
+      padding: 8px 0;
+      border-top: 0.5px solid $gray;
+    }
+
+    &TitleContainer {
+      padding-left: 23px;
+      padding-right: 23px;
+      text-align: start;
+      border-bottom: 0.5px solid $gray;
+    }
+
+    &Open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    &Open .MultiSelect__modalMain {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    &Close .MultiSelect__modalMain {
+      transform: scale(0.7);
+      opacity: 0;
+    }
+
+    &Main {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      text-align: center; /* If you have text content */
+      position: relative;
+      width: 270px;
+      transform: scale(1.5); /* Start from a larger size */
+      transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+      opacity: 0;
+    }
+  }
+}

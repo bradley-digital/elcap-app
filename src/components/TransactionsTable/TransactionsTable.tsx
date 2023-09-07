@@ -1,5 +1,7 @@
 import type { Transaction, StringMap } from "hooks/useWesternAllianceAccount";
 
+type Header = [keyof Transaction, string];
+
 import { useEffect, useMemo, useState } from "react";
 import { download } from "ionicons/icons";
 
@@ -21,8 +23,9 @@ import {
   IonSelect,
   IonSelectOption,
 } from "@ionic/react";
+
 import Table from "components/Table/Table";
-import Before from "./Before";
+import MultipleAccountsSelect from "components/MultiSelect/MultiSelect";
 
 const transactionTypeMap: StringMap = {};
 const wantedTypes = ["C", "D", "X"];
@@ -73,6 +76,7 @@ export default function TransactionsTable() {
   >([]);
   const { accounts, transactions } = useUserWesternAllianceAccount();
 
+  const timeRanges = ["YTD", "MTD", "3M", "1Y", "3Y", "5Y", "Max"];
   const accountNumbers =
     accounts?.map(({ accountNumber }) => accountNumber) || [];
 
@@ -119,6 +123,18 @@ export default function TransactionsTable() {
 
   if (!transactions) return null;
 
+  const accountOptions =
+    accounts
+      ?.map((account) => {
+        const truncatedAccountNumber = account.accountNumber.slice(-4);
+        const label = `${account.accountName} (...${truncatedAccountNumber})`;
+        return {
+          value: account.accountNumber,
+          label,
+        };
+      })
+      .sort((a, b) => a.label.localeCompare(b.label)) || [];
+
   function isInDateRange(transaction: Transaction): boolean {
     const date = new Date(transaction.postingDate);
     const currentDate = new Date();
@@ -157,20 +173,82 @@ export default function TransactionsTable() {
     return selectedAccountNumbers.includes(accountNumber);
   }
 
+  function exportCSV() {
+    // I don't like repeating information available in `columns`
+    // but they typing for `columns` does not allow easy access to the data
+    const headers: Header[] = [
+      ["postingDate", "Date"],
+      ["accountNumber", "Account"],
+      ["fullTrailerRecord", "Description"],
+      ["transactionType", "Type"],
+      ["transactionAmount", "Amount"],
+      ["accountBalance", "Balance"],
+    ];
+    const headerRow = headers.map((h) => h[1]);
+    const rows = filteredTransactions.map((t) => headers.map((h) => t[h[0]]));
+    rows.unshift(headerRow);
+    const csv = createCSV(rows);
+    const date = new Date();
+    const iso = date.toISOString().replace(/:|\./g, "-");
+    downloadCSV(csv, `elcap-transactions-${iso}.csv`);
+  }
+
+  const before = (
+    <>
+      <IonList className="Table__filters">
+        <IonItem>
+          <MultipleAccountsSelect
+            onChange={(e) => {
+              setSelectedAccountNumbers(e.map((o) => o.value));
+            }}
+            includeSelectAll
+            options={accountOptions}
+            modalTitle="Accounts"
+            label="Accounts"
+          />
+        </IonItem>
+        <IonItem>
+          <IonLabel position="stacked">Transaction Type</IonLabel>
+          <IonSelect
+            placeholder="Select Transaction Types"
+            onIonChange={(e) => setSelectedTransactionTypes(e.detail.value)}
+            multiple={true}
+            value={selectedTransactionTypes}
+          >
+            {Object.entries(transactionTypeMap).map(([key, value]) => (
+              <IonSelectOption key={key} value={key}>
+                {value}
+              </IonSelectOption>
+            ))}
+          </IonSelect>
+        </IonItem>
+        <IonItem>
+          <IonLabel position="stacked">Dates</IonLabel>
+          <IonSelect
+            placeholder="Select Date"
+            onIonChange={(e) => setSelectedTimeRange(e.detail.value)}
+            value={selectedTimeRange}
+          >
+            {timeRanges?.map((time) => (
+              <IonSelectOption key={time} value={time}>
+                {time}
+              </IonSelectOption>
+            ))}
+          </IonSelect>
+        </IonItem>
+      </IonList>
+      <div className="Table__toolbar">
+        <button
+          className="ion-activatable Table__button Table__download"
+          onClick={exportCSV}
+        >
+          <IonIcon icon={download} /> Export
+        </button>
+      </div>
+    </>
+  );
+
   return (
-    <Table
-      before={
-        <Before
-          selectedTransactionTypes={selectedTransactionTypes}
-          setSelectedTransactionTypes={setSelectedTransactionTypes}
-          selectedTimeRange={selectedTimeRange}
-          setSelectedTimeRange={setSelectedTimeRange}
-          transactions={transactions}
-          accounts={accounts}
-        />
-      }
-      columns={columns}
-      data={filteredTransactions}
-    />
+    <Table before={before} columns={columns} data={filteredTransactions} />
   );
 }
