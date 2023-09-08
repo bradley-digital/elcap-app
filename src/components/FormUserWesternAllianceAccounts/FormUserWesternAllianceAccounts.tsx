@@ -2,7 +2,13 @@ import type { Profile } from "hooks/useUser";
 import { useEffect, useState } from "react";
 
 // components
-import { IonCheckbox, IonLabel, IonList, IonItem } from "@ionic/react";
+import {
+  IonCheckbox,
+  IonLabel,
+  IonList,
+  IonItem,
+  IonAlert,
+} from "@ionic/react";
 
 // hooks
 import useUserManagement from "hooks/useUserManagement";
@@ -17,11 +23,17 @@ type Props = {
 
 export default function FormUserWesternAllianceAccounts({ profile }: Props) {
   const [activeAccounts, setActiveAccounts] = useState<string[]>([]);
+  const [openConfirmAccountSelection, setOpenConfirmAccountSelection] =
+    useState<{ isOpen: boolean; accountNumber: string; accountName: string }>({
+      isOpen: false,
+      accountNumber: "",
+      accountName: "",
+    });
 
   const { accounts } = useWesternAllianceAccount();
   const { update } = useUserManagement();
 
-  const { id, accounts: profileAccounts } = profile;
+  const { id, accounts: profileAccounts, firstName, lastName } = profile;
 
   useEffect(() => {
     const accountNumbers =
@@ -51,14 +63,67 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
     update({ id, accounts: newActiveAccounts });
   }
 
+  function handleConfirmAccountSelection({
+    accountNumber,
+    accountName,
+  }: {
+    accountNumber: string;
+    accountName: string;
+  }) {
+    setOpenConfirmAccountSelection({
+      isOpen: true,
+      accountNumber,
+      accountName,
+    });
+  }
+
   return (
     <IonList className="FormUserWesternAllianceAccounts">
+      <IonAlert
+        isOpen={openConfirmAccountSelection.isOpen}
+        subHeader={`You are about give ${firstName} ${lastName} access to ${openConfirmAccountSelection.accountName}.`}
+        message="Are you sure this is correct?"
+        buttons={[
+          {
+            text: "No",
+            role: "cancel",
+            handler: () =>
+              setOpenConfirmAccountSelection({
+                isOpen: false,
+                accountNumber: "",
+                accountName: "",
+              }),
+          },
+          {
+            text: "OK",
+            role: "confirm",
+            handler: () =>
+              handleCheckbox(openConfirmAccountSelection.accountNumber),
+          },
+        ]}
+        onDidDismiss={() =>
+          setOpenConfirmAccountSelection({
+            isOpen: false,
+            accountNumber: "",
+            accountName: "",
+          })
+        }
+      />
       {accountOptions.map(({ label, value }) => (
         <IonItem key={value}>
           <IonCheckbox
             className="FormUserWesternAllianceAccounts__checkbox"
             checked={activeAccounts.includes(value)}
-            onClick={() => handleCheckbox(value)}
+            onClick={() => {
+              if (activeAccounts.includes(value)) {
+                handleCheckbox(value);
+              } else {
+                handleConfirmAccountSelection({
+                  accountNumber: value,
+                  accountName: label,
+                });
+              }
+            }}
           />
           <IonLabel>{label}</IonLabel>
         </IonItem>
