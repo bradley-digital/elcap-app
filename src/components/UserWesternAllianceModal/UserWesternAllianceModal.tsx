@@ -8,12 +8,12 @@ import {
   IonTitle,
 } from "@ionic/react";
 import { useAtom } from "jotai";
-import { isOpenAtom } from "atoms/westernAllianceModal";
 
+import { isOpenAtom } from "atoms/usersWesternAllianceModal";
 import FormCreatWesternAllianceBase from "components/FormCreateWesternAllianceBase/FormCreateWesternAllianceBase";
 import useWesternAllianceAccount from "hooks/useWesternAllianceAccount";
 
-export default function WesternAllianceListModal() {
+export default function UsersWesternAllianceModal() {
   const [isOpen, setIsOpen] = useAtom(isOpenAtom);
   const { createAccount } = useWesternAllianceAccount();
 
