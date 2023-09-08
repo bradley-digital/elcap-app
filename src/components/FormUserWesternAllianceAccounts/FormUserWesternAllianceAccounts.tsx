@@ -36,8 +36,19 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
       return {
         value: account.accountNumber,
         label,
+        selected: activeAccounts.includes(account.accountNumber),
       };
     }) || [];
+
+  accountOptions.sort((a, b) => {
+    if (a.selected && !b.selected) {
+      return -1;
+    }
+    if (!a.selected && b.selected) {
+      return 1;
+    }
+    return 0;
+  });
 
   function handleCheckbox(value: string) {
     const newActiveAccounts = [...activeAccounts];
@@ -53,7 +64,7 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
 
   return (
     <IonList className="FormUserWesternAllianceAccounts">
-      {accountOptions.map(({ label, value }) => (
+      {accountOptions.map(({ label, value, selected }) => (
         <IonItem key={value}>
           <Checkbox
             className="FormUserWesternAllianceAccounts__checkbox"
