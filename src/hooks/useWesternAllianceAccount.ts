@@ -1,6 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
-
-// hooks
 import useAuth from "hooks/useAuth";
 
 export type StringMap = {
@@ -9,25 +7,49 @@ export type StringMap = {
 
 export type Account = {
   id: string;
-  accountBalance: number;
+  accountBalance: string;
   accountNumber: string;
-  accountTitle: string;
+  accountName: string;
   client: string;
+  routingNumber: string;
 };
 
 type AccountCreateInput = {
   accountBalance?: number;
   accountNumber: string;
-  accountTitle: string;
+  accountName: string;
   client: string;
 };
 
 type AccountUpdateInput = {
   id: string;
-  accountBalance?: number;
+  accountBalance?: string;
   accountNumber?: string;
-  accountTitle?: string;
+  accountName?: string;
   client?: string;
+};
+
+export type ExternalAccount = {
+  id: string;
+  accountName: string;
+  accountNumber: string;
+  financialInstitution: string;
+  intermediaryBankName?: string;
+  intermediaryRoutingNumber?: string;
+  intermediaryFurtherCreditTo?: string;
+  routingNumber: string;
+  useIntermediary: boolean;
+};
+
+export type ExternalAccountCreateInput = {
+  accountName: string;
+  accountNumber: string;
+  financialInstitution: string;
+  intermediaryBankName?: string;
+  intermediaryRoutingNumber?: string;
+  intermediaryFurtherCreditTo?: string;
+  routingNumber: string;
+  useIntermediary: boolean;
 };
 
 export type Transaction = {
@@ -89,15 +111,97 @@ export type Transaction = {
   transactionType: string;
 };
 
-const accountQueryKey = "westernAllianceAccount";
+export type Transfer = {
+  id: string;
+  amount: string;
+  externalAccount: string | null;
+  externalToAccount: {
+    id: string;
+    accountName: string;
+    accountNumber: string;
+    financialInstitution: string;
+    routingNumber: string;
+    intermediaryBankName: string | null;
+    intermediaryFurtherCreditTo: string | null;
+    intermediaryRoutingNumber: string | null;
+    useIntermediary: boolean;
+  } | null;
+  fromAccount: string;
+  memo: string | null;
+  status: string;
+  submittedBy: string;
+  toAccount: string | null;
+  transactionNumber: string | null;
+  transferDate: string;
+  type: string;
+  updatedBy: string | null;
+  userSubmittedBy: {
+    firstName: string;
+    lastName: string;
+  };
+  userUpdatedBy: null | {
+    firstName: string;
+    lastName: string;
+  };
+  westernAllianceFromAccount: {
+    accountNumber: string;
+    accountName: string;
+  };
+  westernAllianceToAccount: null | {
+    accountNumber: string;
+    accountName: string;
+  };
+};
+
+export type TransferTable = {
+  id: string;
+  accountName: string;
+  accountNumber: string;
+  amount: string;
+  status: string;
+  transferDate: string;
+};
+
+export type TransferCreateInput = {
+  amount: number;
+  externalAccount?: string;
+  fromAccount: string;
+  memo?: string;
+  toAccount?: string;
+  transferDate: Date;
+  type: string;
+};
+
+export type TransferUpdateInput = {
+  id: string;
+  status: string;
+};
 
 export const transactionTypeMap: StringMap = {
   C: "Deposit",
-  D: "Withdrawl",
+  D: "Withdrawal",
   F: "Float",
   M: "Miscellaneous Service Charge",
   X: "Reversed",
 };
+
+export const transferStatusMap: StringMap = {
+  APPROVED: "Approved",
+  COMPLETED: "Completed",
+  REVIEWED: "Reviewed",
+  REJECTED: "Rejected",
+  SUBMITTED: "Submitted",
+};
+
+export const transferTypeMap: StringMap = {
+  ACCOUNT: "Account",
+  WIRE: "Wire",
+};
+
+const queryKey = "westernAlliance";
+const accountQueryKey = `${queryKey}Account`;
+const transferQueryKey = `${queryKey}Transfer`;
+const externalAccountsQueryKey = `${queryKey}ExternalAccounts`;
 
 export default function useWesternAllianceAccount() {
   const { authApi } = useAuth();
@@ -108,9 +212,32 @@ export default function useWesternAllianceAccount() {
     getAccounts
   );
 
+  const { isSuccess: transfersIsSuccess, data: transfers } = useQuery(
+    transferQueryKey,
+    getTransfers
+  );
+
+  const { isSuccess: externalAccountsIsSuccess, data: externalAccounts } =
+    useQuery(externalAccountsQueryKey, getWesternAllianceExternalAccounts);
+
   const { mutate: createAccount } = useMutation(createAccountMutation, {
     onSuccess: () => {
       queryClient.invalidateQueries(accountQueryKey);
+    },
+  });
+
+  const { mutateAsync: createExternalAccount } = useMutation(
+    createExternalAccountMutation,
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(externalAccountsQueryKey);
+      },
+    }
+  );
+
+  const { mutateAsync: createTransfer } = useMutation(createTransferMutation, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(transferQueryKey);
     },
   });
 
@@ -126,9 +253,52 @@ export default function useWesternAllianceAccount() {
     },
   });
 
+  const { mutate: updateTransfer } = useMutation(updateTransferMutation, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(transferQueryKey);
+    },
+  });
+
   async function getAccounts() {
     const { data } = await authApi.get<Account[]>("/western-alliance/accounts");
-    data.sort((a, b) => a.accountTitle.localeCompare(b.accountTitle));
+    data.sort((a, b) => a.accountName.localeCompare(b.accountName));
+    return data;
+  }
+
+  async function getWesternAllianceExternalAccounts() {
+    const { data } = await authApi.get<ExternalAccount[]>(
+      "/western-alliance/external-accounts"
+    );
+    return data;
+  }
+
+  async function createTransferMutation(body: TransferCreateInput) {
+    const { data } = await authApi.post<Transfer>(
+      "/western-alliance/transfer",
+      body
+    );
+    return data;
+  }
+
+  async function createExternalAccountMutation(
+    body: ExternalAccountCreateInput
+  ) {
+    const { data } = await authApi.post<ExternalAccount>(
+      "/western-alliance/external-account",
+      body
+    );
+    return data;
+  }
+
+  async function getTransfers() {
+    const { data } = await authApi.get<Transfer[]>(
+      "/western-alliance/transfers"
+    );
+    data.sort((t1, t2) => {
+      const d1 = new Date(t1.transferDate);
+      const d2 = new Date(t2.transferDate);
+      return d2.getTime() - d1.getTime();
+    });
     return data;
   }
 
@@ -155,12 +325,27 @@ export default function useWesternAllianceAccount() {
     return data;
   }
 
+  async function updateTransferMutation(body: TransferUpdateInput) {
+    const { data } = await authApi.patch<Transfer>(
+      "/western-alliance/transfer",
+      body
+    );
+    return data;
+  }
+
   return {
     accountQueryKey,
     accountsIsSuccess,
     accounts,
     createAccount,
     deleteAccount,
+    transfers,
+    transfersIsSuccess,
     updateAccount,
+    updateTransfer,
+    createTransfer,
+    createExternalAccount,
+    externalAccounts,
+    externalAccountsIsSuccess,
   };
 }

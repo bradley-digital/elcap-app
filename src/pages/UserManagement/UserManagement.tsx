@@ -19,8 +19,8 @@ import useUserManagement from "hooks/useUserManagement";
 import { add } from "ionicons/icons";
 
 export default function UserManagement() {
-  const { isSuccess, data } = useUserManagement();
   const [, setIsOpen] = useAtom(isOpenAtom);
+  const { isSuccess, data } = useUserManagement();
 
   function openModal() {
     setIsOpen(true);
@@ -28,7 +28,7 @@ export default function UserManagement() {
 
   if (isSuccess && typeof data !== "undefined") {
     return (
-      <PageTemplate title="User management">
+      <PageTemplate title="User management" showLogo>
         <IonGrid>
           <IonRow className="ion-justify-content-center">
             <IonCol size-md="8" size-lg="6">

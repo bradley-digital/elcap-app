@@ -9,16 +9,17 @@ import { IonIcon, IonItem, IonInput, IonLabel, IonNote } from "@ionic/react";
 import "./FormInput.scss";
 
 type Props = {
-  label?: string;
-  icon?: string;
   className?: string;
+  icon?: string;
+  label?: string;
+  note?: string;
 } & ComponentProps<typeof IonInput> &
   FieldHookConfig<string>;
 
 export default function FormInput(props: Props) {
   const [field, meta] = useField(props);
 
-  const { label, icon, className, ...rest } = props;
+  const { className, icon, label, note, ...rest } = props;
 
   return (
     <IonItem
@@ -35,6 +36,7 @@ export default function FormInput(props: Props) {
         onIonBlur={field.onBlur}
         onIonChange={field.onChange}
       />
+      {!!note && !meta.error && <IonNote slot="helper">{note}</IonNote>}
       {!!meta.error && <IonNote slot="error">{meta.error}</IonNote>}
     </IonItem>
   );

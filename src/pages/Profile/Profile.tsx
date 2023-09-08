@@ -1,32 +1,32 @@
+import type { RouteComponentProps } from "react-router-dom";
+import type { MenuLink } from "components/MenuLinks/MenuLinks";
+import { create, personCircle } from "ionicons/icons";
+
 // components
-import { IonCol, IonGrid, IonRow } from "@ionic/react";
-import PageTemplate from "components/PageTemplate/PageTemplate";
-import ProfileCard from "components/ProfileCard/ProfileCard";
-import FormAccount from "components/FormAccount/FormAccount";
-import LogoutButton from "components/LogoutButton/LogoutButton";
+import SplitPaneTemplate from "components/SplitPaneTemplate/SplitPaneTemplate";
+import ProfileRoutes from "routes/ProfileRoutes";
 
-// hooks
-import useUser from "hooks/useUser";
+export default function Profile(routeProps: RouteComponentProps) {
+  const { match } = routeProps;
 
-export default function Profile() {
-  const { isSuccess, data } = useUser();
+  const menuLinks: MenuLink[] = [
+    {
+      id: 1,
+      icon: personCircle,
+      href: `${match.url}/overview`,
+      label: "Overview",
+    },
+    {
+      id: 2,
+      icon: create,
+      href: `${match.url}/onboarding`,
+      label: "Onboarding",
+    },
+  ];
 
-  if (isSuccess && typeof data !== "undefined") {
-    return (
-      <PageTemplate title="Profile">
-        <IonGrid>
-          <IonRow className="ion-justify-content-center">
-            <IonCol size-md="8" size-lg="6">
-              <ProfileCard profile={data} />
-              <FormAccount profile={data} />
-              <LogoutButton className="w-100">Logout</LogoutButton>
-            </IonCol>
-          </IonRow>
-        </IonGrid>
-      </PageTemplate>
-    );
-  }
-
-  // Need better error state
-  return null;
+  return (
+    <SplitPaneTemplate title="Profile" menuId="profile" menuLinks={menuLinks}>
+      <ProfileRoutes {...routeProps} />
+    </SplitPaneTemplate>
+  );
 }

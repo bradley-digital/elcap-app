@@ -9,7 +9,7 @@ type Props = {
 
 export default function UserWesternAlliance({ profile }: Props) {
   return (
-    <PageTemplate title="Western Alliance" menuId="user">
+    <PageTemplate title="Western Alliance accounts" menuId="user">
       <IonGrid>
         <IonRow className="ion-justify-content-center">
           <IonCol size-md="8" size-lg="6">

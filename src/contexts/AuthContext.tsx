@@ -43,6 +43,7 @@ type ResetPasswordBody = {
 type SetPasswordBody = {
   registerToken: string;
   password: string;
+  otp: string;
 };
 
 type AuthProviderProps = {

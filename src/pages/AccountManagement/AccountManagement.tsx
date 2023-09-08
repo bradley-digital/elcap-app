@@ -29,7 +29,7 @@ export default function WesternAllianceManagement() {
 
   if (accountsIsSuccess && typeof accounts !== "undefined") {
     return (
-      <PageTemplate title="Account management">
+      <PageTemplate title="Account management" showLogo>
         <IonGrid>
           <IonRow className="ion-justify-content-center">
             <IonCol size-md="8" size-lg="6">

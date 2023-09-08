@@ -38,10 +38,6 @@ const roleOptions = [
     label: "ADMIN",
   },
   {
-    value: "PAYMENTS",
-    label: "PAYMENTS",
-  },
-  {
     value: "PORTAL",
     label: "PORTAL",
   },
@@ -93,45 +89,35 @@ export default function FormCreateUser() {
             type="text"
             icon={pencil}
           />
-
           <FormInput
             label="Last Name"
             name="lastName"
             type="text"
             icon={pencil}
           />
-
           <FormInput label="Email" name="email" type="email" icon={pencil} />
-
           <FormInput label="Phone" name="phone" type="text" icon={pencil} />
-
           <FormInput
             label="Company Name"
             name="companyName"
             type="text"
             icon={pencil}
           />
-
           <FormInput
             label="Address line 1"
             name="addressLine1"
             type="text"
             icon={pencil}
           />
-
           <FormInput
             label="Address line 2"
             name="addressLine2"
             type="text"
             icon={pencil}
           />
-
           <FormInput label="Country" name="country" type="text" icon={pencil} />
-
           <FormInput label="State" name="state" type="text" icon={pencil} />
-
           <FormSelect label="Role" name="role" options={roleOptions} />
-
           <SubmitButton isSubmitting={isSubmitting}>
             Create New User
           </SubmitButton>

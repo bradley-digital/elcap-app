@@ -12,12 +12,7 @@ import {
 
 // components
 import { Form, Formik } from "formik";
-import {
-  IonButton,
-  IonIcon,
-  IonList,
-  IonListHeader,
-} from "@ionic/react";
+import { IonButton, IonIcon, IonList, IonListHeader } from "@ionic/react";
 import { alertCircle, checkmarkCircle, closeCircle } from "ionicons/icons";
 import FormInput from "components/FormInput/FormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
@@ -49,7 +44,7 @@ export default function FormDocfox() {
   );
   const initialValues = useMemo(
     () => buildInitialValues(application, schema, templateId),
-    [application, schema]
+    [application, schema, isSubmitting]
   );
   const validationObject = useMemo(() => buildValidation(schema), [schema]);
   const formSections = useMemo(() => buildFormSections(schema), [schema]);
@@ -119,17 +114,20 @@ export default function FormDocfox() {
                 application,
                 values
               );
-              if (!Array.isArray(patchData)) return;
-              for (const data of patchData) {
-                await patchProfileData(data);
+              if (Array.isArray(patchData)) {
+                for (const data of patchData) {
+                  await patchProfileData(data);
+                }
               }
-              if (!Array.isArray(deleteData)) return;
-              for (const data of deleteData) {
-                await deleteProfileData(data);
+              if (Array.isArray(deleteData)) {
+                for (const data of deleteData) {
+                  await deleteProfileData(data);
+                }
               }
-              if (!Array.isArray(postData)) return;
-              for (const data of postData) {
-                await postProfileData(data);
+              if (Array.isArray(postData)) {
+                for (const data of postData) {
+                  await postProfileData(data);
+                }
               }
             }
             updateApplication();
@@ -144,9 +142,7 @@ export default function FormDocfox() {
                 name="kyc_entity_template_id"
               />
               {formInputs}
-              <SubmitButton isSubmitting={isSubmitting}>
-                Submit
-              </SubmitButton>
+              <SubmitButton isSubmitting={isSubmitting}>Submit</SubmitButton>
             </IonList>
           </Form>
         </Formik>

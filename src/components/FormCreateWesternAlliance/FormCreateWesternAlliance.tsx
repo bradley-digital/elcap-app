@@ -4,8 +4,9 @@ import * as Yup from "yup";
 // lib
 import {
   accountNumberValidation,
-  accountTitleValidation,
+  accountNameValidation,
   clientValidation,
+  routingNumberValidation,
 } from "lib/formValidation";
 
 // icons
@@ -25,21 +26,23 @@ import { isOpenAtom } from "atoms/westernAllianceModal";
 import useWesternAllianceAccount from "hooks/useWesternAllianceAccount";
 
 export default function FormCreateWesternAlliance() {
-  const { createAccount } = useWesternAllianceAccount();
-  const [, setIsOpen] = useAtom(isOpenAtom);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [, setIsOpen] = useAtom(isOpenAtom);
+  const { createAccount } = useWesternAllianceAccount();
 
   return (
     <Formik
       initialValues={{
         accountNumber: "",
-        accountTitle: "",
+        accountName: "",
         client: "",
+        routingNumber: "",
       }}
       validationSchema={Yup.object({
         accountNumber: accountNumberValidation,
-        accountTitle: accountTitleValidation,
+        accountName: accountNameValidation,
         client: clientValidation,
+        routingNumber: routingNumberValidation,
       })}
       onSubmit={(values) => {
         setIsSubmitting(true);
@@ -51,21 +54,19 @@ export default function FormCreateWesternAlliance() {
       <Form>
         <IonList>
           <FormInput label="Client" name="client" type="text" icon={pencil} />
-
           <FormInput
-            label="Account Title"
-            name="accountTitle"
+            label="Account Name"
+            name="accountName"
             type="text"
             icon={pencil}
           />
-
           <FormInput
             label="Account Number"
             name="accountNumber"
             type="text"
             icon={pencil}
           />
-
+          <FormInput label="Routing number" name="routingNumber" type="text" />
           <SubmitButton isSubmitting={isSubmitting}>
             Create New Account
           </SubmitButton>

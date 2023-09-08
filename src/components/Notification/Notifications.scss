@@ -1,0 +1,14 @@
+.Notifications {
+  &__none {
+    display: block;
+    margin-top: 16px;
+  }
+
+  &__read {
+    background-color: rgb(255, 255, 255);
+  }
+
+  &__unread {
+    --ion-item-background: rgb(241, 239, 239);
+  }
+}

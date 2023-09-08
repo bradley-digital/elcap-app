@@ -2,6 +2,7 @@ import type { ComponentProps } from "react";
 import type { FieldHookConfig } from "formik";
 import { useField } from "formik";
 import cn from "classnames";
+import hash from "object-hash";
 
 // components
 import {
@@ -16,27 +17,28 @@ import {
 import "./FormSelect.scss";
 
 type Props = {
+  className?: string;
+  icon?: string;
   label: string;
+  note?: string;
   options: {
     value: string;
     label: string;
   }[];
-  icon?: string;
-  className?: string;
   position?: "fixed" | "stacked" | "floating";
 } & ComponentProps<typeof IonSelect> &
   FieldHookConfig<string>;
 
 export default function FormSelect(props: Props) {
   const [field, meta] = useField(props);
-  const { label, icon, options, className, position, ...rest } = props;
+  const { className, icon, label, note, options, position, ...rest } = props;
 
   const selectedOption = options.find(
     (option) => option.value === field.value
-  ) || { value: "", label: "" };
+  ) ?? { value: "", label: "" };
 
   const interfaceOptions = {
-    cssClass: className || "",
+    cssClass: className ?? "",
   };
 
   return (
@@ -46,7 +48,7 @@ export default function FormSelect(props: Props) {
         "ion-touched": meta.touched,
       })}
     >
-      <IonLabel position={position || "stacked"}>{label}</IonLabel>
+      <IonLabel position={position ?? "stacked"}>{label}</IonLabel>
       {icon && <IonIcon icon={icon} className="FormSelect__icon" />}
 
       <IonSelect
@@ -56,14 +58,15 @@ export default function FormSelect(props: Props) {
         onIonChange={field.onChange}
         {...rest}
       >
-        {options.map((option, i) => (
-          <IonSelectOption key={i} value={option.value}>
+        {options.map((option) => (
+          <IonSelectOption key={hash(option)} value={option.value}>
             {option.label}
           </IonSelectOption>
         ))}
       </IonSelect>
 
-      {meta.error && <IonNote slot="error">{meta.error}</IonNote>}
+      {!!note && !meta.error && <IonNote slot="helper">{note}</IonNote>}
+      {!!meta.error && <IonNote slot="error">{meta.error}</IonNote>}
     </IonItem>
   );
 }

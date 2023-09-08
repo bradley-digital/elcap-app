@@ -3,8 +3,17 @@ import { useEffect, useState } from "react";
 import "chartjs-adapter-moment";
 import { v4 as uuidv4 } from "uuid";
 
+// lib
+import { currency, date } from "lib/formats";
+
 // hooks
 import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
+
+const dateOptions: Intl.DateTimeFormatOptions = {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+};
 
 export default function useChartData(
   selectedTimeRange: string,
@@ -29,7 +38,12 @@ export default function useChartData(
     fetchData();
   }, [selectedTimeRange]);
 
-  if (!backfilledTransactions) {
+  if (
+    !backfilledTransactions ||
+    backfilledTransactions.length === 0 ||
+    !accounts ||
+    accounts.length === 0
+  ) {
     return {
       isSuccess: false,
       data: undefined,
@@ -38,6 +52,13 @@ export default function useChartData(
       transactionTypes: undefined,
     };
   }
+
+  const transactionsSortedByFirst = backfilledTransactions
+    ? backfilledTransactions?.sort(
+        (a, b) =>
+          Number(new Date(a.postingDate)) - Number(new Date(b.postingDate))
+      )
+    : [];
 
   const accountsBalanceTotal = accounts?.reduce(
     (acc: number, account: any) => acc + Number(account.accountBalance),
@@ -73,6 +94,8 @@ export default function useChartData(
   accounts?.forEach((account: any) => {
     individualAccounts.push({
       ...account,
+      accountName: account.accountName,
+      accountNumber: account.accountNumber,
       transactions: filteredAccountTransactions(account.accountNumber),
     });
   });
@@ -80,7 +103,8 @@ export default function useChartData(
   // account smoothing
   individualAccounts.forEach((account: any) => {
     // if transactions happen on the same day, combine them
-    account.transactions = account.transactions.reduce(
+    if (account.transactions?.length === 0) return;
+    account.transactions = account.transactions?.reduce(
       (acc: any, curr: any) => {
         const existingTransaction = acc.find(
           (t: any) => t.postingDate === curr.postingDate
@@ -101,6 +125,43 @@ export default function useChartData(
 
     // loop through accounts from within each account
     individualAccounts.forEach((indvAccount: any) => {
+      // start logic to add transactions for every day
+      const firstPostingDate = new Date(
+        transactionsSortedByFirst[0]?.postingDate
+      ).getTime();
+
+      const transactionsSortedByLast = indvAccount.transactions.sort(
+        (a: any, b: any) =>
+          Number(new Date(b.postingDate)) - Number(new Date(a.postingDate))
+      );
+      const lastPostingDate = new Date(
+        transactionsSortedByLast[0]?.postingDate
+      ).getTime();
+
+      const daysBetween = Math.floor(
+        (lastPostingDate - firstPostingDate) / (1000 * 60 * 60 * 24)
+      );
+
+      for (let i = 0; i < daysBetween; i++) {
+        const postingDate = new Date(
+          firstPostingDate + i * 24 * 60 * 60 * 1000
+        );
+
+        const existingTransaction = indvAccount.transactions.find(
+          (t: any) => t.postingDate === postingDate.toISOString()
+        );
+
+        if (!existingTransaction) {
+          indvAccount.transactions.push({
+            postingDate: postingDate.toISOString(),
+            id: uuidv4(),
+            accountNumber: indvAccount.accountNumber,
+            transactionAmount: "0",
+          });
+        }
+      }
+      // end logic to add transactions for every day
+
       // exclude self
       if (account.accountNumber === indvAccount.accountNumber) {
         return;
@@ -122,7 +183,8 @@ export default function useChartData(
       // add a new transaction to indvAccount with the postingDates not in IndvAccount
       postingDatesNotInIndvAccount.forEach((postingDate: any) => {
         // find the previous transaction with the date closest to the postingDate
-        const previousTransaction = indvAccount.transactions.reduce(
+        if (indvAccount.transactions?.length === 0) return;
+        const previousTransaction = indvAccount.transactions?.reduce(
           (prev: any, curr: any) => {
             return Math.abs(
               Number(new Date(curr.postingDate)) - Number(new Date(postingDate))
@@ -242,13 +304,7 @@ export default function useChartData(
     );
 
     transactionsWithBalanceByYear.forEach((balance) => {
-      const date = new Date(balance.postingDate);
-      const options: Intl.DateTimeFormatOptions = {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      };
-      const shortDate = date.toLocaleDateString("en-US", options);
+      const shortDate = date(balance.postingDate, dateOptions);
 
       const balanceCoordinates = {
         x: Date.parse(shortDate),
@@ -257,6 +313,7 @@ export default function useChartData(
 
       balanceData.push(balanceCoordinates);
     });
+
 
     return {
       balanceData,
@@ -294,7 +351,7 @@ export default function useChartData(
       );
 
       return {
-        label: account.accountTitle,
+        label: account.accountName,
         fill: "start",
         showLine: true,
         data: balanceData,
@@ -330,21 +387,12 @@ export default function useChartData(
             }
 
             if (context.parsed.x !== null) {
-              const date = new Date(context.parsed.x);
-              const options: Intl.DateTimeFormatOptions = {
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-              };
-              const shortDate = date.toLocaleDateString("en-US", options);
+              const shortDate = date(context.parsed.x, dateOptions);
               label += shortDate + " | ";
             }
 
             if (context.parsed.y !== null) {
-              label += new Intl.NumberFormat("en-US", {
-                style: "currency",
-                currency: "USD",
-              }).format(context.parsed.y);
+              label += currency(context.parsed.y);
             }
             return label;
           },

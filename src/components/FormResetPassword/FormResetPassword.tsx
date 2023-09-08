@@ -53,9 +53,7 @@ export default function FormResetPassword() {
           type="password"
           placeholder="Password"
         />
-        <SubmitButton isSubmitting={isSubmitting}>
-          Reset Password
-        </SubmitButton>
+        <SubmitButton isSubmitting={isSubmitting}>Reset Password</SubmitButton>
       </Form>
     </Formik>
   );

@@ -1,6 +1,9 @@
 import { Fragment } from "react";
 import hash from "object-hash";
 
+// lib
+import { date as dateFormat } from "lib/formats";
+
 // components
 import {
   IonItem,
@@ -20,13 +23,13 @@ type Props = {
   transactions: Transaction[];
 };
 
-export default function PayTransactionsTransaction({ transactions }: Props) {
-  const dateOptions: Intl.DateTimeFormatOptions = {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  };
+const dateOptions: Intl.DateTimeFormatOptions = {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+};
 
+export default function PayTransactionsTransaction({ transactions }: Props) {
   let currentDate = "";
 
   return (
@@ -40,11 +43,7 @@ export default function PayTransactionsTransaction({ transactions }: Props) {
 
           if (date !== currentDate) {
             currentDate = date;
-            const dateObj = new Date(date);
-            const formattedDate = dateObj.toLocaleDateString(
-              "en-US",
-              dateOptions
-            );
+            const formattedDate = dateFormat(date, dateOptions);
             divider = <IonItemDivider>{formattedDate}</IonItemDivider>;
           }
 

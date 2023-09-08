@@ -50,6 +50,7 @@ export default function DashboardOverview() {
     setIsChartVisible(true);
   });
 
+
   if (
     !isSuccess ||
     typeof data === "undefined" ||
@@ -58,17 +59,17 @@ export default function DashboardOverview() {
     typeof accountsCurrentBalanceTotal === "undefined" ||
     typeof transactionTypes === "undefined"
   ) {
-    return null;
+    // return null;
   }
 
-  const currentBalance = currency.format(accountsCurrentBalanceTotal);
+  const currentBalance = currency(accountsCurrentBalanceTotal);
   const timeRange = ["YTD", "MTD", "3M", "1Y", "3Y", "5Y", "Max"];
 
   const accountOptions =
     accounts
       ?.map((account) => {
         const truncatedAccountNumber = account.accountNumber.slice(-4);
-        const label = `${account.accountTitle} (...${truncatedAccountNumber})`;
+        const label = `${account.accountName} (...${truncatedAccountNumber})`;
         return {
           value: account.accountNumber,
           label,
@@ -104,7 +105,7 @@ export default function DashboardOverview() {
               {accounts?.map((account) => {
                 return (
                   <p key={hash(account)}>
-                    {`${account.accountTitle}: ${currency.format(
+                    {`${account.accountName}: ${currency(
                       Number(account.accountBalance)
                     )}`}
                   </p>

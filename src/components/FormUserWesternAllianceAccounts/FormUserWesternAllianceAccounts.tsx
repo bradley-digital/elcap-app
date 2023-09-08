@@ -2,13 +2,7 @@ import type { Profile } from "hooks/useUser";
 import { useEffect, useState } from "react";
 
 // components
-import {
-  IonCheckbox,
-  IonLabel,
-  IonList,
-  IonItem,
-  IonListHeader,
-} from "@ionic/react";
+import { IonCheckbox, IonLabel, IonList, IonItem } from "@ionic/react";
 
 // hooks
 import useUserManagement from "hooks/useUserManagement";
@@ -38,7 +32,7 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
   const accountOptions =
     accounts?.map((account) => {
       const truncatedAccountNumber = account.accountNumber.slice(-4);
-      const label = `${account.accountTitle} (...${truncatedAccountNumber})`;
+      const label = `${account.accountName} (...${truncatedAccountNumber})`;
       return {
         value: account.accountNumber,
         label,
@@ -59,7 +53,6 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
 
   return (
     <IonList className="FormUserWesternAllianceAccounts">
-      <IonListHeader>Western Alliance Accounts</IonListHeader>
       {accountOptions.map(({ label, value }) => (
         <IonItem key={value}>
           <IonCheckbox

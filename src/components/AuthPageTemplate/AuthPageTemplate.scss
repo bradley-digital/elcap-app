@@ -1,12 +1,12 @@
 @import "@/theme/variables.scss";
 
 .AuthPageTemplate {
-  padding: 16px;
-  max-width: 420px;
-  margin: 0 auto;
-
   ion-text {
     color: $gray;
+
+    h1, h2, h3, h4, h5, h6 {
+      color: $black;
+    }
   }
 
   a {
@@ -32,6 +32,12 @@
     ion-button {
       width: 100%;
     }
+  }
+
+  &__inner {
+    max-width: 420px;
+    margin: 0 auto;
+    padding: 16px;
   }
 
   &__title {

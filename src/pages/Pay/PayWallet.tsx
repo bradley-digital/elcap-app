@@ -18,7 +18,7 @@ import { paymentMethods } from "pages/Pay/consts";
 
 export default function Wallet() {
   return (
-    <PageTemplate title="Payment methods" menuId="main">
+    <PageTemplate title="Payment methods" menuId="pay">
       <IonGrid>
         <IonRow className="ion-justify-content-center">
           <IonCol size-md="8" size-lg="6">
