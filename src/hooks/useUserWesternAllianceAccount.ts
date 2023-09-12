@@ -107,7 +107,7 @@ export default function useUserWesternAlliance(selectedTimeRange: string) {
       "/users/western-alliance/backfilled-transactions",
       { params: { selectedTimeRange: selectedTimeRange } }
     );
-    data.sort((t1, t2) => {
+    return data.sort((t1, t2) => {
       const d1 = new Date(t1.postingDate);
       const d2 = new Date(t2.postingDate);
       return d2.getTime() - d1.getTime();

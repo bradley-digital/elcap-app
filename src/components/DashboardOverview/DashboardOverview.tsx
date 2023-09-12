@@ -50,7 +50,6 @@ export default function DashboardOverview() {
     setIsChartVisible(true);
   });
 
-
   if (
     !isSuccess ||
     typeof data === "undefined" ||
@@ -59,7 +58,7 @@ export default function DashboardOverview() {
     typeof accountsCurrentBalanceTotal === "undefined" ||
     typeof transactionTypes === "undefined"
   ) {
-    // return null;
+    return null;
   }
 
   const currentBalance = currency(accountsCurrentBalanceTotal);
