@@ -17,10 +17,11 @@ const dateOptions: Intl.DateTimeFormatOptions = {
 
 export default function useChartData(
   selectedTimeRange: string,
-  selectedAccountNumbers: string[]
+  selectedAccountNumbers: string[],
+  sortBy?: string
 ) {
   const { accounts, getWesternAllianceBackfilledTransactions } =
-    useUserWesternAllianceAccount(selectedTimeRange);
+    useUserWesternAllianceAccount(selectedTimeRange, sortBy);
 
   const [backfilledTransactions, setBackfilledTransactions] =
     useState<any>(null);

@@ -31,6 +31,7 @@ export default function DashboardOverview() {
   const [isChartVisible, setIsChartVisible] = useState(false);
   const [selectedAccountNumbers, setSelectedAccountNumbers] = useState([""]);
   const [selectedTimeRange, setSelectedTimeRange] = useState("YTD");
+  const sortBy = "month";
   const {
     isSuccess,
     data,
@@ -38,7 +39,8 @@ export default function DashboardOverview() {
     options,
     accountsCurrentBalanceTotal,
     transactionTypes,
-  } = useChartData(selectedTimeRange, selectedAccountNumbers);
+  } = useChartData(selectedTimeRange, selectedAccountNumbers, sortBy);
+
 
   useEffect(() => {
     setSelectedAccountNumbers(

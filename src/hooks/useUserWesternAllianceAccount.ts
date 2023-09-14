@@ -26,7 +26,10 @@ const westernAllianceTransactionsQueryKey = `${queryKey}WesternAllianceTransacti
 const westernAllianceTransferQueryKey = `${queryKey}WesternAllianceTransfer`;
 const westernAllianceBackfilledTransactionsQueryKey = `${queryKey}WesternAllianceBackfilledTransactions`;
 
-export default function useUserWesternAlliance(selectedTimeRange: string) {
+export default function useUserWesternAlliance(
+  selectedTimeRange: string,
+  sortBy?: string
+) {
   const { authApi } = useAuth();
   const queryClient = useQueryClient();
 
@@ -105,7 +108,9 @@ export default function useUserWesternAlliance(selectedTimeRange: string) {
   async function getWesternAllianceBackfilledTransactions() {
     const { data } = await authApi.get<Transaction[]>(
       "/users/western-alliance/backfilled-transactions",
-      { params: { selectedTimeRange: selectedTimeRange } }
+      {
+        params: { selectedTimeRange: selectedTimeRange, sortBy: sortBy ?? "" },
+      }
     );
     return data.sort((t1, t2) => {
       const d1 = new Date(t1.postingDate);
