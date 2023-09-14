@@ -64,7 +64,7 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
 
   return (
     <IonList className="FormUserWesternAllianceAccounts">
-      {accountOptions.map(({ label, value, selected }) => (
+      {accountOptions.map(({ label, value }) => (
         <IonItem key={value}>
           <Checkbox
             className="FormUserWesternAllianceAccounts__checkbox"
