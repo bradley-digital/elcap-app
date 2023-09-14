@@ -64,11 +64,11 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
 
   return (
     <IonList className="FormUserWesternAllianceAccounts">
-      {accountOptions.map(({ label, value }) => (
+      {accountOptions.map(({ label, value, selected }) => (
         <IonItem key={value}>
           <Checkbox
             className="FormUserWesternAllianceAccounts__checkbox"
-            checked={activeAccounts.includes(value)}
+            checked={selected}
             onChange={() => {
               handleCheckbox(value);
             }}
