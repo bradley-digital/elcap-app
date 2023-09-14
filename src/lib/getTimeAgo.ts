@@ -1,5 +1,7 @@
 import moment from "moment";
 
+// There is a date function in lib/formats
+// Might want to create a file for dates, lib/dates
 export function getTimeAgo(timestamp: string): string {
   const currentTime = moment();
   const targetTime = moment(timestamp);
