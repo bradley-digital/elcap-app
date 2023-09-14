@@ -2,7 +2,7 @@ import type { Profile } from "hooks/useUser";
 import { useEffect, useState } from "react";
 
 // components
-import { IonCheckbox, IonLabel, IonList, IonItem } from "@ionic/react";
+import { IonLabel, IonList, IonItem } from "@ionic/react";
 
 // hooks
 import useUserManagement from "hooks/useUserManagement";
@@ -10,6 +10,7 @@ import useWesternAllianceAccount from "hooks/useWesternAllianceAccount";
 
 // styles
 import "./FormUserWesternAllianceAccounts.scss";
+import Checkbox from "components/Checkbox/Checkbox";
 
 type Props = {
   profile: Profile;
@@ -17,11 +18,10 @@ type Props = {
 
 export default function FormUserWesternAllianceAccounts({ profile }: Props) {
   const [activeAccounts, setActiveAccounts] = useState<string[]>([]);
-
   const { accounts } = useWesternAllianceAccount();
   const { update } = useUserManagement();
 
-  const { id, accounts: profileAccounts } = profile;
+  const { id, accounts: profileAccounts, firstName, lastName } = profile;
 
   useEffect(() => {
     const accountNumbers =
@@ -55,10 +55,15 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
     <IonList className="FormUserWesternAllianceAccounts">
       {accountOptions.map(({ label, value }) => (
         <IonItem key={value}>
-          <IonCheckbox
+          <Checkbox
             className="FormUserWesternAllianceAccounts__checkbox"
             checked={activeAccounts.includes(value)}
-            onClick={() => handleCheckbox(value)}
+            onChange={() => {
+              handleCheckbox(value);
+            }}
+            withWarning
+            warningHeader={`You are about give ${firstName} ${lastName} access to ${label}.`}
+            warningMessage="Are you sure this is correct?"
           />
           <IonLabel>{label}</IonLabel>
         </IonItem>
