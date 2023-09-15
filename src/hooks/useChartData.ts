@@ -1,7 +1,6 @@
 import type { Transaction } from "hooks/useWesternAllianceAccount";
 import { useEffect, useState } from "react";
 import "chartjs-adapter-moment";
-import { v4 as uuidv4 } from "uuid";
 
 // lib
 import { currency, date } from "lib/formats";
@@ -18,7 +17,7 @@ const dateOptions: Intl.DateTimeFormatOptions = {
 export default function useChartData(
   selectedTimeRange: string,
   selectedAccountNumbers: string[],
-  sortBy?: string
+  sortBy?: string,
 ) {
   const { accounts, getWesternAllianceBackfilledTransactions } =
     useUserWesternAllianceAccount(selectedTimeRange, sortBy);
@@ -54,23 +53,16 @@ export default function useChartData(
     };
   }
 
-  const transactionsSortedByFirst = backfilledTransactions
-    ? backfilledTransactions?.sort(
-        (a, b) =>
-          Number(new Date(a.postingDate)) - Number(new Date(b.postingDate))
-      )
-    : [];
-
   const accountsBalanceTotal = accounts?.reduce(
     (acc: number, account: any) => acc + Number(account.accountBalance),
-    0
+    0,
   );
 
   const isSingleAccountSelected = selectedAccountNumbers.length < 2;
 
   const filteredAccountTransactions = (accountNumber: string | number) => {
     const accountsByAccountNumber = backfilledTransactions?.filter(
-      (transaction) => transaction.accountNumber === accountNumber
+      (transaction) => transaction.accountNumber === accountNumber,
     );
 
     const filteredTransactions = accountsByAccountNumber.map(
@@ -85,7 +77,7 @@ export default function useChartData(
           transactionIsReversed: transaction.transactionIsReversed,
           transactionType: transaction.transactionType,
         };
-      }
+      },
     );
 
     return filteredTransactions;
@@ -102,11 +94,9 @@ export default function useChartData(
     });
   });
 
-
-
   const selectedAccounts = isSingleAccountSelected
     ? individualAccounts.filter(
-        (account: any) => account.accountNumber === selectedAccountNumbers[0]
+        (account: any) => account.accountNumber === selectedAccountNumbers[0],
       )
     : individualAccounts;
 
@@ -116,56 +106,63 @@ export default function useChartData(
 
   function createChartData(
     accountTransactions: Transaction[],
-    accountBalance: number
+    accountBalance: number,
   ) {
     const balanceData: Array<any> = [];
 
     accountTransactions.sort(
       (a, b) =>
-        new Date(a.postingDate).getTime() - new Date(b.postingDate).getTime()
+        new Date(a.postingDate).getTime() - new Date(b.postingDate).getTime(),
     );
 
     let balanceAtTimeOfTransaction = accountBalance;
 
     const transactionsWithBalance = accountTransactions
       .reverse()
-      .map(({ transactionType, transactionAmount, postingDate, accountBalance }) => {
-        const convertedTransactionAmount = Number(transactionAmount);
-
-        // Round to avoid float precision errors
-        const roundedBalance =
-          Math.round(balanceAtTimeOfTransaction * 100) / 100;
-
-        const transaction = {
-          transactionAmount: convertedTransactionAmount,
+      .map(
+        ({
           transactionType,
+          transactionAmount,
           postingDate,
-          balanceAtTimeOfTransaction: roundedBalance,
-          accountBalance: accountBalance,
-        };
+          accountBalance,
+        }) => {
+          const convertedTransactionAmount = Number(transactionAmount);
 
-        switch (transactionType) {
-          case "C":
-            balanceAtTimeOfTransaction -= convertedTransactionAmount;
-            break;
-          case "D":
-            balanceAtTimeOfTransaction += convertedTransactionAmount;
-            break;
-          case "F":
-            balanceAtTimeOfTransaction -= convertedTransactionAmount;
-            break;
-          case "M":
-            balanceAtTimeOfTransaction += convertedTransactionAmount;
-            break;
-          case "X":
-            balanceAtTimeOfTransaction -= convertedTransactionAmount;
-            break;
-          default:
-            break;
-        }
+          // Round to avoid float precision errors
+          const roundedBalance =
+            Math.round(balanceAtTimeOfTransaction * 100) / 100;
 
-        return transaction;
-      })
+          const transaction = {
+            transactionAmount: convertedTransactionAmount,
+            transactionType,
+            postingDate,
+            balanceAtTimeOfTransaction: roundedBalance,
+            accountBalance: accountBalance,
+          };
+
+          switch (transactionType) {
+            case "C":
+              balanceAtTimeOfTransaction -= convertedTransactionAmount;
+              break;
+            case "D":
+              balanceAtTimeOfTransaction += convertedTransactionAmount;
+              break;
+            case "F":
+              balanceAtTimeOfTransaction -= convertedTransactionAmount;
+              break;
+            case "M":
+              balanceAtTimeOfTransaction += convertedTransactionAmount;
+              break;
+            case "X":
+              balanceAtTimeOfTransaction -= convertedTransactionAmount;
+              break;
+            default:
+              break;
+          }
+
+          return transaction;
+        },
+      )
       .reverse();
 
     const transactionsWithBalanceByYear = transactionsWithBalance.filter(
@@ -197,7 +194,7 @@ export default function useChartData(
           default:
             return true;
         }
-      }
+      },
     );
 
     transactionsWithBalanceByYear.forEach((balance) => {
@@ -210,7 +207,6 @@ export default function useChartData(
 
       balanceData.push(balanceCoordinates);
     });
-
 
     return {
       balanceData,
@@ -236,7 +232,7 @@ export default function useChartData(
   ];
 
   const transactionTypes = new Set(
-    selectedAccountTransactions.map(({ transactionType }) => transactionType)
+    selectedAccountTransactions.map(({ transactionType }) => transactionType),
   );
 
   const data = {
@@ -244,7 +240,7 @@ export default function useChartData(
       const accountBalance = Number(account.accountBalance);
       const { balanceData } = createChartData(
         account.transactions,
-        accountBalance
+        accountBalance,
       );
 
       return {
