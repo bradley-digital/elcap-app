@@ -2,9 +2,21 @@
 
 .AuthFormSelect {
   position: relative;
-  padding: 16px 0 0;
+  padding: 16px 0 10px 0;
   margin-top: 8px;
+  border-bottom: 2px solid $gray;
   width: 100%;
+
+  select {
+    width: 100%;
+    border: none;
+    cursor: pointer;
+    margin-top: 6px;
+
+    &:focus {
+      outline: none;
+    }
+  }
 
   label {
     width: 100%;
@@ -15,60 +27,8 @@
     font-size: 20px;
     pointer-events: none;
     color: $primary;
-  }
-
-  .select-expanded {
-    border-width: 3px;
-    border-image: linear-gradient(to right, $primary, $success);
-    border-image-slice: 1;
-    --placeholder-opacity: 1 !important;
-
-    ~ label {
-      position: absolute;
-      font-weight: 700;
-      display: block;
-    }
-
-    &[selectedtext]:is([selectedtext=""]) {
-      ~ label {
-        top: 0px;
-        font-size: 16px;
-      }
-    }
-  }
-
-  ion-select {
-    border-bottom: 2px solid $gray;
-    padding: 8px 4px 8px 0;
-    background: transparent;
-    transition: border-color 0.2s;
-    --placeholder-opacity: 0 !important;
+    top: 0px;
     font-size: 16px;
-
-    ~ label {
-      position: absolute;
-      display: block;
-    }
-
-    &[selectedtext]:is([selectedtext=""]) {
-      ~ label {
-        top: 20px;
-        font-size: 20px;
-      }
-    }
-
-    &[selectedtext]:not([selectedtext=""]) {
-      ~ label {
-        top: 0px;
-        font-size: 16px;
-      }
-    }
-
-    // Reset input
-    &:required,
-    &:invalid {
-      box-shadow: none;
-    }
   }
 
   &__errorMsg {

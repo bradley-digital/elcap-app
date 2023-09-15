@@ -13,7 +13,7 @@ import {
   countryValidation,
   stateValidation,
 } from "lib/formValidation";
-import countries from "lib/countries.json";
+import { countries } from "lib/countries";
 
 // hooks
 import useAuth from "hooks/useAuth";
@@ -36,7 +36,7 @@ export default function FormRegister() {
         phone: "",
         addressLine1: "",
         addressLine2: "",
-        country: "",
+        country: "United States",
         state: "",
       }}
       validationSchema={Yup.object({
