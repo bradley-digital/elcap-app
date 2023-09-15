@@ -80,6 +80,7 @@ export default function useChartData(
           accountNumber: transaction.accountNumber,
           postingDate: transaction.postingDate,
           transactionAmount: transaction.transactionAmount,
+          accountBalance: transaction.accountBalance,
           transactionCode: transaction.transactionCode,
           transactionIsReversed: transaction.transactionIsReversed,
           transactionType: transaction.transactionType,
@@ -101,113 +102,7 @@ export default function useChartData(
     });
   });
 
-  // account smoothing
-  individualAccounts.forEach((account: any) => {
-    // if transactions happen on the same day, combine them
-    if (account.transactions?.length === 0) return;
-    account.transactions = account.transactions?.reduce(
-      (acc: any, curr: any) => {
-        const existingTransaction = acc.find(
-          (t: any) => t.postingDate === curr.postingDate
-        );
 
-        curr.transactionAmount = Number(curr.transactionAmount);
-
-        if (existingTransaction) {
-          existingTransaction.transactionAmount += curr.transactionAmount;
-        } else {
-          acc.push(curr);
-        }
-
-        return acc;
-      },
-      []
-    );
-
-    // loop through accounts from within each account
-    individualAccounts.forEach((indvAccount: any) => {
-      // start logic to add transactions for every day
-      const firstPostingDate = new Date(
-        transactionsSortedByFirst[0]?.postingDate
-      ).getTime();
-
-      const transactionsSortedByLast = indvAccount.transactions.sort(
-        (a: any, b: any) =>
-          Number(new Date(b.postingDate)) - Number(new Date(a.postingDate))
-      );
-      const lastPostingDate = new Date(
-        transactionsSortedByLast[0]?.postingDate
-      ).getTime();
-
-      const daysBetween = Math.floor(
-        (lastPostingDate - firstPostingDate) / (1000 * 60 * 60 * 24)
-      );
-
-      for (let i = 0; i < daysBetween; i++) {
-        const postingDate = new Date(
-          firstPostingDate + i * 24 * 60 * 60 * 1000
-        );
-
-        const existingTransaction = indvAccount.transactions.find(
-          (t: any) => t.postingDate === postingDate.toISOString()
-        );
-
-        if (!existingTransaction) {
-          indvAccount.transactions.push({
-            postingDate: postingDate.toISOString(),
-            id: uuidv4(),
-            accountNumber: indvAccount.accountNumber,
-            transactionAmount: "0",
-          });
-        }
-      }
-      // end logic to add transactions for every day
-
-      // exclude self
-      if (account.accountNumber === indvAccount.accountNumber) {
-        return;
-      }
-
-      const accountPostingDates = account.transactions.map((t: any) => {
-        return t.postingDate;
-      });
-
-      // get the postingDates that are not in indvAccount
-      const postingDatesNotInIndvAccount = accountPostingDates.filter(
-        (postingDate: any) => {
-          return !indvAccount.transactions.some(
-            (t: any) => t.postingDate === postingDate
-          );
-        }
-      );
-
-      // add a new transaction to indvAccount with the postingDates not in IndvAccount
-      postingDatesNotInIndvAccount.forEach((postingDate: any) => {
-        // find the previous transaction with the date closest to the postingDate
-        if (indvAccount.transactions?.length === 0) return;
-        const previousTransaction = indvAccount.transactions?.reduce(
-          (prev: any, curr: any) => {
-            return Math.abs(
-              Number(new Date(curr.postingDate)) - Number(new Date(postingDate))
-            ) <
-              Math.abs(
-                Number(new Date(prev.postingDate)) -
-                  Number(new Date(postingDate))
-              )
-              ? curr
-              : prev;
-          }
-        );
-
-        indvAccount.transactions.push({
-          postingDate,
-          id: uuidv4(),
-          accountNumber: indvAccount.accountNumber,
-          transactionAmount: previousTransaction.transactionAmount,
-        });
-      });
-    });
-  });
 
   const selectedAccounts = isSingleAccountSelected
     ? individualAccounts.filter(
@@ -234,7 +129,7 @@ export default function useChartData(
 
     const transactionsWithBalance = accountTransactions
       .reverse()
-      .map(({ transactionType, transactionAmount, postingDate }) => {
+      .map(({ transactionType, transactionAmount, postingDate, accountBalance }) => {
         const convertedTransactionAmount = Number(transactionAmount);
 
         // Round to avoid float precision errors
@@ -246,6 +141,7 @@ export default function useChartData(
           transactionType,
           postingDate,
           balanceAtTimeOfTransaction: roundedBalance,
+          accountBalance: accountBalance,
         };
 
         switch (transactionType) {
@@ -309,7 +205,7 @@ export default function useChartData(
 
       const balanceCoordinates = {
         x: Date.parse(shortDate),
-        y: balance.balanceAtTimeOfTransaction,
+        y: balance.accountBalance,
       };
 
       balanceData.push(balanceCoordinates);
