@@ -1,6 +1,6 @@
 import type { RouteComponentProps } from "react-router-dom";
 import type { MenuLink } from "components/MenuLinks/MenuLinks";
-import { exit, receipt, swapHorizontal } from "ionicons/icons";
+import { exit, receipt, swapHorizontal, home, business } from "ionicons/icons";
 
 // components
 import SplitPaneTemplate from "components/SplitPaneTemplate/SplitPaneTemplate";
@@ -10,6 +10,12 @@ export default function Profile(routeProps: RouteComponentProps) {
   const { match } = routeProps;
 
   const menuLinks: MenuLink[] = [
+    {
+      id: 1,
+      icon: business,
+      href: `${match.url}/instructions`,
+      label: "Deposit Instructions",
+    },
     {
       id: 1,
       icon: receipt,

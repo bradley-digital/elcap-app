@@ -1,0 +1,76 @@
+@import "@/theme/variables.scss";
+
+.DepositInstructions {
+  &__title {
+    font-size: 40px;
+    color: $gray;
+    margin-bottom: 1rem;
+  }
+
+  &__selectTitle{
+    font-weight: 700;
+    margin-top: 20px;
+  }
+
+  &__select {
+    width: 350px;
+    border: 0.5px solid $gray;
+    position: relative;
+    height: 5vh;
+    display: flex;
+    align-items: center;
+    padding-left: 6px;
+    border-radius: 4px;
+    background-color: rgb(227, 224, 224);
+
+    &::after {
+      content: "\25BC";
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 40px;
+      height: 5vh;
+      border-left: 0.5px solid $gray;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: $gray;
+      font-size: 12px;
+    }
+
+    &Option {
+      width: 350px;
+      border: 0.5px solid $gray;
+      height: 5vh;
+      display: flex;
+      align-items: center;
+      padding-left: 6px;
+      border-radius: 2px;
+    }
+  }
+
+  &__firstOption {
+    border: 1px solid rgb(54, 150, 247);
+    margin-top: 4px;
+  }
+
+  &__textsContainer {
+    margin-top: 1rem;
+
+    .DepositInstructions__text {
+      display: flex;
+      padding: 0px;
+      font-size: 20px;
+
+      p,
+      span {
+        margin: 2px 0;
+      }
+
+      span {
+        font-weight: 700;
+        margin-right: 4px;
+      }
+    }
+  }
+}
