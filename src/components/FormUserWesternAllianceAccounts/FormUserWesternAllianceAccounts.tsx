@@ -3,11 +3,12 @@ import { useEffect, useState } from "react";
 
 // components
 import {
+  IonAlert,
   IonCheckbox,
+  IonItem,
   IonLabel,
   IonList,
-  IonItem,
-  IonAlert,
+  IonSearchbar,
 } from "@ionic/react";
 
 // hooks
@@ -119,9 +120,15 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
       ))}
       <IonAlert
         isOpen={openConfirmAccountSelection.isOpen}
-        subHeader={`You are about give ${firstName} ${lastName} access to ${openConfirmAccountSelection.accountName}.`}
-        message="Are you sure this is correct?"
+        subHeader="Are you sure this is correct?"
+        message={`You are about give ${firstName} ${lastName} access to ${openConfirmAccountSelection.accountName}.`}
         buttons={[
+          {
+            text: "Yes",
+            role: "confirm",
+            handler: () =>
+              handleCheckbox(openConfirmAccountSelection.accountNumber),
+          },
           {
             text: "No",
             role: "cancel",
@@ -131,12 +138,6 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
                 accountNumber: "",
                 accountName: "",
               }),
-          },
-          {
-            text: "OK",
-            role: "confirm",
-            handler: () =>
-              handleCheckbox(openConfirmAccountSelection.accountNumber),
           },
         ]}
         onDidDismiss={() =>
