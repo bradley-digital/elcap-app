@@ -2,7 +2,7 @@ import type { Profile } from "hooks/useUser";
 import { useEffect, useState } from "react";
 
 // components
-import { IonCheckbox, IonLabel, IonList, IonItem } from "@ionic/react";
+import { IonCheckbox, IonLabel, IonList, IonItem, IonSearchbar } from "@ionic/react";
 
 // hooks
 import useUserManagement from "hooks/useUserManagement";
@@ -18,7 +18,7 @@ type Props = {
 export default function FormUserWesternAllianceAccounts({ profile }: Props) {
   const [activeAccounts, setActiveAccounts] = useState<string[]>([]);
 
-  const { accounts } = useWesternAllianceAccount();
+  const { accounts, setAccountsQuery } = useWesternAllianceAccount();
   const { update } = useUserManagement();
 
   const { id, accounts: profileAccounts } = profile;
@@ -39,6 +39,13 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
       };
     }) || [];
 
+  function handleSearch(e: Event) {
+    const target = e.target as HTMLIonSearchbarElement;
+    if (target && typeof target.value === "string") {
+      setAccountsQuery(target.value.toLowerCase());
+    }
+  }
+
   function handleCheckbox(value: string) {
     const newActiveAccounts = [...activeAccounts];
     const index = newActiveAccounts.indexOf(value);
@@ -53,6 +60,7 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
 
   return (
     <IonList className="FormUserWesternAllianceAccounts">
+      <IonSearchbar debounce={400} onIonChange={handleSearch}></IonSearchbar>
       {accountOptions.map(({ label, value }) => (
         <IonItem key={value}>
           <IonCheckbox
