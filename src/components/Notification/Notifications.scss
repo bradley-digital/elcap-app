@@ -1,4 +1,8 @@
 .Notifications {
+  &__messageTimeStamp {
+    font-size: 12px;
+  }
+
   &__none {
     display: block;
     margin-top: 16px;

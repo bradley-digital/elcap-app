@@ -36,8 +36,19 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
       return {
         value: account.accountNumber,
         label,
+        selected: activeAccounts.includes(account.accountNumber),
       };
     }) || [];
+
+  accountOptions.sort((a, b) => {
+    if (a.selected && !b.selected) {
+      return -1;
+    }
+    if (!a.selected && b.selected) {
+      return 1;
+    }
+    return 0;
+  });
 
   function handleSearch(e: Event) {
     const target = e.target as HTMLIonSearchbarElement;
@@ -61,11 +72,11 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
   return (
     <IonList className="FormUserWesternAllianceAccounts">
       <IonSearchbar debounce={400} onIonChange={handleSearch}></IonSearchbar>
-      {accountOptions.map(({ label, value }) => (
+      {accountOptions.map(({ label, value, selected }) => (
         <IonItem key={value}>
           <IonCheckbox
             className="FormUserWesternAllianceAccounts__checkbox"
-            checked={activeAccounts.includes(value)}
+            checked={selected}
             onClick={() => handleCheckbox(value)}
           />
           <IonLabel>{label}</IonLabel>
