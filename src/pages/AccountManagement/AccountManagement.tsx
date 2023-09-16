@@ -33,7 +33,7 @@ export default function WesternAllianceManagement() {
         <IonGrid>
           <IonRow className="ion-justify-content-center">
             <IonCol size-md="8" size-lg="6">
-              <WesternAllianceList accounts={accounts} />
+              <WesternAllianceList />
               <WesternAllianceListModal />
             </IonCol>
           </IonRow>

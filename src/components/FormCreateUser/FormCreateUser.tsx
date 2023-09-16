@@ -13,6 +13,7 @@ import {
   countryValidation,
   stateValidation,
   roleValidation,
+  isCannabisValidation,
 } from "lib/formValidation";
 import { countries } from "lib/countries";
 
@@ -32,6 +33,7 @@ import { isOpenAtom } from "atoms/userListModal";
 
 // hooks
 import useUserManagement from "hooks/useUserManagement";
+import FormCheckbox from "components/FormCheckbox/FormCheckbox";
 
 const roleOptions = [
   {
@@ -62,6 +64,7 @@ export default function FormCreateUser() {
         country: "",
         state: "",
         role: "",
+        isCannabis: false,
       }}
       validationSchema={Yup.object({
         firstName: firstNameValidation,
@@ -74,6 +77,7 @@ export default function FormCreateUser() {
         country: countryValidation,
         state: stateValidation,
         role: roleValidation,
+        isCannabis: isCannabisValidation,
       })}
       onSubmit={(values) => {
         setIsSubmitting(true);
@@ -119,6 +123,11 @@ export default function FormCreateUser() {
           <FormSelect label="Country" name="country" options={countries} />
           <FormInput label="State" name="state" type="text" icon={pencil} />
           <FormSelect label="Role" name="role" options={roleOptions} />
+          <FormCheckbox
+            label="Is cannabis client?"
+            name="isCannabis"
+            type="checkbox"
+          />
           <SubmitButton isSubmitting={isSubmitting}>
             Create New User
           </SubmitButton>
