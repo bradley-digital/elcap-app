@@ -58,10 +58,10 @@ export default function FormResetPassword() {
           placeholder="Password"
         />
         <FormInput
-          label="Authentication/Recovery code"
+          label="Authentication code"
           name="otp"
           type="text"
-          placeholder="XXXXXX OR XXXXX-XXXXX"
+          placeholder="Authentication code"
         />
         <SubmitButton isSubmitting={isSubmitting}>Reset Password</SubmitButton>
       </Form>
