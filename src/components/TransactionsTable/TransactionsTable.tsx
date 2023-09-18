@@ -25,7 +25,7 @@ import {
 } from "@ionic/react";
 
 import Table from "components/Table/Table";
-import MultipleAccountsSelect from "components/MultiSelect/MultiSelect";
+import MultiSelect from "components/MultiSelect/MultiSelect";
 
 const transactionTypeMap: StringMap = {};
 const wantedTypes = ["C", "D", "X"];
@@ -197,7 +197,7 @@ export default function TransactionsTable() {
     <>
       <IonList className="Table__filters">
         <IonItem>
-          <MultipleAccountsSelect
+          <MultiSelect
             onChange={(e) => {
               setSelectedAccountNumbers(e.map((o) => o.value));
             }}

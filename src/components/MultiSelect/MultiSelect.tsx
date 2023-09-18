@@ -1,8 +1,14 @@
 import "./MultiSelect.scss";
 import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
-import classNames from "classnames";
-import { IonButton, IonIcon, IonLabel } from "@ionic/react";
+import {
+  IonButton,
+  IonCheckbox,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonModal,
+  IonText,
+} from "@ionic/react";
 import { caretDownSharp } from "ionicons/icons";
 
 export type Option = {
@@ -38,7 +44,7 @@ export default function MultipleAccountsSelect({
     });
   }
 
-  const modalRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLIonModalElement>(null);
   const [showOptions, setShowOptions] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState(
     defaultValue || options,
@@ -120,16 +126,18 @@ export default function MultipleAccountsSelect({
         <IonLabel position="stacked">{label}</IonLabel>
 
         <div className="MultiSelect__selectedValues">
-          {selectedOptions.length === 0 && "Select Options"}
+          <IonText>
+            {selectedOptions.length === 0 && "Select Options"}
 
-          {includeSelectAll &&
-          selectedOptions.length !== 0 &&
-          selectedOptions.length === options.length
-            ? "All accounts"
-            : selectedOptions.map((option) => option.label).join(", ")}
+            {includeSelectAll &&
+            selectedOptions.length !== 0 &&
+            selectedOptions.length === options.length
+              ? "All accounts"
+              : selectedOptions.map((option) => option.label).join(", ")}
 
-          {!includeSelectAll &&
-            selectedOptions.map((option) => option.label).join(", ")}
+            {!includeSelectAll &&
+              selectedOptions.map((option) => option.label).join(", ")}
+          </IonText>
 
           <div className="MultiSelect__selectedValuesArrow">
             <IonIcon
@@ -139,53 +147,42 @@ export default function MultipleAccountsSelect({
           </div>
         </div>
       </div>
-      {createPortal(
-        <div
-          className={classNames(
-            "MultiSelect__modal",
-            showOptions ? "MultiSelect__modalOpen" : "MultiSelect__modalClose",
-          )}
-        >
-          <div className="MultiSelect__modalMain" ref={modalRef}>
-            {modalTitle && (
-              <div className="MultiSelect__modalTitleContainer">
-                <h2>{modalTitle}</h2>
-              </div>
-            )}
-            <div className="MultiSelect__checkboxWrapper">
-              {options.map((option, i) => (
-                <div className="MultiSelect__checkboxContainer" key={i}>
-                  <label className="MultiSelect__checkboxLabelContainer">
-                    <input
-                      type="checkbox"
-                      checked={selectedOptions.some(
-                        (op) => op.value === option.value,
-                      )}
-                      onChange={() => {
-                        handleClick(option);
-                      }}
-                      className="MultiSelect__checkboxInput"
-                    />
-                    <span className="MultiSelect__checkboxCustom"></span>
-                    <span className="MultiSelect__checkboxLabel">
-                      {option.label}
-                    </span>
-                  </label>
-                </div>
-              ))}
-            </div>
-            <div className="MultiSelect__modalButtonsContainer">
-              <IonButton fill="clear" onClick={() => handleCancel()}>
-                Cancel
-              </IonButton>
-              <IonButton fill="clear" onClick={() => handleOk()}>
-                Ok
-              </IonButton>
-            </div>
+
+      <IonModal id="multiselect-modal" isOpen={showOptions} ref={modalRef}>
+        {modalTitle && (
+          <div className="MultiSelect__modalTitleContainer">
+            <IonText>
+              <h2>{modalTitle}</h2>
+            </IonText>
           </div>
-        </div>,
-        document.body,
-      )}
+        )}
+        <div className="MultiSelect__checkboxWrapper">
+          {options.map((option, i) => (
+            <IonItem key={i}>
+              <IonCheckbox
+                className="MultiSelect__checkbox"
+                checked={selectedOptions.some(
+                  (op) => op.value === option.value,
+                )}
+                onIonChange={() => {
+                  handleClick(option);
+                }}
+              >
+                {option.label}
+              </IonCheckbox>
+              <IonLabel>{option.label}</IonLabel>
+            </IonItem>
+          ))}
+        </div>
+        <div className="MultiSelect__modalButtonsContainer">
+          <IonButton fill="clear" onClick={() => handleCancel()}>
+            Cancel
+          </IonButton>
+          <IonButton fill="clear" onClick={() => handleOk()}>
+            Ok
+          </IonButton>
+        </div>
+      </IonModal>
     </>
   );
 }
