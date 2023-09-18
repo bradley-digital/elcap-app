@@ -5,7 +5,7 @@ import TransferHistoryModal from "components/TransferHistoryModal/TransferHistor
 
 export default function TransferOverview() {
   return (
-    <PageTemplate title="Transfer history" menuId="transfer">
+    <PageTemplate title="Transfer History" menuId="transfer">
       <TransferHistory />
       <TransferHistoryModal />
     </PageTemplate>
