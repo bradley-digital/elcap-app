@@ -53,7 +53,7 @@ export default function FormLogin() {
           placeholder="Password"
         />
         <FormInput
-          label="Authentication/Recovery code"
+          label="Authentication code"
           name="otp"
           type="text"
           placeholder="Authentication code"

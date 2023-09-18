@@ -77,12 +77,12 @@ export default function RecoveryCodes({ open, setOpen }: Props) {
                 </IonCol>
 
                 <IonCol>
-                  <p className="RecoveryCodes__text">
+                  <IonText>
                     Keep your recovery codes in a safe spot. These codes are the
                     last resort for accessing your account in case you lose your
                     password and second factors. If you cannot find these codes,
                     you will lose access to your account.
-                  </p>
+                  </IonText>
                 </IonCol>
               </IonRow>
             </IonGrid>
@@ -135,11 +135,14 @@ export default function RecoveryCodes({ open, setOpen }: Props) {
         </div>
 
         <div className="RecoveryCodes__generateNew">
-          <h6>Generate new recovery codes</h6>
           <IonText>
-            When you generate new recovery codes, you must download or print the
-            new codes. Your old codes wont work anymore.
+            <h6>Generate new recovery codes</h6>
+            <p>
+              When you generate new recovery codes, you must download or print
+              the new codes. Your old codes wont work anymore.
+            </p>
           </IonText>
+
           <IonButton
             onClick={() => {
               generateNewRecoveryCodes();
