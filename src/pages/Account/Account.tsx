@@ -29,7 +29,7 @@ export default function Account(routeProps: RouteComponentProps) {
 
   return (
     <SplitPaneTemplate
-      title="Account management"
+      title="Account Management"
       menuId="account"
       menuLinks={menuLinks}
     >

@@ -38,7 +38,7 @@ export default function User(routeProps: RouteComponentProps) {
 
   return (
     <SplitPaneTemplate
-      title="User management"
+      title="User Management"
       menuId="user"
       menuLinks={menuLinks}
     >
