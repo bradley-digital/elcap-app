@@ -4,16 +4,14 @@ ion-modal#multiselect-modal {
   --width: fit-content;
   --min-width: 270px;
   --height: fit-content;
+
+  ion-toolbar {
+    border-bottom: 1px solid var(--ion-color-step-150, #d9d9d9);
+  }
 }
 
 .MultiSelect {
-  width: 100%;
   margin-top: 1px;
-
-  &:hover {
-    cursor: pointer;
-    background-color: rgb(241, 241, 241);
-  }
 
   &__selectedValues {
     display: flex;
@@ -26,13 +24,13 @@ ion-modal#multiselect-modal {
 
     &ArrowIcon {
       color: $gray;
-      width: 14px;
-      height: 14px;
+      width: 12px;
+      height: 12px;
     }
   }
 
   &__checkbox {
-    margin-right: 10px;
+    margin-right: 16px;
   }
 
   &__modal {
@@ -40,14 +38,6 @@ ion-modal#multiselect-modal {
       display: flex;
       justify-content: flex-end;
       padding: 8px 0;
-      border-top: 0.5px solid $gray;
-    }
-
-    &TitleContainer {
-      padding-left: 23px;
-      padding-right: 23px;
-      text-align: start;
-      border-bottom: 0.5px solid $gray;
     }
   }
 }

@@ -100,16 +100,16 @@ export default function TransactionsTable() {
         )
         .map((transaction) => {
           transaction.fullTrailerRecord =
-            transaction.trailerRecord1 +
-            " " +
-            transaction.trailerRecord2 +
-            " " +
-            transaction.trailerRecord3 +
-            " " +
-            transaction.trailerRecord4 +
-            " " +
-            transaction.trailerRecord5 +
-            " " +
+            transaction.trailerRecord1
+            " "
+            transaction.trailerRecord2
+            " "
+            transaction.trailerRecord3
+            " "
+            transaction.trailerRecord4
+            " "
+            transaction.trailerRecord5
+            " "
             transaction.trailerRecord6;
           return transaction;
         }) || []
@@ -196,17 +196,14 @@ export default function TransactionsTable() {
   const before = (
     <>
       <IonList className="Table__filters">
-        <IonItem>
-          <MultiSelect
-            onChange={(e) => {
-              setSelectedAccountNumbers(e.map((o) => o.value));
-            }}
-            includeSelectAll
-            options={accountOptions}
-            modalTitle="Accounts"
-            label="Accounts"
-          />
-        </IonItem>
+        <MultiSelect
+          onChange={(e) => {
+            setSelectedAccountNumbers(e.map((o) => o.value));
+          }}
+          options={accountOptions}
+          modalTitle="Accounts"
+          label="Accounts"
+        />
         <IonItem>
           <IonLabel position="stacked">Transaction Type</IonLabel>
           <IonSelect

@@ -1,5 +1,5 @@
 import "./MultiSelect.scss";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   IonButton,
   IonCheckbox,
@@ -7,6 +7,8 @@ import {
   IonItem,
   IonLabel,
   IonModal,
+  IonTitle,
+  IonToolbar,
   IonText,
 } from "@ionic/react";
 import { caretDownSharp } from "ionicons/icons";
@@ -14,130 +16,90 @@ import { caretDownSharp } from "ionicons/icons";
 export type Option = {
   label: string;
   value: string;
-  handler?: (
-    currentValue: Option[],
-    option: { label: string; value: string },
-  ) => void;
 };
 
-type SelectProps = {
+type Props = {
+  label?: string;
+  modalTitle?: string;
   onChange: (value: Option[]) => void;
   options: Option[];
-  defaultValue?: Option[];
-  includeSelectAll?: boolean;
-  modalTitle?: string;
-  label?: string;
 };
-export default function MultipleAccountsSelect({
-  onChange,
-  options: opt,
-  includeSelectAll = false,
-  defaultValue,
-  modalTitle,
+
+export default function MultiSelect({
   label,
-}: SelectProps) {
-  const options = [...opt];
-  if (includeSelectAll) {
-    options.unshift({
-      label: "All accounts",
-      value: "all",
-    });
+  modalTitle,
+  onChange,
+  options,
+}: Props) {
+  const [showModal, setShowModal] = useState(false);
+  const [allSelected, setAllSelected] = useState(true);
+  const [selected, setSelected] = useState(new Array(options.length).fill(true));
+
+  function handleSelectAll() {
+    const newSelectedOptions = [...selected];
+    if (allSelected) {
+      newSelectedOptions.fill(false);
+      setSelected(newSelectedOptions);
+      setAllSelected(false);
+    } else {
+      newSelectedOptions.fill(true);
+      setSelected(newSelectedOptions);
+      setAllSelected(true);
+    }
   }
 
-  const modalRef = useRef<HTMLIonModalElement>(null);
-  const [showOptions, setShowOptions] = useState(false);
-  const [selectedOptions, setSelectedOptions] = useState(
-    defaultValue || options,
-  );
-
-  function handleClick(option: Option) {
-    let newSelected = [...selectedOptions];
-    const selectedIndex = selectedOptions.findIndex(
-      (op) => op.value === option.value,
+  function handleSelect(value: string) {
+    const newSelected = [...selected];
+    const selectedIndex = options.findIndex(
+      (op) => op.value === value,
     );
-    const isSelected = newSelected[selectedIndex];
-
-    if (option.value === "all") {
-      if (isSelected) {
-        newSelected = [];
-      } else {
-        newSelected = options;
-      }
+    newSelected[selectedIndex] = !newSelected[selectedIndex];
+    setSelected(newSelected);
+    if (newSelected.every(v => v === true)) {
+      setAllSelected(true);
     } else {
-      if (isSelected) {
-        newSelected.splice(selectedIndex, 1);
-        newSelected.splice(0, 1);
-      } else {
-        if (newSelected.length + 2 === options.length) {
-          newSelected = options;
-        } else {
-          newSelected.push(option);
-        }
-      }
+      setAllSelected(false);
     }
-    setSelectedOptions(newSelected);
+  }
+
+  function openModal() {
+    setShowModal(true);
+  }
+
+  function closeModal() {
+    setShowModal(false);
   }
 
   function handleOk() {
+    const selectedOptions = [];
+    options.forEach((option, i) => selected[i] && selectedOptions.push(option))
     onChange(selectedOptions);
-    setShowOptions(false);
-  }
-
-  function toggleOptions() {
-    setShowOptions(!showOptions);
+    closeModal();
   }
 
   function handleCancel() {
-    setSelectedOptions(defaultValue || options);
-    setShowOptions(false);
+    closeModal();
   }
 
-  useEffect(() => {
-    function handleEsc(event: any) {
-      if (event.keyCode === 27 && showOptions) {
-        setShowOptions(false);
-      }
-    }
-    document.addEventListener("keydown", handleEsc);
-    return () => {
-      document.removeEventListener("keydown", handleEsc);
-    };
-  }, [showOptions, setShowOptions]);
+  let accountsLabel = "";
 
-  useEffect(() => {
-    function handleClickOutside(event: any) {
-      if (
-        showOptions &&
-        modalRef.current &&
-        !modalRef.current.contains(event.target)
-      ) {
-        setShowOptions(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [modalRef, showOptions]);
+  if (allSelected) {
+    accountsLabel = `All ${label.toLowerCase()}`;
+  } else if (selected.every(v => v === false)) {
+    accountsLabel = `Select ${label.toLowerCase()}`;
+  } else {
+    const selectedLabels = [];
+    options.forEach(({ label }, i) => selected[i] && selectedLabels.push(label))
+    accountsLabel = selectedLabels.join(", ");
+  }
 
   return (
     <>
-      <div className="MultiSelect" onClick={toggleOptions}>
+      <IonItem className="MultiSelect" onClick={openModal} button>
         <IonLabel position="stacked">{label}</IonLabel>
 
         <div className="MultiSelect__selectedValues">
-          <IonText>
-            {selectedOptions.length === 0 && "Select Options"}
-
-            {includeSelectAll &&
-            selectedOptions.length !== 0 &&
-            selectedOptions.length === options.length
-              ? "All accounts"
-              : selectedOptions.map((option) => option.label).join(", ")}
-
-            {!includeSelectAll &&
-              selectedOptions.map((option) => option.label).join(", ")}
-          </IonText>
+          <IonText>{accountsLabel}</IonText>
 
           <div className="MultiSelect__selectedValuesArrow">
             <IonIcon
@@ -146,39 +108,39 @@ export default function MultipleAccountsSelect({
             />
           </div>
         </div>
-      </div>
+      </IonItem>
 
-      <IonModal id="multiselect-modal" isOpen={showOptions} ref={modalRef}>
+      <IonModal id="multiselect-modal" isOpen={showModal} onWillDismiss={closeModal}>
         {modalTitle && (
-          <div className="MultiSelect__modalTitleContainer">
-            <IonText>
-              <h2>{modalTitle}</h2>
-            </IonText>
-          </div>
+          <IonToolbar>
+            <IonTitle>{modalTitle}</IonTitle>
+          </IonToolbar>
         )}
         <div className="MultiSelect__checkboxWrapper">
-          {options.map((option, i) => (
+          <IonItem>
+            <IonCheckbox
+              className="MultiSelect__checkbox"
+              checked={allSelected}
+              onClick={handleSelectAll}
+            />
+            <IonLabel>Select all</IonLabel>
+          </IonItem>
+          {options.map(({ label, value }, i) => (
             <IonItem key={i}>
               <IonCheckbox
                 className="MultiSelect__checkbox"
-                checked={selectedOptions.some(
-                  (op) => op.value === option.value,
-                )}
-                onIonChange={() => {
-                  handleClick(option);
-                }}
-              >
-                {option.label}
-              </IonCheckbox>
-              <IonLabel>{option.label}</IonLabel>
+                checked={selected[i]}
+                onClick={() => handleSelect(value)}
+              />
+              <IonLabel>{label}</IonLabel>
             </IonItem>
           ))}
         </div>
         <div className="MultiSelect__modalButtonsContainer">
-          <IonButton fill="clear" onClick={() => handleCancel()}>
+          <IonButton fill="clear" onClick={handleCancel}>
             Cancel
           </IonButton>
-          <IonButton fill="clear" onClick={() => handleOk()}>
+          <IonButton fill="clear" onClick={handleOk}>
             Ok
           </IonButton>
         </div>
