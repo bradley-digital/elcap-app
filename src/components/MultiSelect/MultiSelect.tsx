@@ -1,5 +1,5 @@
 import "./MultiSelect.scss";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   IonButton,
   IonCheckbox,
@@ -19,7 +19,7 @@ export type Option = {
 };
 
 type Props = {
-  label?: string;
+  label: string;
   modalTitle?: string;
   onChange: (value: Option[]) => void;
   options: Option[];
@@ -71,7 +71,7 @@ export default function MultiSelect({
   }
 
   function handleOk() {
-    const selectedOptions = [];
+    const selectedOptions: Option[] = [];
     options.forEach((option, i) => selected[i] && selectedOptions.push(option))
     onChange(selectedOptions);
     closeModal();
@@ -88,7 +88,7 @@ export default function MultiSelect({
   } else if (selected.every(v => v === false)) {
     accountsLabel = `Select ${label.toLowerCase()}`;
   } else {
-    const selectedLabels = [];
+    const selectedLabels: string[] = [];
     options.forEach(({ label }, i) => selected[i] && selectedLabels.push(label))
     accountsLabel = selectedLabels.join(", ");
   }
