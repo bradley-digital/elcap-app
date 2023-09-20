@@ -69,7 +69,7 @@ export default function TransferHistory() {
       columnHelper.accessor("id", {
         header: () => "Details",
         cell: (info) => (
-          <a onClick={() => openModal(info.getValue())}>See details</a>
+          <a href={`/transfer/${info.getValue()}`}>See details</a>
         ),
       }),
       columnHelper.accessor("status", {
@@ -93,7 +93,7 @@ export default function TransferHistory() {
           };
         })
         ?.filter(
-          (transfer) => isInDateRange(transfer) && isInStatuses(transfer)
+          (transfer) => isInDateRange(transfer) && isInStatuses(transfer),
         ) || []
     );
   }, [transfers, selectedStatuses, selectedTimeRange]);
