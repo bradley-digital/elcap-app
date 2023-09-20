@@ -1,4 +1,5 @@
-import { useState, type ComponentProps, MouseEvent } from "react";
+import type { ComponentProps, MouseEvent } from "react";
+import { useState } from "react";
 import type { FieldHookConfig } from "formik";
 import { useField } from "formik";
 import cn from "classnames";
@@ -19,7 +20,6 @@ type Props = {
   label?: string;
   note?: string;
   warningHeader?: string;
-  withWarning?: boolean;
   showWarningOnUncheck?: boolean;
   warningMessage?: string;
 } & ComponentProps<typeof IonCheckbox> &
@@ -32,16 +32,17 @@ export default function FormCheckbox(props: Props) {
     className,
     label,
     note,
-    warningHeader,
-    withWarning,
     showWarningOnUncheck = false,
+    warningHeader,
     warningMessage,
     ...rest
   } = props;
 
   const [showWarning, setShowWarning] = useState(false);
 
-  function handleOnchange() {
+  const hasWarning = !!warningHeader || !!warningMessage;
+
+  function handleOnChange() {
     field.onChange({
       target: {
         value: !field.checked,
@@ -53,19 +54,19 @@ export default function FormCheckbox(props: Props) {
   function handleClick(
     e: MouseEvent<HTMLIonCheckboxElement, globalThis.MouseEvent>,
   ) {
-    if (withWarning) {
-      e.preventDefault();
+    e.preventDefault();
+    if (hasWarning) {
       if (!field.checked) {
         setShowWarning(true);
       } else {
         if (showWarningOnUncheck) {
           setShowWarning(true);
         } else {
-          handleOnchange();
+          handleOnChange();
         }
       }
     } else {
-      handleOnchange();
+      handleOnChange();
     }
   }
 
@@ -75,36 +76,37 @@ export default function FormCheckbox(props: Props) {
         "ion-invalid": !!meta.error,
         "ion-touched": meta.touched,
       })}
+      onClick={handleClick}
     >
+      <IonCheckbox
+        {...field}
+        {...rest}
+        checked={field.checked}
+        className="FormCheckbox__checkbox"
+      />
+
+      {!!label && <IonLabel>{label}</IonLabel>}
+      {!!note && !meta.error && <IonNote slot="helper">{note}</IonNote>}
+      {!!meta.error && <IonNote slot="error">{meta.error}</IonNote>}
+
       <IonAlert
         isOpen={showWarning}
         subHeader={warningHeader}
         message={warningMessage}
         buttons={[
           {
+            text: "Yes",
+            role: "confirm",
+            handler: () => handleOnChange(),
+          },
+          {
             text: "No",
             role: "cancel",
             handler: () => setShowWarning(false),
           },
-          {
-            text: "OK",
-            role: "confirm",
-            handler: () => handleOnchange(),
-          },
         ]}
         onDidDismiss={() => setShowWarning(false)}
       />
-
-      <IonCheckbox
-        {...field}
-        {...rest}
-        checked={field.checked}
-        onClick={handleClick}
-        className="FormCheckbox__checkbox"
-      />
-      {!!label && <IonLabel>{label}</IonLabel>}
-      {!!note && !meta.error && <IonNote slot="helper">{note}</IonNote>}
-      {!!meta.error && <IonNote slot="error">{meta.error}</IonNote>}
     </IonItem>
   );
 }

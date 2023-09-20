@@ -2,7 +2,14 @@ import type { Profile } from "hooks/useUser";
 import { useEffect, useState } from "react";
 
 // components
-import { IonLabel, IonList, IonItem } from "@ionic/react";
+import {
+  IonAlert,
+  IonCheckbox,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonSearchbar,
+} from "@ionic/react";
 
 // hooks
 import useUserManagement from "hooks/useUserManagement";
@@ -18,7 +25,14 @@ type Props = {
 
 export default function FormUserWesternAllianceAccounts({ profile }: Props) {
   const [activeAccounts, setActiveAccounts] = useState<string[]>([]);
-  const { accounts } = useWesternAllianceAccount();
+  const [openConfirmAccountSelection, setOpenConfirmAccountSelection] =
+    useState<{ isOpen: boolean; accountNumber: string; accountName: string }>({
+      isOpen: false,
+      accountNumber: "",
+      accountName: "",
+    });
+
+  const { accounts, setAccountsQuery } = useWesternAllianceAccount();
   const { update } = useUserManagement();
 
   const { id, accounts: profileAccounts, firstName, lastName } = profile;
@@ -50,6 +64,13 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
     return 0;
   });
 
+  function handleSearch(e: Event) {
+    const target = e.target as HTMLIonSearchbarElement;
+    if (target && typeof target.value === "string") {
+      setAccountsQuery(target.value.toLowerCase());
+    }
+  }
+
   function handleCheckbox(value: string) {
     const newActiveAccounts = [...activeAccounts];
     const index = newActiveAccounts.indexOf(value);
@@ -64,20 +85,19 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
 
   return (
     <IonList className="FormUserWesternAllianceAccounts">
+      <IonSearchbar debounce={400} onIonChange={handleSearch} />
       {accountOptions.map(({ label, value, selected }) => (
-        <IonItem key={value}>
-          <Checkbox
-            className="FormUserWesternAllianceAccounts__checkbox"
-            checked={selected}
-            onChange={() => {
-              handleCheckbox(value);
-            }}
-            withWarning
-            warningHeader={`You are about give ${firstName} ${lastName} access to ${label}.`}
-            warningMessage="Are you sure this is correct?"
-          />
-          <IonLabel>{label}</IonLabel>
-        </IonItem>
+        <Checkbox
+          key={value}
+          className="FormUserWesternAllianceAccounts__checkbox"
+          checked={selected}
+          onChange={() => {
+            handleCheckbox(value);
+          }}
+          label={label}
+          warningHeader="Are you sure this is correct?"
+          warningMessage={`You are about give ${firstName} ${lastName} access to ${label}.`}
+        />
       ))}
     </IonList>
   );

@@ -29,11 +29,11 @@ export default function WesternAllianceManagement() {
 
   if (accountsIsSuccess && typeof accounts !== "undefined") {
     return (
-      <PageTemplate title="Account management" showLogo>
+      <PageTemplate title="Account Management" showLogo>
         <IonGrid>
           <IonRow className="ion-justify-content-center">
             <IonCol size-md="8" size-lg="6">
-              <WesternAllianceList accounts={accounts} />
+              <WesternAllianceList />
               <WesternAllianceListModal />
             </IonCol>
           </IonRow>

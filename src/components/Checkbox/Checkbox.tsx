@@ -1,4 +1,4 @@
-import { IonAlert, IonCheckbox, IonLabel } from "@ionic/react";
+import { IonAlert, IonCheckbox, IonItem, IonLabel, IonNote } from "@ionic/react";
 import { type ComponentProps, useState } from "react";
 
 type Props = {
@@ -6,9 +6,8 @@ type Props = {
   className?: string;
   label?: string;
   note?: string;
-  warningHeader?: string;
-  withWarning?: boolean;
   showWarningOnUncheck?: boolean;
+  warningHeader?: string;
   warningMessage?: string;
   checked?: boolean;
 } & ComponentProps<typeof IonCheckbox>;
@@ -17,17 +16,18 @@ export default function Checkbox({
   onChange,
   className,
   label,
-  warningHeader,
-  withWarning,
+  note,
   showWarningOnUncheck,
+  warningHeader,
   warningMessage,
   checked,
   ...rest
 }: Props) {
   const [showWarning, setShowWarning] = useState(false);
+  const hasWarning = !!warningHeader || !!warningMessage;
   
-  function handleOnchange(value: boolean) {
-    if (withWarning) {
+  function handleOnChange(value: boolean) {
+    if (hasWarning) {
       if (!checked) {
         setShowWarning(true);
       } else {
@@ -44,32 +44,36 @@ export default function Checkbox({
 
   return (
     <>
+      <IonItem>
+        <IonCheckbox
+          {...rest}
+          className={className}
+          checked={checked}
+          onIonChange={(e) => handleOnChange(e.detail.checked)}
+        />
+
+        {!!label && <IonLabel>{label}</IonLabel>}
+        {!!note && <IonNote slot="helper">{note}</IonNote>}
+      </IonItem>
+
       <IonAlert
         isOpen={showWarning}
         subHeader={warningHeader}
         message={warningMessage}
         buttons={[
           {
+            text: "Yes",
+            role: "confirm",
+            handler: () => onChange && onChange(!checked),
+          },
+          {
             text: "No",
             role: "cancel",
             handler: () => setShowWarning(false),
           },
-          {
-            text: "OK",
-            role: "confirm",
-            handler: () => onChange && onChange(!checked),
-          },
         ]}
         onDidDismiss={() => setShowWarning(false)}
       />
-
-      <IonCheckbox
-        {...rest}
-        className={className}
-        checked={checked}
-        onIonChange={(e) => handleOnchange(e.detail.checked)}
-      />
-      {!!label && <IonLabel>{label}</IonLabel>}
     </>
   );
 }

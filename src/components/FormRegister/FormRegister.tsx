@@ -13,6 +13,7 @@ import {
   countryValidation,
   stateValidation,
 } from "lib/formValidation";
+import { countries } from "lib/countries";
 
 // hooks
 import useAuth from "hooks/useAuth";
@@ -20,6 +21,7 @@ import useAuth from "hooks/useAuth";
 // components
 import FormInput from "components/AuthFormInput/AuthFormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
+import AuthFormSelect from "components/AuthFormSelect/AuthFormSelect";
 
 export default function FormRegister() {
   const { register } = useAuth();
@@ -34,7 +36,7 @@ export default function FormRegister() {
         phone: "",
         addressLine1: "",
         addressLine2: "",
-        country: "",
+        country: "United States",
         state: "",
       }}
       validationSchema={Yup.object({
@@ -86,11 +88,11 @@ export default function FormRegister() {
           type="text"
           placeholder="Address line 2"
         />
-        <FormInput
+        <AuthFormSelect
+          placeholder="Country"
           label="Country"
           name="country"
-          type="text"
-          placeholder="Country"
+          options={countries}
         />
         <FormInput label="State" name="state" type="text" placeholder="State" />
         <SubmitButton isSubmitting={isSubmitting}>Register</SubmitButton>
