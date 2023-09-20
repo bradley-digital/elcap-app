@@ -197,8 +197,8 @@ export default function TransactionsTable() {
     <>
       <IonList className="Table__filters">
         <MultiSelect
-          onChange={(e) => {
-            setSelectedAccountNumbers(e.map((o) => o.value));
+          onChange={(options) => {
+            setSelectedAccountNumbers(options.map((option) => option.value));
           }}
           options={accountOptions}
           modalTitle="Accounts"
