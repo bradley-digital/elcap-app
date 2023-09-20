@@ -52,7 +52,7 @@ export default function FormCheckbox(props: Props) {
   }
 
   function handleClick(
-    e: MouseEvent<HTMLIonCheckboxElement, globalThis.MouseEvent>,
+    e: MouseEvent<HTMLIonItemElement, globalThis.MouseEvent>,
   ) {
     e.preventDefault();
     if (hasWarning) {
@@ -76,7 +76,7 @@ export default function FormCheckbox(props: Props) {
         "ion-invalid": !!meta.error,
         "ion-touched": meta.touched,
       })}
-      onClick={handleClick}
+      onClick={(e) => handleClick(e)}
     >
       <IonCheckbox
         {...field}

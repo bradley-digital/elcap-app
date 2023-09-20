@@ -3,10 +3,6 @@ import { useEffect, useState } from "react";
 
 // components
 import {
-  IonAlert,
-  IonCheckbox,
-  IonItem,
-  IonLabel,
   IonList,
   IonSearchbar,
 } from "@ionic/react";
@@ -25,13 +21,6 @@ type Props = {
 
 export default function FormUserWesternAllianceAccounts({ profile }: Props) {
   const [activeAccounts, setActiveAccounts] = useState<string[]>([]);
-  const [openConfirmAccountSelection, setOpenConfirmAccountSelection] =
-    useState<{ isOpen: boolean; accountNumber: string; accountName: string }>({
-      isOpen: false,
-      accountNumber: "",
-      accountName: "",
-    });
-
   const { accounts, setAccountsQuery } = useWesternAllianceAccount();
   const { update } = useUserManagement();
 
