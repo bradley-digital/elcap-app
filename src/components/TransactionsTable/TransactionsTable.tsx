@@ -25,11 +25,12 @@ import {
 } from "@ionic/react";
 
 import Table from "components/Table/Table";
+import MultiSelect from "components/MultiSelect/MultiSelect";
 
 const transactionTypeMap: StringMap = {};
 const wantedTypes = ["C", "D", "X"];
 wantedTypes.forEach(
-  (k) => (transactionTypeMap[k] = originalTransactionTypeMap[k])
+  (k) => (transactionTypeMap[k] = originalTransactionTypeMap[k]),
 );
 
 const columnHelper = createColumnHelper<Transaction>();
@@ -95,20 +96,20 @@ export default function TransactionsTable() {
           (transaction) =>
             isInDateRange(transaction) &&
             isInTransactionType(transaction) &&
-            isInAccountNumbers(transaction)
+            isInAccountNumbers(transaction),
         )
         .map((transaction) => {
           transaction.fullTrailerRecord =
-            transaction.trailerRecord1 +
-            " " +
-            transaction.trailerRecord2 +
-            " " +
-            transaction.trailerRecord3 +
-            " " +
-            transaction.trailerRecord4 +
-            " " +
-            transaction.trailerRecord5 +
-            " " +
+            transaction.trailerRecord1
+            " "
+            transaction.trailerRecord2
+            " "
+            transaction.trailerRecord3
+            " "
+            transaction.trailerRecord4
+            " "
+            transaction.trailerRecord5
+            " "
             transaction.trailerRecord6;
           return transaction;
         }) || []
@@ -195,22 +196,14 @@ export default function TransactionsTable() {
   const before = (
     <>
       <IonList className="Table__filters">
-        <IonItem>
-          <IonLabel position="stacked">Accounts</IonLabel>
-          <IonSelect
-            interfaceOptions={{ cssClass: "FormAccountSelect" }}
-            placeholder="Select Account"
-            onIonChange={(e) => setSelectedAccountNumbers(e.detail.value)}
-            multiple={true}
-            value={selectedAccountNumbers}
-          >
-            {accountOptions?.map(({ label, value }) => (
-              <IonSelectOption key={value} value={value}>
-                {label}
-              </IonSelectOption>
-            ))}
-          </IonSelect>
-        </IonItem>
+        <MultiSelect
+          onChange={(options) => {
+            setSelectedAccountNumbers(options.map((option) => option.value));
+          }}
+          options={accountOptions}
+          modalTitle="Accounts"
+          label="Accounts"
+        />
         <IonItem>
           <IonLabel position="stacked">Transaction Type</IonLabel>
           <IonSelect

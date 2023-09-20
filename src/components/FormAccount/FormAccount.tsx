@@ -14,6 +14,7 @@ import {
   stateValidation,
   companyNameValidation,
 } from "lib/formValidation";
+import { countries } from "lib/countries";
 
 // icons
 import { lockClosed, pencil } from "ionicons/icons";
@@ -24,9 +25,12 @@ import { IonList } from "@ionic/react";
 import FormObserver from "components/FormObserver/FormObserver";
 import FormInput from "components/FormInput/FormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
+import FormSelect from "components/FormSelect/FormSelect";
 
 // hooks
 import useUser from "hooks/useUser";
+
+// data
 
 type Props = {
   profile: Profile;
@@ -127,7 +131,7 @@ export default function FormAccount({ profile }: Props) {
             type="text"
             icon={pencil}
           />
-          <FormInput label="Country" name="country" type="text" icon={pencil} />
+          <FormSelect label="Country" name="country" options={countries} />
           <FormInput label="State" name="state" type="text" icon={pencil} />
           {edited && (
             <SubmitButton className="w-100" isSubmitting={isSubmitting}>

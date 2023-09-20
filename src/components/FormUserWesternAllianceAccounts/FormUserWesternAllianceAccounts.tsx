@@ -2,7 +2,10 @@ import type { Profile } from "hooks/useUser";
 import { useEffect, useState } from "react";
 
 // components
-import { IonCheckbox, IonLabel, IonList, IonItem } from "@ionic/react";
+import {
+  IonList,
+  IonSearchbar,
+} from "@ionic/react";
 
 // hooks
 import useUserManagement from "hooks/useUserManagement";
@@ -10,6 +13,7 @@ import useWesternAllianceAccount from "hooks/useWesternAllianceAccount";
 
 // styles
 import "./FormUserWesternAllianceAccounts.scss";
+import Checkbox from "components/Checkbox/Checkbox";
 
 type Props = {
   profile: Profile;
@@ -17,11 +21,10 @@ type Props = {
 
 export default function FormUserWesternAllianceAccounts({ profile }: Props) {
   const [activeAccounts, setActiveAccounts] = useState<string[]>([]);
-
-  const { accounts } = useWesternAllianceAccount();
+  const { accounts, setAccountsQuery } = useWesternAllianceAccount();
   const { update } = useUserManagement();
 
-  const { id, accounts: profileAccounts } = profile;
+  const { id, accounts: profileAccounts, firstName, lastName } = profile;
 
   useEffect(() => {
     const accountNumbers =
@@ -36,8 +39,26 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
       return {
         value: account.accountNumber,
         label,
+        selected: activeAccounts.includes(account.accountNumber),
       };
     }) || [];
+
+  accountOptions.sort((a, b) => {
+    if (a.selected && !b.selected) {
+      return -1;
+    }
+    if (!a.selected && b.selected) {
+      return 1;
+    }
+    return 0;
+  });
+
+  function handleSearch(e: Event) {
+    const target = e.target as HTMLIonSearchbarElement;
+    if (target && typeof target.value === "string") {
+      setAccountsQuery(target.value.toLowerCase());
+    }
+  }
 
   function handleCheckbox(value: string) {
     const newActiveAccounts = [...activeAccounts];
@@ -53,15 +74,19 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
 
   return (
     <IonList className="FormUserWesternAllianceAccounts">
-      {accountOptions.map(({ label, value }) => (
-        <IonItem key={value}>
-          <IonCheckbox
-            className="FormUserWesternAllianceAccounts__checkbox"
-            checked={activeAccounts.includes(value)}
-            onClick={() => handleCheckbox(value)}
-          />
-          <IonLabel>{label}</IonLabel>
-        </IonItem>
+      <IonSearchbar debounce={400} onIonChange={handleSearch} />
+      {accountOptions.map(({ label, value, selected }) => (
+        <Checkbox
+          key={value}
+          className="FormUserWesternAllianceAccounts__checkbox"
+          checked={selected}
+          onChange={() => {
+            handleCheckbox(value);
+          }}
+          label={label}
+          warningHeader="Are you sure this is correct?"
+          warningMessage={`You are about give ${firstName} ${lastName} access to ${label}.`}
+        />
       ))}
     </IonList>
   );
