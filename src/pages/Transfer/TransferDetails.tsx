@@ -4,31 +4,30 @@ import { useIonRouter } from "@ionic/react";
 // components
 import { IonCol, IonGrid, IonRow } from "@ionic/react";
 import PageTemplate from "components/PageTemplate/PageTemplate";
-import MoneyMovementTransferC from "components/MoneyMovementTransfer/MoneyMovementTransfer";
 
 // hooks
-import useWesternAllianceAccount from "hooks/useWesternAllianceAccount";
+import TransferHistoryDetails from "components/TransferHistoryDetails/TransferHistoryDetails";
+import useUserWesternAllianceAccount from "hooks/useUserWesternAllianceAccount";
 
-export default function MoneyMovementTransfer() {
-  const { transfers } = useWesternAllianceAccount();
+export default function TransferDetails() {
+  const { transfers } = useUserWesternAllianceAccount();
   const { transferId } = useParams<{ transferId: string }>();
   const router = useIonRouter();
 
   if (typeof transfers === "undefined") return null;
 
   const transfer = transfers.find(({ id }) => id === transferId);
-
   if (typeof transfer === "undefined") {
-    router.push("/money-movement");
+    router.push("/transfer/overview");
     return null;
   }
 
   return (
-    <PageTemplate title="Transfer Details" menuId="money-movement">
+    <PageTemplate title="Transfer Details" menuId="transfer-details">
       <IonGrid>
         <IonRow className="ion-justify-content-center">
           <IonCol size-md="8" size-lg="6">
-            <MoneyMovementTransferC transfer={transfer} />
+            <TransferHistoryDetails transfer={transfer} />
           </IonCol>
         </IonRow>
       </IonGrid>
