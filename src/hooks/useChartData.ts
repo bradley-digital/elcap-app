@@ -19,24 +19,8 @@ export default function useChartData(
   selectedAccountNumbers: string[],
   sortBy?: string,
 ) {
-  const { accounts, getWesternAllianceBackfilledTransactions } =
+  const { accounts, backfilledTransactions } =
     useUserWesternAllianceAccount(selectedTimeRange, sortBy);
-
-  const [backfilledTransactions, setBackfilledTransactions] =
-    useState<any>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getWesternAllianceBackfilledTransactions();
-        setBackfilledTransactions(data);
-      } catch (error) {
-        console.error("Error fetching transactions:", error);
-      }
-    };
-
-    fetchData();
-  }, [selectedTimeRange]);
 
   if (
     !backfilledTransactions ||
