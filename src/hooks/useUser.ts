@@ -90,7 +90,7 @@ export default function useUser() {
 
   async function generateNewRecoveryCodesMutation() {
     const { data } = await authApi.post<string[]>(
-      "/users/generate-new-recovery-codes",
+      "/users/recovery-codes",
     );
     return data;
   }
