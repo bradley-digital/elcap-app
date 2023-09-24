@@ -1,6 +1,7 @@
-import ProfileItem from "components/ProfileItem/ProfileItem";
 import { useState } from "react";
-import RecoveryCodes from "../../components/RecoveryCodes/RecoveryCodes";
+import { IonList } from "@ionic/react";
+import ProfileItem from "components/ProfileItem/ProfileItem";
+import RecoveryCodes from "components/RecoveryCodes/RecoveryCodes";
 import AuthenticatorApp from "components/AuthenticatorApp/AuthenticatorApp";
 
 export default function ProfileAccountSecurity() {
@@ -9,7 +10,7 @@ export default function ProfileAccountSecurity() {
   const [openRecoveryCodes, setOpenRecoveryCodes] = useState(false);
 
   return (
-    <>
+    <IonList>
       <ProfileItem
         label="Authenticator app"
         onClick={() => {
@@ -34,6 +35,6 @@ export default function ProfileAccountSecurity() {
           setOpen={(open) => setOpenRecoveryCodes(open)}
         />
       )}
-    </>
+    </IonList>
   );
 }
