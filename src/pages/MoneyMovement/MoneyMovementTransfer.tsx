@@ -24,7 +24,7 @@ export default function MoneyMovementTransfer() {
   }
 
   return (
-    <PageTemplate title="Transfer details" menuId="money-movement">
+    <PageTemplate title="Transfer Details" menuId="money-movement">
       <IonGrid>
         <IonRow className="ion-justify-content-center">
           <IonCol size-md="8" size-lg="6">

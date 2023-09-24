@@ -23,7 +23,7 @@ export default function TransferDetails() {
   }
 
   return (
-    <PageTemplate title="Transfer details" menuId="transfer-details">
+    <PageTemplate title="Transfer Details" menuId="transfer-details">
       <IonGrid>
         <IonRow className="ion-justify-content-center">
           <IonCol size-md="8" size-lg="6">

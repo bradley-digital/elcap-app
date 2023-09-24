@@ -9,11 +9,7 @@ import { currency, date } from "lib/formats";
 import useUserWesternAllianceAccount, {
   portalTransferStatusMap,
 } from "hooks/useUserWesternAllianceAccount";
-import { useAtom } from "jotai";
 import { createColumnHelper } from "@tanstack/react-table";
-
-// atoms
-import { idAtom, isOpenAtom } from "atoms/transferHistoryModal";
 
 // components
 import {
@@ -35,8 +31,6 @@ function mapStatus(status: string) {
 export default function TransferHistory() {
   const [selectedTimeRange, setSelectedTimeRange] = useState("YTD");
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
-  const [, setId] = useAtom(idAtom);
-  const [, setIsOpen] = useAtom(isOpenAtom);
   const { transfers } = useUserWesternAllianceAccount();
 
   const timeRanges = ["YTD", "MTD", "3M", "1Y", "3Y", "5Y", "Max"];
@@ -107,11 +101,6 @@ export default function TransferHistory() {
         value: status,
       }))
       .sort((a, b) => a.label.localeCompare(b.label)) || [];
-
-  function openModal(id: string) {
-    setId(id);
-    setIsOpen(true);
-  }
 
   function isInDateRange(transfer: TransferTable) {
     const date = new Date(transfer.transferDate);
