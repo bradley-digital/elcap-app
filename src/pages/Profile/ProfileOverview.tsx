@@ -4,10 +4,10 @@ import PageTemplate from "components/PageTemplate/PageTemplate";
 import ProfileCard from "components/ProfileCard/ProfileCard";
 import FormAccount from "components/FormAccount/FormAccount";
 import LogoutButton from "components/LogoutButton/LogoutButton";
+import ProfileAccountSecurity from "components/ProfileAccountSecurity/ProfileAccountSecurity";
 
 // hooks
 import useUser from "hooks/useUser";
-import ProfileAccountSecurity from "./ProfileAccountSecurity";
 
 export default function Profile() {
   const { profile } = useUser();
