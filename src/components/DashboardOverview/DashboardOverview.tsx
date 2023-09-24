@@ -20,6 +20,7 @@ import {
   IonText,
   useIonViewWillEnter,
 } from "@ionic/react";
+import MultiSelect from "components/MultiSelect/MultiSelect";
 
 // hooks
 import useChartData from "hooks/useChartData";
@@ -116,22 +117,14 @@ export default function DashboardOverview() {
           </IonCol>
           <IonCol size="12" className="DashboardOverview__filters">
             <IonList className="DashboardOverview__filters--wrapper">
-              <IonItem>
-                <IonLabel position="floating">Accounts</IonLabel>
-                <IonSelect
-                  interfaceOptions={{ cssClass: "FormAccountSelect" }}
-                  placeholder="Select Account"
-                  onIonChange={(e) => setSelectedAccountNumbers(e.detail.value)}
-                  multiple={true}
-                  value={selectedAccountNumbers}
-                >
-                  {accountOptions?.map((option) => (
-                    <IonSelectOption key={option.value} value={option.value}>
-                      {option.label}
-                    </IonSelectOption>
-                  ))}
-                </IonSelect>
-              </IonItem>
+              <MultiSelect
+                onChange={(options) => {
+                  setSelectedAccountNumbers(options.map((option) => option.value));
+                }}
+                options={accountOptions}
+                modalTitle="Accounts"
+                label="Accounts"
+              />
               <IonItem>
                 <IonLabel position="floating">Date Range</IonLabel>
                 <IonSelect

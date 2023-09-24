@@ -6,6 +6,8 @@ import { IonRouterOutlet } from "@ionic/react";
 import Account from "pages/Transfer/TransferAccount";
 import Overview from "pages/Transfer/TransferOverview";
 import TransferExternal from "pages/Transfer/TransferExternal";
+import DepositInstructions from "pages/Transfer/DepositInstructions";
+import TransferDetails from "pages/Transfer/TransferDetails";
 
 export default function TransferRoutes({ match }: RouteComponentProps) {
   return (
@@ -13,8 +15,17 @@ export default function TransferRoutes({ match }: RouteComponentProps) {
       <Switch>
         <Route
           exact
+          path={`${match.url}/instructions`}
+          render={() => <DepositInstructions />}
+        />
+        <Route
+          exact
           path={`${match.url}/overview`}
           render={() => <Overview />}
+        />
+        <Route
+          path={`${match.url}/:transferId`}
+          render={() => <TransferDetails />}
         />
         <Route exact path={`${match.url}/account`} render={() => <Account />} />
         <Route

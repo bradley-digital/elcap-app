@@ -26,6 +26,8 @@ import {
   useNotification,
 } from "hooks/useNotification";
 import "./Notifications.scss";
+import cn from "classnames";
+import { getTimeAgo } from "lib/getTimeAgo";
 
 export default function Notifications() {
   const [isOpen, setIsOpen] = useAtom(isOpenAtom);
@@ -53,7 +55,7 @@ export default function Notifications() {
         unviewedNotificationsCountQueryKey,
         (prev?: number) => {
           return prev ? ++prev : 1;
-        }
+        },
       );
     };
 
@@ -64,15 +66,15 @@ export default function Notifications() {
     };
   }, []);
 
+  function closeModal() {
+    setIsOpen(false);
+  }
+
   useEffect(() => {
     if (isOpen) {
       patchAllNotificationsToViewed();
     }
   }, [isOpen]);
-
-  function closeModal() {
-    setIsOpen(false);
-  }
 
   return (
     <IonModal isOpen={isOpen} onWillDismiss={closeModal}>
@@ -95,15 +97,24 @@ export default function Notifications() {
               return page.map((item: INotification) => (
                 <IonItem
                   key={item.id}
-                  className={`${
-                    item.read ? "Notifications__read" : "Notifications__unread"
-                  }`}
+                  className={cn(
+                    "Notifications__item",
+                    item.read ? "Notifications__read" : "Notifications__unread",
+                  )}
                   href={item.link || undefined}
                   onClick={() => {
                     patchNotificationToRead({ id: item.id });
                   }}
                 >
-                  <IonLabel>{item.message}</IonLabel>
+                  <div>
+                    <IonLabel>{item.message}</IonLabel>
+                    <IonText
+                      color="medium"
+                      className="Notifications__messageTimeStamp"
+                    >
+                      {getTimeAgo(item.createdAt.toString())}
+                    </IonText>
+                  </div>
                 </IonItem>
               ));
             })}
