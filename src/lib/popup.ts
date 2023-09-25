@@ -9,7 +9,6 @@ export async function createPopup(
 
       const checkPopup = setInterval(() => {
         if (popup?.window?.location?.href?.includes(closeOn)) {
-          popup.close();
           if (popup.window.location.href.includes("?event=signing_complete")) {
             const {
               amount,
@@ -23,10 +22,13 @@ export async function createPopup(
             const uri = encodeURI(
               `/transfer/index.html?amount=${amount}&externalAccount=${externalAccount}&fromAccount=${fromAccount}&memo=${memo}&transferDate=${transferDate}&type=${type}`,
             );
-            resolve((window.location.href = uri));
+            window.location.href = uri;
+            console.log("HEYYYY");
+            resolve(uri);
+            clearInterval(checkPopup);
           }
+          popup.close();
           resolve("closed");
-          clearInterval(checkPopup);
         }
         if (!popup || popup.closed) {
           resolve("closed");
