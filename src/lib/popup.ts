@@ -1,4 +1,8 @@
-export async function createPopup(url: string, closeOn: string) {
+export async function createPopup(
+  url: string,
+  closeOn: string,
+  transferBody: any,
+) {
   return new Promise<string>((resolve, reject) => {
     try {
       const popup = window.open(url, "popup", "popup=true");
@@ -6,7 +10,22 @@ export async function createPopup(url: string, closeOn: string) {
       const checkPopup = setInterval(() => {
         if (popup?.window?.location?.href?.includes(closeOn)) {
           popup.close();
-          resolve(popup.window.location.href);
+          if (popup.window.location.href.includes("?event=signing_complete")) {
+            const {
+              amount,
+              externalAccount,
+              fromAccount,
+              memo,
+              transferDate,
+              type,
+            } = transferBody;
+
+            const uri = encodeURI(
+              `/transfer/index.html?amount=${amount}&externalAccount=${externalAccount}&fromAccount=${fromAccount}&memo=${memo}&transferDate=${transferDate}&type=${type}`,
+            );
+            resolve((window.location.href = uri));
+          }
+          resolve("closed");
           clearInterval(checkPopup);
         }
         if (!popup || popup.closed) {
@@ -14,7 +33,6 @@ export async function createPopup(url: string, closeOn: string) {
           clearInterval(checkPopup);
         }
       }, 250);
-
     } catch (err) {
       reject(err);
     }

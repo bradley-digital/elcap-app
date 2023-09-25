@@ -189,9 +189,7 @@ export default function useTransferExternal({
         });
         if (view?.url) {
           const popupUrl = `${view.url}&send=1&showEditPages=false&showHeaderActions=false`;
-          const endUrl = await createPopup(popupUrl, host);
-          if (endUrl.includes("?event=signing_complete"))
-            await createTransfer(transferBody);
+          await createPopup(popupUrl, host, transferBody);
         }
       } else {
         await createTransfer(transferBody);
