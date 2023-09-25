@@ -1,5 +1,4 @@
 import type { Transaction } from "hooks/useWesternAllianceAccount";
-import { useEffect, useState } from "react";
 import "chartjs-adapter-moment";
 
 // lib
@@ -21,6 +20,8 @@ export default function useChartData(
 ) {
   const { accounts, backfilledTransactions } =
     useUserWesternAllianceAccount(selectedTimeRange, sortBy);
+
+  console.log(backfilledTransactions);
 
   if (
     !backfilledTransactions ||

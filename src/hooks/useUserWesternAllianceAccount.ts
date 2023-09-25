@@ -28,7 +28,7 @@ const westernAllianceBackfilledTransactionsQueryKey = `${queryKey}WesternAllianc
 
 export default function useUserWesternAlliance(
   selectedTimeRange: string,
-  sortBy: string = "month"
+  sortBy = "month"
 ) {
   const { authApi } = useAuth();
   const queryClient = useQueryClient();
