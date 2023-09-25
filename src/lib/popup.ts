@@ -23,12 +23,13 @@ export async function createPopup(
               `/transfer/index.html?amount=${amount}&externalAccount=${externalAccount}&fromAccount=${fromAccount}&memo=${memo}&transferDate=${transferDate}&type=${type}`,
             );
             window.location.href = uri;
-            console.log("HEYYYY");
             resolve(uri);
             clearInterval(checkPopup);
+          } else {
+            popup.close();
+            resolve("closed");
+            clearInterval(checkPopup);
           }
-          popup.close();
-          resolve("closed");
         }
         if (!popup || popup.closed) {
           resolve("closed");
