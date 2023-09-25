@@ -24,8 +24,12 @@ const westernAllianceAccountsQueryKey = `${queryKey}WesternAllianceAccounts`;
 const westernAllianceExternalAccountsQueryKey = `${queryKey}WesternAllianceExternalAccounts`;
 const westernAllianceTransactionsQueryKey = `${queryKey}WesternAllianceTransactions`;
 const westernAllianceTransferQueryKey = `${queryKey}WesternAllianceTransfer`;
+const westernAllianceBackfilledTransactionsQueryKey = `${queryKey}WesternAllianceBackfilledTransactions`;
 
-export default function useUserWesternAllianceAccount() {
+export default function useUserWesternAlliance(
+  selectedTimeRange = "YTD",
+  sortBy = "month"
+) {
   const { authApi } = useAuth();
   const queryClient = useQueryClient();
 
@@ -43,6 +47,15 @@ export default function useUserWesternAllianceAccount() {
   const { isSuccess: transactionsIsSuccess, data: transactions } = useQuery(
     westernAllianceTransactionsQueryKey,
     getWesternAllianceTransactions
+  );
+
+  const {
+    isSuccess: backfilledTransactionsIsSuccess,
+    isFetching: backfilledTransactionsIsFetching,
+    data: backfilledTransactions,
+  } = useQuery(
+    westernAllianceBackfilledTransactionsQueryKey,
+    getWesternAllianceBackfilledTransactions
   );
 
   const { isSuccess: transfersIsSuccess, data: transfers } = useQuery(
@@ -92,6 +105,20 @@ export default function useUserWesternAllianceAccount() {
     return data;
   }
 
+  async function getWesternAllianceBackfilledTransactions() {
+    const { data } = await authApi.get<Transaction[]>(
+      "/users/western-alliance/backfilled-transactions",
+      {
+        params: { selectedTimeRange, sortBy },
+      }
+    );
+    return data.sort((t1, t2) => {
+      const d1 = new Date(t1.postingDate);
+      const d2 = new Date(t2.postingDate);
+      return d2.getTime() - d1.getTime();
+    });
+  }
+
   async function getWesternAllianceTransfers() {
     const { data } = await authApi.get<Transfer[]>(
       "/users/western-alliance/transfers"
@@ -126,6 +153,9 @@ export default function useUserWesternAllianceAccount() {
     externalAccountsIsSuccess,
     transactions,
     transactionsIsSuccess,
+    backfilledTransactions,
+    backfilledTransactionsIsFetching,
+    backfilledTransactionsIsSuccess,
     transfers,
     transfersIsSuccess,
   };

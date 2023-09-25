@@ -1,6 +1,5 @@
 import type { Transaction } from "hooks/useWesternAllianceAccount";
 import "chartjs-adapter-moment";
-import { v4 as uuidv4 } from "uuid";
 
 // lib
 import { currency, date } from "lib/formats";
@@ -16,13 +15,17 @@ const dateOptions: Intl.DateTimeFormatOptions = {
 
 export default function useChartData(
   selectedTimeRange: string,
-  selectedAccountNumbers: string[]
+  selectedAccountNumbers: string[],
+  sortBy?: string,
 ) {
-  const { accounts, transactions } = useUserWesternAllianceAccount();
+  const { accounts, backfilledTransactions } =
+    useUserWesternAllianceAccount(selectedTimeRange, sortBy);
+
+  console.log(backfilledTransactions);
 
   if (
-    !transactions ||
-    transactions.length === 0 ||
+    !backfilledTransactions ||
+    backfilledTransactions.length === 0 ||
     !accounts ||
     accounts.length === 0
   ) {
@@ -30,28 +33,21 @@ export default function useChartData(
       isSuccess: false,
       data: undefined,
       options: undefined,
-      currentBalance: undefined,
+      accountBalance: undefined,
       transactionTypes: undefined,
     };
   }
 
-  const transactionsSortedByFirst = transactions
-    ? transactions?.sort(
-        (a, b) =>
-          Number(new Date(a.postingDate)) - Number(new Date(b.postingDate))
-      )
-    : [];
-
-  const accountsCurrentBalanceTotal = accounts?.reduce(
+  const accountsBalanceTotal = accounts?.reduce(
     (acc: number, account: any) => acc + Number(account.accountBalance),
-    0
+    0,
   );
 
   const isSingleAccountSelected = selectedAccountNumbers.length < 2;
 
   const filteredAccountTransactions = (accountNumber: string | number) => {
-    const accountsByAccountNumber = transactions?.filter(
-      (transaction) => transaction.accountNumber === accountNumber
+    const accountsByAccountNumber = backfilledTransactions?.filter(
+      (transaction) => transaction.accountNumber === accountNumber,
     );
 
     const filteredTransactions = accountsByAccountNumber.map(
@@ -61,195 +57,97 @@ export default function useChartData(
           accountNumber: transaction.accountNumber,
           postingDate: transaction.postingDate,
           transactionAmount: transaction.transactionAmount,
+          accountBalance: transaction.accountBalance,
           transactionCode: transaction.transactionCode,
           transactionIsReversed: transaction.transactionIsReversed,
           transactionType: transaction.transactionType,
         };
-      }
+      },
     );
 
     return filteredTransactions;
   };
 
   const individualAccounts: any = [];
+  // adds transactions to each account
   accounts?.forEach((account: any) => {
     individualAccounts.push({
+      ...account,
       accountName: account.accountName,
       accountNumber: account.accountNumber,
       transactions: filteredAccountTransactions(account.accountNumber),
-      currentBalance: account.accountBalance,
-    });
-  });
-
-  // account smoothing
-  individualAccounts.forEach((account: any) => {
-    // if transactions happen on the same day, combine them
-    if (account.transactions?.length === 0) return;
-    account.transactions = account.transactions?.reduce(
-      (acc: any, curr: any) => {
-        const existingTransaction = acc.find(
-          (t: any) => t.postingDate === curr.postingDate
-        );
-
-        curr.transactionAmount = Number(curr.transactionAmount);
-
-        if (existingTransaction) {
-          existingTransaction.transactionAmount += curr.transactionAmount;
-        } else {
-          acc.push(curr);
-        }
-
-        return acc;
-      },
-      []
-    );
-
-    // loop through accounts from within each account
-    individualAccounts.forEach((indvAccount: any) => {
-      // start logic to add transactions for every day
-      const firstPostingDate = new Date(
-        transactionsSortedByFirst[0]?.postingDate
-      ).getTime();
-
-      const transactionsSortedByLast = indvAccount.transactions.sort(
-        (a: any, b: any) =>
-          Number(new Date(b.postingDate)) - Number(new Date(a.postingDate))
-      );
-      const lastPostingDate = new Date(
-        transactionsSortedByLast[0]?.postingDate
-      ).getTime();
-
-      const daysBetween = Math.floor(
-        (lastPostingDate - firstPostingDate) / (1000 * 60 * 60 * 24)
-      );
-
-      for (let i = 0; i < daysBetween; i++) {
-        const postingDate = new Date(
-          firstPostingDate + i * 24 * 60 * 60 * 1000
-        );
-
-        const existingTransaction = indvAccount.transactions.find(
-          (t: any) => t.postingDate === postingDate.toISOString()
-        );
-
-        if (!existingTransaction) {
-          indvAccount.transactions.push({
-            postingDate: postingDate.toISOString(),
-            id: uuidv4(),
-            accountNumber: indvAccount.accountNumber,
-            transactionAmount: "0",
-          });
-        }
-      }
-      // end logic to add transactions for every day
-
-      // exclude self
-      if (account.accountNumber === indvAccount.accountNumber) {
-        return;
-      }
-
-      const accountPostingDates = account.transactions.map((t: any) => {
-        return t.postingDate;
-      });
-
-      // get the postingDates that are not in indvAccount
-      const postingDatesNotInIndvAccount = accountPostingDates.filter(
-        (postingDate: any) => {
-          return !indvAccount.transactions.some(
-            (t: any) => t.postingDate === postingDate
-          );
-        }
-      );
-
-      // add a new transaction to indvAccount with the postingDates not in IndvAccount
-      postingDatesNotInIndvAccount.forEach((postingDate: any) => {
-        // find the previous transaction with the date closest to the postingDate
-        if (indvAccount.transactions?.length === 0) return;
-        const previousTransaction = indvAccount.transactions?.reduce(
-          (prev: any, curr: any) => {
-            return Math.abs(
-              Number(new Date(curr.postingDate)) - Number(new Date(postingDate))
-            ) <
-              Math.abs(
-                Number(new Date(prev.postingDate)) -
-                  Number(new Date(postingDate))
-              )
-              ? curr
-              : prev;
-          }
-        );
-
-        indvAccount.transactions.push({
-          postingDate,
-          id: uuidv4(),
-          accountNumber: indvAccount.accountNumber,
-          transactionAmount: previousTransaction.transactionAmount,
-        });
-      });
     });
   });
 
   const selectedAccounts = isSingleAccountSelected
     ? individualAccounts.filter(
-        (account: any) => account.accountNumber === selectedAccountNumbers[0]
+        (account: any) => account.accountNumber === selectedAccountNumbers[0],
       )
     : individualAccounts;
 
   const selectedAccountTransactions = isSingleAccountSelected
     ? filteredAccountTransactions(selectedAccountNumbers[0])
-    : transactions;
+    : backfilledTransactions;
 
   function createChartData(
     accountTransactions: Transaction[],
-    currentBalance: number
+    accountBalance: number,
   ) {
     const balanceData: Array<any> = [];
 
     accountTransactions.sort(
       (a, b) =>
-        new Date(a.postingDate).getTime() - new Date(b.postingDate).getTime()
+        new Date(a.postingDate).getTime() - new Date(b.postingDate).getTime(),
     );
 
-    let balanceAtTimeOfTransaction = currentBalance;
+    let balanceAtTimeOfTransaction = accountBalance;
 
     const transactionsWithBalance = accountTransactions
       .reverse()
-      .map(({ transactionType, transactionAmount, postingDate }) => {
-        const convertedTransactionAmount = Number(transactionAmount);
-
-        // Round to avoid float precision errors
-        const roundedBalance =
-          Math.round(balanceAtTimeOfTransaction * 100) / 100;
-
-        const transaction = {
-          transactionAmount: convertedTransactionAmount,
+      .map(
+        ({
           transactionType,
+          transactionAmount,
           postingDate,
-          balanceAtTimeOfTransaction: roundedBalance,
-        };
+          accountBalance,
+        }) => {
+          const convertedTransactionAmount = Number(transactionAmount);
 
-        switch (transactionType) {
-          case "C":
-            balanceAtTimeOfTransaction -= convertedTransactionAmount;
-            break;
-          case "D":
-            balanceAtTimeOfTransaction += convertedTransactionAmount;
-            break;
-          case "F":
-            balanceAtTimeOfTransaction -= convertedTransactionAmount;
-            break;
-          case "M":
-            balanceAtTimeOfTransaction += convertedTransactionAmount;
-            break;
-          case "X":
-            balanceAtTimeOfTransaction -= convertedTransactionAmount;
-            break;
-          default:
-            break;
-        }
+          // Round to avoid float precision errors
+          const roundedBalance =
+            Math.round(balanceAtTimeOfTransaction * 100) / 100;
 
-        return transaction;
-      })
+          const transaction = {
+            transactionAmount: convertedTransactionAmount,
+            transactionType,
+            postingDate,
+            balanceAtTimeOfTransaction: roundedBalance,
+            accountBalance: accountBalance,
+          };
+
+          switch (transactionType) {
+            case "C":
+              balanceAtTimeOfTransaction -= convertedTransactionAmount;
+              break;
+            case "D":
+              balanceAtTimeOfTransaction += convertedTransactionAmount;
+              break;
+            case "F":
+              balanceAtTimeOfTransaction -= convertedTransactionAmount;
+              break;
+            case "M":
+              balanceAtTimeOfTransaction += convertedTransactionAmount;
+              break;
+            case "X":
+              balanceAtTimeOfTransaction -= convertedTransactionAmount;
+              break;
+            default:
+              break;
+          }
+
+          return transaction;
+        },
+      )
       .reverse();
 
     const transactionsWithBalanceByYear = transactionsWithBalance.filter(
@@ -281,7 +179,7 @@ export default function useChartData(
           default:
             return true;
         }
-      }
+      },
     );
 
     transactionsWithBalanceByYear.forEach((balance) => {
@@ -289,7 +187,7 @@ export default function useChartData(
 
       const balanceCoordinates = {
         x: Date.parse(shortDate),
-        y: balance.balanceAtTimeOfTransaction,
+        y: balance.accountBalance,
       };
 
       balanceData.push(balanceCoordinates);
@@ -319,15 +217,15 @@ export default function useChartData(
   ];
 
   const transactionTypes = new Set(
-    selectedAccountTransactions.map(({ transactionType }) => transactionType)
+    selectedAccountTransactions.map(({ transactionType }) => transactionType),
   );
 
   const data = {
     datasets: selectedAccounts.map((account: any, index: number) => {
-      const currentBalance = Number(account.currentBalance);
+      const accountBalance = Number(account.accountBalance);
       const { balanceData } = createChartData(
         account.transactions,
-        currentBalance
+        accountBalance,
       );
 
       return {
@@ -416,7 +314,7 @@ export default function useChartData(
     data,
     accounts,
     options,
-    accountsCurrentBalanceTotal,
+    accountsCurrentBalanceTotal: accountsBalanceTotal,
     transactionTypes,
   };
 }
