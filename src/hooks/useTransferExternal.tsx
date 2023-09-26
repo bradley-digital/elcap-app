@@ -185,11 +185,13 @@ export default function useTransferExternal({
         });
         const view = await postView({
           envelopeId: agreement?.envelopeId,
-          path: "/api/",
+          path: `/static.html`,
         });
         if (view?.url) {
           const popupUrl = `${view.url}&send=1&showEditPages=false&showHeaderActions=false`;
-          await createPopup(popupUrl, host, transferBody);
+          const endUrl = await createPopup(popupUrl, host);
+          if (endUrl.includes("?event=signing_complete"))
+            await createTransfer(transferBody);
         }
       } else {
         await createTransfer(transferBody);
