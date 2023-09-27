@@ -14,7 +14,6 @@ export async function createPopup(url: string, closeOn: string) {
           clearInterval(checkPopup);
         }
       }, 250);
-
     } catch (err) {
       reject(err);
     }
