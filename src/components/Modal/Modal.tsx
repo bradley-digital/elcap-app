@@ -1,4 +1,3 @@
-import "./Modal.scss";
 import {
   IonButton,
   IonButtons,
@@ -55,22 +54,20 @@ export default function Modal({
           {headerContent ? (
             <>{headerContent}</>
           ) : (
-            <>
-              <IonHeader>
-                <IonToolbar>
-                  {title && <IonTitle>{title}</IonTitle>}
-                  <IonButtons slot="end">
-                    <IonButton
-                      onClick={() => {
-                        handleClose();
-                      }}
-                    >
-                      Close
-                    </IonButton>
-                  </IonButtons>
-                </IonToolbar>
-              </IonHeader>
-            </>
+            <IonHeader>
+              <IonToolbar>
+                {title && <IonTitle>{title}</IonTitle>}
+                <IonButtons slot="end">
+                  <IonButton
+                    onClick={() => {
+                      handleClose();
+                    }}
+                  >
+                    Close
+                  </IonButton>
+                </IonButtons>
+              </IonToolbar>
+            </IonHeader>
           )}
 
           {modalContent && (
