@@ -7,6 +7,7 @@ import * as Yup from "yup";
 import {
   passwordValidation,
   confirmPasswordValidation,
+  otpValidation,
 } from "lib/formValidation";
 
 // hooks
@@ -26,16 +27,19 @@ export default function FormResetPassword() {
       initialValues={{
         password: "",
         confirmPassword: "",
+        otp: "",
       }}
       validationSchema={Yup.object({
         password: passwordValidation,
         confirmPassword: confirmPasswordValidation,
+        otp: otpValidation,
       })}
-      onSubmit={async ({ password }) => {
+      onSubmit={async ({ password, otp }) => {
         setIsSubmitting(true);
         await resetPassword({
           resetToken,
           password,
+          otp,
         });
         setIsSubmitting(false);
       }}
@@ -52,6 +56,12 @@ export default function FormResetPassword() {
           name="confirmPassword"
           type="password"
           placeholder="Password"
+        />
+        <FormInput
+          label="Authentication code"
+          name="otp"
+          type="text"
+          placeholder="Authentication code"
         />
         <SubmitButton isSubmitting={isSubmitting}>Reset Password</SubmitButton>
       </Form>

@@ -1,0 +1,30 @@
+@import "@/theme/variables.scss";
+
+.RecoveryCodes {
+  &__codes {
+    border: 0.5px solid $gray;
+    margin: 4px;
+    border-radius: 4px;
+  }
+
+  &__generateNew {
+    margin-top: 20px;
+    border-top: 0.5px solid $gray;
+  }
+
+  &__buttons {
+    width: 100%;
+    display: flex;
+    justify-content: end;
+  }
+
+  &__codesText {
+    width: 100%;
+    text-align: center;
+  }
+
+  &__generate {
+    position: relative;
+    border-top: 1px solid gray;
+  }
+}
