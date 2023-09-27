@@ -40,6 +40,7 @@ import {
   useIonToast,
 } from "@ionic/react";
 import { add, star } from "ionicons/icons";
+import Modal from "components/Modal/Modal";
 
 export default function Example() {
   const [present] = useIonActionSheet();
@@ -93,6 +94,14 @@ export default function Example() {
             </IonHeader>
             <IonGrid>
               <IonRow>
+                <IonCol>
+                  <Modal
+                    headerContent={<div>Test</div>}
+                    footerContent={<div>Test</div>}
+                    modalContent={<div>Test</div>}
+                    triggerText="Open me"
+                  />
+                </IonCol>
                 <IonCol>
                   <IonButton
                     onClick={() =>
