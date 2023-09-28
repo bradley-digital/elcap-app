@@ -16,16 +16,22 @@ import {
   IonList,
   IonItem,
   IonText,
+  IonLoading,
 } from "@ionic/react";
 import useUser from "hooks/useUser";
 import { informationCircleOutline } from "ionicons/icons";
+import { useEffect } from "react";
 
 type Props = {
-  open: boolean;
   setOpen: (open: boolean) => void;
 };
-export default function RecoveryCodes({ open, setOpen }: Props) {
-  const { recoveryCodes, generateNewRecoveryCodes } = useUser();
+export default function RecoveryCodes({ setOpen }: Props) {
+  const {
+    recoveryCodes,
+    generateNewRecoveryCodes,
+    generatingNewRecoveryCodesStatus,
+    generatingNewRecoveryCodesIsSuccess,
+  } = useUser();
 
   function copyToClipboard(text: string) {
     navigator.clipboard.writeText(text);
@@ -41,117 +47,126 @@ export default function RecoveryCodes({ open, setOpen }: Props) {
     document.body.removeChild(element);
   }
 
+  useEffect(() => {
+    generateNewRecoveryCodes();
+  }, []);
+
   return (
-    <IonModal
-      isOpen={open}
-      onWillDismiss={() => {
-        setOpen(false);
-      }}
-      className="RecoveryCodes"
-    >
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Recovery codes</IonTitle>
-          <IonButtons slot="end">
+    <>
+      <IonLoading
+        isOpen={generatingNewRecoveryCodesStatus === "loading"}
+        message="Generating recovery codes..."
+        spinner="circles"
+      />
+
+      <IonModal
+        isOpen={generatingNewRecoveryCodesIsSuccess}
+        className="RecoveryCodes"
+      >
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Recovery codes</IonTitle>
+            <IonButtons slot="end">
+              <IonButton
+                onClick={() => {
+                  setOpen(false);
+                }}
+              >
+                Close
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="ion-padding">
+          <IonCard>
+            <IonCardContent>
+              <IonGrid>
+                <IonRow>
+                  <IonCol size="auto">
+                    <IonIcon
+                      icon={informationCircleOutline}
+                      size="large"
+                      color="primary"
+                    />
+                  </IonCol>
+
+                  <IonCol>
+                    <IonText>
+                      Keep your recovery codes in a safe spot. These codes are
+                      the last resort for accessing your account in case you
+                      lose your password and second factors. If you cannot find
+                      these codes, you will lose access to your account.
+                    </IonText>
+                  </IonCol>
+                </IonRow>
+              </IonGrid>
+            </IonCardContent>
+          </IonCard>
+
+          <IonGrid>
+            <IonRow className="RecoveryCodes__codes">
+              <IonCol>
+                <IonList lines="none">
+                  {recoveryCodes?.slice(0, 8).map((code) => (
+                    <IonItem key={code}>
+                      <IonText className="RecoveryCodes__codesText">
+                        {code}
+                      </IonText>
+                    </IonItem>
+                  ))}
+                </IonList>
+              </IonCol>
+
+              <IonCol>
+                <IonList lines="none">
+                  {recoveryCodes?.slice(8, 16).map((code) => (
+                    <IonItem key={code}>
+                      <IonText className="RecoveryCodes__codesText">
+                        {code}
+                      </IonText>
+                    </IonItem>
+                  ))}
+                </IonList>
+              </IonCol>
+            </IonRow>
+          </IonGrid>
+
+          <div className="RecoveryCodes__buttons">
             <IonButton
               onClick={() => {
-                setOpen(false);
+                copyToClipboard(recoveryCodes?.join("\n") || "");
               }}
             >
-              Close
+              Copy
             </IonButton>
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent className="ion-padding">
-        <IonCard>
-          <IonCardContent>
-            <IonGrid>
-              <IonRow>
-                <IonCol size="auto">
-                  <IonIcon
-                    icon={informationCircleOutline}
-                    size="large"
-                    color="primary"
-                  />
-                </IonCol>
+            <IonButton
+              onClick={() => {
+                download(recoveryCodes?.join("\n") || "");
+              }}
+            >
+              Download
+            </IonButton>
+          </div>
 
-                <IonCol>
-                  <IonText>
-                    Keep your recovery codes in a safe spot. These codes are the
-                    last resort for accessing your account in case you lose your
-                    password and second factors. If you cannot find these codes,
-                    you will lose access to your account.
-                  </IonText>
-                </IonCol>
-              </IonRow>
-            </IonGrid>
-          </IonCardContent>
-        </IonCard>
+          <div className="RecoveryCodes__generateNew">
+            <IonText>
+              <h6>Generate new recovery codes</h6>
+              <p>
+                When you generate new recovery codes, you must download or print
+                the new codes. Your old codes wont work anymore.
+              </p>
+            </IonText>
 
-        <IonGrid>
-          <IonRow className="RecoveryCodes__codes">
-            <IonCol>
-              <IonList lines="none">
-                {recoveryCodes?.slice(0, 8).map((code) => (
-                  <IonItem key={code}>
-                    <IonText className="RecoveryCodes__codesText">
-                      {code}
-                    </IonText>
-                  </IonItem>
-                ))}
-              </IonList>
-            </IonCol>
-
-            <IonCol>
-              <IonList lines="none">
-                {recoveryCodes?.slice(8, 16).map((code) => (
-                  <IonItem key={code}>
-                    <IonText className="RecoveryCodes__codesText">
-                      {code}
-                    </IonText>
-                  </IonItem>
-                ))}
-              </IonList>
-            </IonCol>
-          </IonRow>
-        </IonGrid>
-
-        <div className="RecoveryCodes__buttons">
-          <IonButton
-            onClick={() => {
-              copyToClipboard(recoveryCodes?.join("\n") || "");
-            }}
-          >
-            Copy
-          </IonButton>
-          <IonButton
-            onClick={() => {
-              download(recoveryCodes?.join("\n") || "");
-            }}
-          >
-            Download
-          </IonButton>
-        </div>
-
-        <div className="RecoveryCodes__generateNew">
-          <IonText>
-            <h6>Generate new recovery codes</h6>
-            <p>
-              When you generate new recovery codes, you must download or print
-              the new codes. Your old codes wont work anymore.
-            </p>
-          </IonText>
-
-          <IonButton
-            onClick={() => {
-              generateNewRecoveryCodes();
-            }}
-          >
-            Generate new recovery codes
-          </IonButton>
-        </div>
-      </IonContent>
-    </IonModal>
+            <IonButton
+              onClick={() => {
+                generateNewRecoveryCodes();
+              }}
+            >
+              Generate new recovery codes
+            </IonButton>
+          </div>
+        </IonContent>
+      </IonModal>
+    </>
   );
 }

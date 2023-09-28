@@ -51,10 +51,8 @@ export default function useUser() {
     getUser,
   );
 
-  const { isSuccess: recoveryCodesIsSuccess, data: recoveryCodes } = useQuery(
-    recoveryCodesqueryKey,
-    getRecoveryCodes,
-  );
+  const { isSuccess: recoveryCodesIsSuccess, data: hasRecoveryCodes } =
+    useQuery(recoveryCodesqueryKey, getHasRecoveryCodes);
 
   const { mutate: updateUser } = useMutation(updateUserMutation, {
     onSuccess: (data) => {
@@ -62,14 +60,14 @@ export default function useUser() {
     },
   });
 
-  const { mutate: generateNewRecoveryCodes } = useMutation(
-    generateNewRecoveryCodesMutation,
-    {
-      onSuccess: (data) => {
-        queryClient.setQueryData(recoveryCodesqueryKey, data);
-      },
-    },
-  );
+  const {
+    mutate: generateNewRecoveryCodes,
+    data: recoveryCodes,
+    isLoading: generatingNewRecoveryCodes,
+    status: generatingNewRecoveryCodesStatus,
+    mutateAsync: asyncGenerateNewRecoveryCodes,
+    isSuccess: generatingNewRecoveryCodesIsSuccess,
+  } = useMutation(generateNewRecoveryCodesMutation);
 
   const { mutateAsync: verifyOtp } = useMutation(verifyOtpMutation);
 
@@ -78,8 +76,8 @@ export default function useUser() {
     return data;
   }
 
-  async function getRecoveryCodes() {
-    const { data } = await authApi.get<string[]>("/users/recovery-codes");
+  async function getHasRecoveryCodes() {
+    const { data } = await authApi.get<string[]>("/users/has-recovery-codes");
     return data;
   }
 
@@ -89,9 +87,7 @@ export default function useUser() {
   }
 
   async function generateNewRecoveryCodesMutation() {
-    const { data } = await authApi.post<string[]>(
-      "/users/recovery-codes",
-    );
+    const { data } = await authApi.post<string[]>("/users/recovery-codes");
     return data;
   }
 
@@ -109,8 +105,13 @@ export default function useUser() {
     profile,
     updateUser,
     recoveryCodesIsSuccess,
+    hasRecoveryCodes,
+    verifyOtp,
     recoveryCodes,
     generateNewRecoveryCodes,
-    verifyOtp,
+    generatingNewRecoveryCodes,
+    generatingNewRecoveryCodesStatus,
+    asyncGenerateNewRecoveryCodes,
+    generatingNewRecoveryCodesIsSuccess,
   };
 }
