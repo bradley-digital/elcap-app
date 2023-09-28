@@ -40,7 +40,7 @@ type ProfileUpdateInput = {
 };
 
 export const queryKey = "userAccount";
-export const recoveryCodesqueryKey = `${queryKey}RecoveryCodes`;
+export const hasRecoveryCodesqueryKey = `${queryKey}RecoveryCodes`;
 
 export default function useUser() {
   const { authApi } = useAuth();
@@ -52,7 +52,7 @@ export default function useUser() {
   );
 
   const { isSuccess: recoveryCodesIsSuccess, data: hasRecoveryCodes } =
-    useQuery(recoveryCodesqueryKey, getHasRecoveryCodes);
+    useQuery(hasRecoveryCodesqueryKey, getHasRecoveryCodes);
 
   const { mutate: updateUser } = useMutation(updateUserMutation, {
     onSuccess: (data) => {
@@ -63,11 +63,13 @@ export default function useUser() {
   const {
     mutate: generateNewRecoveryCodes,
     data: recoveryCodes,
-    isLoading: generatingNewRecoveryCodes,
     status: generatingNewRecoveryCodesStatus,
-    mutateAsync: asyncGenerateNewRecoveryCodes,
     isSuccess: generatingNewRecoveryCodesIsSuccess,
-  } = useMutation(generateNewRecoveryCodesMutation);
+  } = useMutation(generateNewRecoveryCodesMutation, {
+    onSuccess: () => {
+      queryClient.setQueryData(hasRecoveryCodesqueryKey, true);
+    },
+  });
 
   const { mutateAsync: verifyOtp } = useMutation(verifyOtpMutation);
 
@@ -109,9 +111,7 @@ export default function useUser() {
     verifyOtp,
     recoveryCodes,
     generateNewRecoveryCodes,
-    generatingNewRecoveryCodes,
     generatingNewRecoveryCodesStatus,
-    asyncGenerateNewRecoveryCodes,
     generatingNewRecoveryCodesIsSuccess,
   };
 }
