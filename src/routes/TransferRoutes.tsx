@@ -15,23 +15,23 @@ export default function TransferRoutes({ match }: RouteComponentProps) {
       <Switch>
         <Route
           exact
-          path={`${match.url}/instructions`}
-          render={() => <DepositInstructions />}
-        />
-        <Route
-          exact
           path={`${match.url}/overview`}
           render={() => <Overview />}
-        />
-        <Route
-          path={`${match.url}/:transferId`}
-          render={() => <TransferDetails />}
         />
         <Route exact path={`${match.url}/account`} render={() => <Account />} />
         <Route
           exact
           path={`${match.url}/external`}
           render={() => <TransferExternal />}
+        />
+        <Route
+          exact
+          path={`${match.url}/instructions`}
+          render={() => <DepositInstructions />}
+        />
+        <Route
+          path={`${match.url}/:transferId`}
+          render={() => <TransferDetails />}
         />
         {/* Fallback route */}
         <Route render={() => <Redirect to={`${match.url}/overview`} />} />
