@@ -34,6 +34,8 @@ export default function TransferHistoryDetails({ transfer }: Props) {
   const updatedBy = `${transfer?.userUpdatedBy?.firstName || ""} ${
     transfer?.userUpdatedBy?.lastName || ""
   }`;
+  const recipientName = transfer?.externalToAccount?.accountName;
+  const recipientAccountNumber = transfer?.externalToAccount?.accountNumber;
 
   return (
     <div>
@@ -53,6 +55,14 @@ export default function TransferHistoryDetails({ transfer }: Props) {
         <IonItem>
           <IonLabel>Account number</IonLabel>
           <IonText>{accountNumber}</IonText>
+        </IonItem>
+        <IonItem>
+          <IonLabel>Recipient name</IonLabel>
+          <IonText>{recipientName}</IonText>
+        </IonItem>
+        <IonItem>
+          <IonLabel>Recipient account number</IonLabel>
+          <IonText>{recipientAccountNumber}</IonText>
         </IonItem>
         <IonItem>
           <IonLabel>Amount</IonLabel>
