@@ -31,9 +31,11 @@ export default function TransferHistoryDetails({ transfer }: Props) {
   const submittedBy = `${transfer?.userSubmittedBy?.firstName || ""} ${
     transfer?.userSubmittedBy?.lastName || ""
   }`;
+  const submittedAt = transfer?.submittedAt;
   const updatedBy = `${transfer?.userUpdatedBy?.firstName || ""} ${
     transfer?.userUpdatedBy?.lastName || ""
   }`;
+  const updatedAt = transfer?.updatedAt;
 
   return (
     <div>
@@ -75,8 +77,16 @@ export default function TransferHistoryDetails({ transfer }: Props) {
           <IonText>{submittedBy}</IonText>
         </IonItem>
         <IonItem>
+          <IonLabel>Submitted at</IonLabel>
+          <IonText>{date(submittedAt)}</IonText>
+        </IonItem>
+        <IonItem>
           <IonLabel>Updated by</IonLabel>
           <IonText>{updatedBy}</IonText>
+        </IonItem>
+        <IonItem>
+          <IonLabel>Updated at</IonLabel>
+          <IonText>{transfer.userUpdatedBy && date(updatedAt)}</IonText>
         </IonItem>
         <IonItem>
           <IonLabel>Transaction number</IonLabel>
