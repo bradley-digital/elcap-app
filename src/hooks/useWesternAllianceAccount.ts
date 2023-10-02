@@ -140,10 +140,12 @@ export type Transfer = {
     firstName: string;
     lastName: string;
   };
+  submittedAt: string;
   userUpdatedBy: null | {
     firstName: string;
     lastName: string;
   };
+  updatedAt: string;
   westernAllianceFromAccount: {
     accountNumber: string;
     accountName: string;
