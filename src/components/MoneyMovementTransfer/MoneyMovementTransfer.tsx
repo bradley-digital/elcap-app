@@ -101,11 +101,11 @@ export default function MoneyMovementTransfer({ transfer }: Props) {
               <IonText>{financialInstitution}</IonText>
             </IonItem>
             <IonItem>
-              <IonLabel>To account name</IonLabel>
+              <IonLabel>Recipient name</IonLabel>
               <IonText>{externalAccountName}</IonText>
             </IonItem>
             <IonItem>
-              <IonLabel>To account number</IonLabel>
+              <IonLabel>Recipient account number</IonLabel>
               <IonText>{externalAccountNumber}</IonText>
             </IonItem>
             <IonItem>
