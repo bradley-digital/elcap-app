@@ -25,6 +25,7 @@ export type Profile = {
   accounts?: ProfileAccount[];
   docfoxApplication: DocfoxApplication;
   otpAuthUrl: string;
+  disabled: boolean;
 };
 
 type ProfileUpdateInput = {
@@ -89,9 +90,7 @@ export default function useUser() {
   }
 
   async function generateNewRecoveryCodesMutation() {
-    const { data } = await authApi.post<string[]>(
-      "/users/recovery-codes",
-    );
+    const { data } = await authApi.post<string[]>("/users/recovery-codes");
     return data;
   }
 
