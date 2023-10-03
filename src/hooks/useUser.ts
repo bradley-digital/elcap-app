@@ -27,6 +27,7 @@ export type Profile = {
   accounts?: ProfileAccount[];
   docfoxApplication: DocfoxApplication;
   otpAuthUrl: string;
+  disabled: boolean;
 };
 
 type ProfileUpdateInput = {
