@@ -54,7 +54,6 @@ export default function useTransferExternal({
   createTransfer,
   externalAccounts,
 }: Props) {
-  const [showToast] = useIonToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [storedReceivingAccount, setStoredReceivingAccount] = useState("");
   const [storedUseIntermediary, setStoredUseIntermediary] = useState(false);
@@ -183,12 +182,6 @@ export default function useTransferExternal({
     } catch (e) {
       console.error(e);
     } finally {
-      showToast({
-        message: "Transfer initiated",
-        duration: 8 * 1000,
-        position: "bottom",
-        color: "success",
-      });
       setIsSubmitting(false);
       setDocuSigned(false);
     }
