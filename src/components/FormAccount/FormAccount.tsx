@@ -22,7 +22,6 @@ import { lockClosed, pencil } from "ionicons/icons";
 // components
 import { Form, Formik } from "formik";
 import { IonList } from "@ionic/react";
-import FormObserver from "components/FormObserver/FormObserver";
 import FormInput from "components/FormInput/FormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
 import FormSelect from "components/FormSelect/FormSelect";
@@ -30,21 +29,13 @@ import FormSelect from "components/FormSelect/FormSelect";
 // hooks
 import useUser from "hooks/useUser";
 
-// data
-
 type Props = {
   profile: Profile;
 };
 
 export default function FormAccount({ profile }: Props) {
   const { updateUser } = useUser();
-  const [edited, setEdited] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  function handleChange() {
-    if (edited) return;
-    setEdited(true);
-  }
 
   const {
     firstName,
@@ -86,60 +77,60 @@ export default function FormAccount({ profile }: Props) {
       onSubmit={(values) => {
         setIsSubmitting(true);
         updateUser(values);
-        setEdited(false);
         setIsSubmitting(false);
       }}
     >
-      <Form>
-        <FormObserver onChange={handleChange} />
-        <IonList>
-          <FormInput
-            label="First Name"
-            name="firstName"
-            type="text"
-            icon={pencil}
-          />
-          <FormInput
-            label="Last Name"
-            name="lastName"
-            type="text"
-            icon={pencil}
-          />
-          <FormInput
-            label="Email"
-            name="email"
-            type="email"
-            icon={lockClosed}
-            readonly
-          />
-          <FormInput label="Phone" name="phone" type="text" icon={pencil} />
-          <FormInput
-            label="Company Name"
-            name="companyName"
-            type="text"
-            icon={pencil}
-          />
-          <FormInput
-            label="Address line 1"
-            name="addressLine1"
-            type="text"
-            icon={pencil}
-          />
-          <FormInput
-            label="Address line 2"
-            name="addressLine2"
-            type="text"
-            icon={pencil}
-          />
-          <FormSelect label="Country" name="country" options={countries} />
-          <FormInput label="State" name="state" type="text" icon={pencil} />
-          {edited && (
-            <SubmitButton className="w-100" isSubmitting={isSubmitting}>
-              Update
-            </SubmitButton>
-          )}
-        </IonList>
-      </Form>
+      {({ dirty }) => (
+        <Form>
+          <IonList>
+            <FormInput
+              label="First Name"
+              name="firstName"
+              type="text"
+              icon={pencil}
+            />
+            <FormInput
+              label="Last Name"
+              name="lastName"
+              type="text"
+              icon={pencil}
+            />
+            <FormInput
+              label="Email"
+              name="email"
+              type="email"
+              icon={lockClosed}
+              readonly
+            />
+            <FormInput label="Phone" name="phone" type="text" icon={pencil} />
+            <FormInput
+              label="Company Name"
+              name="companyName"
+              type="text"
+              icon={pencil}
+            />
+            <FormInput
+              label="Address line 1"
+              name="addressLine1"
+              type="text"
+              icon={pencil}
+            />
+            <FormInput
+              label="Address line 2"
+              name="addressLine2"
+              type="text"
+              icon={pencil}
+            />
+            <FormSelect label="Country" name="country" options={countries} />
+            <FormInput label="State" name="state" type="text" icon={pencil} />
+            {dirty && (
+              <SubmitButton className="w-100" isSubmitting={isSubmitting}>
+                Update
+              </SubmitButton>
+            )}
+          </IonList>
+        </Form>
+      )}
     </Formik>
   );
 }
