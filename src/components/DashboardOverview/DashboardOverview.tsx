@@ -42,12 +42,42 @@ export default function DashboardOverview() {
     transactionTypes,
   } = useChartData(selectedTimeRange, selectedAccountNumbers, sortBy);
 
+  const test: any = {
+    datasets: [
+      {
+        label: "All accounts",
+        fill: "start",
+        showLine: true,
+        data: [],
+        borderColor: "#007854",
+        backgroundColor: "rgb(0, 120, 84, 0.2)",
+        pointBorderColor: "#007854",
+        pointBackgroundColor: "#007854",
+        borderWidth: 1,
+      },
+    ],
+  };
 
   useEffect(() => {
     setSelectedAccountNumbers(
       accounts?.map((account) => account.accountNumber) || [""]
     );
   }, [accounts]);
+
+  const combined = data?.datasets.map((dataSet: any) => {
+    const data = dataSet.data;
+    return data;
+  }) ?? [];
+
+  // console.log("combined:", combined);
+
+  const combinedArray = [].concat(...combined);
+
+  test.datasets[0].data = combinedArray;
+  // console.log("combinedArray:", combinedArray)
+  // console.log("combinedArray:", combinedArray);
+  // console.log("data:", data);
+  // console.log("test:", test);
 
   useIonViewWillEnter(() => {
     setIsChartVisible(true);
@@ -119,7 +149,9 @@ export default function DashboardOverview() {
             <IonList className="DashboardOverview__filters--wrapper">
               <MultiSelect
                 onChange={(options) => {
-                  setSelectedAccountNumbers(options.map((option) => option.value));
+                  setSelectedAccountNumbers(
+                    options.map((option) => option.value)
+                  );
                 }}
                 options={accountOptions}
                 modalTitle="Accounts"
@@ -143,7 +175,7 @@ export default function DashboardOverview() {
           </IonCol>
           <IonCol size="12" className="DashboardOverview__content--chart">
             {isChartVisible ? (
-              <Scatter data={data} options={options} />
+              <Scatter data={test} options={options} />
             ) : (
               <IonSpinner color="success" />
             )}
