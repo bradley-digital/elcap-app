@@ -23,11 +23,6 @@ export default function useChartData(
     sortBy
   );
 
-  // get postingDates from the backfilled transactions
-  const postingDates = backfilledTransactions?.map((transaction) => {
-    return transaction.postingDate;
-  });
-
   if (
     !backfilledTransactions ||
     backfilledTransactions.length === 0 ||
@@ -49,6 +44,8 @@ export default function useChartData(
   );
 
   const isSingleAccountSelected = selectedAccountNumbers.length < 2;
+  const isAllAccountsSelected =
+    selectedAccountNumbers.length === accounts.length;
 
   const filteredAccountTransactions = (accountNumber: string | number) => {
     const accountsByAccountNumber = backfilledTransactions?.filter(
@@ -89,6 +86,57 @@ export default function useChartData(
         (account: any) => account.accountNumber === selectedAccountNumbers[0]
       )
     : individualAccounts;
+
+  // combine all selected accounts into one account
+  const combinedAccounts: any = [
+    {
+      id: "",
+      accountNumber: "",
+      accountName: "All Accounts",
+      accountBalance: "",
+      client: "",
+      routingNumber: "",
+      transactions: [],
+    },
+  ];
+
+  selectedAccounts.forEach((account: any) => {
+    // add account balance to combined account
+    combinedAccounts[0].accountBalance =
+      Number(combinedAccounts[0].accountBalance) +
+      Number(account.accountBalance);
+
+    // add transactions to combined account
+    combinedAccounts[0].transactions = [
+      ...combinedAccounts[0].transactions,
+      ...account.transactions,
+    ];
+  });
+
+  // sort combined accounts transactions by posting date
+  combinedAccounts[0].transactions.sort(
+    (a: any, b: any) =>
+      new Date(a.postingDate).getTime() - new Date(b.postingDate).getTime()
+  );
+
+  // if selected accounts transactions are on the same day, combine them
+  const combinedAccountsTransactions: any = [];
+  combinedAccounts[0].transactions.forEach((transaction: any) => {
+    const transactionIndex = combinedAccountsTransactions.findIndex(
+      (combinedTransaction: any) =>
+        combinedTransaction.postingDate === transaction.postingDate
+    );
+
+    if (transactionIndex === -1) {
+      combinedAccountsTransactions.push(transaction);
+    } else {
+      combinedAccountsTransactions[transactionIndex].accountBalance =
+        Number(combinedAccountsTransactions[transactionIndex].accountBalance) +
+        Number(transaction.accountBalance);
+    }
+  });
+
+  combinedAccounts[0].transactions = combinedAccountsTransactions;
 
   const selectedAccountTransactions = isSingleAccountSelected
     ? filteredAccountTransactions(selectedAccountNumbers[0])
@@ -225,8 +273,12 @@ export default function useChartData(
     selectedAccountTransactions.map(({ transactionType }) => transactionType)
   );
 
+  const allOrSelectedAccounts = isAllAccountsSelected
+    ? combinedAccounts
+    : selectedAccounts;
+
   const data = {
-    datasets: selectedAccounts.map((account: any, index: number) => {
+    datasets: allOrSelectedAccounts.map((account: any, index: number) => {
       const accountBalance = Number(account.accountBalance);
       const { balanceData } = createChartData(
         account.transactions,
