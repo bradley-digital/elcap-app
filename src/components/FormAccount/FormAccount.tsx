@@ -85,7 +85,6 @@ export default function FormAccount({ profile }: Props) {
         state: stateValidation,
       })}
       onSubmit={(values) => {
-        return console.log({ values });
         setIsSubmitting(true);
         updateUser(values);
         setEdited(false);
