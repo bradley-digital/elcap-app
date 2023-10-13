@@ -115,7 +115,7 @@ export default function useUser() {
     currentPassword: string;
   }) {
     const { data } = await authApi.patch<Profile>(
-      "/users/update-password",
+      "/users/password",
       body,
     );
     return data;
