@@ -18,10 +18,10 @@ export default function useChartData(
   selectedAccountNumbers: string[],
   sortBy?: string,
 ) {
-  const { accounts, backfilledTransactions } =
-    useUserWesternAllianceAccount(selectedTimeRange, sortBy);
-
-  console.log(backfilledTransactions);
+  const { accounts, backfilledTransactions } = useUserWesternAllianceAccount(
+    selectedTimeRange,
+    sortBy,
+  );
 
   if (
     !backfilledTransactions ||
