@@ -58,14 +58,18 @@ export default function TransferHistoryDetails({ transfer }: Props) {
           <IonLabel>Account number</IonLabel>
           <IonText>{accountNumber}</IonText>
         </IonItem>
-        <IonItem>
-          <IonLabel>To account name</IonLabel>
-          <IonText>{recipientName}</IonText>
-        </IonItem>
-        <IonItem>
-          <IonLabel>To account number</IonLabel>
-          <IonText>{recipientAccountNumber}</IonText>
-        </IonItem>
+        {recipientName && (
+          <IonItem>
+            <IonLabel>To account name</IonLabel>
+            <IonText>{recipientName}</IonText>
+          </IonItem>
+        )}
+        {recipientAccountNumber && (
+          <IonItem>
+            <IonLabel>To account number</IonLabel>
+            <IonText>{recipientAccountNumber}</IonText>
+          </IonItem>
+        )}
         <IonItem>
           <IonLabel>Amount</IonLabel>
           <IonText>{currency(Number(amount))}</IonText>
