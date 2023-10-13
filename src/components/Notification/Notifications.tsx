@@ -18,7 +18,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { isOpenAtom } from "atoms/userListModal";
+import { isOpenAtom } from "atoms/notificationModal";
 import {
   INotification,
   notificationsQueryKey,
