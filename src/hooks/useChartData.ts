@@ -87,6 +87,77 @@ export default function useChartData(
       )
     : individualAccounts;
 
+  // create a list of the months with missing transactions
+  const missingMonthDates: any[] = [];
+  selectedAccounts.forEach((account: any) => {
+    account.transactions.sort(
+      (a: any, b: any) =>
+        new Date(a.postingDate).getTime() - new Date(b.postingDate).getTime()
+    );
+    account.transactions.forEach((transaction: any, index: number) => {
+      const postingDates = account.transactions.map(
+        (transaction: any) => transaction.postingDate
+      );
+
+      // check if the there are missing months in the posting dates 
+      // exclude first month
+      if (index !== 0) {
+        const previousMonth = new Date(transaction.postingDate).getMonth();
+        const previousYear = new Date(transaction.postingDate).getFullYear();
+        const previousPostingDate = new Date(previousYear, previousMonth, 0);
+        const previousPostingDateString = previousPostingDate.toISOString();
+
+        if (!postingDates.includes(previousPostingDateString)) {
+          missingMonthDates.push({
+            accountNumber: account.accountNumber,
+            postingDate: previousPostingDateString,
+          });
+        }
+      }
+    });
+  });
+
+  // create transactions for months that have none
+  const backfilledMissingMonthTransactions = missingMonthDates.map(
+    (missingMonthDate) => {
+      // find the last transaction in the month before missingMonthDate
+      const previousMonth =
+        new Date(missingMonthDate.postingDate).getMonth() - 1;
+      const previousYear = new Date(missingMonthDate.postingDate).getFullYear();
+
+      const missingMonthAccount = selectedAccounts.find(
+        (account: any) =>
+          account.accountNumber === missingMonthDate.accountNumber
+      );
+
+      // for each missingMonth look for the last transaction in the previous month
+      const previousTransaction = missingMonthAccount.transactions
+        .slice()
+        .reverse()
+        .find(
+          (transaction: any) =>
+            new Date(transaction.postingDate).getMonth() === previousMonth &&
+            new Date(transaction.postingDate).getFullYear() === previousYear
+        );
+
+      return {
+        id: previousTransaction?.id,
+        accountNumber: previousTransaction?.accountNumber,
+        postingDate: missingMonthDate.postingDate,
+        transactionAmount: previousTransaction?.transactionAmount,
+        accountBalance: previousTransaction?.accountBalance,
+        transactionCode: previousTransaction?.transactionCode,
+        transactionIsReversed: previousTransaction?.transactionIsReversed,
+        transactionType: previousTransaction?.transactionType,
+        tempIdentifier: "tempIdentifier",
+      };
+    }
+  );
+
+  console.log("backfilledMissingMonths:", backfilledMissingMonthTransactions);
+  // console.log("missingMonthDates:", missingMonthDates);
+  // console.log("selectedAccounts:", selectedAccounts);
+
   // combine all selected accounts into one account
   const combinedAccounts: any = [
     {
@@ -110,6 +181,7 @@ export default function useChartData(
     combinedAccounts[0].transactions = [
       ...combinedAccounts[0].transactions,
       ...account.transactions,
+      ...backfilledMissingMonthTransactions,
     ];
   });
 
@@ -137,6 +209,7 @@ export default function useChartData(
   });
 
   combinedAccounts[0].transactions = combinedAccountsTransactions;
+  // console.log("combinedAccounts:", combinedAccounts);
 
   const selectedAccountTransactions = isSingleAccountSelected
     ? filteredAccountTransactions(selectedAccountNumbers[0])
