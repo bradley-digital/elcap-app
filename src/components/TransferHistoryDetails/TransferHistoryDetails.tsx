@@ -35,7 +35,11 @@ export default function TransferHistoryDetails({ transfer }: Props) {
   const updatedBy = `${transfer?.userUpdatedBy?.firstName || ""} ${
     transfer?.userUpdatedBy?.lastName || ""
   }`;
+
   const updatedAt = transfer?.updatedAt;
+  const recipientName = transfer?.externalToAccount?.accountName || "";
+  const recipientAccountNumber = transfer?.externalToAccount?.accountNumber || "";
+
 
   return (
     <div>
@@ -56,6 +60,18 @@ export default function TransferHistoryDetails({ transfer }: Props) {
           <IonLabel>Account number</IonLabel>
           <IonText>{accountNumber}</IonText>
         </IonItem>
+        {recipientName && (
+          <IonItem>
+            <IonLabel>Recipient name</IonLabel>
+            <IonText>{recipientName}</IonText>
+          </IonItem>
+        )}
+        {recipientAccountNumber && (
+          <IonItem>
+            <IonLabel>Recipient account number</IonLabel>
+            <IonText>{recipientAccountNumber}</IonText>
+          </IonItem>
+        )}
         <IonItem>
           <IonLabel>Amount</IonLabel>
           <IonText>{currency(Number(amount))}</IonText>
