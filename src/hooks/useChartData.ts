@@ -99,7 +99,7 @@ export default function useChartData(
         (transaction: any) => transaction.postingDate
       );
 
-      // check if the there are missing months in the posting dates 
+      // check if the there are missing months in the posting dates
       // exclude first month
       if (index !== 0) {
         const previousMonth = new Date(transaction.postingDate).getMonth();
@@ -149,49 +149,29 @@ export default function useChartData(
         transactionCode: previousTransaction?.transactionCode,
         transactionIsReversed: previousTransaction?.transactionIsReversed,
         transactionType: previousTransaction?.transactionType,
-        tempIdentifier: "tempIdentifier",
       };
     }
   );
 
-  console.log("backfilledMissingMonths:", backfilledMissingMonthTransactions);
-  // console.log("missingMonthDates:", missingMonthDates);
-  // console.log("selectedAccounts:", selectedAccounts);
-
-  // combine all selected accounts into one account
+  // combine all selected accounts transactions and backfilledMissingMonthTransactions into one account
   const combinedAccounts: any = [
     {
-      id: "",
-      accountNumber: "",
       accountName: "All Accounts",
-      accountBalance: "",
-      client: "",
-      routingNumber: "",
       transactions: [],
     },
   ];
-
-  selectedAccounts.forEach((account: any) => {
-    // add account balance to combined account
-    combinedAccounts[0].accountBalance =
-      Number(combinedAccounts[0].accountBalance) +
-      Number(account.accountBalance);
-
-    // add transactions to combined account
-    combinedAccounts[0].transactions = [
-      ...combinedAccounts[0].transactions,
-      ...account.transactions,
-      ...backfilledMissingMonthTransactions,
-    ];
+  selectedAccounts.forEach((selectedAccount: any) => {
+    combinedAccounts[0].transactions.push(...selectedAccount.transactions);
   });
+  combinedAccounts[0].transactions.push(...backfilledMissingMonthTransactions);
 
-  // sort combined accounts transactions by posting date
+  // sort combined accounts transactions by postingDate
   combinedAccounts[0].transactions.sort(
     (a: any, b: any) =>
       new Date(a.postingDate).getTime() - new Date(b.postingDate).getTime()
   );
 
-  // if selected accounts transactions are on the same day, combine them
+  // if combinedAccounts transactions are on the same day, combine them
   const combinedAccountsTransactions: any = [];
   combinedAccounts[0].transactions.forEach((transaction: any) => {
     const transactionIndex = combinedAccountsTransactions.findIndex(
@@ -209,7 +189,6 @@ export default function useChartData(
   });
 
   combinedAccounts[0].transactions = combinedAccountsTransactions;
-  // console.log("combinedAccounts:", combinedAccounts);
 
   const selectedAccountTransactions = isSingleAccountSelected
     ? filteredAccountTransactions(selectedAccountNumbers[0])
