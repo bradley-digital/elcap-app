@@ -20,7 +20,7 @@ export default function useChartData(
 ) {
   const { accounts, backfilledTransactions } = useUserWesternAllianceAccount(
     selectedTimeRange,
-    sortBy
+    sortBy,
   );
 
   if (

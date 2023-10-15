@@ -1,8 +1,8 @@
 import { IonButtons, IonButton, IonIcon, IonBadge } from "@ionic/react";
 import { useAtom } from "jotai";
-import { isOpenAtom } from "atoms/userListModal";
 import { useNotification } from "hooks/useNotification";
 import { notificationsOutline } from "ionicons/icons";
+import { isOpenAtom } from "atoms/notificationModal";
 
 export default function NotificationButton() {
   const [, setIsOpen] = useAtom(isOpenAtom);

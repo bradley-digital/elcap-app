@@ -3,7 +3,7 @@ import TransactionsTable from "components/TransactionsTable/TransactionsTable";
 
 export default function DashboardTransactions() {
   return (
-    <PageTemplate title="Transaction History">
+    <PageTemplate title="Transaction History" menuId="dashboard">
       <TransactionsTable />
     </PageTemplate>
   );
