@@ -26,15 +26,17 @@ type Props = {
     label: string;
   }[];
   position?: "fixed" | "stacked" | "floating";
+  onChange?: (value: string) => void;
 } & ComponentProps<typeof IonSelect> &
   FieldHookConfig<string>;
 
 export default function FormSelect(props: Props) {
   const [field, meta] = useField(props);
-  const { className, icon, label, note, options, position, ...rest } = props;
+  const { className, icon, label, note, options, position, onChange, ...rest } =
+    props;
 
   const selectedOption = options.find(
-    (option) => option.value === field.value
+    (option) => option.value === field.value,
   ) ?? { value: "", label: "" };
 
   const interfaceOptions = {
@@ -55,7 +57,13 @@ export default function FormSelect(props: Props) {
         interfaceOptions={interfaceOptions}
         selectedText={selectedOption.label}
         onIonBlur={field.onBlur}
-        onIonChange={field.onChange}
+        onIonChange={(e) => {
+          if (onChange) {
+            onChange(e.detail.value);
+          } else {
+            field.onChange(e.detail.value);
+          }
+        }}
         {...rest}
       >
         {options.map((option) => (

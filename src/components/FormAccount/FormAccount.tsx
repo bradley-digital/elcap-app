@@ -29,6 +29,9 @@ import FormSelect from "components/FormSelect/FormSelect";
 // hooks
 import useUser from "hooks/useUser";
 
+// data
+import { states } from "lib/states";
+
 type Props = {
   profile: Profile;
 };
@@ -80,7 +83,7 @@ export default function FormAccount({ profile }: Props) {
         setIsSubmitting(false);
       }}
     >
-      {({ dirty }) => (
+      {({ values, setFieldValue, dirty }) => (
         <Form>
           <IonList>
             <FormInput
@@ -121,8 +124,25 @@ export default function FormAccount({ profile }: Props) {
               type="text"
               icon={pencil}
             />
-            <FormSelect label="Country" name="country" options={countries} />
-            <FormInput label="State" name="state" type="text" icon={pencil} />
+            <FormSelect
+              label="Country"
+              name="country"
+              options={countries}
+              onChange={(value: any) => {
+                setFieldValue("country", value);
+                setFieldValue("state", "");
+              }}
+            />
+            {values.country === "United States" && (
+              <FormSelect
+                label="State"
+                name="state"
+                options={states}
+                onChange={(value: any) => {
+                  setFieldValue("state", value);
+                }}
+              />
+            )}
             {dirty && (
               <SubmitButton className="w-100" isSubmitting={isSubmitting}>
                 Update
