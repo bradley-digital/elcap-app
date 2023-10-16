@@ -7,15 +7,27 @@ type Props = {
   label: string;
   name: string;
   options: { label: string; value: string }[];
+  onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 } & FieldHookConfig<string>;
 
 export default function AuthFormSelect(props: Props) {
-  const { options } = props;
+  const { options, onChange: propsOnchange } = props;
   const [field, meta] = useField(props);
+  const { onChange, ...rest } = field;
 
   return (
     <div className="AuthFormSelect">
-      <select {...field} className="AuthFormSelect__select">
+      <select
+        className="AuthFormSelect__select"
+        {...rest}
+        onChange={(e) => {
+          if (propsOnchange) {
+            propsOnchange(e);
+          } else {
+            onChange(e);
+          }
+        }}
+      >
         {options.map((option) => (
           <option key={hash(option)} value={option.value}>
             {option.label}
