@@ -27,7 +27,6 @@ import {
 import { currency, date } from "lib/formats";
 import { createPopup } from "lib/popup";
 import { useDocusign } from "hooks/useDocusign";
-import { useIonToast } from "@ionic/react";
 
 const host = import.meta.env.VITE_FRONTEND_HOST || "http://localhost:3021";
 
