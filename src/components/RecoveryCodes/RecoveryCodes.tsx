@@ -18,8 +18,9 @@ import {
   IonText,
   IonLoading,
 } from "@ionic/react";
+import classNames from "classnames";
 import useUser from "hooks/useUser";
-import { informationCircleOutline } from "ionicons/icons";
+import { alertCircleOutline, informationCircleOutline } from "ionicons/icons";
 
 type Props = {
   setOpen: (open: boolean) => void;
@@ -32,6 +33,7 @@ export default function RecoveryCodes({ setOpen }: Props) {
     hasRecoveryCodes,
   } = useUser();
 
+  console.log({ recoveryCodes, hasRecoveryCodes });
   function copyToClipboard(text: string) {
     navigator.clipboard.writeText(text);
   }
@@ -69,25 +71,38 @@ export default function RecoveryCodes({ setOpen }: Props) {
           </IonToolbar>
         </IonHeader>
         <IonContent className="ion-padding">
-          <IonCard color={hasRecoveryCodes ? "danger" : "warning"}>
+          <IonCard
+            className={classNames(
+              hasRecoveryCodes &&
+                recoveryCodes &&
+                "RecoveryCodes__warningBackgroundColor",
+              hasRecoveryCodes &&
+                !recoveryCodes &&
+                "RecoveryCodes__dangerBackgroundColor",
+            )}
+          >
             <IonCardContent>
               <IonGrid>
                 <IonRow>
                   <IonCol size="auto">
                     <IonIcon
-                      icon={informationCircleOutline}
+                      icon={
+                        !hasRecoveryCodes
+                          ? informationCircleOutline
+                          : alertCircleOutline
+                      }
                       size="large"
-                      color="primary"
+                      className={classNames(
+                        hasRecoveryCodes &&
+                          !recoveryCodes &&
+                          "RecoveryCodes__lightColor",
+                        !hasRecoveryCodes && "RecoveryCodes__primaryColor",
+                      )}
                     />
                   </IonCol>
 
                   <IonCol>
-                    {hasRecoveryCodes ? (
-                      <IonText>
-                        You have previously generated recovery codes. Creating
-                        new ones will destroy any existing recovery code.
-                      </IonText>
-                    ) : (
+                    {!hasRecoveryCodes && !recoveryCodes && (
                       <IonText>
                         Keep your recovery codes in a safe spot. These codes are
                         the last resort for accessing you account in case you
@@ -95,6 +110,21 @@ export default function RecoveryCodes({ setOpen }: Props) {
                         find these codes, you will lose access to your account.
                         You will only be able to view these recovery codes once.
                         Please be sure to save them in a secure location.
+                      </IonText>
+                    )}
+
+                    {hasRecoveryCodes && !recoveryCodes && (
+                      <IonText color="light">
+                        You have previously generated recovery codes. Creating
+                        new ones will destroy any existing recovery code.
+                      </IonText>
+                    )}
+
+                    {hasRecoveryCodes && recoveryCodes && (
+                      <IonText>
+                        You will only be able to view these codes once. Be sure
+                        to store them in a secure location before closing this
+                        window.
                       </IonText>
                     )}
                   </IonCol>
@@ -151,34 +181,41 @@ export default function RecoveryCodes({ setOpen }: Props) {
             </>
           )}
 
-          <div className="RecoveryCodes__generateNew">
-            <IonText>
-              <h6>Generate new recovery codes</h6>
-              {hasRecoveryCodes ? (
-                <p>
-                  You have already generated recovery codes. Requesting a new
-                  set of codes will disable any existing codes. Are you sure you
-                  want to continue?
-                </p>
-              ) : (
-                <p>
-                  You will only be able to view these recovery codes once.
-                  Please be sure to save them in a secure location.
-                </p>
-              )}
-            </IonText>
+          {!recoveryCodes && (
+            <div className="RecoveryCodes__generateNew">
+              <IonText>
+                {hasRecoveryCodes ? (
+                  <>
+                    <h6>Generate new recovery codes</h6>
+                    <p>
+                      You have already generated recovery codes. Requesting a
+                      new set of codes will disable any existing codes. Are you
+                      sure you want to continue?
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <h6>Generate recovery codes</h6>
+                    <p>
+                      You will only be able to view these recovery codes once.
+                      Please be sure to save them in a secure location.
+                    </p>
+                  </>
+                )}
+              </IonText>
 
-            <IonButton
-              color={hasRecoveryCodes ? "danger" : "primary"}
-              onClick={() => {
-                generateNewRecoveryCodes();
-              }}
-            >
-              {hasRecoveryCodes
-                ? "I UNDERSTAND, GENERATE NEW RECOVERY CODES"
-                : "GENERATE RECOVERY CODES"}
-            </IonButton>
-          </div>
+              <IonButton
+                color={hasRecoveryCodes ? "danger" : "primary"}
+                onClick={() => {
+                  generateNewRecoveryCodes();
+                }}
+              >
+                {hasRecoveryCodes
+                  ? "I UNDERSTAND, GENERATE NEW RECOVERY CODES"
+                  : "GENERATE RECOVERY CODES"}
+              </IonButton>
+            </div>
+          )}
         </IonContent>
       </IonModal>
     </>

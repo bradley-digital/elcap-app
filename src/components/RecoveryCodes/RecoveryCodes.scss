@@ -7,9 +7,28 @@
     border-radius: 4px;
   }
 
+  &__dangerBackgroundColor {
+    background-color: $danger;
+  }
+
+  &__warningBackgroundColor {
+    background-color: $warning;
+  }
+
+  &__lightColor {
+    color: $white !important;
+  }
+
+  &__primaryColor {
+    color: $primary !important;
+  }
+
+  &__warningColor {
+    color: $warning;
+  }
+
   &__generateNew {
     margin-top: 20px;
-    border-top: 0.5px solid $gray;
   }
 
   &__buttons {
