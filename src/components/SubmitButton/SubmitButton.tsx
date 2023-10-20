@@ -1,10 +1,12 @@
 import type { ReactNode } from "react";
 import { IonButton, IonSpinner } from "@ionic/react";
 import "components/SubmitButton/SubmitButton.scss";
+import classNames from "classnames";
 
 type Props = {
   children: ReactNode;
   isSubmitting?: boolean;
+  slot?: "start" | "end";
   [rest: string]: any;
 };
 
@@ -14,10 +16,17 @@ type Props = {
 export default function SubmitButton({
   children,
   isSubmitting,
+  slot = "start",
   ...rest
 }: Props) {
   return (
-    <div className="SubmitButton">
+    <div
+      className={classNames(
+        "SubmitButton",
+        slot === "end" && "metadata-end-wrapper",
+      )}
+      slot={slot}
+    >
       <input className="SubmitButton__hiddenInput" type="submit"></input>
       <IonButton {...rest} type="submit" disabled={isSubmitting}>
         {isSubmitting ? <IonSpinner name="crescent" /> : children}
