@@ -11,7 +11,7 @@ type Props = {
 } & FieldHookConfig<string>;
 
 export default function AuthFormSelect(props: Props) {
-  const { options, onChange: propsOnchange } = props;
+  const { options, onChange: propsOnChange } = props;
   const [field, meta] = useField(props);
   const { onChange, ...rest } = field;
 
@@ -21,8 +21,8 @@ export default function AuthFormSelect(props: Props) {
         className="AuthFormSelect__select"
         {...rest}
         onChange={(e) => {
-          if (propsOnchange) {
-            propsOnchange(e);
+          if (propsOnChange) {
+            propsOnChange(e);
           } else {
             onChange(e);
           }
