@@ -1,17 +1,19 @@
 import {
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardTitle,
-  IonIcon,
+  IonButton,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonItem,
   IonList,
+  IonModal,
+  IonTitle,
+  IonToolbar,
 } from "@ionic/react";
 import FormInput from "components/FormInput/FormInput";
 import ProfileItem from "components/ProfileItem/ProfileItem";
 import SubmitButton from "components/SubmitButton/SubmitButton";
 import { Form, Formik, FormikHelpers } from "formik";
 import useUser from "hooks/useUser";
-import { keyOutline } from "ionicons/icons";
 import {
   confirmNewPasswordValidation,
   passwordValidation,
@@ -60,14 +62,30 @@ export default function ProfileUpdatePassword() {
         }}
         buttonName={openSetPasswordForm ? "Close" : "Change password"}
       />
+
       {openSetPasswordForm && (
-        <IonCard>
-          <IonCardHeader>
-            <IonCardTitle>
-              <IonIcon icon={keyOutline} /> Change password
-            </IonCardTitle>
-          </IonCardHeader>
-          <IonCardContent>
+        <IonModal
+          isOpen={openSetPasswordForm}
+          onWillDismiss={() => {
+            setOpenSetPasswordForm(false);
+          }}
+          className="AuthenticatorApp"
+        >
+          <IonHeader>
+            <IonToolbar>
+              <IonTitle>Change password</IonTitle>
+              <IonButtons slot="end">
+                <IonButton
+                  onClick={() => {
+                    setOpenSetPasswordForm(false);
+                  }}
+                >
+                  Close
+                </IonButton>
+              </IonButtons>
+            </IonToolbar>
+          </IonHeader>
+          <IonContent className="ion-padding">
             <Formik<Yup.InferType<typeof validationSchema>>
               initialValues={initialValues}
               onSubmit={handleSubmit}
@@ -94,13 +112,17 @@ export default function ProfileUpdatePassword() {
                       type="password"
                       placeholder="Confirm password"
                     />
+                    <IonItem lines="none">
+                      <SubmitButton isSubmitting={isSubmitting} slot="end">
+                        Save
+                      </SubmitButton>
+                    </IonItem>
                   </IonList>
-                  <SubmitButton isSubmitting={isSubmitting}>Save</SubmitButton>
                 </Form>
               )}
             </Formik>
-          </IonCardContent>
-        </IonCard>
+          </IonContent>
+        </IonModal>
       )}
     </IonList>
   );
