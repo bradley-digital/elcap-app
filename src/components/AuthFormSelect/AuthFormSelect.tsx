@@ -28,6 +28,9 @@ export default function AuthFormSelect(props: Props) {
           }
         }}
       >
+        <option value="" disabled>
+          Select an option
+        </option>
         {options.map((option) => (
           <option key={hash(option)} value={option.value}>
             {option.label}
