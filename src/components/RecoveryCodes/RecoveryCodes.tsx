@@ -108,8 +108,6 @@ export default function RecoveryCodes({ setOpen }: Props) {
                         the last resort for accessing you account in case you
                         lose your password and second factors. If you cannot
                         find these codes, you will lose access to your account.
-                        You will only be able to view these recovery codes once.
-                        Please be sure to save them in a secure location.
                       </IonText>
                     )}
 

@@ -134,17 +134,16 @@ export default function useUser() {
 
   return {
     userQueryKey: queryKey,
-    profileIsSuccess,
     profile,
-    updateUser,
+    profileIsSuccess,
+    recoveryCodes,
     recoveryCodesIsSuccess,
     hasRecoveryCodes,
-    verifyOtp,
-    recoveryCodes,
     generateNewRecoveryCodes,
     generatingNewRecoveryCodesStatus,
     generatingNewRecoveryCodesIsSuccess,
     verifyOtp,
+    updateUser,
     updatePassword,
     asyncUpdatePassword,
   };
