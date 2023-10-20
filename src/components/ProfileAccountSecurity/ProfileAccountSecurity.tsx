@@ -30,10 +30,7 @@ export default function ProfileAccountSecurity() {
         />
       )}
       {openRecoveryCodes && (
-        <RecoveryCodes
-          open={openRecoveryCodes}
-          setOpen={(open) => setOpenRecoveryCodes(open)}
-        />
+        <RecoveryCodes setOpen={(open) => setOpenRecoveryCodes(open)} />
       )}
     </IonList>
   );

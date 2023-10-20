@@ -43,7 +43,7 @@ type ProfileUpdateInput = {
 };
 
 export const queryKey = "userAccount";
-export const recoveryCodesqueryKey = `${queryKey}RecoveryCodes`;
+export const hasRecoveryCodesqueryKey = `${queryKey}RecoveryCodes`;
 
 export default function useUser() {
   const { authApi } = useAuth();
@@ -55,10 +55,8 @@ export default function useUser() {
     getUser,
   );
 
-  const { isSuccess: recoveryCodesIsSuccess, data: recoveryCodes } = useQuery(
-    recoveryCodesqueryKey,
-    getRecoveryCodes,
-  );
+  const { isSuccess: recoveryCodesIsSuccess, data: hasRecoveryCodes } =
+    useQuery(hasRecoveryCodesqueryKey, getHasRecoveryCodes);
 
   const { mutate: updateUser } = useMutation(updateUserMutation, {
     onSuccess: (data) => {
@@ -66,14 +64,16 @@ export default function useUser() {
     },
   });
 
-  const { mutate: generateNewRecoveryCodes } = useMutation(
-    generateNewRecoveryCodesMutation,
-    {
-      onSuccess: (data) => {
-        queryClient.setQueryData(recoveryCodesqueryKey, data);
-      },
+  const {
+    mutate: generateNewRecoveryCodes,
+    data: recoveryCodes,
+    status: generatingNewRecoveryCodesStatus,
+    isSuccess: generatingNewRecoveryCodesIsSuccess,
+  } = useMutation(generateNewRecoveryCodesMutation, {
+    onSuccess: () => {
+      queryClient.setQueryData(hasRecoveryCodesqueryKey, true);
     },
-  );
+  });
 
   const { mutateAsync: verifyOtp } = useMutation(verifyOtpMutation);
 
@@ -101,8 +101,8 @@ export default function useUser() {
     return data;
   }
 
-  async function getRecoveryCodes() {
-    const { data } = await authApi.get<string[]>("/users/recovery-codes");
+  async function getHasRecoveryCodes() {
+    const { data } = await authApi.get<string[]>("/users/has-recovery-codes");
     return data;
   }
 
@@ -134,13 +134,16 @@ export default function useUser() {
 
   return {
     userQueryKey: queryKey,
-    profileIsSuccess,
     profile,
-    updateUser,
-    recoveryCodesIsSuccess,
+    profileIsSuccess,
     recoveryCodes,
+    recoveryCodesIsSuccess,
+    hasRecoveryCodes,
     generateNewRecoveryCodes,
+    generatingNewRecoveryCodesStatus,
+    generatingNewRecoveryCodesIsSuccess,
     verifyOtp,
+    updateUser,
     updatePassword,
     asyncUpdatePassword,
   };
