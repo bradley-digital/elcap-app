@@ -1,6 +1,6 @@
 import type { AxiosInstance } from "axios";
 import type { ReactNode } from "react";
-import { createContext } from "react";
+import { createContext, useEffect } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import useFacebookLogin from "hooks/useFacebookLogin";
 
@@ -10,6 +10,7 @@ import getErrorMessage from "lib/error";
 // hooks
 import useAuthApi from "hooks/useAuthApi";
 import { useIonToast } from "@ionic/react";
+import { socket } from "lib/socket";
 
 type RegisterBody = {
   firstName: string;
@@ -184,6 +185,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
       handleRemoveTokens();
     }
   }
+
+  useEffect(() => {
+    const listener = async () => {
+      await logout();
+    };
+    const accountNsp = socket("/account");
+    accountNsp.on("account:disabled", listener);
+    return () => {
+      accountNsp.disconnect();
+    };
+  }, []);
 
   return (
     <AuthContext.Provider

@@ -46,6 +46,18 @@ export default function useUser() {
 
   const { isSuccess, data } = useQuery(queryKey, getUserList);
 
+  const { mutate: disable } = useMutation(disableUser, {
+    onSuccess: (data) => {
+      const previousUsers = queryClient.getQueryData<Profile[]>(queryKey);
+      if (!previousUsers) return;
+      const index = previousUsers?.findIndex((user) => user.id === data.id);
+      if (index === undefined || index === -1) return;
+      const previousUser = previousUsers[index];
+      previousUser.disabled = data.disabled;
+      queryClient.setQueryData(queryKey, previousUsers);
+    },
+  });
+
   const { mutate: create } = useMutation(createUser, {
     onSuccess: () => {
       queryClient.invalidateQueries(queryKey);
@@ -70,6 +82,11 @@ export default function useUser() {
     },
   });
 
+  async function disableUser(body: { userId: string; disabled: boolean }) {
+    const { data } = await authApi.post<Profile>("/users/disable", body);
+    return data;
+  }
+
   async function createUser(body: ProfileCreateInput) {
     const { data } = await authApi.post<Profile>("/users/create", body);
     return data;
@@ -89,8 +106,8 @@ export default function useUser() {
     const { data } = await authApi.get<Profile[]>("/users/list");
     data.sort((a, b) =>
       `${a.firstName} ${a.lastName}`.localeCompare(
-        `${b.firstName} ${b.lastName}`
-      )
+        `${b.firstName} ${b.lastName}`,
+      ),
     );
     return data;
   }
@@ -108,5 +125,6 @@ export default function useUser() {
     isSuccess,
     queryKey,
     update,
+    disable,
   };
 }
