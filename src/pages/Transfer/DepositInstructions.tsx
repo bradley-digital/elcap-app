@@ -5,7 +5,7 @@ import Instructions from "components/DepositInstructions/DepositInstructions";
 
 export default function DepositInstructions() {
   return (
-    <PageTemplate title="Deposit Instructions" menuId="instructions">
+    <PageTemplate title="Deposit Instructions" menuId="transfer">
       <IonGrid>
         <IonRow className="ion-justify-content-center">
           <IonCol size-md="8" size-lg="6">

@@ -50,6 +50,9 @@ export default function MoneyMovementTransfer({ transfer }: Props) {
   const updatedBy = `${transfer?.userUpdatedBy?.firstName || ""} ${
     transfer?.userUpdatedBy?.lastName || ""
   }`;
+  const submittedAt = transfer?.submittedAt;
+  const updatedAt = transfer?.updatedAt;
+
   const useIntermediary = externalToAccount?.useIntermediary;
 
   function handleApprove() {
@@ -148,8 +151,16 @@ export default function MoneyMovementTransfer({ transfer }: Props) {
           <IonText>{submittedBy}</IonText>
         </IonItem>
         <IonItem>
+          <IonLabel>Submitted at</IonLabel>
+          <IonText>{date(submittedAt)}</IonText>
+        </IonItem>
+        <IonItem>
           <IonLabel>Updated by</IonLabel>
           <IonText>{updatedBy}</IonText>
+        </IonItem>
+        <IonItem>
+          <IonLabel>Updated at</IonLabel>
+          <IonText>{transfer.userUpdatedBy && date(updatedAt)}</IonText>
         </IonItem>
         <IonItem>
           <IonLabel>Transaction number</IonLabel>

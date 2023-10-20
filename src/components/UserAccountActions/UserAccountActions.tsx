@@ -22,9 +22,9 @@ type Props = {
 
 export default function UserAccountActions({ profile }: Props) {
   const [, setIsOpen] = useAtom(isOpenAtom);
-  const { invite, update } = useUserManagement();
+  const { invite, update, disable } = useUserManagement();
 
-  const { id } = profile;
+  const { id, disabled } = profile;
 
   function handleInvite() {
     invite({ id });
@@ -36,6 +36,10 @@ export default function UserAccountActions({ profile }: Props) {
 
   function handleDelete() {
     setIsOpen(true);
+  }
+
+  function handleDisable() {
+    disable({ userId: id, disabled: !disabled });
   }
 
   return (
@@ -64,6 +68,20 @@ export default function UserAccountActions({ profile }: Props) {
           </IonText>
           <IonButton onClick={handleApprove} slot="end" size="default">
             Approve user
+          </IonButton>
+        </IonItem>
+        <IonItem>
+          <IonText>
+            <h6>{disabled ? "Enable" : "Disable"} user</h6>
+            <p>Freeze or unfreeze the user&apos;s account.</p>
+          </IonText>
+          <IonButton
+            onClick={handleDisable}
+            slot="end"
+            size="default"
+            color={disabled ? "primary" : "danger"}
+          >
+            {disabled ? "Enable" : "Disable"} user
           </IonButton>
         </IonItem>
         <IonItem>
