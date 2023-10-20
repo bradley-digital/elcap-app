@@ -2,17 +2,18 @@
 
 .AuthFormSelect {
   position: relative;
-  padding: 16px 0 10px 0;
+  padding: 16px 0 0 0;
   margin-top: 8px;
-  border-bottom: 2px solid $gray;
   width: 100%;
 
   select {
     background: transparent;
-    width: 100%;
     border: none;
+    border-bottom: 2px solid $gray;
+    width: 100%;
     cursor: pointer;
     margin-top: 6px;
+    padding-bottom: 10px;
 
     &:focus {
       outline: none;

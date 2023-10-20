@@ -32,6 +32,9 @@ import SubmitButton from "components/SubmitButton/SubmitButton";
 import useUserManagement from "hooks/useUserManagement";
 import FormCheckbox from "components/FormCheckbox/FormCheckbox";
 
+// data
+import { states } from "lib/states";
+
 const roleOptions = [
   {
     value: "ADMIN",
@@ -104,58 +107,77 @@ export default function FormUserAccount({ profile }: Props) {
         setIsSubmitting(false);
       }}
     >
-      <Form>
-        <IonList>
-          <IonListHeader>Profile information</IonListHeader>
-          <FormInput
-            label="First Name"
-            name="firstName"
-            type="text"
-            icon={pencil}
-          />
-          <FormInput
-            label="Last Name"
-            name="lastName"
-            type="text"
-            icon={pencil}
-          />
-          <FormInput
-            label="Email"
-            name="email"
-            type="email"
-            icon={lockClosed}
-            readonly={true}
-          />
-          <FormInput label="Phone" name="phone" type="text" icon={pencil} />
-          <FormInput
-            label="Company Name"
-            name="companyName"
-            type="text"
-            icon={pencil}
-          />
-          <FormInput
-            label="Address line 1"
-            name="addressLine1"
-            type="text"
-            icon={pencil}
-          />
-          <FormInput
-            label="Address line 2"
-            name="addressLine2"
-            type="text"
-            icon={pencil}
-          />
-          <FormSelect label="Country" name="country" options={countries} />
-          <FormInput label="State" name="state" type="text" icon={pencil} />
-          <FormSelect label="Role" name="role" options={roleOptions} />
-          <FormCheckbox
-            label="Is cannabis client?"
-            name="isCannabis"
-            type="checkbox"
-          />
-          <SubmitButton isSubmitting={isSubmitting}>Update User</SubmitButton>
-        </IonList>
-      </Form>
+      {({ values, setFieldValue }) => (
+        <Form>
+          <IonList>
+            <IonListHeader>Profile information</IonListHeader>
+            <FormInput
+              label="First Name"
+              name="firstName"
+              type="text"
+              icon={pencil}
+            />
+            <FormInput
+              label="Last Name"
+              name="lastName"
+              type="text"
+              icon={pencil}
+            />
+            <FormInput
+              label="Email"
+              name="email"
+              type="email"
+              icon={lockClosed}
+              readonly={true}
+            />
+            <FormInput label="Phone" name="phone" type="text" icon={pencil} />
+            <FormInput
+              label="Company Name"
+              name="companyName"
+              type="text"
+              icon={pencil}
+            />
+            <FormInput
+              label="Address line 1"
+              name="addressLine1"
+              type="text"
+              icon={pencil}
+            />
+            <FormInput
+              label="Address line 2"
+              name="addressLine2"
+              type="text"
+              icon={pencil}
+            />
+            <FormSelect
+              label="Country"
+              name="country"
+              options={countries}
+              onChange={(value: any) => {
+                setFieldValue("country", value);
+                setFieldValue("state", "");
+              }}
+            />
+            {values.country === "United States" && (
+              <FormSelect
+                label="State"
+                name="state"
+                options={states}
+                onChange={(value: any) => {
+                  setFieldValue("state", value);
+                }}
+              />
+            )}
+            <FormSelect label="Role" name="role" options={roleOptions} />
+            <FormCheckbox
+              label="Is cannabis client?"
+              name="isCannabis"
+              type="checkbox"
+            />
+            <SubmitButton isSubmitting={isSubmitting}>Update User</SubmitButton>
+          </IonList>
+        </Form>
+      )}
     </Formik>
   );
 }

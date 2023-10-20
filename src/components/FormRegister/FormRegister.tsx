@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 
@@ -14,6 +14,7 @@ import {
   stateValidation,
 } from "lib/formValidation";
 import { countries } from "lib/countries";
+import { states } from "lib/states";
 
 // hooks
 import useAuth from "hooks/useAuth";
@@ -56,47 +57,65 @@ export default function FormRegister() {
         setIsSubmitting(false);
       }}
     >
-      <Form>
-        <FormInput
-          label="First Name"
-          name="firstName"
-          type="text"
-          placeholder="First Name"
-        />
-        <FormInput
-          label="Last Name"
-          name="lastName"
-          type="text"
-          placeholder="Last Name"
-        />
-        <FormInput
-          label="Email"
-          name="email"
-          type="email"
-          placeholder="Email"
-        />
-        <FormInput label="Phone" name="phone" type="text" placeholder="Phone" />
-        <FormInput
-          label="Address line 1"
-          name="addressLine1"
-          type="text"
-          placeholder="Address line 1"
-        />
-        <FormInput
-          label="Address line 2"
-          name="addressLine2"
-          type="text"
-          placeholder="Address line 2"
-        />
-        <AuthFormSelect
-          placeholder="Country"
-          label="Country"
-          name="country"
-          options={countries}
-        />
-        <FormInput label="State" name="state" type="text" placeholder="State" />
-        <SubmitButton isSubmitting={isSubmitting}>Register</SubmitButton>
-      </Form>
+      {({ values, setFieldValue }) => (
+        <Form>
+          <FormInput
+            label="First Name"
+            name="firstName"
+            type="text"
+            placeholder="First Name"
+          />
+          <FormInput
+            label="Last Name"
+            name="lastName"
+            type="text"
+            placeholder="Last Name"
+          />
+          <FormInput
+            label="Email"
+            name="email"
+            type="email"
+            placeholder="Email"
+          />
+          <FormInput
+            label="Phone"
+            name="phone"
+            type="text"
+            placeholder="Phone"
+          />
+          <FormInput
+            label="Address line 1"
+            name="addressLine1"
+            type="text"
+            placeholder="Address line 1"
+          />
+          <FormInput
+            label="Address line 2"
+            name="addressLine2"
+            type="text"
+            placeholder="Address line 2"
+          />
+          <AuthFormSelect
+            placeholder="Country"
+            label="Country"
+            name="country"
+            options={countries}
+            onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+              setFieldValue("country", e.target.value);
+              setFieldValue("state", "");
+            }}
+          />
+          {values.country === "United States" && (
+            <AuthFormSelect
+              placeholder="State"
+              label="State"
+              name="state"
+              options={states}
+            />
+          )}
+          <SubmitButton isSubmitting={isSubmitting}>Register</SubmitButton>
+        </Form>
+      )}
     </Formik>
   );
 }
