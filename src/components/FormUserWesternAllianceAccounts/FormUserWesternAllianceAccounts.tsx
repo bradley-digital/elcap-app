@@ -1,11 +1,8 @@
 import type { Profile } from "hooks/useUser";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 // components
-import {
-  IonList,
-  IonSearchbar,
-} from "@ionic/react";
+import { IonList, IonSearchbar } from "@ionic/react";
 
 // hooks
 import useUserManagement from "hooks/useUserManagement";
@@ -21,6 +18,9 @@ type Props = {
 
 export default function FormUserWesternAllianceAccounts({ profile }: Props) {
   const [activeAccounts, setActiveAccounts] = useState<string[]>([]);
+  const [accountOptions, setAccountOptions] = useState<
+    { value: string; label: string; selected: boolean }[]
+  >([]);
   const { accounts, setAccountsQuery } = useWesternAllianceAccount();
   const { update } = useUserManagement();
 
@@ -31,27 +31,6 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
       profileAccounts?.map((account) => account.accountNumber) || [];
     setActiveAccounts(accountNumbers);
   }, [profileAccounts]);
-
-  const accountOptions =
-    accounts?.map((account) => {
-      const truncatedAccountNumber = account.accountNumber.slice(-4);
-      const label = `${account.accountName} (...${truncatedAccountNumber})`;
-      return {
-        value: account.accountNumber,
-        label,
-        selected: activeAccounts.includes(account.accountNumber),
-      };
-    }) || [];
-
-  accountOptions.sort((a, b) => {
-    if (a.selected && !b.selected) {
-      return -1;
-    }
-    if (!a.selected && b.selected) {
-      return 1;
-    }
-    return 0;
-  });
 
   function handleSearch(e: Event) {
     const target = e.target as HTMLIonSearchbarElement;
@@ -71,6 +50,39 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
     setActiveAccounts(newActiveAccounts);
     update({ id, accounts: newActiveAccounts });
   }
+
+  useMemo(() => {
+    if (
+      !accounts ||
+      accounts.length <= 0 ||
+      !activeAccounts ||
+      activeAccounts?.length <= 0
+    )
+      return;
+
+    const options =
+      accounts
+        ?.map((account) => {
+          const truncatedAccountNumber = account.accountNumber.slice(-4);
+          const label = `${account.accountName} (...${truncatedAccountNumber})`;
+          return {
+            value: account.accountNumber,
+            label,
+            selected: activeAccounts.includes(account.accountNumber),
+          };
+        })
+        .sort((a, b) => {
+          if (a.selected && !b.selected) {
+            return -1;
+          }
+          if (!a.selected && b.selected) {
+            return 1;
+          }
+          return 0;
+        }) || [];
+
+    setAccountOptions(options);
+  }, [accounts, activeAccounts]);
 
   return (
     <IonList className="FormUserWesternAllianceAccounts">

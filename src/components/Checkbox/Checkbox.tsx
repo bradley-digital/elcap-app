@@ -1,4 +1,10 @@
-import { IonAlert, IonCheckbox, IonItem, IonLabel, IonNote } from "@ionic/react";
+import {
+  IonAlert,
+  IonCheckbox,
+  IonItem,
+  IonLabel,
+  IonNote,
+} from "@ionic/react";
 import { type ComponentProps, useState } from "react";
 
 type Props = {
@@ -25,7 +31,7 @@ export default function Checkbox({
 }: Props) {
   const [showWarning, setShowWarning] = useState(false);
   const hasWarning = !!warningHeader || !!warningMessage;
-  
+
   function handleOnChange(value: boolean) {
     if (hasWarning) {
       if (!checked) {
