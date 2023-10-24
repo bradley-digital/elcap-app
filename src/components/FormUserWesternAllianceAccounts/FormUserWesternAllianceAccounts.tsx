@@ -52,13 +52,7 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
   }
 
   useMemo(() => {
-    if (
-      !accounts ||
-      accounts.length <= 0 ||
-      !activeAccounts ||
-      activeAccounts?.length <= 0
-    )
-      return;
+    if (!accounts?.length || !activeAccounts?.length) return;
 
     const options =
       accounts
