@@ -15,6 +15,7 @@ import classNames from "classnames";
 import Notifications from "components/Notification/Notifications";
 import useUser from "hooks/useUser";
 import { ReactComponent as LogoSvg } from "assets/elcapitanadvisors_logo.svg";
+import NavbarLogoutButton from "components/NavbarLogoutButton/NavbarLogoutButton";
 
 type Props = {
   children: ReactNode;
@@ -50,12 +51,16 @@ export default function PageTemplate({
           )}
           <IonTitle>{title}</IonTitle>
           {profile && (
-            <IonText slot="end" className="hidden-md PageTemplate__account-name">
+            <IonText
+              slot="end"
+              className="hidden-md PageTemplate__account-name"
+            >
               {`${profile.firstName} ${profile.lastName}`}
             </IonText>
           )}
           <IonButtons slot="end">
             <NotificationButton />
+            <NavbarLogoutButton />
           </IonButtons>
           <Notifications />
         </IonToolbar>
