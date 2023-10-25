@@ -1,0 +1,15 @@
+.NavbarLogoutButton {
+  &.ion-color-dark {
+    --ion-color-base: #666 !important;
+  }
+}
+
+.action-sheet-container {
+  .action-sheet-confirm {
+    color: var(--ion-color-danger);
+  }
+
+  .action-sheet-cancel {
+    color: var(--ion-color-tertiary);
+  }
+}
