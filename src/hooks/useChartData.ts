@@ -19,8 +19,8 @@ export default function useChartData(
   sortBy?: string
 ) {
   const { accounts, backfilledTransactions } = useUserWesternAllianceAccount(
-    selectedTimeRange,
-    sortBy,
+    "Max",
+    sortBy
   );
 
   if (
