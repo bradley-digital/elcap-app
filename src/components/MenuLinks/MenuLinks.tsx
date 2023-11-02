@@ -34,7 +34,6 @@ type Props = {
 
 export default function MenuLinks({ menuId, menuLinks }: Props) {
   const { pathname } = useLocation();
-  console.log({ menuLinks });
   return (
     <IonList className="MenuLinks">
       {menuLinks.map(({ href, icon, id, label, menuLinks: childLinks }) =>
