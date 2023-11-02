@@ -10,8 +10,19 @@ export default function MoneyMovement(routeProps: RouteComponentProps) {
     {
       id: 1,
       icon: receipt,
-      href: `${match.url}/overview`,
       label: "Overview",
+      menuLinks: [
+        {
+          href: `${match.url}/overview`,
+          label: "Account",
+          id: 1,
+        },
+        {
+          href: `${match.url}/transfer`,
+          label: "Balance",
+          id: 1,
+        },
+      ],
     },
     {
       id: 2,
