@@ -32,6 +32,33 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
     setActiveAccounts(accountNumbers);
   }, [profileAccounts]);
 
+  useMemo(() => {
+    if (!accounts?.length) return;
+
+    const options =
+      accounts
+        ?.map((account) => {
+          const truncatedAccountNumber = account.accountNumber.slice(-4);
+          const label = `${account.accountName} (...${truncatedAccountNumber})`;
+          return {
+            value: account.accountNumber,
+            label,
+            selected: activeAccounts?.includes(account.accountNumber) || false,
+          };
+        })
+        .sort((a, b) => {
+          if (a.selected && !b.selected) {
+            return -1;
+          }
+          if (!a.selected && b.selected) {
+            return 1;
+          }
+          return 0;
+        }) || [];
+
+    setAccountOptions(options);
+  }, [accounts, activeAccounts, setAccountOptions]);
+
   function handleSearch(e: Event) {
     const target = e.target as HTMLIonSearchbarElement;
     if (target && typeof target.value === "string") {
@@ -50,33 +77,6 @@ export default function FormUserWesternAllianceAccounts({ profile }: Props) {
     setActiveAccounts(newActiveAccounts);
     update({ id, accounts: newActiveAccounts });
   }
-
-  useMemo(() => {
-    if (!accounts?.length || !activeAccounts?.length) return;
-
-    const options =
-      accounts
-        ?.map((account) => {
-          const truncatedAccountNumber = account.accountNumber.slice(-4);
-          const label = `${account.accountName} (...${truncatedAccountNumber})`;
-          return {
-            value: account.accountNumber,
-            label,
-            selected: activeAccounts.includes(account.accountNumber),
-          };
-        })
-        .sort((a, b) => {
-          if (a.selected && !b.selected) {
-            return -1;
-          }
-          if (!a.selected && b.selected) {
-            return 1;
-          }
-          return 0;
-        }) || [];
-
-    setAccountOptions(options);
-  }, [accounts, activeAccounts]);
 
   return (
     <IonList className="FormUserWesternAllianceAccounts">
