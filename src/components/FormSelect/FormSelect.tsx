@@ -61,7 +61,7 @@ export default function FormSelect(props: Props) {
           if (onChange) {
             onChange(e.detail.value);
           } else {
-            field.onChange(e.detail.value);
+            field.onChange(e);
           }
         }}
         {...rest}
