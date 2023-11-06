@@ -1,38 +1,41 @@
 import type { RouteComponentProps } from "react-router-dom";
 import type { MenuLink } from "components/MenuLinks/MenuLinks";
-import { exit, informationCircleOutline, receipt, swapHorizontal } from "ionicons/icons";
+import { swapHorizontal } from "ionicons/icons";
 
 // components
 import SplitPaneTemplate from "components/SplitPaneTemplate/SplitPaneTemplate";
 import TransferRoutes from "routes/TransferRoutes";
 
-export default function Profile(routeProps: RouteComponentProps) {
+export default function Transfer(routeProps: RouteComponentProps) {
   const { match } = routeProps;
 
   const menuLinks: MenuLink[] = [
     {
       id: 1,
-      icon: receipt,
-      href: `${match.url}/overview`,
-      label: "Overview",
-    },
-    {
-      id: 2,
       icon: swapHorizontal,
-      href: `${match.url}/account`,
-      label: "Between Account Transfer",
-    },
-    {
-      id: 3,
-      icon: exit,
-      href: `${match.url}/external`,
-      label: "External Transfer",
-    },
-    {
-      id: 4,
-      icon: informationCircleOutline,
-      href: `${match.url}/instructions`,
-      label: "Deposit Instructions",
+      label: "Domestic Transfers",
+      menuLinks: [
+        {
+          id: 1,
+          href: `${match.url}/overview`,
+          label: "Overview",
+        },
+        {
+          id: 2,
+          href: `${match.url}/account`,
+          label: "Between Account Transfer",
+        },
+        {
+          id: 3,
+          href: `${match.url}/external`,
+          label: "External Transfer",
+        },
+        {
+          id: 4,
+          href: `${match.url}/instructions`,
+          label: "Deposit Instructions",
+        },
+      ],
     },
   ];
 
