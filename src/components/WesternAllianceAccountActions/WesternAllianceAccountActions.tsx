@@ -19,7 +19,7 @@ export default function WesternAllianceAccountActions({ account }: Props) {
 
   function handleDelete() {
     deleteAccount(id);
-    router.push("/account-management");
+    router.push("/account-management/western-alliance");
   }
 
   return (

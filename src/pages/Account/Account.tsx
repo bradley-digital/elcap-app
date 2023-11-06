@@ -16,13 +16,13 @@ export default function Account(routeProps: RouteComponentProps) {
     {
       id: 1,
       icon: arrowBack,
-      href: "/account-management",
+      href: "/account-management/western-alliance",
       label: "All accounts",
     },
     {
       id: 2,
       icon: westernAlliance,
-      href: `${match.url}/western-alliance`,
+      href: `${match.url}`,
       label: "Western Alliance",
     },
   ];

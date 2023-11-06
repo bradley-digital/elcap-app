@@ -22,7 +22,7 @@ export default function WesternAllianceList() {
           <IonItem
             key={id}
             className="WesternAllianceList__item"
-            href={`/account-management/${id}`}
+            href={`/account-management/western-alliance/${id}`}
           >
             {`${accountName} (...${accountNumber.slice(-4)})`}
           </IonItem>

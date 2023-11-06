@@ -17,21 +17,21 @@ export default function AccountRoutes({ match }: RouteComponentProps) {
     const account = accounts.find((account) => account.id === accountId);
 
     if (typeof account === "undefined") {
-      router.push("/account-management");
+      router.push("/account-management/western-alliance");
       return null;
     }
-
     return (
       <IonRouterOutlet>
         <Switch>
           <Route
-            exact
-            path={`${match.url}/western-alliance`}
+            path={`${match.url}`}
             render={() => <WesternAlliance account={account} />}
           />
           {/* Fallback route*/}
           <Route
-            render={() => <Redirect to={`${match.url}/western-alliance`} />}
+            render={() => (
+              <Redirect to={`/account-management/western-alliance`} />
+            )}
           />
         </Switch>
       </IonRouterOutlet>

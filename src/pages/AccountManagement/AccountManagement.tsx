@@ -1,52 +1,27 @@
-import {
-  IonCol,
-  IonFab,
-  IonFabButton,
-  IonGrid,
-  IonIcon,
-  IonRow,
-} from "@ionic/react";
-import { useAtom } from "jotai";
-import { isOpenAtom } from "atoms/westernAllianceModal";
-import PageTemplate from "components/PageTemplate/PageTemplate";
-import WesternAllianceList from "components/WesternAllianceList/WesternAllianceList";
-import WesternAllianceListModal from "components/WesternAllianceListModal/WesternAllianceListModal";
+import SplitPaneTemplate from "components/SplitPaneTemplate/SplitPaneTemplate";
+import { receipt } from "ionicons/icons";
+import { MenuLink } from "components/MenuLinks/MenuLinks";
+import { RouteComponentProps } from "react-router";
+import AccountManagementRoutes from "routes/AccountManagementRoutes";
 
-// hooks
-import useWesternAlliance from "hooks/useWesternAllianceAccount";
+export default function AccountManagement(routeProps: RouteComponentProps) {
+  const { match } = routeProps;
+  const menuLinks: MenuLink[] = [
+    {
+      id: 1,
+      icon: receipt,
+      href: `${match.url}/western-alliance`,
+      label: "Western Alliance",
+    },
+  ];
 
-// icons
-import { add } from "ionicons/icons";
-
-export default function WesternAllianceManagement() {
-  const { accountsIsSuccess, accounts } = useWesternAlliance();
-
-  const [, setIsOpen] = useAtom(isOpenAtom);
-
-  function openModal() {
-    setIsOpen(true);
-  }
-
-  if (accountsIsSuccess && typeof accounts !== "undefined") {
-    return (
-      <PageTemplate title="Account Management" showLogo>
-        <IonGrid>
-          <IonRow className="ion-justify-content-center">
-            <IonCol size-md="8" size-lg="6">
-              <WesternAllianceList />
-              <WesternAllianceListModal />
-            </IonCol>
-          </IonRow>
-        </IonGrid>
-        <IonFab vertical="bottom" horizontal="end" slot="fixed">
-          <IonFabButton onClick={openModal}>
-            <IonIcon icon={add} />
-          </IonFabButton>
-        </IonFab>
-      </PageTemplate>
-    );
-  }
-
-  // Need better error state
-  return null;
+  return (
+    <SplitPaneTemplate
+      title="Account Management"
+      menuId="account-management"
+      menuLinks={menuLinks}
+    >
+      <AccountManagementRoutes {...routeProps} />
+    </SplitPaneTemplate>
+  );
 }

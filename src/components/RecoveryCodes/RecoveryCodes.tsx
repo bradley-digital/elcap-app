@@ -33,7 +33,6 @@ export default function RecoveryCodes({ setOpen }: Props) {
     hasRecoveryCodes,
   } = useUser();
 
-  console.log({ recoveryCodes, hasRecoveryCodes });
   function copyToClipboard(text: string) {
     navigator.clipboard.writeText(text);
   }

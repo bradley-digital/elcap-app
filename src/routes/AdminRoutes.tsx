@@ -1,7 +1,6 @@
 import { Redirect, Route, Switch } from "react-router-dom";
 
 // pages
-import Account from "pages/Account/Account";
 import AccountManagement from "pages/AccountManagement/AccountManagement";
 import MoneyMovement from "pages/MoneyMovement/MoneyMovement";
 import Profile from "pages/Profile/ProfileOverview";
@@ -24,6 +23,7 @@ import {
   peopleCircle,
   swapHorizontal,
 } from "ionicons/icons";
+import Account from "pages/Account/Account";
 
 export default function AdminRoutes() {
   return (
@@ -32,15 +32,14 @@ export default function AdminRoutes() {
         <Switch>
           {/* Paths with nested routes must not have "exact" */}
           <Route path="/user-management/:userId" component={User} />
-          <Route path="/account-management/:accountId" component={Account} />
+          <Route
+            path="/account-management/western-alliance/:accountId"
+            component={Account}
+          />
           <Route path="/money-movement" component={MoneyMovement} />
           <Route exact path="/profile" component={Profile} />
           <Route exact path="/user-management" component={UserManagement} />
-          <Route
-            exact
-            path="/account-management"
-            component={AccountManagement}
-          />
+          <Route path="/account-management" component={AccountManagement} />
           {/* Fallback route */}
           <Route render={() => <Redirect to="/money-movement" />} />
         </Switch>
@@ -50,7 +49,7 @@ export default function AdminRoutes() {
           <IonIcon icon={swapHorizontal} />
           <IonLabel>Money Movement</IonLabel>
         </IonTabButton>
-        <IonTabButton tab="account" href="/account-management">
+        <IonTabButton tab="account" href="/account-management/western-alliance">
           <IonIcon icon={business} />
           <IonLabel>Accounts</IonLabel>
         </IonTabButton>
