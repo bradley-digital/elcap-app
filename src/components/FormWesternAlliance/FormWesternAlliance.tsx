@@ -9,6 +9,7 @@ import {
   accountNameValidation,
   clientValidation,
   routingNumberValidation,
+  userIdValidation,
 } from "lib/formValidation";
 
 // icons
@@ -22,6 +23,8 @@ import SubmitButton from "components/SubmitButton/SubmitButton";
 
 // hooks
 import useWesternAllianceAccount from "hooks/useWesternAllianceAccount";
+import FormSelect from "components/FormSelect/FormSelect";
+import useUserManagement from "hooks/useUserManagement";
 
 type Props = {
   account: Account;
@@ -38,7 +41,19 @@ export default function FormWesternAlliance({ account }: Props) {
     accountName,
     client,
     routingNumber,
+    userId,
+    user,
   } = account;
+
+  const { data } = useUserManagement();
+  const users: { value: string; label: string }[] = [];
+  data?.forEach((user) => {
+    user.role !== "ADMIN" &&
+      users.push({
+        value: user.id,
+        label: user.companyName || `${user.firstName} ${user.lastName}`,
+      });
+  });
 
   return (
     <Formik
@@ -46,14 +61,14 @@ export default function FormWesternAlliance({ account }: Props) {
         accountBalance,
         accountNumber,
         accountName,
-        client,
+        userId: userId || "",
         routingNumber,
       }}
       validationSchema={Yup.object({
         accountBalance: accountBalanceValidation,
         accountNumber: accountNumberValidation,
         accountName: accountNameValidation,
-        client: clientValidation,
+        userId: userIdValidation,
         routingNumber: routingNumberValidation,
       })}
       onSubmit={(values) => {
@@ -62,37 +77,50 @@ export default function FormWesternAlliance({ account }: Props) {
         setIsSubmitting(false);
       }}
     >
-      <Form>
-        <IonList>
-          <IonListHeader>Account information</IonListHeader>
-          <FormInput label="Client" name="client" type="text" icon={pencil} />
-          <FormInput
-            label="Account Name"
-            name="accountName"
-            type="text"
-            icon={lockClosed}
-            readonly={true}
-          />
-          <FormInput
-            label="Account Number"
-            name="accountNumber"
-            type="text"
-            icon={lockClosed}
-            readonly={true}
-          />
-          <FormInput label="Routing number" name="routingNumber" type="text" />
-          <FormInput
-            label="Account Balance"
-            name="accountBalance"
-            type="text"
-            icon={lockClosed}
-            readonly={true}
-          />
-          <SubmitButton isSubmitting={isSubmitting}>
-            Update Account
-          </SubmitButton>
-        </IonList>
-      </Form>
+      {({ setFieldValue }) => (
+        <Form>
+          <IonList>
+            <IonListHeader>Account information</IonListHeader>
+            <FormSelect
+              label="Client"
+              name="userId"
+              options={users || []}
+              onChange={(value: any) => {
+                setFieldValue("userId", value);
+              }}
+            />
+            <FormInput
+              label="Account Name"
+              name="accountName"
+              type="text"
+              icon={lockClosed}
+              readonly={true}
+            />
+            <FormInput
+              label="Account Number"
+              name="accountNumber"
+              type="text"
+              icon={lockClosed}
+              readonly={true}
+            />
+            <FormInput
+              label="Routing number"
+              name="routingNumber"
+              type="text"
+            />
+            <FormInput
+              label="Account Balance"
+              name="accountBalance"
+              type="text"
+              icon={lockClosed}
+              readonly={true}
+            />
+            <SubmitButton isSubmitting={isSubmitting}>
+              Update Account
+            </SubmitButton>
+          </IonList>
+        </Form>
+      )}
     </Formik>
   );
 }

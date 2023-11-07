@@ -5,8 +5,8 @@ import * as Yup from "yup";
 import {
   accountNumberValidation,
   accountNameValidation,
-  clientValidation,
   routingNumberValidation,
+  userIdValidation,
 } from "lib/formValidation";
 
 // icons
@@ -24,24 +24,36 @@ import { isOpenAtom } from "atoms/westernAllianceModal";
 
 // hooks
 import useWesternAllianceAccount from "hooks/useWesternAllianceAccount";
+import useUserManagement from "hooks/useUserManagement";
+import FormSelect from "components/FormSelect/FormSelect";
 
 export default function FormCreateWesternAlliance() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [, setIsOpen] = useAtom(isOpenAtom);
   const { createAccount } = useWesternAllianceAccount();
 
+  const { data } = useUserManagement();
+  const users: { value: string; label: string }[] = [];
+  data?.forEach((user) => {
+    user.role !== "ADMIN" &&
+      users.push({
+        value: user.id,
+        label: user.companyName || `${user.firstName} ${user.lastName}`,
+      });
+  });
+
   return (
     <Formik
       initialValues={{
         accountNumber: "",
         accountName: "",
-        client: "",
+        userId: "",
         routingNumber: "",
       }}
       validationSchema={Yup.object({
         accountNumber: accountNumberValidation,
         accountName: accountNameValidation,
-        client: clientValidation,
+        userId: userIdValidation,
         routingNumber: routingNumberValidation,
       })}
       onSubmit={(values) => {
@@ -51,27 +63,40 @@ export default function FormCreateWesternAlliance() {
         setIsSubmitting(false);
       }}
     >
-      <Form>
-        <IonList>
-          <FormInput label="Client" name="client" type="text" icon={pencil} />
-          <FormInput
-            label="Account Name"
-            name="accountName"
-            type="text"
-            icon={pencil}
-          />
-          <FormInput
-            label="Account Number"
-            name="accountNumber"
-            type="text"
-            icon={pencil}
-          />
-          <FormInput label="Routing number" name="routingNumber" type="text" />
-          <SubmitButton isSubmitting={isSubmitting}>
-            Create New Account
-          </SubmitButton>
-        </IonList>
-      </Form>
+      {({ setFieldValue }) => (
+        <Form>
+          <IonList>
+            <FormSelect
+              label="Client"
+              name="userId"
+              options={users || []}
+              onChange={(value: any) => {
+                setFieldValue("userId", value);
+              }}
+            />
+            <FormInput
+              label="Account Name"
+              name="accountName"
+              type="text"
+              icon={pencil}
+            />
+            <FormInput
+              label="Account Number"
+              name="accountNumber"
+              type="text"
+              icon={pencil}
+            />
+            <FormInput
+              label="Routing number"
+              name="routingNumber"
+              type="text"
+            />
+            <SubmitButton isSubmitting={isSubmitting}>
+              Create New Account
+            </SubmitButton>
+          </IonList>
+        </Form>
+      )}
     </Formik>
   );
 }

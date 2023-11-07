@@ -56,6 +56,7 @@ export default function FormSelect(props: Props) {
       <IonSelect
         interfaceOptions={interfaceOptions}
         selectedText={selectedOption.label}
+        value={selectedOption.value}
         onIonBlur={field.onBlur}
         onIonChange={(e) => {
           if (onChange) {

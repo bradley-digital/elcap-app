@@ -11,15 +11,20 @@ export type Account = {
   accountBalance: string;
   accountNumber: string;
   accountName: string;
-  client: string;
   routingNumber: string;
+  userId?: string;
+  user?: {
+    firstName: string;
+    lastName: string;
+    companyName?: string;
+  };
 };
 
 type AccountCreateInput = {
   accountBalance?: number;
   accountNumber: string;
   accountName: string;
-  client: string;
+  userId: string;
 };
 
 type AccountUpdateInput = {
@@ -27,7 +32,7 @@ type AccountUpdateInput = {
   accountBalance?: string;
   accountNumber?: string;
   accountName?: string;
-  client?: string;
+  userId?: string;
 };
 
 export type ExternalAccount = {
