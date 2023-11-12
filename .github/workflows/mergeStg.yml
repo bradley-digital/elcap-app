@@ -11,5 +11,5 @@ jobs:
       env: stg
       k8s-cluster: stg-k8s-sfo3
       deployment: webapp
-      approval: true # requires manual approval
+      approval: false # auto pushes and updates staging k8s
     secrets: inherit
