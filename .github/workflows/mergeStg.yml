@@ -1,0 +1,15 @@
+name: Deploy Staging Image
+run-name: ${{ github.actor }} Deploying Staging 🛫
+on:
+  push:
+    branches:
+      - "main"
+jobs:
+  call-reuseable-build-push:
+    uses: josh-bradley-digital/elcap-app/.github/workflows/buildPush.yml@main
+    with:
+      env: stg
+      k8s-cluster: stg-k8s-sfo3
+      deployment: webapp
+      approval: true # requires manual approval
+    secrets: inherit

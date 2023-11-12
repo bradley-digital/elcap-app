@@ -1,5 +1,5 @@
 name: Deploy Dev Image
-run-name: ${{ github.actor }} Deploying Dev 🚀
+run-name: ${{ github.actor }} Deploying Dev ✈
 on:
   push:
     branches:
