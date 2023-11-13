@@ -10,7 +10,7 @@ type Props = {
   account: Account;
 };
 
-export default function AccountWesternAlliance({ account }: Props) {
+export default function WesternAllianceAccount({ account }: Props) {
   return (
     <PageTemplate title="Western Alliance" menuId="account">
       <IonGrid>

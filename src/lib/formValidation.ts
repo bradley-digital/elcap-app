@@ -15,6 +15,8 @@ export const accountNameValidation = Yup.string().required(
   "Account Name required",
 );
 export const addressLine1Validation = Yup.string().required("Address required");
+export const userIdValidation = Yup.string().required("User required");
+export const accountIdValidation = Yup.string().required("Account required");
 export const addressLine2Validation = Yup.string().nullable();
 export const clientValidation = Yup.string().required("Client required");
 export const routingNumberValidation = Yup.string()

@@ -3,7 +3,7 @@ import { Redirect, Route, Switch, useParams } from "react-router-dom";
 import { IonRouterOutlet, useIonRouter } from "@ionic/react";
 
 // pages
-import WesternAlliance from "pages/Account/AccountWesternAlliance";
+import WesternAlliance from "pages/WesternAllianceAccount/WesternAllianceAccount";
 
 // hooks
 import useWesternAllianceAccount from "hooks/useWesternAllianceAccount";

@@ -4,6 +4,7 @@ import { IonRouterOutlet } from "@ionic/react";
 
 // components
 import AccountManagementWesternAlliance from "pages/AccountManagement/AccountManagementWesternAlliance";
+import AccountManagementMoneycorp from "pages/AccountManagement/AccountManagementMoneycorp";
 
 export default function AccountManagementRoutes({
   match,
@@ -15,6 +16,11 @@ export default function AccountManagementRoutes({
           exact
           path={`${match.url}/western-alliance`}
           render={() => <AccountManagementWesternAlliance />}
+        />
+        <Route
+          exact
+          path={`${match.url}/moneycorp`}
+          render={() => <AccountManagementMoneycorp />}
         />
 
         {/* Fallback route */}

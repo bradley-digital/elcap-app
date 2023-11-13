@@ -23,7 +23,8 @@ import {
   peopleCircle,
   swapHorizontal,
 } from "ionicons/icons";
-import Account from "pages/Account/Account";
+import Account from "pages/WesternAllianceAccount/WesternAlliance";
+import MoneycorpAccountRoutes from "./MoneycorpAccountRoutes";
 
 export default function AdminRoutes() {
   return (
@@ -35,6 +36,10 @@ export default function AdminRoutes() {
           <Route
             path="/account-management/western-alliance/:accountId"
             component={Account}
+          />
+          <Route
+            path="/account-management/moneycorp/:accountId"
+            component={MoneycorpAccountRoutes}
           />
           <Route path="/money-movement" component={MoneyMovement} />
           <Route exact path="/profile" component={Profile} />

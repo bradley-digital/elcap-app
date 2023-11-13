@@ -6,6 +6,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import useAuth from "hooks/useAuth";
 import { useIonToast } from "@ionic/react";
 import { get } from "lodash";
+import { MoneycorpAccount } from "./useMoneycorpAccount";
 
 type ProfileAccount = Pick<Account, "accountNumber" | "accountName">;
 
@@ -28,6 +29,11 @@ export type Profile = {
   docfoxApplication: DocfoxApplication;
   otpAuthUrl: string;
   disabled: boolean;
+  moneycorpAccount?: {
+    id: string;
+    accountId: string;
+    userId: string;
+  };
 };
 
 type ProfileUpdateInput = {
