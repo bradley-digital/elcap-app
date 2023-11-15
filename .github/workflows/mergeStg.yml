@@ -1,5 +1,5 @@
-name: Deploy Staging Image
-run-name: ${{ github.actor }} Deploying Staging 🛫
+name: 🟢 Deploy Staging Image 🟢
+run-name: ${{ github.actor }} Deploying Staging 🚀🛫
 on:
   push:
     branches:

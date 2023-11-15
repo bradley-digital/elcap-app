@@ -1,5 +1,5 @@
-name: Deploy Production Image
-run-name: ${{ github.actor }} Deploying Production 🚀
+name: 🔵 Deploy Production Image 🔵
+run-name: ${{ github.actor }} Deploying Production 🚀🔵🚀
 on:
   push:
     branches:
