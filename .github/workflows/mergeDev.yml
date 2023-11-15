@@ -1,4 +1,4 @@
-name: Deploy Dev Image
+name: Deploy Development Image
 run-name: ${{ github.actor }} Deploying Dev ✈
 on:
   push:
