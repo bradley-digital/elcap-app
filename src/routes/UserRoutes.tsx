@@ -5,6 +5,7 @@ import { IonRouterOutlet, useIonRouter } from "@ionic/react";
 // pages
 import Profile from "pages/User/UserProfile";
 import WesternAlliance from "pages/User/UserWesternAlliance";
+import Moneycorp from "pages/User/UserMoneycorp";
 import Docfox from "pages/User/UserDocfox";
 
 // hooks
@@ -40,6 +41,11 @@ export default function UserRoutes({ match }: RouteComponentProps) {
             exact
             path={`${match.url}/docfox`}
             render={() => <Docfox profile={user} />}
+          />
+          <Route
+            exact
+            path={`${match.url}/moneycorp`}
+            render={() => <Moneycorp profile={user} />}
           />
           {/* Fallback route */}
           <Route render={() => <Redirect to={`${match.url}/profile`} />} />

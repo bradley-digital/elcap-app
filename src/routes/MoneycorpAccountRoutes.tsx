@@ -21,7 +21,9 @@ export default function MoneycorpAccountRoutes({ match }: RouteComponentProps) {
     usersIsSuccess &&
     typeof data !== "undefined"
   ) {
-    const account = accounts.find((account) => account.id === accountId);
+    const account = accounts?.moneycorpAccounts?.find(
+      (account) => account.id === accountId,
+    );
 
     if (typeof account === "undefined") {
       router.push("/account-management/moneycorp");

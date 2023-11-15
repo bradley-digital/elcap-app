@@ -24,6 +24,18 @@ export type MoneycorpAccount = {
   };
 };
 
+export type MoneycorpLinkedAccount = {
+  id: string;
+  userId?: string;
+  accountId: string;
+  user?: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    id: string;
+  };
+};
+
 type AccountCreateInput = {
   userId: string;
   accountId: string;
@@ -54,8 +66,10 @@ export default function useMoneycorpAccount() {
   });
 
   async function getAccounts() {
-    const { data } =
-      await authApi.get<MoneycorpAccount[]>(`/moneycorp/accounts`);
+    const { data } = await authApi.get<{
+      moneycorpAccounts: MoneycorpAccount[];
+      linkedAccounts: MoneycorpLinkedAccount[];
+    }>(`/moneycorp/accounts`);
     return data;
   }
 
@@ -69,7 +83,7 @@ export default function useMoneycorpAccount() {
 
   async function deleteAccountMutation(id: string) {
     const { data } = await authApi.delete<MoneycorpAccount>(
-      `/moneycorp/account?id=${id}`,
+      `/moneycorp/account/${id}`,
     );
     return data;
   }
