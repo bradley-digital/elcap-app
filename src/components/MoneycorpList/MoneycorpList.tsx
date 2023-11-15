@@ -16,13 +16,15 @@ export default function MoneycorpList() {
     }
   }
 
-  const filteredAccounts = accounts?.filter(({ attributes }) => {
-    const { accountName, accountReference } = attributes;
-    return (
-      accountName.toLowerCase().includes(accountsQuery) ||
-      accountReference.toLowerCase().includes(accountsQuery)
-    );
-  });
+  const filteredAccounts = accounts?.moneycorpAccounts.filter(
+    ({ attributes }) => {
+      const { accountName, accountReference } = attributes;
+      return (
+        accountName.toLowerCase().includes(accountsQuery) ||
+        accountReference.toLowerCase().includes(accountsQuery)
+      );
+    },
+  );
 
   return (
     <div className="WesternAllianceList">
@@ -34,7 +36,9 @@ export default function MoneycorpList() {
             className="WesternAllianceList__item"
             href={`/account-management/moneycorp/${id}`}
           >
-            {`${attributes.accountName} (...${attributes.accountReference})`}
+            {`${attributes.accountName} (...${attributes.accountReference.slice(
+              -4,
+            )})`}
           </IonItem>
         ))}
       </IonList>
