@@ -20,6 +20,7 @@ import {
 } from "@ionic/react";
 
 import { card, grid, personCircle } from "ionicons/icons";
+import InternationalTransfer from "pages/InternationalTransfer/InternationalTransfer";
 
 export default function PortalRoutes() {
   const { profile } = useUser();
@@ -35,7 +36,11 @@ export default function PortalRoutes() {
           <Switch>
             {/* Paths with nested routes must not have "exact" */}
             <Route path="/dashboard" component={Dashboard} />
-            <Route path="/transfer" component={Transfer} />
+            <Route
+              path="/money-movement/international"
+              component={InternationalTransfer}
+            />
+            <Route path="/money-movement" component={Transfer} />
             <Route path="/profile" component={Profile} />
             {/* Fallback route */}
             <Route render={() => <Redirect to="/dashboard" />} />
@@ -46,7 +51,7 @@ export default function PortalRoutes() {
             <IonIcon icon={grid} />
             <IonLabel>Dashboard</IonLabel>
           </IonTabButton>
-          <IonTabButton tab="transfer" href="/transfer">
+          <IonTabButton tab="money-movement" href="/money-movement">
             <IonIcon icon={card} />
             <IonLabel>Money Movement</IonLabel>
           </IonTabButton>

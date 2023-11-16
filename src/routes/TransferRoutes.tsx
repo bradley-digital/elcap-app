@@ -33,6 +33,7 @@ export default function TransferRoutes({ match }: RouteComponentProps) {
           path={`${match.url}/:transferId`}
           render={() => <TransferDetails />}
         />
+
         {/* Fallback route */}
         <Route render={() => <Redirect to={`${match.url}/overview`} />} />
       </Switch>
