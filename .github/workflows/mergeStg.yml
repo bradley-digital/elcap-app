@@ -1,5 +1,5 @@
-name: 🔵 Deploy Production Image 🔵
-run-name: ${{ github.actor }} Deploying Production 🚀🔵🚀
+name: 🟢 Deploy Staging Image 🟢
+run-name: ${{ github.actor }} Deploying Staging 🚀🛫
 on:
   push:
     branches:
@@ -8,8 +8,8 @@ jobs:
   call-reuseable-build-push:
     uses: josh-bradley-digital/elcap-app/.github/workflows/buildPush.yml@main
     with:
-      env: prod
-      k8s-cluster: prod-k8s-sfo3
+      env: stg
+      k8s-cluster: stg-k8s-sfo3
       deployment: webapp
-      approval: true # requires manual approval
+      approval: false # auto pushes and updates staging k8s
     secrets: inherit

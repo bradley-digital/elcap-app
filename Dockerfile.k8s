@@ -1,6 +1,8 @@
 # base image
 FROM node:19-alpine as builder
 
+ARG ENV=dev
+
 # set working directory
 WORKDIR /app
 
@@ -9,7 +11,7 @@ COPY ./package.json ./
 COPY ./yarn.lock ./
 RUN yarn
 COPY . ./
-COPY ./dev.env ./.env
+COPY ./${ENV}.env ./.env
 RUN yarn build
 
 

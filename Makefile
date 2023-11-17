@@ -1,11 +1,26 @@
+.PHONY: confirm
+_WARN := "\033[33m[%s]\033[0m %s\n"  # Yellow text for "printf"
+_TITLE := "\033[32m[%s]\033[0m %s\n" # Green text for "printf"
+_ERROR := "\033[31m[%s]\033[0m %s\n" # Red text for "printf"
+
+CURRENT_BRANCH = $(shell git branch --show-current) 
+COMMIT = $(shell git rev-parse --short=12 HEAD)
+
+# =====================
+# PUSHING & DEPLOY
+
+DO_CONTAINER_REGISTRY = registry.digitalocean.com/elcap-cr/app
+
 build-image:
-	docker build --platform linux/amd64 -f Dockerfile.$(ENV).k8s -t app:k8s.$(ENV) .
+	docker build --platform linux/amd64 --build-arg="ENV=$(ENV)" -f Dockerfile.k8s -t app:k8s.$(ENV) .
 
 tag-image:
-	docker tag app:k8s.$(ENV) registry.digitalocean.com/elcap-cr/app:$(ENV)-latest
+	docker tag app:k8s.$(ENV) $(DO_CONTAINER_REGISTRY):$(ENV)-latest
+	docker tag app:k8s.$(ENV) $(DO_CONTAINER_REGISTRY):$(ENV)-$(COMMIT)
 
 push-image:
-	docker push registry.digitalocean.com/elcap-cr/app:$(ENV)-latest
+	docker push $(DO_CONTAINER_REGISTRY):$(ENV)-latest
+	docker push $(DO_CONTAINER_REGISTRY):$(ENV)-$(COMMIT)
 
 # Build, Tag, and Push the docker image. Will check if on main if prod is specified
 btp:
@@ -22,7 +37,6 @@ main-required:
 
 # Check that the current branch is the provided CHECK_BRANCH
 branch-check:
-	$(eval CURRENT_BRANCH := $(shell git branch --show-current))
 	@if [ "$(CURRENT_BRANCH)" != $(CHECK_BRANCH) ]; then		\
 		echo "$(tput setaf 3)WARNING: Current git branch is not $(CHECK_BRANCH): $(CURRENT_BRANCH)"; 	\
 		exit 1;											\
