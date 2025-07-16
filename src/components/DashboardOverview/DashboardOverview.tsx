@@ -42,7 +42,6 @@ export default function DashboardOverview() {
     transactionTypes,
   } = useChartData(selectedTimeRange, selectedAccountNumbers, sortBy);
 
-
   useEffect(() => {
     setSelectedAccountNumbers(
       accounts?.map((account) => account.accountNumber) || [""]
@@ -119,7 +118,9 @@ export default function DashboardOverview() {
             <IonList className="DashboardOverview__filters--wrapper">
               <MultiSelect
                 onChange={(options) => {
-                  setSelectedAccountNumbers(options.map((option) => option.value));
+                  setSelectedAccountNumbers(
+                    options.map((option) => option.value)
+                  );
                 }}
                 options={accountOptions}
                 modalTitle="Accounts"
