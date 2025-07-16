@@ -1,5 +1,5 @@
 import type { UseMutateAsyncFunction } from "react-query";
-import { IonList, IonListHeader } from "@ionic/react";
+import { IonIcon, IonList, IonListHeader, IonNote } from "@ionic/react";
 import FormCheckbox from "components/FormCheckbox/FormCheckbox";
 import FormInput from "components/FormInput/FormInput";
 import FormSelect from "components/FormSelect/FormSelect";
@@ -14,6 +14,7 @@ import {
   TransferCreateInput,
 } from "hooks/useWesternAllianceAccount";
 import FormDatePicker from "components/FormDatePicker/FormDatePicker";
+import { checkmarkOutline } from "ionicons/icons";
 
 type Props = {
   accounts?: Account[];
@@ -49,19 +50,20 @@ export default function FormTransferExternalBase({
     submit,
     transferTypeOptions,
     validationSchema,
+    docuSigned,
+    handleSignDocument,
   } = useTransferExternal({
     accounts,
     createExternalAccount,
     createTransfer,
     externalAccounts,
-    showDocusign,
   });
 
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      onSubmit={submit}
+      onSubmit={showDocusign && docuSigned ? submit : handleSignDocument}
     >
       {({ values }) => (
         <Form>
@@ -149,9 +151,36 @@ export default function FormTransferExternalBase({
               type="text"
               note="Use letters and numbers only (up to 32 characters)"
             />
-            <SubmitButton isSubmitting={isSubmitting}>
-              Submit external transfer
-            </SubmitButton>
+            {showDocusign ? (
+              docuSigned ? (
+                <>
+                  <SubmitButton isSubmitting={isSubmitting}>
+                    Submit external transfer
+                  </SubmitButton>
+                  <IonNote color="success">
+                    <p>
+                      <sub>
+                        <IonIcon color="success" icon={checkmarkOutline} />{" "}
+                        DocuSign form completed
+                      </sub>
+                    </p>
+                  </IonNote>
+                </>
+              ) : (
+                <>
+                  <SubmitButton isSubmitting={isSubmitting}>
+                    Sign form
+                  </SubmitButton>
+                  <IonNote color="danger">
+                    * Please make sure popups are enable
+                  </IonNote>
+                </>
+              )
+            ) : (
+              <SubmitButton isSubmitting={isSubmitting}>
+                Submit external transfer
+              </SubmitButton>
+            )}
           </IonList>
         </Form>
       )}

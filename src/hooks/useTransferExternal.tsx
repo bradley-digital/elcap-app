@@ -45,7 +45,6 @@ type Props = {
     unknown
   >;
   externalAccounts?: ExternalAccount[];
-  showDocusign: boolean;
 };
 
 export default function useTransferExternal({
@@ -53,11 +52,11 @@ export default function useTransferExternal({
   createExternalAccount,
   createTransfer,
   externalAccounts,
-  showDocusign,
 }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [storedReceivingAccount, setStoredReceivingAccount] = useState("");
   const [storedUseIntermediary, setStoredUseIntermediary] = useState(false);
+  const [docuSigned, setDocuSigned] = useState(false);
   const { postTransferAgreement, postView } = useDocusign();
 
   const transferTypeOptions = [
@@ -178,27 +177,44 @@ export default function useTransferExternal({
         transferDate: new Date(values.transferDate),
         type: values.type,
       };
-      if (showDocusign) {
-        const agreement = await postTransferAgreement({
-          ...transferBody,
-          transferDate: date(values.transferDate),
-        });
-        const view = await postView({
-          envelopeId: agreement?.envelopeId,
-          path: `/static.html`,
-        });
-        if (view?.url) {
-          const popupUrl = `${view.url}&send=1&showEditPages=false&showHeaderActions=false`;
-          const endUrl = await createPopup(popupUrl, host);
-          if (endUrl.includes("?event=signing_complete"))
-            await createTransfer(transferBody);
-        }
-      } else {
-        await createTransfer(transferBody);
-      }
+      await createTransfer(transferBody);
     } catch (e) {
       console.error(e);
     } finally {
+      setIsSubmitting(false);
+      setDocuSigned(false);
+    }
+  };
+
+  const handleSignDocument = async (
+    values: Yup.InferType<typeof validationSchema>,
+  ) => {
+    try {
+      const transferBody = {
+        amount: values.amount || 0,
+        externalAccount:
+          (values.receivingAccount !== "new" && values.receivingAccount) ||
+          values.externalAccountNumber,
+        fromAccount: values.sendingAccount,
+        memo: values.memo,
+        transferDate: new Date(values.transferDate),
+        type: values.type,
+      };
+
+      const agreement = await postTransferAgreement({
+        ...transferBody,
+        transferDate: date(values.transferDate),
+      });
+      const view = await postView({
+        envelopeId: agreement?.envelopeId,
+        path: `/static.html`,
+      });
+      if (view?.url) {
+        const popupUrl = `${view.url}&send=1&showEditPages=false&showHeaderActions=false`;
+        const endUrl = await createPopup(popupUrl, host);
+        if (endUrl.includes("?event=signing_complete")) setDocuSigned(true);
+      }
+    } catch (error) {
       setIsSubmitting(false);
     }
   };
@@ -283,5 +299,7 @@ export default function useTransferExternal({
     submit,
     transferTypeOptions,
     validationSchema,
+    handleSignDocument,
+    docuSigned,
   };
 }
