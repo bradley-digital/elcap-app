@@ -12,11 +12,11 @@ import {
 } from "lib/formValidation";
 
 // icons
-import { lockClosed, pencil } from "ionicons/icons";
+import { arrowBack, lockClosed, pencil } from "ionicons/icons";
 
 // components
 import { Form, Formik } from "formik";
-import { IonList, IonListHeader } from "@ionic/react";
+import { IonButton, IonIcon, IonList, IonListHeader } from "@ionic/react";
 import FormInput from "components/FormInput/FormInput";
 import SubmitButton from "components/SubmitButton/SubmitButton";
 
@@ -41,58 +41,68 @@ export default function FormWesternAlliance({ account }: Props) {
   } = account;
 
   return (
-    <Formik
-      initialValues={{
-        accountBalance,
-        accountNumber,
-        accountName,
-        client,
-        routingNumber,
-      }}
-      validationSchema={Yup.object({
-        accountBalance: accountBalanceValidation,
-        accountNumber: accountNumberValidation,
-        accountName: accountNameValidation,
-        client: clientValidation,
-        routingNumber: routingNumberValidation,
-      })}
-      onSubmit={(values) => {
-        setIsSubmitting(true);
-        updateAccount({ id, ...values });
-        setIsSubmitting(false);
-      }}
-    >
-      <Form>
-        <IonList>
-          <IonListHeader>Account information</IonListHeader>
-          <FormInput label="Client" name="client" type="text" icon={pencil} />
-          <FormInput
-            label="Account Name"
-            name="accountName"
-            type="text"
-            icon={lockClosed}
-            readonly={true}
-          />
-          <FormInput
-            label="Account Number"
-            name="accountNumber"
-            type="text"
-            icon={lockClosed}
-            readonly={true}
-          />
-          <FormInput label="Routing number" name="routingNumber" type="text" />
-          <FormInput
-            label="Account Balance"
-            name="accountBalance"
-            type="text"
-            icon={lockClosed}
-            readonly={true}
-          />
-          <SubmitButton isSubmitting={isSubmitting}>
-            Update Account
-          </SubmitButton>
-        </IonList>
-      </Form>
-    </Formik>
+    <>
+      <IonButton fill="clear" routerLink="/account-management">
+        <IonIcon slot="start" icon={arrowBack} />
+        All accounts
+      </IonButton>
+      <Formik
+        initialValues={{
+          accountBalance,
+          accountNumber,
+          accountName,
+          client,
+          routingNumber,
+        }}
+        validationSchema={Yup.object({
+          accountBalance: accountBalanceValidation,
+          accountNumber: accountNumberValidation,
+          accountName: accountNameValidation,
+          client: clientValidation,
+          routingNumber: routingNumberValidation,
+        })}
+        onSubmit={(values) => {
+          setIsSubmitting(true);
+          updateAccount({ id, ...values });
+          setIsSubmitting(false);
+        }}
+      >
+        <Form>
+          <IonList>
+            <IonListHeader>Account information</IonListHeader>
+            <FormInput label="Client" name="client" type="text" icon={pencil} />
+            <FormInput
+              label="Account Name"
+              name="accountName"
+              type="text"
+              icon={lockClosed}
+              readonly={true}
+            />
+            <FormInput
+              label="Account Number"
+              name="accountNumber"
+              type="text"
+              icon={lockClosed}
+              readonly={true}
+            />
+            <FormInput
+              label="Routing number"
+              name="routingNumber"
+              type="text"
+            />
+            <FormInput
+              label="Account Balance"
+              name="accountBalance"
+              type="text"
+              icon={lockClosed}
+              readonly={true}
+            />
+            <SubmitButton isSubmitting={isSubmitting}>
+              Update Account
+            </SubmitButton>
+          </IonList>
+        </Form>
+      </Formik>
+    </>
   );
 }
