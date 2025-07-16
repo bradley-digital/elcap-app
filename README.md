@@ -1,5 +1,7 @@
 # elcap-app
 
+Frontend for El Capitan Advisors. Backend here: https://github.com/bradley-digital/elcap-api
+
 ## Dependencies
 
 - Homebrew v3.6.2 (macOS only)
