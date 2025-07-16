@@ -80,7 +80,8 @@
     "prettier": "prettier --write **/*.{ts,tsx}",
     "serve": "vite preview",
     "start": "vite",
-    "test": "dotenv -- npx playwright test"
+    "test": "dotenv -- npx playwright test",
+    "prepare": "husky install"
   },
   "eslintConfig": {
     "extends": [
@@ -108,6 +109,8 @@
     "@types/socket.io-client": "^3.0.0",
     "@types/uuid": "^9.0.1",
     "eslint-plugin-react": "^7.31.11",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.0.2",
     "vite-plugin-eslint": "^1.8.1"
   }
 }
